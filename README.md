@@ -60,5 +60,8 @@ npm start
 npm run pack
 ```
 
-## TODO
+## License
 
+[MIT or commercial.](./LICENSE.txt)
+
+## TODO
