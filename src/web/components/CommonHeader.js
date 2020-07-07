@@ -126,14 +126,16 @@ export default function CommonHeader(props) {
   return (
     <div className={classNames(classes.root, className)} onDoubleClick={handleDoubleClickHeader}>
       {hasSystemButton && showLogo && (
-        <div className={classNames(classes.logoBox, classes.dragLayer)}>
+        <>
           <IconButton onClick={handleClickLogo} onDoubleClick={handleDoubleClickLogo}>
             <Icons.LiteLogoIcon />
           </IconButton>
-          <LiteText className={classNames(classes.name, liteLogo && classes.liteLogo)}>
-            WizNote Lite
-          </LiteText>
-        </div>
+          <div className={classNames(classes.logoBox, classes.dragLayer)}>
+            <LiteText className={classNames(classes.name, liteLogo && classes.liteLogo)}>
+              WizNote Lite
+            </LiteText>
+          </div>
+        </>
       )}
       <div className={classes.dragLayer} />
       {hasSystemButton && systemButton && (
