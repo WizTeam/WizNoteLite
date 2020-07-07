@@ -41,7 +41,7 @@ npm install
 windows:
 
 ```bash
-./node_modules/\.bin/electron ./tools/build_sqlite3
+.\node_modules\.bin\electron ./tools/build_sqlite3
 ```
 
 ## 运行

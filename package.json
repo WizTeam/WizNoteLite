@@ -74,7 +74,8 @@
     ],
     "win": {
       "target": [
-        "nsis", "appx"
+        "nsis",
+        "appx"
       ],
       "icon": "build/win/wiznote.ico",
       "legalTrademarks": "Beijing Wozhi Technology Co. Ltd"
@@ -137,7 +138,9 @@
       }
     },
     "linux": {
-      "target": ["AppImage"],
+      "target": [
+        "AppImage"
+      ],
       "vendor": "Beijing Wozhi Co., Ltd."
     }
   },
