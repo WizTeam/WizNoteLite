@@ -1,0 +1,83 @@
+body {
+  padding:0;
+  margin: 0;
+}
+body.loading .page-loading-container {
+  display: flex;
+}
+.page-loading-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  display: none;
+  justify-items: center;
+  align-items: center;
+}
+.loading-main {
+  position: relative;
+  width: 200px;
+  height: 4px;
+  background-color: rgba(51, 51, 51, 0.3);
+  background-clip: padding-box;
+  overflow: hidden;
+  margin: 0 auto;
+}
+.loading-process-line-01 {
+  position: absolute;
+  height: 4px;
+  background-color: #333333;
+  background-clip: padding-box;
+  display: block;
+  will-change: left, right;
+  overflow: hidden;
+  border-radius: 2px;
+}
+.loading-process-line-02 {
+  position: absolute;
+  height: 4px;
+  background-color: #333333;
+  background-clip: padding-box;
+  display: block;
+  will-change: left, right;
+  overflow: hidden;
+  border-radius: 2px;        
+}
+body.loading .loading-process-line-01 {
+  animation: 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) 0s infinite normal none running animation-loading-process-line-01;
+}
+body.loading .loading-process-line-02 {
+  animation: 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) 1.15s infinite normal none running animation-loading-process-line-02;
+}
+@keyframes animation-loading-process-line-01
+{
+  0% {
+    left: -35%;
+    right: 100%;
+  }
+  60% {
+    left: 100%;
+    right: -90%;
+  }
+  100% {
+    left: 100%;
+    right: -90%;
+  }
+}
+@keyframes animation-loading-process-line-02
+{
+  0% {
+    left: -200%;
+    right: 100%;
+  }
+  60% {
+    left: 107%;
+    right: -8%;
+  }
+  100% {
+    left: 107%;
+    right: -8%;
+  }
+}

@@ -1,0 +1,173 @@
+.editor-container {
+  position: relative;
+  height: 100%;
+  &.focus-mode {
+    #editor {
+      pre.vditor-reset > * {
+        opacity: 0.2;
+      }
+    }
+  }
+
+  // #editor {
+  //   // 首行 标题强制不显示 扩展的 #
+  //   pre.vditor-reset > :nth-child(1) .vditor-ir__marker--heading {
+  //     display: none;
+  //   }
+  // }
+
+  #editor {
+    // 正文行高
+    --text-line-height: 28px;
+    // 正文字号
+    --text-font-size: 16px;
+    // 正文字体颜色
+    --text-font-color: #333333;
+    // 正文字体
+    --text-font-family: 'Open Sans', 'Noto Sans SC', Menlo, "Ubuntu Mono", Consolas, "Courier New", "Microsoft Yahei", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif;
+    // 段落下边距
+    --p-margin-bottom: 16px;
+    // 引用背景
+    --blockquote-background: inherit;
+    // 引用边框颜色
+    --blockquote-border-color: #d8d8d8;
+    // 引用字体颜色
+    --blockquote-font-color: #aaa;
+    // 超链接字体颜色
+    --link-font-color: #006eff;
+    // 粗体字体
+    --bold-font-family: 'Open Sans', 'Noto Sans SC', Menlo, "Ubuntu Mono", Consolas, "Courier New", "Microsoft Yahei", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif;
+
+    @mixin hStyle {
+      margin: 32px 0 20px;
+      font-weight: normal;
+      letter-spacing: 1px;
+      font-family: var(--bold-font-family);
+      &::before {
+        cursor: pointer;
+      }
+    }
+  
+    border: none;
+    height: 100%;
+    
+    .vditor-toolbar {
+      display: none;
+    }
+    .vditor-reset {
+      overflow: visible;
+      padding-top: 16px !important;
+      padding-bottom: 64px !important;
+      --panel-background-color: transparent;
+      line-height: var(--text-line-height);
+      font-size: var(--text-font-size);
+      color: var(--text-font-color);
+      font-family: var(--text-font-family);
+      padding-right: unquote("max(16px, (100% - 600px) / 2) !important");
+      padding-left: unquote("max(48px, (100% - 600px) / 2) !important");
+      & > h1 {
+        font-size: 32px;
+        line-height: 44px;
+        border: none;
+        @include hStyle;
+      }
+      & > h2 {
+        font-size: 28px;
+        line-height: 40px;
+        border: none;
+        @include hStyle;
+      }
+      & > h3 {
+        font-size: 24px;
+        line-height: 36px;
+        @include hStyle;
+      }
+      & > h4 {
+        font-size: 20px;
+        line-height: 32px;
+        @include hStyle;
+      }
+      & > h5 {
+        font-size: 16px;
+        line-height: 28px;
+        @include hStyle;
+      }
+      & > h6 {
+        font-size: 16px;
+        line-height: 28px;
+        color: #aaaaaa;
+        @include hStyle;
+      }
+      blockquote {
+        border-color: var(--blockquote-border-color);
+        background: var(--blockquote-background);
+        color: var(--blockquote-font-color);
+        line-height: 24px;
+      }
+      a {
+        color: var(--link-font-color);
+        text-decoration: none;
+        line-height: 24px;
+      }
+      p {
+        margin-bottom: var(--p-margin-bottom);
+      }
+      .tag-span {
+        background-color: #aaaaaa;
+        border-radius: 12px;
+        color: #fff;
+        padding: 0 8px;
+        cursor: pointer;
+      }
+      pre > code {
+        max-height: none !important;
+        white-space: break-spaces;
+        word-break: break-word;
+      }
+
+      // 编辑 代码区域 时，隐藏渲染区域
+      .vditor-ir__node.vditor-ir__node--expand .vditor-ir__preview code.hljs {
+        display: none;
+      }
+    }
+    .vditor-ir pre.vditor-reset:focus {
+      background-color: inherit;
+    }
+    &.vditor--dark {
+      // 背景颜色
+      --panel-background-color: transparent;
+      --text-font-color: #f0f0f0;
+      --blockquote-border-color: #555;
+      --blockquote-font-color: #969696;
+      --blockquote-background: none repeat scroll 0 0 rgba(51,51,51,.5);
+      --preview-background-color: #333;
+      --second-color: #f0f0f0;
+
+      table {
+        tr {
+          background-color: #2a2a2a;
+          border-color: #404040;
+          td, th {
+            border-color: #404040;
+          }
+        }
+        tbody tr:nth-child(2n) {
+          background-color: #2a2a2a;
+        }
+      }
+      .vditor-reset code:not(.hljs):not(.highlight-chroma) {
+        background-color: #2a2a2a;
+      }
+      .tag-span {
+        background-color: #555555;
+      }
+      .hljs {
+        background-color: #404040;
+        color: #f0f0f0;
+      }
+      .vditor-hint {
+        background-color: #444;
+      }
+    }
+  }
+}

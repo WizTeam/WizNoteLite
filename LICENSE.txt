@@ -1,0 +1,45 @@
+
+WizNote Lite Open Source License 
+Updated July, 2020
+
+Beijing Wozhi Technology Ltd (the "Company") makes this license and provides the resource code of WizNote Lite (the "Software") with dual authorization.  
+
+For individual users
+This agreement entitles individual users to modify the Software or the source code under the MIT License.
+
+For commercial use
+Before any packaging, modification of the Software source code, and use of the Software for commercial activities, you must contact the company and sign a commercial license agreement. (For the details, please contact us)
+
+We reserve the right to pursue its legal responsibility for any commercial activity using the software source code before signing the License Agreement.
+
+
+
+//-------------------------------------
+WizNote Lite 开源许可说明
+2020 年 7 月 更新
+
+
+我知科技有限公司采用双授权方式提供 WizNote Lite 软件的源码。旨在满足个人用户的个性化扩展使用，以及商业公司的功能扩展。
+
+对于个人使用者：
+可根据 MIT 协议的说明，对 WizNote Lite 软件的源码进行个性化开发使用。
+
+对于商业公司：
+所有针对 WizNote Lite 软件源码进行的封装、改造，以及使用 WizNote Lite 软件开展商业活动时，必须与我知科技有限公司联系，并签订商业许可协议。（商业许可协议详细内容请与我司联系）
+任何商业公司在与我司签订商业许可协议前，使用 WizNote Lite 软件源码开展商业活动的行为，我司将保留追究其法律责任的权利。
+
+//-------------------------------------
+
+
+
+MIT License for Personal
+
+Copyright <2020> <Beijing Wozhi Technology Co. Ltd.>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
