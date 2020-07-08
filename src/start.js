@@ -86,10 +86,11 @@ function createWindow() {
   }
   //
   mainWindow.on('close', (event) => {
-    unregisterWindow(mainWindow);
     if (process.platform === 'darwin' && !forceQuit) {
       event.preventDefault(); // This will cancel the close
       mainWindow.hide();
+    } else {
+      unregisterWindow(mainWindow);
     }
   });
 
