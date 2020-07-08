@@ -1,9 +1,17 @@
-const { app, shell } = require('electron');
+const { app, shell, BrowserWindow } = require('electron');
 const i18next = require('i18next');
 
 const isMac = process.platform === 'darwin';
 
-function getMenuTemplate() {
+function showMainWindow() {
+  const windows = BrowserWindow.getAllWindows();
+  const mainWindow = windows.find((win) => win.isMainWindow);
+  if (mainWindow) {
+    mainWindow.show();
+  }
+}
+
+function getMainMenuTemplate() {
   //
   const template = [];
   //
@@ -87,6 +95,14 @@ function getMenuTemplate() {
       { type: 'separator' },
       { role: 'front', label: i18next.t('front') },
       { type: 'separator' },
+      {
+        role: 'window',
+        label: i18next.t('menuMainWindow'),
+        click: async () => {
+          showMainWindow();
+        },
+      },
+      { type: 'separator' },
     ],
   });
   // help menu
@@ -128,6 +144,18 @@ function getMenuTemplate() {
   return template;
 }
 
+function getMacDockMenuTemplate() {
+  return [
+    {
+      label: i18next.t('menuMainWindow'),
+      click() {
+        showMainWindow();
+      },
+    },
+  ];
+}
+
 module.exports = {
-  getMenuTemplate,
+  getMainMenuTemplate,
+  getMacDockMenuTemplate,
 };

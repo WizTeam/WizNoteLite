@@ -10,12 +10,20 @@ const { unregisterWindow } = require('./main/api');
 const { registerWizProtocol } = require('./main/db/resource_loader');
 
 const { i18nInit, getCurrentLang } = require('./main/i18n');
-const { getMenuTemplate } = require('./main/settings/menu_options');
+const { getMainMenuTemplate, getMacDockMenuTemplate } = require('./main/settings/menu_options');
+
+const isMac = process.platform === 'darwin';
 
 app.on('ready', async () => {
   await i18nInit();
-  const menu = Menu.buildFromTemplate(getMenuTemplate());
+  const menu = Menu.buildFromTemplate(getMainMenuTemplate());
   Menu.setApplicationMenu(menu);
+  //
+  if (isMac) {
+    const dockMenu = Menu.buildFromTemplate(getMacDockMenuTemplate());
+    app.dock.setMenu(dockMenu);
+  }
+  //
   try {
     registerWizProtocol();
   } catch (err) {
@@ -25,8 +33,6 @@ app.on('ready', async () => {
 
 let mainWindow;
 let forceQuit;
-
-const isMac = process.platform === 'darwin';
 
 function createWindow() {
   const mainWindowState = windowStateKeeper({
@@ -58,6 +64,7 @@ function createWindow() {
   //
   //
   mainWindow = new BrowserWindow(options);
+  mainWindow.isMainWindow = true;
   mainWindowState.manage(mainWindow);
   //
   const mainUrl = process.env.ELECTRON_START_URL
@@ -79,10 +86,11 @@ function createWindow() {
   }
   //
   mainWindow.on('close', (event) => {
-    unregisterWindow(mainWindow);
     if (process.platform === 'darwin' && !forceQuit) {
       event.preventDefault(); // This will cancel the close
       mainWindow.hide();
+    } else {
+      unregisterWindow(mainWindow);
     }
   });
 

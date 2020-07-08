@@ -10,11 +10,17 @@ const {
   getResourcesFromHtml,
 } = require('../../share/note_analysis');
 const { getCurrentLang } = require('../i18n');
+const { WizInternalError } = require('../../share/error');
 
 async function markdownToHtml(markdown) {
   const text = markdown.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   const html = await getDefaultNoteHtml();
-  return html.replace('<!--wiznote-lite-markdown-->', text);
+  const placeholder = '<!--wiznote-lite-markdown-->';
+  const index = html.indexOf(placeholder);
+  if (index === -1) {
+    throw new WizInternalError('invalid html template');
+  }
+  return html.substr(0, index) + text + html.substr(index + placeholder.length);
 }
 
 function getNoteHtmlPath(userGuid, kbGuid, noteGuid) {
