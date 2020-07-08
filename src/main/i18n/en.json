@@ -32,5 +32,6 @@
   "front": "Front",
   "helpMenu": "Help",
   "toggledevtools": "Toggle Developer Tools",
-  "learnMore": "Learn More..."
+  "learnMore": "Learn More...",
+  "menuMainWindow": "Main Window"
 }

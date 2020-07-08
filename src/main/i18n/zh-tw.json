@@ -33,5 +33,6 @@
   "front": "全部置於頂層",
   "helpMenu": "幫助",
   "toggledevtools": "切換開發者工具",
-  "learnMore": "了解更多..."
+  "learnMore": "了解更多...",
+  "menuMainWindow": "主窗口"
 }
