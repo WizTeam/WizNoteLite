@@ -13,6 +13,7 @@ import {
   isCtrl, filterParentElement, hasClass, getDomIndexForParent,
 } from '../libs/dom_utils';
 import { getRange, getSelection } from '../libs/range_utils';
+import TableMenu from './TableMenu';
 
 class VditorEditor extends React.Component {
   resourceUrl = '';
@@ -532,6 +533,9 @@ class VditorEditor extends React.Component {
           editor={this.editor}
           wordList={this.tags}
           onChangeShowState={this.handler.handleChangeTagMenuShowState}
+        />
+        <TableMenu
+          editor={this.editor}
         />
       </div>
     );
