@@ -160,7 +160,11 @@ class VditorEditor extends React.Component {
       this.setTags(nextProps.tagList);
     }
     if (nextProps.darkMode !== this.props.darkMode && this.isEditorReady()) {
-      this.editor.setTheme(nextProps.darkMode ? 'dark' : 'classic');
+      if (nextProps.darkMode) {
+        this.editor.setTheme('dark', 'dark', 'native');
+      } else {
+        this.editor.setTheme('classic', 'light', 'pygments');
+      }
     }
     if (nextProps.disabled !== this.props.disabled && this.isEditorReady()) {
       if (nextProps.disabled) {
@@ -245,6 +249,9 @@ class VditorEditor extends React.Component {
           return newHtml;
         },
         maxWidth: 600,
+        hljs: {
+          style: darkMode ? 'native' : 'pygments',
+        },
       },
       select: (value) => {
         const { onSelect } = this.props;
