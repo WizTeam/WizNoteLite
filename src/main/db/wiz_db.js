@@ -264,7 +264,7 @@ class WizDb extends EventEmitter {
   }
 
   async getNextNeedToBeDownloadedNote() {
-    const sqlWhere = `where version >= 0 and (local_status=0 or local_status is null) and (deleted is null or deleted = 0) limit 1`;
+    const sqlWhere = `where version >= 0 and (local_status=0 or local_status is null) and (trash is null or trash = 0) limit 1`;
     const notes = await this._getNotes(sqlWhere, []);
     if (notes.length === 0) {
       return null;
@@ -430,6 +430,15 @@ class WizDb extends EventEmitter {
     //
     await this._sqlite.run(sql, values);
     return true;
+  }
+
+  async syncNoteData(noteGuid, html) {
+    const kbGuid = await this.getKbGuid();
+    await noteData.writeNoteHtml(this._userGuid, kbGuid, noteGuid, html);
+    await this.setNoteLocalStatus(noteGuid, LOCAL_STATUS_DOWNLOADED);
+    const markdown = noteData.getMarkdownFromHtml(html);
+    const text = removeMd(markdown);
+    await this.setNoteText(noteGuid, text);
   }
 
   async downloadNoteMarkdown(noteGuid) {
