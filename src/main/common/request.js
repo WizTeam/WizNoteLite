@@ -2,7 +2,7 @@ const axios = require('axios');
 const assert = require('assert');
 const { WizNetworkError, WizInternalError, WizKnownError } = require('../../share/error');
 
-axios.defaults.adapter = require('axios/lib/adapters/http');
+// axios.defaults.adapter = require('axios/lib/adapters/http');
 //
 //
 async function standardRequest(opt) {
