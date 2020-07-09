@@ -1,7 +1,22 @@
-const { ipcMain, BrowserWindow } = require('electron');
+const {
+  ipcMain, BrowserWindow,
+  nativeImage, dialog,
+  shell,
+} = require('electron');
+const fs = require('fs-extra');
+const URL = require('url');
+const path = require('path');
+const mergeImages = require('merge-images');
+const { Canvas, Image } = require('canvas');
+
 const users = require('./user/users');
 const globalSettings = require('./settings/global_settings');
+const wait = require('./utils/wait');
+const paths = require('./common/paths');
 
+function unregisterWindow(window) {
+  users.unregisterWindow(window.webContents);
+}
 
 ipcMain.on('init', (event, options) => {
   console.log(options);
@@ -158,9 +173,139 @@ handleApi('hasNotesInTrash', async (event, ...args) => {
   return result;
 });
 
-function unregisterWindow(window) {
-  users.unregisterWindow(window.webContents);
-}
+handleApi('captureScreen', async (event, userGuid, kbGuid, noteGuid, options = {}) => {
+  //
+  const webContents = event.sender;
+  const browserWindow = BrowserWindow.fromWebContents(webContents);
+  const dialogResult = await dialog.showSaveDialog(browserWindow, {
+    properties: ['saveFile'],
+    filters: [{
+      name: 'Images (*.png)',
+      extensions: [
+        'png',
+      ],
+    }],
+  });
+  if (dialogResult.canceled) {
+    return;
+  }
+  //
+  const filePath = dialogResult.filePath;
+  //
+  const width = options.width || 375; // iPhone X
+  const height = 400; // default
+  //
+  const browserWindowOptions = {
+    x: 0,
+    y: 0,
+    width,
+    height,
+    resizable: false,
+    show: false,
+    frame: false,
+    webPreferences: {
+      nodeIntegration: false,
+      preload: path.join(__dirname, '../web/preload.js'),
+    },
+  };
+  const window = new BrowserWindow(browserWindowOptions);
+
+  const mainUrl = process.env.ELECTRON_START_URL
+  || URL.format({
+    pathname: path.join(__dirname, '../../web-app/index.html'),
+    protocol: 'file:',
+    slashes: true,
+  });
+
+  window.loadURL(`${mainUrl}?kbGuid=${kbGuid}&noteGuid=${noteGuid}`);
+  //
+  //
+  window.webContents.on('ipc-message', async (e, channel, ...args) => {
+    if (channel === 'onNoteLoaded') {
+      const [, , , noteOptions] = args;
+      const totalHeight = noteOptions.height;
+      const windowWidth = window.getSize()[0];
+      const pageHeight = 400;
+      window.setSize(windowWidth, pageHeight);
+      await window.webContents.executeJavaScript('window.requestAnimationFrame;');
+      const pageCount = Math.floor((totalHeight + pageHeight - 1) / pageHeight);
+      //
+      const images = [];
+      let scaleX;
+      let scaleY;
+      //
+      const tempPath = paths.getTempPath();
+      //
+      for (let i = 0; i < pageCount; i++) {
+        //
+        if (pageCount > 1) {
+          if (i === pageCount - 1) {
+            const top = totalHeight - pageHeight;
+            await window.webContents.executeJavaScript(`document.documentElement.scrollTop = ${top};`);
+          } else if (i > 0) {
+            await window.webContents.executeJavaScript(`document.documentElement.scrollTop = ${i * pageHeight};`);
+          }
+        }
+        const top = await window.webContents.executeJavaScript(`document.documentElement.scrollTop;`);
+        //
+        await wait(1000); // wait scrollbar
+        await window.webContents.executeJavaScript('window.requestAnimationFrame;');
+        const image = await window.capturePage();
+        const imageSize = image.getSize();
+        if (i === 0) {
+          scaleX = imageSize.width / windowWidth;
+          scaleY = imageSize.height / pageHeight;
+        }
+        const png = image.toPNG();
+        const imageName = path.join(tempPath, `${i}.png`);
+        await fs.writeFile(imageName, png);
+        images.push({
+          src: imageName,
+          x: 0,
+          y: top * scaleY,
+        });
+        //
+      }
+      //
+      const emptyImage = nativeImage.createFromPath(path.join(tempPath, `0.png`));
+      const resizedImage = emptyImage.resize({
+        width: windowWidth * scaleX,
+        height: totalHeight * scaleY,
+      });
+      const pngEmpty = resizedImage.toPNG();
+      const pngEmptyFile = path.join(tempPath, `empty.png`);
+      await fs.writeFile(pngEmptyFile, pngEmpty);
+      images.unshift({
+        src: pngEmptyFile,
+        x: 0,
+        y: 0,
+      });
+      //
+      const base64 = await mergeImages(images, {
+        Canvas,
+        Image,
+      }, {
+        width: 200,
+        height: 200,
+      });
+      //
+      const image = nativeImage.createFromDataURL(base64);
+      const png = image.toPNG();
+      const imageName = filePath;
+      await fs.writeFile(imageName, png);
+      //
+      shell.showItemInFolder(filePath);
+      //
+      e.preventDefault();
+      //
+      setTimeout(() => {
+        // unregisterWindow(window);
+        // window.close();
+      }, 1000);
+    }
+  });
+});
+
 
 module.exports = {
   unregisterWindow,

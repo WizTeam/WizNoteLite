@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { withStyles, withTheme } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
-import isBoolean from 'lodash/isBoolean';
 import CommonHeader from './CommonHeader';
 import NoteEditor from './NoteEditor';
 import Icons from '../config/icons';
@@ -81,6 +80,14 @@ class Content extends React.Component {
         this.setState({ isFullScreen });
       }
     },
+    handleCaptureScreen: () => {
+      const { kbGuid, note } = this.props;
+      if (!note) {
+        return;
+      }
+      const options = {};
+      window.wizApi.userManager.captureScreen(kbGuid, note.guid, options);
+    },
   };
 
   constructor(props) {
@@ -123,15 +130,15 @@ class Content extends React.Component {
         />
         {note && !isSearch && (
         <div className={classes.toolBar}>
-          {/* <IconButton className={classes.iconButton}>
+          <IconButton className={classes.iconButton} onClick={this.handler.handleCaptureScreen}>
             <Icons.MoreHorizIcon className={classes.icon} />
-          </IconButton> */}
-          {/* <IconButton className={classes.iconButton}>
+          </IconButton>
+          <IconButton className={classes.iconButton}>
             <Icons.TableContentIcon className={classes.icon} />
-          </IconButton> */}
-          {/* <IconButton className={classes.iconButton}>
+          </IconButton>
+          <IconButton className={classes.iconButton}>
             <Icons.LinkIcon className={classes.icon} />
-          </IconButton> */}
+          </IconButton>
           {hasFullScreenButton && (
           <IconButton className={classes.iconButton} onClick={this.handler.handleFullScreen}>
             {isFullScreen && <Icons.QuitFullScreenIcon className={classes.icon} />}
