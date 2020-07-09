@@ -79,11 +79,21 @@ class WindowManager {
     return window.isFullScreen();
   }
 
-  showSystemMenu(x, y) {
+  showSystemMenu(x, y, intl) {
     if (!this._systemMenu) {
       const menu = new Menu();
       menu.append(new MenuItem({
-        label: 'About WizNote Lite',
+        label: intl.formatMessage({ id: 'sendFeedback' }),
+        click() {
+          window.open('https://support.qq.com/products/174045');
+        },
+      }));
+      menu.append(new MenuItem({
+        label: intl.formatMessage({ id: 'devTool' }),
+        role: 'toggledevtools',
+      }));
+      menu.append(new MenuItem({
+        label: intl.formatMessage({ id: 'about' }),
         click() {
           window.wizApi.userManager.emit('showAbout');
         },

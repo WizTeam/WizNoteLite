@@ -71,4 +71,8 @@ export default {
   error31004: '登錄太頻繁啦，休息一下吧！',
   error31005: '用戶被鎖定',
   error31013: '手機號已經被註冊，請更換手機號！',
+  // system menu
+  sendFeedback: '意見反饋',
+  devTool: '開發者工具',
+  about: '關於 WizNote Lite',
 };
