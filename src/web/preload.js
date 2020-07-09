@@ -79,25 +79,37 @@ class WindowManager {
     return window.isFullScreen();
   }
 
+  setMenu(menu, options) {
+    options.forEach((mItem) => {
+      menu.append(new MenuItem(mItem));
+    });
+  }
+
   showSystemMenu(x, y, intl) {
     if (!this._systemMenu) {
+      const options = [
+        {
+          label: intl.formatMessage({ id: 'sendFeedback' }),
+          click() {
+            window.open('https://support.qq.com/products/174045');
+          },
+        },
+        {
+          label: intl.formatMessage({ id: 'devTool' }),
+          role: 'toggledevtools',
+        },
+        {
+          label: intl.formatMessage({ id: 'about' }),
+          click() {
+            window.wizApi.userManager.emit('showAbout');
+          },
+        },
+      ];
+      //
       const menu = new Menu();
-      menu.append(new MenuItem({
-        label: intl.formatMessage({ id: 'sendFeedback' }),
-        click() {
-          window.open('https://support.qq.com/products/174045');
-        },
-      }));
-      menu.append(new MenuItem({
-        label: intl.formatMessage({ id: 'devTool' }),
-        role: 'toggledevtools',
-      }));
-      menu.append(new MenuItem({
-        label: intl.formatMessage({ id: 'about' }),
-        click() {
-          window.wizApi.userManager.emit('showAbout');
-        },
-      }));
+
+      this.setMenu(menu, options);
+
       this._systemMenu = menu;
     }
 
