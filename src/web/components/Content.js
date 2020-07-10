@@ -130,6 +130,20 @@ class Content extends React.Component {
         exportMenuAnchorEl: null,
       });
     },
+    handleCaptureScreen: () => {
+      const { kbGuid, note } = this.props;
+      if (!note) {
+        return;
+      }
+      //
+      window.onCaptureScreenProgress = (progress) => {
+        console.log(progress);
+      };
+      const options = {
+        progressCallback: 'onCaptureScreenProgress',
+      };
+      window.wizApi.userManager.captureScreen(kbGuid, note.guid, options);
+    },
   };
 
   constructor(props) {
@@ -172,15 +186,15 @@ class Content extends React.Component {
         />
         {note && !isSearch && (
         <div className={classes.toolBar}>
-          {/* <IconButton className={classes.iconButton}>
+          <IconButton className={classes.iconButton} onClick={this.handler.handleCaptureScreen}>
             <Icons.MoreHorizIcon className={classes.icon} />
-          </IconButton> */}
-          {/* <IconButton className={classes.iconButton}>
+          </IconButton>
+          <IconButton className={classes.iconButton}>
             <Icons.TableContentIcon className={classes.icon} />
-          </IconButton> */}
-          {/* <IconButton className={classes.iconButton}>
+          </IconButton>
+          <IconButton className={classes.iconButton}>
             <Icons.LinkIcon className={classes.icon} />
-          </IconButton> */}
+          </IconButton>
           {hasFullScreenButton && (
           <IconButton className={classes.iconButton} onClick={this.handler.handleFullScreen}>
             {isFullScreen && <Icons.QuitFullScreenIcon className={classes.icon} />}
