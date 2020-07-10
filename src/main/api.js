@@ -200,7 +200,7 @@ handleApi('captureScreen', async (event, userGuid, kbGuid, noteGuid, options = {
     width,
     height,
     resizable: false,
-    show: true,
+    show: false,
     frame: false,
     webPreferences: {
       nodeIntegration: false,
@@ -217,7 +217,7 @@ handleApi('captureScreen', async (event, userGuid, kbGuid, noteGuid, options = {
   });
 
   window.loadURL(`${mainUrl}?kbGuid=${kbGuid}&noteGuid=${noteGuid}`);
-  window.webContents.toggleDevTools();
+  // window.webContents.toggleDevTools();
   //
   //
   window.webContents.on('ipc-message', async (e, channel, ...args) => {
@@ -292,8 +292,8 @@ handleApi('captureScreen', async (event, userGuid, kbGuid, noteGuid, options = {
       e.preventDefault();
       //
       setTimeout(() => {
-        // unregisterWindow(window);
-        // window.close();
+        unregisterWindow(window);
+        window.close();
       }, 1000);
     }
   });
