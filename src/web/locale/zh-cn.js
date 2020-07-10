@@ -61,8 +61,9 @@ export default {
   errorUserIdFormat: '电子邮箱格式不正确',
   errorSignUp: '注册失败: {message}',
   errorServer: '服务器错误: {message}',
-  errorUpdateServer: 'WizNote server is too old, update needed.',
-  errorUnknownServerVersion: 'Unknown server version: {message}',
+  errorUpdateServer: '为知笔记服务太旧了, 请升级服务器.',
+  errorUnknownServerVersion: '无法获取服务器版本: {message}',
+  errorNetwork: '网络错误: {message}',
 
   errorInvalidUserId: '用户不存在，无效的邮箱 或 手机号',
   errorLicenseUserLimit: '许可错误。 当前用户超出许可用户限制。',
