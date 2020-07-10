@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import classNames from 'classnames';
+import copy from 'copy-to-clipboard';
 import Icon from '../../../config/icons';
 import { filterParentElement } from '../libs/dom_utils';
 import { setRangeByDomBeforeEnd } from '../libs/range_utils';
@@ -195,10 +196,14 @@ function TableMenu(props) {
         deleteTable();
         break;
       case 'CpHtml':
-
+        if (tableElement) {
+          copy(tableElement.outerHTML);
+        }
         break;
       case 'CpMd':
-
+        if (props.editor && tableElement) {
+          copy(props.editor.html2md(tableElement.outerHTML));
+        }
         break;
       default:
         break;
