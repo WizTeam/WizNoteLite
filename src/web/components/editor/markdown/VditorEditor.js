@@ -536,6 +536,7 @@ class VditorEditor extends React.Component {
         />
         <TableMenu
           editor={this.editor}
+          onSaveNote={this.props.onSave}
         />
       </div>
     );

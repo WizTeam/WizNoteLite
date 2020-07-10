@@ -119,7 +119,7 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
 }));
 
 let makeCellEle;
-let tableCellElement;
+let tableElement;
 
 function TableMenu(props) {
   const classes = useStyles();
@@ -130,6 +130,13 @@ function TableMenu(props) {
   const [showSubMenu, setShowSubMenu] = useState(false);
   const [align, setAlign] = useState('left');
   const subMenuRef = useRef();
+
+  function deleteTable() {
+    if (tableElement) {
+      tableElement.outerHTML = '';
+      props.onSaveNote();
+    }
+  }
 
   function dispatchKey(hotKey) {
     if (props.editor?.vditor.ir.element) {
@@ -185,7 +192,7 @@ function TableMenu(props) {
         dispatchKey('⌘-⇧--');
         break;
       case 'deleteTable':
-
+        deleteTable();
         break;
       case 'CpHtml':
 
@@ -212,8 +219,9 @@ function TableMenu(props) {
 
     function mousedownHandler(e) {
       if (props.editor) {
-        tableCellElement = filterParentElement(e.target, props.editor.vditor.element, (dom) => dom.tagName.toLocaleLowerCase() === 'table');
-        if (e.button === 2 && tableCellElement) {
+        const ele = filterParentElement(e.target, props.editor.vditor.element, (dom) => dom.tagName.toLocaleLowerCase() === 'table');
+        if (e.button === 2 && ele) {
+          tableElement = ele;
           makeCellEle = filterParentElement(e.target, props.editor.vditor.element, (dom) => ['th', 'td'].includes(dom.tagName?.toLocaleLowerCase()), true);
           if (makeCellEle) {
             const makeCellEleAlign = makeCellEle.getAttribute('align') ?? 'left';
@@ -350,6 +358,7 @@ function TableMenu(props) {
 TableMenu.propTypes = {
   intl: PropTypes.object.isRequired,
   editor: PropTypes.object,
+  onSaveNote: PropTypes.func.isRequired,
 };
 
 TableMenu.defaultProps = {
