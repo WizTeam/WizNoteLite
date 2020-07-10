@@ -29,13 +29,6 @@ function updateHotkeyTip(hotkeyStr) {
   return hotkey;
 }
 
-// function dispatchKey(key, ctrlKey = false, altKey = false, shiftKey = false) {
-//   const mockKeyboardEvent = new KeyboardEvent('keydown', {
-//     key, ctrlKey, altKey, shiftKey,
-//   });
-//   document.dispatchEvent(mockKeyboardEvent);
-// }
-
 const useStyles = makeStyles(({ spacing, palette }) => ({
   menuRoot: {
     width: '224px',
@@ -134,19 +127,76 @@ function TableMenu(props) {
 
   const [menuPosition, setMenuPosition] = useState(undefined);
   const [showSubMenu, setShowSubMenu] = useState(false);
+  const [align, setAlign] = useState('left');
   const subMenuRef = useRef();
 
+  function dispatchKey(hotKey) {
+    if (props.editor?.vditor.ir.element) {
+      const hotKeys = updateHotkeyTip(hotKey).split('-');
+      let ctrlKey = false;
+      let metaKey = false;
+      if (hotKeys.length > 1 && (hotKeys[0] === 'ctrl' || hotKeys[0] === '⌘')) {
+        if (/Mac/.test(navigator.platform)) {
+          metaKey = true;
+        } else {
+          ctrlKey = true;
+        }
+      }
+      const shiftKey = hotKeys.length > 2 && (hotKeys[1] === 'shift' || hotKeys[1] === '⇧');
+      let key = (shiftKey ? hotKeys[2] : hotKeys[1]) || '-';
+      if (shiftKey && key === '-' && !/Mac/.test(navigator.platform)) {
+        key = '_';
+      }
+      const mockKeyboardEvent = new KeyboardEvent('keydown', {
+        key, ctrlKey, metaKey, shiftKey,
+      });
+      props.editor.vditor.ir.element.dispatchEvent(mockKeyboardEvent);
+    }
+  }
+
   function clickHandler(type, e) {
-    console.log(props.editor);
     setRangeByDomBeforeEnd(makeCellEle);
+
+    switch (type) {
+      case 'addRowAbove':
+        break;
+      case 'addRowBelow':
+        dispatchKey('⌘-=');
+        break;
+      case 'addColBefore':
+        break;
+      case 'addColAfter':
+        dispatchKey('⌘-⇧-=');
+        break;
+      case 'alignLeft':
+        dispatchKey('⌘-⇧-L');
+        break;
+      case 'alignCenter':
+        dispatchKey('⌘-⇧-C');
+        break;
+      case 'alignRight':
+        dispatchKey('⌘-⇧-R');
+        break;
+      case 'deleteRow':
+        dispatchKey('⌘--');
+        break;
+      case 'deleteCol':
+        dispatchKey('⌘-⇧--');
+        break;
+      case 'deleteTable':
+
+        break;
+      case 'CpHtml':
+
+        break;
+      case 'CpMd':
+
+        break;
+      default:
+        break;
+    }
     e.preventDefault();
-
-    // const mockKeyboardEvent = new KeyboardEvent('keydown', {
-    //   key: '=', metaKey: true,
-    // });
-    // props.editor.vditor.ir.element.dispatchEvent(mockKeyboardEvent);
-
-    // dispatchKey('+', true);
+    setMenuPosition(undefined);
   }
 
   useEffect(() => {
@@ -165,6 +215,10 @@ function TableMenu(props) {
         if (e.button === 2 && ele) {
           makeCellEle = filterParentElement(e.target, props.editor.vditor.element, (dom) => ['th', 'td'].includes(dom.tagName?.toLocaleLowerCase()), true);
           if (makeCellEle) {
+            const makeCellEleAlign = makeCellEle.getAttribute('align') ?? 'left';
+            if (makeCellEleAlign !== align) {
+              setAlign(makeCellEleAlign);
+            }
             setMenuPosition({
               top: e.clientY,
               left: e.clientX,
@@ -182,7 +236,7 @@ function TableMenu(props) {
       window.removeEventListener('mouseover', showSubMenuHandler);
       window.removeEventListener('mousedown', mousedownHandler);
     };
-  }, [menuPosition, showSubMenu, props.editor]);
+  }, [menuPosition, showSubMenu, props.editor, align]);
 
   const subMenuPosClass = (menuPosition?.left ?? 0) + 344 < window.innerWidth
     ? classes.rightMenu : classes.leftMenu;
@@ -240,16 +294,20 @@ function TableMenu(props) {
           >
             <div className={classes.subMenuContainer}>
               <button type="button" className={classes.subMenuItem} onClick={(e) => clickHandler('alignLeft', e)}>
-                <div className={classes.menuItemIcon} />
+                <div className={classes.menuItemIcon}>
+                  {align === 'left' && (<Icon.SelectedIcon className={classes.selectedIcon} />)}
+                </div>
                 <div>{intl.formatMessage({ id: 'tableMenuLeft' })}</div>
               </button>
               <button type="button" className={classes.subMenuItem} onClick={(e) => clickHandler('alignCenter', e)}>
-                <div className={classes.menuItemIcon} />
+                <div className={classes.menuItemIcon}>
+                  {align === 'center' && (<Icon.SelectedIcon className={classes.selectedIcon} />)}
+                </div>
                 <div>{intl.formatMessage({ id: 'tableMenuCenter' })}</div>
               </button>
               <button type="button" className={classes.subMenuItem} onClick={(e) => clickHandler('alignRight', e)}>
                 <div className={classes.menuItemIcon}>
-                  <Icon.SelectedIcon className={classes.selectedIcon} />
+                  {align === 'right' && (<Icon.SelectedIcon className={classes.selectedIcon} />)}
                 </div>
                 <div>{intl.formatMessage({ id: 'tableMenuRight' })}</div>
               </button>
