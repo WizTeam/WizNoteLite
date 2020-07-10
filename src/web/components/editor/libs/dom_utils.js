@@ -93,3 +93,36 @@ export function getScrollContainer(dom) {
   }
   return body;
 }
+
+export function updateHotkeyTip(hotkeyStr) {
+  let hotkey;
+  if (/Mac/.test(navigator.platform) || navigator.platform === 'iPhone') {
+    hotkey = hotkeyStr.replace('ctrl', '⌘').replace('shift', '⇧')
+      .replace('alt', '⌥');
+    if (hotkey.indexOf('⇧') > -1) {
+      hotkey = hotkey.replace(':', ';').replace('+', '=')
+        .replace('_', '-');
+    }
+  } else {
+    hotkey = hotkeyStr.replace('⌘', 'ctrl').replace('⇧', 'shift')
+      .replace('⌥', 'alt');
+    if (hotkey.indexOf('shift') > -1) {
+      hotkey = hotkey.replace(';', ':').replace('=', '+');
+    }
+  }
+  return hotkey;
+}
+// 是否匹配 ⌘-⌥-[] / ⌘-[]
+export function matchHotKey(hotKey, event) {
+  const hotKeys = updateHotkeyTip(hotKey).split('-');
+  const hasAlt = hotKeys.length > 2 && (hotKeys[1] === 'alt' || hotKeys[1] === '⌥');
+  let key = (hasAlt ? hotKeys[2] : hotKeys[1]) || '-';
+  if (hasAlt && key === '-' && (!/Mac/.test(navigator.platform))) {
+    key = '_';
+  }
+  if (isCtrl(event) && event.key.toLowerCase() === key.toLowerCase() && !event.shiftKey
+      && ((!hasAlt && !event.altKey) || (hasAlt && event.altKey))) {
+    return true;
+  }
+  return false;
+}

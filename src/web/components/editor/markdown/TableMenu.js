@@ -8,27 +8,8 @@ import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import classNames from 'classnames';
 import copy from 'copy-to-clipboard';
 import Icon from '../../../config/icons';
-import { filterParentElement } from '../libs/dom_utils';
+import { filterParentElement, updateHotkeyTip, matchHotKey } from '../libs/dom_utils';
 import { setRangeByDomBeforeEnd } from '../libs/range_utils';
-
-function updateHotkeyTip(hotkeyStr) {
-  let hotkey;
-  if (/Mac/.test(navigator.platform) || navigator.platform === 'iPhone') {
-    hotkey = hotkeyStr.replace('ctrl', '⌘').replace('shift', '⇧')
-      .replace('alt', '⌥');
-    if (hotkey.indexOf('⇧') > -1) {
-      hotkey = hotkey.replace(':', ';').replace('+', '=')
-        .replace('_', '-');
-    }
-  } else {
-    hotkey = hotkeyStr.replace('⌘', 'ctrl').replace('⇧', 'shift')
-      .replace('⌥', 'alt');
-    if (hotkey.indexOf('shift') > -1) {
-      hotkey = hotkey.replace(';', ':').replace('=', '+');
-    }
-  }
-  return hotkey;
-}
 
 const useStyles = makeStyles(({ spacing, palette }) => ({
   menuRoot: {
@@ -139,6 +120,7 @@ function TableMenu(props) {
     }
   }
 
+  // 通过触发editor.vditor快捷键实现表格操作功能
   function dispatchKey(hotKey) {
     if (props.editor?.vditor.ir.element) {
       const hotKeys = updateHotkeyTip(hotKey).split('-');
@@ -244,9 +226,24 @@ function TableMenu(props) {
         }
       }
     }
+
+    function keydownHandler(e) {
+      console.log('e', e);
+      if (matchHotKey('⌘-Enter', e)) {
+        console.log('asd');
+        dispatchKey('⌘-=');
+        e.preventDefault();
+      } else if (matchHotKey('⌘-⌥-Enter', e)) {
+        dispatchKey('⌘-⇧-=');
+        e.preventDefault();
+      }
+    }
+
+    window.addEventListener('keydown', keydownHandler);
     window.addEventListener('mouseover', showSubMenuHandler);
     window.addEventListener('mousedown', mousedownHandler);
     return () => {
+      window.removeEventListener('keydown', keydownHandler);
       window.removeEventListener('mouseover', showSubMenuHandler);
       window.removeEventListener('mousedown', mousedownHandler);
     };
