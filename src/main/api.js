@@ -266,11 +266,22 @@ handleApi('captureScreen', async (event, userGuid, kbGuid, noteGuid, options = {
         //
       }
       //
+      // pureimage 提供的drawImage有一些浮点数计算的问题，会导致图片质量下降
+      const drawImage = (toBitmap, dx, dy, fromBitmap) => {
+        // two argument form
+        for (let y = 0; y < fromBitmap.height; y++) {
+          for (let x = 0; x < fromBitmap.width; x++) {
+            const rgba = fromBitmap.getPixelRGBA(x, y);
+            toBitmap.setPixelRGBA(dx + x, dy + y, rgba);
+          }
+        }
+      };
+      //
       const resultImage = PImage.make(windowWidth * scaleX, totalHeight * scaleY);
-      const context = resultImage.getContext('2d');
       for (const imageData of images) {
         const image = await PImage.decodePNGFromStream(fs.createReadStream(imageData.src));
-        context.drawImage(image, imageData.x, imageData.y);
+        drawImage(resultImage, imageData.x, imageData.y, image);
+        fs.unlinkSync(imageData.src);
       }
       //
       await PImage.encodePNGToStream(resultImage, fs.createWriteStream(filePath));
