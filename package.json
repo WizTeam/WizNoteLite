@@ -1,7 +1,7 @@
 {
   "name": "wiznotelite",
   "description": "WizNote Lite - An instant rendering markdown note tool.",
-  "version": "1.0.0",
+  "version": "1.0.4",
   "private": true,
   "homepage": ".",
   "productName": "WizNote Lite",
@@ -42,7 +42,7 @@
     },
     "directories": {
       "output": "out",
-      "buildResources": "public"
+      "buildResources": "build"
     },
     "files": [
       "**/*",
@@ -74,8 +74,8 @@
     ],
     "win": {
       "target": [
-        "nsis",
-        "appx"
+        "appx",
+        "nsis"
       ],
       "icon": "build/win/wiznote.ico",
       "legalTrademarks": "Beijing Wozhi Technology Co. Ltd"

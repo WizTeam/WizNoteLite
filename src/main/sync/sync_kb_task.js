@@ -118,8 +118,8 @@ class SyncKbTask extends EventEmitter {
   }
 
   async downloadNoteData(noteGuid) {
-    const html = await this._ks.downloadNote(noteGuid);
-    return html;
+    const result = await this._ks.downloadNote(noteGuid);
+    return result;
   }
 
   async uploadDeletedNotes() {
@@ -227,7 +227,8 @@ class SyncKbTask extends EventEmitter {
           return;
         }
         //
-        await this.downloadNoteData(note.guid);
+        const result = await this.downloadNoteData(note.guid);
+        await this._db.syncNoteData(note.guid, result.html);
       }
     } finally {
       lockers.release(lockerKey);
