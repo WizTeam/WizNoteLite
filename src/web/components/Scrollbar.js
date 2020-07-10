@@ -10,6 +10,7 @@ function Scrollbar(props) {
     children,
     classes,
     autoHide,
+    autoHideTimeout,
     hideTracksWhenNotNeeded,
     themeType,
     ...others
@@ -41,6 +42,7 @@ function Scrollbar(props) {
     <Scrollbars
       hideTracksWhenNotNeeded={hideTracksWhenNotNeeded}
       autoHide={autoHide}
+      autoHideTimeout={autoHideTimeout}
       renderThumbVertical={isDark ? renderThumbVertical : undefined}
       {...others}
     >
@@ -54,6 +56,7 @@ Scrollbar.propTypes = {
   children: PropTypes.node.isRequired,
   hideTracksWhenNotNeeded: PropTypes.bool,
   autoHide: PropTypes.bool,
+  autoHideTimeout: PropTypes.number,
   themeType: PropTypes.string,
 };
 
@@ -61,6 +64,7 @@ Scrollbar.defaultProps = {
   classes: {},
   hideTracksWhenNotNeeded: true,
   autoHide: true,
+  autoHideTimeout: 100,
   themeType: 'auto',
 };
 

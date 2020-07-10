@@ -3,12 +3,14 @@ import PropTypes from 'prop-types';
 import { withStyles, withTheme } from '@material-ui/core/styles';
 import { injectIntl } from 'react-intl';
 import VditorEditor from '../components/editor/markdown/VditorEditor';
+import Scrollbar from '../components/Scrollbar';
 //
 
 const styles = (theme) => ({
   root: {
     padding: 0,
     margin: 0,
+    height: '100%',
     backgroundColor: theme.custom.background.content,
   },
 });
@@ -83,24 +85,30 @@ class NoteViewer extends React.Component {
     return (
       <div
         className={classes.root}
-        ref={(node) => {
-          this._rootElem = node;
-        }}
       >
-        <VditorEditor
-          value={markdown}
-          isMac={window.wizApi.platform.isMac}
-          contentId={loading ? '' : noteGuid}
-          onInit={this.handler.handleInitEditor}
-          onInput={() => {}}
-          resourceUrl={resourceUrl}
-          darkMode={theme.palette.type === 'dark'}
-          onSave={() => {}}
-          onInsertImage={() => {}}
-          onInsertImageFromData={() => {}}
-          tagList={{}}
-          autoSelectTitle={false}
-        />
+        <Scrollbar autoHideTimeout={100}>
+          <div
+            id="wiz-note-content-root"
+            ref={(node) => {
+              this._rootElem = node;
+            }}
+          >
+            <VditorEditor
+              value={markdown}
+              isMac={window.wizApi.platform.isMac}
+              contentId={loading ? '' : noteGuid}
+              onInit={this.handler.handleInitEditor}
+              onInput={() => {}}
+              resourceUrl={resourceUrl}
+              darkMode={theme.palette.type === 'dark'}
+              onSave={() => {}}
+              onInsertImage={() => {}}
+              onInsertImageFromData={() => {}}
+              tagList={{}}
+              autoSelectTitle={false}
+            />
+          </div>
+        </Scrollbar>
       </div>
     );
   }

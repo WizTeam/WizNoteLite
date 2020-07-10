@@ -200,7 +200,7 @@ handleApi('captureScreen', async (event, userGuid, kbGuid, noteGuid, options = {
     width,
     height,
     resizable: false,
-    show: false,
+    show: true,
     frame: false,
     webPreferences: {
       nodeIntegration: false,
@@ -217,6 +217,7 @@ handleApi('captureScreen', async (event, userGuid, kbGuid, noteGuid, options = {
   });
 
   window.loadURL(`${mainUrl}?kbGuid=${kbGuid}&noteGuid=${noteGuid}`);
+  window.webContents.toggleDevTools();
   //
   //
   window.webContents.on('ipc-message', async (e, channel, ...args) => {
@@ -240,12 +241,12 @@ handleApi('captureScreen', async (event, userGuid, kbGuid, noteGuid, options = {
         if (pageCount > 1) {
           if (i === pageCount - 1) {
             const top = totalHeight - pageHeight;
-            await window.webContents.executeJavaScript(`document.documentElement.scrollTop = ${top};`);
+            await window.webContents.executeJavaScript(`document.getElementById('wiz-note-content-root').parentElement.scrollTop = ${top};`);
           } else if (i > 0) {
-            await window.webContents.executeJavaScript(`document.documentElement.scrollTop = ${i * pageHeight};`);
+            await window.webContents.executeJavaScript(`document.getElementById('wiz-note-content-root').parentElement.scrollTop = ${i * pageHeight};`);
           }
         }
-        const top = await window.webContents.executeJavaScript(`document.documentElement.scrollTop;`);
+        const top = await window.webContents.executeJavaScript(`document.getElementById('wiz-note-content-root').parentElement.scrollTop;`);
         //
         await wait(1000); // wait scrollbar
         await window.webContents.executeJavaScript('window.requestAnimationFrame;');
