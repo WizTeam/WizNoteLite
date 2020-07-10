@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { withStyles, withTheme } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
-import isBoolean from 'lodash/isBoolean';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+// import isBoolean from 'lodash/isBoolean';
 import CommonHeader from './CommonHeader';
 import NoteEditor from './NoteEditor';
 import Icons from '../config/icons';
@@ -68,6 +70,43 @@ const styles = (theme) => ({
     height: theme.spacing(3),
     color: theme.custom.color.contentToolIcon,
   },
+  exportMenu: {
+    '& .MuiPaper-elevation8': {
+      boxShadow: '0px 1px 4px 0px rgba(0, 0, 0, 0.31)',
+    },
+    '& .MuiList-padding': {
+      paddingTop: 4,
+      paddingBottom: 4,
+      color: '#333333',
+    },
+    '& .MuiListItem-gutters': {
+      paddingLeft: 24,
+      paddingRight: 24,
+    },
+    '& .MuiMenuItem-root': {
+      paddingTop: theme.spacing(1),
+      paddingBottom: theme.spacing(1),
+      fontSize: 15,
+    },
+    '& .Mui-disabled': {
+      fontSize: 14,
+      color: '#aaaaaa',
+      opacity: 1,
+    },
+  },
+  separator: {
+    height: 1,
+    backgroundColor: '#d8d8d8',
+    margin: '4px 24px',
+  },
+  normalButton: {
+    backgroundColor: 'transparent',
+    color: '#448aff',
+    '&:hover': {
+      backgroundColor: 'transparent',
+      color: '#448aff',
+    },
+  },
 });
 
 class Content extends React.Component {
@@ -81,12 +120,23 @@ class Content extends React.Component {
         this.setState({ isFullScreen });
       }
     },
+    handleShowExportMenu: (e) => {
+      this.setState({
+        exportMenuAnchorEl: e.target,
+      });
+    },
+    handleCloseExportMenu: () => {
+      this.setState({
+        exportMenuAnchorEl: null,
+      });
+    },
   };
 
   constructor(props) {
     super(props);
     this.state = {
       isFullScreen: false,
+      exportMenuAnchorEl: null,
     };
   }
 
@@ -103,14 +153,13 @@ class Content extends React.Component {
       note, kbGuid, classes,
       isSearch, theme, backgroundType, onClickTag,
     } = this.props;
-    const { isFullScreen } = this.state;
+    const { isFullScreen, exportMenuAnchorEl } = this.state;
     //
     const isLite = theme.palette.type !== 'dark';
     const backgroundColorClassName = `main_${backgroundType}`;
     const backgroundClass = isLite && (classes[backgroundColorClassName] ?? '');
 
     const hasFullScreenButton = window.wizApi.isElectron && window.wizApi.windowManager.platform === 'darwin';
-
 
     return (
       <main
@@ -138,6 +187,10 @@ class Content extends React.Component {
             {!isFullScreen && <Icons.FullScreenIcon className={classes.icon} />}
           </IconButton>
           )}
+          {/* TODO: export note icon */}
+          <IconButton className={classes.iconButton} onClick={this.handler.handleShowExportMenu}>
+            <Icons.LinkIcon className={classes.icon} />
+          </IconButton>
           <div className={classes.emptyBlock} />
           <SyncBtn
             className={classes.iconButton}
@@ -159,6 +212,27 @@ class Content extends React.Component {
             />
           </Scrollbar>
         </div>
+        <Menu
+          className={classes.exportMenu}
+          getContentAnchorEl={null}
+          anchorEl={exportMenuAnchorEl}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+          open={!!exportMenuAnchorEl}
+          onClose={this.handler.handleCloseExportMenu}
+        >
+          <MenuItem>Export Picture</MenuItem>
+          <MenuItem>Export md</MenuItem>
+          <MenuItem>Export PDF</MenuItem>
+          <MenuItem>Copy source markdown</MenuItem>
+          <div className={classes.separator} />
+          <MenuItem disabled>Publish to</MenuItem>
+          <MenuItem
+            disableRipple
+            className={classes.normalButton}
+          >
+            Setting publish platform
+          </MenuItem>
+        </Menu>
       </main>
     );
   }
