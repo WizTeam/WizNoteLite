@@ -58,6 +58,9 @@ async function standardRequest(opt) {
         host: err.hostname,
       }));
     }
+    if (err instanceof WizKnownError) {
+      throw err;
+    }
     throw new WizNetworkError(err.message);
   }
 }

@@ -120,6 +120,8 @@ app.on('activate', () => {
   if (mainWindow === null) {
     createWindow();
   } else if (process.platform === 'darwin') {
-    mainWindow.show();
+    if (mainWindow) {
+      mainWindow.show();
+    }
   }
 });

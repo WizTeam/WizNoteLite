@@ -1,7 +1,7 @@
 {
   "name": "wiznotelite",
   "description": "WizNote Lite - An instant rendering markdown note tool.",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "private": true,
   "homepage": ".",
   "productName": "WizNote Lite",
@@ -32,6 +32,7 @@
     "postinstall": "run-script-os",
     "postinstall:win32": "post-install.cmd",
     "postinstall:default": "bash ./post-install.sh",
+    "pack32": "npm run build && electron-builder --ia32",
     "pack": "npm run build && electron-builder"
   },
   "build": {
@@ -73,6 +74,7 @@
       "src/web/preload.js"
     ],
     "win": {
+      "artifactName": "WizNoteLite-${version}-${arch}.${ext}",
       "target": [
         "appx",
         "nsis"
@@ -81,6 +83,7 @@
       "legalTrademarks": "Beijing Wozhi Technology Co. Ltd"
     },
     "nsis": {
+      "artifactName": "WizNoteLite-${version}-${arch}.${ext}",
       "perMachine": false,
       "oneClick": false,
       "allowToChangeInstallationDirectory": true
