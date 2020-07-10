@@ -286,6 +286,8 @@ function TableMenu(props) {
   const subMenuPosClass = (menuPosition?.left ?? 0) + 344 < window.innerWidth
     ? classes.rightMenu : classes.leftMenu;
 
+  const isHead = makeCellEle && makeCellEle.tagName.toLocaleLowerCase() === 'th';
+
   return (
     <Menu
       keepMounted
@@ -297,11 +299,13 @@ function TableMenu(props) {
         paper: classes.clearOverflow,
       }}
     >
-      <MenuItem onClick={(e) => clickHandler('addRowAbove', e)}>
-        <div className={classes.menuItem}>
-          <div className={classes.menuName}>{intl.formatMessage({ id: 'tableMenuAddRowAbove' })}</div>
-        </div>
-      </MenuItem>
+      {isHead || (
+        <MenuItem onClick={(e) => clickHandler('addRowAbove', e)}>
+          <div className={classes.menuItem}>
+            <div className={classes.menuName}>{intl.formatMessage({ id: 'tableMenuAddRowAbove' })}</div>
+          </div>
+        </MenuItem>
+      )}
       <MenuItem onClick={(e) => clickHandler('addRowBelow', e)}>
         <div className={classes.menuItem}>
           <div className={classes.menuName}>{intl.formatMessage({ id: 'tableMenuAddRowBelow' })}</div>
@@ -361,11 +365,13 @@ function TableMenu(props) {
         </div>
       </MenuItem>
       <div className={classes.menuLine} />
-      <MenuItem onClick={(e) => clickHandler('deleteRow', e)}>
-        <div className={classes.menuItem}>
-          <div className={classes.menuName}>{intl.formatMessage({ id: 'tableMenuDeleteRow' })}</div>
-        </div>
-      </MenuItem>
+      {isHead || (
+        <MenuItem onClick={(e) => clickHandler('deleteRow', e)}>
+          <div className={classes.menuItem}>
+            <div className={classes.menuName}>{intl.formatMessage({ id: 'tableMenuDeleteRow' })}</div>
+          </div>
+        </MenuItem>
+      )}
       <MenuItem onClick={(e) => clickHandler('deleteCol', e)}>
         <div className={classes.menuItem}>
           <div className={classes.menuName}>{intl.formatMessage({ id: 'tableMenuDeleteCol' })}</div>
