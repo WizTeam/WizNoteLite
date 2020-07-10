@@ -1,9 +1,8 @@
 const axios = require('axios');
 const assert = require('assert');
+const i18next = require('i18next');
 const { WizNetworkError, WizInternalError, WizKnownError } = require('../../share/error');
 
-axios.defaults.adapter = require('axios/lib/adapters/http');
-//
 //
 async function standardRequest(opt) {
   //
@@ -32,26 +31,35 @@ async function standardRequest(opt) {
     }
   }
   //
-  const result = await axios(options);
-  if (result.status !== 200) {
-    throw new WizNetworkError(result.statusText);
-  }
-  //
-  if (!result.data) {
-    throw new WizInternalError('no data returned');
-  }
-  //
-  const data = result.data;
-  if (opt.responseType !== 'arraybuffer') {
-    if (data.returnCode !== 200) {
-      throw new WizKnownError(data.returnMessage, data.returnCode, data.externCode);
+  try {
+    const result = await axios(options);
+    if (result.status !== 200) {
+      throw new WizNetworkError(result.statusText);
     }
+    //
+    if (!result.data) {
+      throw new WizInternalError('no data returned');
+    }
+    //
+    const data = result.data;
+    if (opt.responseType !== 'arraybuffer') {
+      if (data.returnCode !== 200) {
+        throw new WizKnownError(data.returnMessage, data.returnCode, data.externCode);
+      }
+    }
+    //
+    if (opt.returnFullResult) {
+      return data;
+    }
+    return data.result;
+  } catch (err) {
+    if (err.code === 'ENOTFOUND') {
+      throw new WizNetworkError(i18next.t('errorConnect', {
+        host: err.hostname,
+      }));
+    }
+    throw new WizNetworkError(err.message);
   }
-  //
-  if (opt.returnFullResult) {
-    return data;
-  }
-  return data.result;
 }
 
 module.exports = {

@@ -60,9 +60,10 @@ export default {
   errorUserExists: '用戶已存在，請直接登錄或找回密碼',
   errorUserIdFormat: '電子郵箱格式不正確',
   errorSignUp: '註冊失敗: {message}',
-  errorServer: 'Server error: {message}',
-  errorUpdateServer: 'WizNote server is too old, update needed.',
-  errorUnknownServerVersion: 'Unknown server version: {message}',
+  errorServer: '服務器錯誤: {message}',
+  errorUpdateServer: '為知筆記服務太舊了, 請升級服務器.',
+  errorUnknownServerVersion: '無法獲取服務器版本: {message}',
+  errorNetwork: '網絡錯誤: {message}',
 
   errorInvalidUserId: '用戶不存在，無效的郵箱 或 手機號',
   errorLicenseUserLimit: '許可錯誤。 當前用戶超出許可用戶限制。',

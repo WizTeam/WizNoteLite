@@ -33,5 +33,6 @@
   "helpMenu": "Help",
   "toggledevtools": "Toggle Developer Tools",
   "learnMore": "Learn More...",
-  "menuMainWindow": "Main Window"
+  "menuMainWindow": "Main Window",
+  "errorConnect": "Can't connect to server: {{host}}, please check your network."
 }
