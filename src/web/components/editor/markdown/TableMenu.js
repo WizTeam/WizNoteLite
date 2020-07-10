@@ -1,4 +1,6 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, {
+  useEffect, useState, useRef, useCallback,
+} from 'react';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import { makeStyles } from '@material-ui/core/styles';
@@ -120,8 +122,39 @@ function TableMenu(props) {
     }
   }
 
+  function addRowAbove() {
+    if (makeCellEle) {
+      let rowHTML = '';
+      for (let m = 0; m < makeCellEle.parentElement.childElementCount; m++) {
+        rowHTML += '<td> </td>';
+      }
+      makeCellEle.parentElement.insertAdjacentHTML('beforebegin', `<tr>${rowHTML}</tr>`);
+      setRangeByDomBeforeEnd(makeCellEle.parentElement.previousElementSibling.children[0]);
+      props.onSaveNote();
+    }
+  }
+
+  function addColBefore() {
+    if (makeCellEle && tableElement) {
+      let index = 0;
+      let previousElement = makeCellEle.previousElementSibling;
+      while (previousElement) {
+        index++;
+        previousElement = previousElement.previousElementSibling;
+      }
+      for (let i = 0; i < tableElement.rows.length; i++) {
+        if (i === 0) {
+          tableElement.rows[i].cells[index].insertAdjacentHTML('beforebegin', '<th> </th>');
+        } else {
+          tableElement.rows[i].cells[index].insertAdjacentHTML('beforebegin', '<td> </td>');
+        }
+      }
+      props.onSaveNote();
+    }
+  }
+
   // 通过触发editor.vditor快捷键实现表格操作功能
-  function dispatchKey(hotKey) {
+  const dispatchKey = useCallback((hotKey) => {
     if (props.editor?.vditor.ir.element) {
       const hotKeys = updateHotkeyTip(hotKey).split('-');
       let ctrlKey = false;
@@ -143,18 +176,20 @@ function TableMenu(props) {
       });
       props.editor.vditor.ir.element.dispatchEvent(mockKeyboardEvent);
     }
-  }
+  }, [props.editor]);
 
   function clickHandler(type, e) {
     setRangeByDomBeforeEnd(makeCellEle);
 
     switch (type) {
       case 'addRowAbove':
+        addRowAbove();
         break;
       case 'addRowBelow':
         dispatchKey('⌘-=');
         break;
       case 'addColBefore':
+        addColBefore();
         break;
       case 'addColAfter':
         dispatchKey('⌘-⇧-=');
@@ -228,7 +263,6 @@ function TableMenu(props) {
     }
 
     function keydownHandler(e) {
-      console.log('e', e);
       if (matchHotKey('⌘-Enter', e)) {
         console.log('asd');
         dispatchKey('⌘-=');
@@ -247,7 +281,7 @@ function TableMenu(props) {
       window.removeEventListener('mouseover', showSubMenuHandler);
       window.removeEventListener('mousedown', mousedownHandler);
     };
-  }, [menuPosition, showSubMenu, props.editor, align]);
+  }, [menuPosition, showSubMenu, props.editor, align, dispatchKey]);
 
   const subMenuPosClass = (menuPosition?.left ?? 0) + 344 < window.innerWidth
     ? classes.rightMenu : classes.leftMenu;

@@ -68,7 +68,7 @@ export function setRangeByDomBeforeEnd(dom) {
     const selection = getSelection();
     selection.removeAllRanges();
     const range = document.createRange();
-    range.selectNodeContents(dom.firstChild);
+    range.selectNodeContents(dom.firstChild ?? dom);
     range.collapse(false);
     selection.addRange(range);
   }
