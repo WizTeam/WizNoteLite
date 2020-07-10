@@ -1,13 +1,12 @@
 const {
   ipcMain, BrowserWindow,
-  nativeImage, dialog,
+  dialog,
   shell,
 } = require('electron');
 const fs = require('fs-extra');
 const URL = require('url');
 const path = require('path');
-const mergeImages = require('merge-images');
-const { Canvas, Image } = require('canvas');
+const PImage = require('pureimage');
 
 const users = require('./user/users');
 const globalSettings = require('./settings/global_settings');
@@ -267,32 +266,14 @@ handleApi('captureScreen', async (event, userGuid, kbGuid, noteGuid, options = {
         //
       }
       //
-      const emptyImage = nativeImage.createFromPath(path.join(tempPath, `0.png`));
-      const resizedImage = emptyImage.resize({
-        width: windowWidth * scaleX,
-        height: totalHeight * scaleY,
-      });
-      const pngEmpty = resizedImage.toPNG();
-      const pngEmptyFile = path.join(tempPath, `empty.png`);
-      await fs.writeFile(pngEmptyFile, pngEmpty);
-      images.unshift({
-        src: pngEmptyFile,
-        x: 0,
-        y: 0,
-      });
+      const resultImage = PImage.make(windowWidth * scaleX, totalHeight * scaleY);
+      const context = resultImage.getContext('2d');
+      for (const imageData of images) {
+        const image = await PImage.decodePNGFromStream(fs.createReadStream(imageData.src));
+        context.drawImage(image, imageData.x, imageData.y);
+      }
       //
-      const base64 = await mergeImages(images, {
-        Canvas,
-        Image,
-      }, {
-        width: 200,
-        height: 200,
-      });
-      //
-      const image = nativeImage.createFromDataURL(base64);
-      const png = image.toPNG();
-      const imageName = filePath;
-      await fs.writeFile(imageName, png);
+      await PImage.encodePNGToStream(resultImage, fs.createWriteStream(filePath));
       //
       shell.showItemInFolder(filePath);
       //

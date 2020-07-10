@@ -8,7 +8,6 @@
   "main": "src/start.js",
   "dependencies": {
     "axios": "^0.19.2",
-    "canvas": "^2.6.1",
     "electron-store": "^5.1.1",
     "electron-window-state": "^5.0.3",
     "form-data": "^3.0.0",
@@ -17,8 +16,8 @@
     "image-type": "^4.1.0",
     "lodash": "^4.17.15",
     "md5": "^2.2.1",
-    "merge-images": "^2.0.0",
     "mime": "^2.4.5",
+    "pureimage": "^0.2.1",
     "remove-markdown": "^0.3.0",
     "uuid": "^8.0.0",
     "xregexp": "^4.3.0"
