@@ -174,22 +174,15 @@ handleApi('hasNotesInTrash', async (event, ...args) => {
 
 handleApi('captureScreen', async (event, userGuid, kbGuid, noteGuid, options = {}) => {
   //
-  const webContents = event.sender;
-  const browserWindow = BrowserWindow.fromWebContents(webContents);
-  const dialogResult = await dialog.showSaveDialog(browserWindow, {
-    properties: ['saveFile'],
-    filters: [{
-      name: 'Images (*.png)',
-      extensions: [
-        'png',
-      ],
-    }],
-  });
-  if (dialogResult.canceled) {
-    return;
-  }
+  const senderWebContents = event.sender;
+  const progressCallback = options.progressCallback;
   //
-  const filePath = dialogResult.filePath;
+  const onProgress = async (progress) => {
+    if (progressCallback) {
+      await senderWebContents.executeJavaScript(`${progressCallback}(${progress});`);
+    }
+  };
+  await onProgress(0);
   //
   const width = options.width || 375; // iPhone X
   const height = 400; // default
@@ -219,9 +212,9 @@ handleApi('captureScreen', async (event, userGuid, kbGuid, noteGuid, options = {
   window.loadURL(`${mainUrl}?kbGuid=${kbGuid}&noteGuid=${noteGuid}`);
   // window.webContents.toggleDevTools();
   //
-  //
   window.webContents.on('ipc-message', async (e, channel, ...args) => {
     if (channel === 'onNoteLoaded') {
+      await onProgress(10);
       const [, , , noteOptions] = args;
       const totalHeight = noteOptions.height;
       const windowWidth = window.getSize()[0];
@@ -265,6 +258,7 @@ handleApi('captureScreen', async (event, userGuid, kbGuid, noteGuid, options = {
           y: top * scaleY,
         });
         //
+        await onProgress(10 + Math.floor(((i + 1) / pageCount) * 80));
       }
       //
       // pureimage 提供的drawImage有一些浮点数计算的问题，会导致图片质量下降
@@ -284,6 +278,24 @@ handleApi('captureScreen', async (event, userGuid, kbGuid, noteGuid, options = {
         drawImage(resultImage, imageData.x, imageData.y, image);
         fs.unlinkSync(imageData.src);
       }
+      //
+      await onProgress(100);
+      //
+      const browserWindow = BrowserWindow.fromWebContents(senderWebContents);
+      const dialogResult = await dialog.showSaveDialog(browserWindow, {
+        properties: ['saveFile'],
+        filters: [{
+          name: 'Images (*.png)',
+          extensions: [
+            'png',
+          ],
+        }],
+      });
+      if (dialogResult.canceled) {
+        return;
+      }
+      //
+      const filePath = dialogResult.filePath;
       //
       await PImage.encodePNGToStream(resultImage, fs.createWriteStream(filePath));
       //

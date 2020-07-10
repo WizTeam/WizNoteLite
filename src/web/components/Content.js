@@ -85,7 +85,13 @@ class Content extends React.Component {
       if (!note) {
         return;
       }
-      const options = {};
+      //
+      window.onCaptureScreenProgress = (progress) => {
+        console.log(progress);
+      };
+      const options = {
+        progressCallback: 'onCaptureScreenProgress',
+      };
       window.wizApi.userManager.captureScreen(kbGuid, note.guid, options);
     },
   };
