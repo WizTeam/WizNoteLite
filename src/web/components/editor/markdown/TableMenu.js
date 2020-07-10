@@ -119,6 +119,7 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
 }));
 
 let makeCellEle;
+let tableCellElement;
 
 function TableMenu(props) {
   const classes = useStyles();
@@ -211,8 +212,8 @@ function TableMenu(props) {
 
     function mousedownHandler(e) {
       if (props.editor) {
-        const ele = filterParentElement(e.target, props.editor.vditor.element, (dom) => dom.getAttribute('data-type') === 'table');
-        if (e.button === 2 && ele) {
+        tableCellElement = filterParentElement(e.target, props.editor.vditor.element, (dom) => dom.tagName.toLocaleLowerCase() === 'table');
+        if (e.button === 2 && tableCellElement) {
           makeCellEle = filterParentElement(e.target, props.editor.vditor.element, (dom) => ['th', 'td'].includes(dom.tagName?.toLocaleLowerCase()), true);
           if (makeCellEle) {
             const makeCellEleAlign = makeCellEle.getAttribute('align') ?? 'left';
