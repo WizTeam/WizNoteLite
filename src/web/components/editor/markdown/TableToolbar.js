@@ -50,6 +50,7 @@ const useStyles = makeStyles(({ spacing }) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    color: '#333333',
   },
   input: {
     width: '24px',
@@ -77,6 +78,15 @@ function TableToolbar(props) {
 
   const [anchorEl, setAnchorEl] = useState(null);
 
+  function menuBtnClickHandler(e) {
+    setAnchorEl(e.currentTarget);
+    e.preventDefault();
+  }
+
+  function closeMenuHandler() {
+    setAnchorEl(null);
+  }
+
   useEffect(() => {
     function selectionchangeHandler() {
       const range = getRange();
@@ -91,13 +101,18 @@ function TableToolbar(props) {
             });
           }
           return;
-        } else if (filterParentElement(range.startContainer, document.body, (dom) => hasClass(dom, classes.menuContainer))) {
+        } else if (filterParentElement(
+          range.startContainer,
+          document.body,
+          (dom) => hasClass(dom, classes.menuContainer),
+        )) {
           return;
         }
       }
       if (menuPos) {
         tableElement = undefined;
         setMenuPos(undefined);
+        closeMenuHandler();
       }
     }
 
@@ -138,15 +153,6 @@ function TableToolbar(props) {
     };
   }, [props.editor, menuPos, classes]);
 
-  function menuBtnClickHandler(e) {
-    setAnchorEl(e.currentTarget);
-    e.preventDefault();
-  }
-
-  function closeMenuHandler() {
-    setAnchorEl(null);
-  }
-
   return (
     <div
       className={classNames(classes.menu, {
@@ -163,11 +169,11 @@ function TableToolbar(props) {
         open={Boolean(menuPos) && Boolean(anchorEl)}
         anchorOrigin={{
           vertical: 'bottom',
-          horizontal: 'center',
+          horizontal: 'left',
         }}
         transformOrigin={{
           vertical: 'top',
-          horizontal: 'center',
+          horizontal: 'left',
         }}
         onClose={closeMenuHandler}
         getContentAnchorEl={null}
@@ -191,9 +197,9 @@ function TableToolbar(props) {
           </div>
 
           <div className={classes.inputContainer}>
-            <input type="text" className={classes.input} />
+            <input type="text" className={classes.input} value={tableElement?.rows.length ?? 0} />
             <span className={classes.unit}>x</span>
-            <input type="text" className={classes.input} />
+            <input type="text" className={classes.input} value={tableElement?.rows[0].childElementCount ?? 0} />
           </div>
         </div>
       </Menu>
