@@ -78,11 +78,11 @@ const styles = (theme) => ({
     '& .MuiList-padding': {
       paddingTop: 4,
       paddingBottom: 4,
-      color: '#333333',
+      color: theme.custom.color.noteTypeButton,
     },
     '& .MuiListItem-gutters': {
-      paddingLeft: 24,
-      paddingRight: 24,
+      paddingLeft: theme.spacing(3),
+      paddingRight: theme.spacing(3),
     },
     '& .MuiMenuItem-root': {
       paddingTop: theme.spacing(1),
@@ -91,21 +91,21 @@ const styles = (theme) => ({
     },
     '& .Mui-disabled': {
       fontSize: 14,
-      color: '#aaaaaa',
+      color: theme.custom.color.matchedText,
       opacity: 1,
     },
   },
   separator: {
     height: 1,
-    backgroundColor: '#d8d8d8',
+    backgroundColor: theme.custom.color.liteSelectBorder,
     margin: '4px 24px',
   },
   normalButton: {
     backgroundColor: 'transparent',
-    color: '#448aff',
+    color: theme.custom.color.forgetPasswordButton,
     '&:hover': {
       backgroundColor: 'transparent',
-      color: '#448aff',
+      color: theme.custom.color.forgetPasswordButton,
     },
   },
 });

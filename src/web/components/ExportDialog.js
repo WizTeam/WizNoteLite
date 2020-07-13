@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-// import classNames from 'classnames';
+import classNames from 'classnames';
 import { injectIntl } from 'react-intl';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, withTheme } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import Button from '@material-ui/core/Button';
@@ -94,23 +94,31 @@ class ExportDialog extends React.Component {
       //
       window.wizApi.userManager.captureScreen(kbGuid, noteGuid, options);
     },
+    handleChangePreviewTheme: (item, value) => {
+      this.setState({ previewTheme: value });
+    },
   };
 
   constructor(props) {
     super(props);
     this.state = {
       loading: false,
+      previewTheme: null,
     };
   }
 
   componentDidMount() {
+    const { theme } = this.props;
+    this.setState({ previewTheme: theme.palette.type });
   }
 
   componentWillUnmount() {
   }
 
   render() {
-    const { loading } = this.state;
+    const {
+      loading, previewTheme,
+    } = this.state;
     const {
       classes, open, onClose,
       exportType, kbGuid, noteGuid,
@@ -141,6 +149,7 @@ class ExportDialog extends React.Component {
                   <NoteViewer
                     kbGuid={kbGuid}
                     noteGuid={noteGuid}
+                    darkMode={previewTheme === 'dark'}
                     params={{
                       kbGuid,
                       noteGuid,
@@ -150,7 +159,11 @@ class ExportDialog extends React.Component {
               </div>
               <div className={classes.list}>
                 <LiteText className={classes.title}>theme</LiteText>
-                <LiteSelect options={themeOptions} />
+                <LiteSelect
+                  options={themeOptions}
+                  value={previewTheme}
+                  onChange={this.handler.handleChangePreviewTheme}
+                />
                 <LiteText className={classes.title}>width</LiteText>
                 <LiteSelect options={widthOptions} />
                 <div className={classes.grow} />
@@ -177,6 +190,7 @@ class ExportDialog extends React.Component {
 
 ExportDialog.propTypes = {
   classes: PropTypes.object.isRequired,
+  theme: PropTypes.object.isRequired,
   open: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
   kbGuid: PropTypes.string.isRequired,
@@ -190,4 +204,4 @@ ExportDialog.defaultProps = {
   exportType: null,
 };
 
-export default withStyles(styles)(injectIntl(ExportDialog));
+export default withTheme(withStyles(styles)(injectIntl(ExportDialog)));

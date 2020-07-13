@@ -49,7 +49,7 @@ function LiteSelect(props) {
     }
     //
     if (props.onChange) {
-      props.onChange(item);
+      props.onChange(item, item.value);
     }
     //
     handleMenuClose();

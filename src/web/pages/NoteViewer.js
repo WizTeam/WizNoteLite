@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import { withStyles, withTheme } from '@material-ui/core/styles';
 import { injectIntl } from 'react-intl';
 import VditorEditor from '../components/editor/markdown/VditorEditor';
@@ -12,6 +13,12 @@ const styles = (theme) => ({
     margin: 0,
     height: '100%',
     backgroundColor: theme.custom.background.content,
+  },
+  lightMode: {
+    backgroundColor: theme.custom.background.previewLightMode,
+  },
+  darkMode: {
+    backgroundColor: theme.custom.background.previewDarkMode,
   },
 });
 
@@ -52,6 +59,10 @@ class NoteViewer extends React.Component {
     }, 1000 * 3);
   }
 
+  componentWillUnmount() {
+    clearInterval(this._loadTimer);
+  }
+
   async waitForLoad() {
     const images = Array.from(document.images) || [];
     const loadingImages = images.filter((image) => !image.complete);
@@ -77,14 +88,18 @@ class NoteViewer extends React.Component {
   render() {
     const {
       classes, theme,
-      noteGuid,
+      noteGuid, darkMode = theme.palette.type === 'dark',
     } = this.props;
 
     const { loading, markdown, resourceUrl } = this.state;
 
     return (
       <div
-        className={classes.root}
+        className={classNames(
+          classes.root,
+          darkMode && classes.darkMode,
+          !darkMode && classes.lightMode,
+        )}
       >
         <Scrollbar autoHideTimeout={100}>
           <div
@@ -100,7 +115,7 @@ class NoteViewer extends React.Component {
               onInit={this.handler.handleInitEditor}
               onInput={() => {}}
               resourceUrl={resourceUrl}
-              darkMode={theme.palette.type === 'dark'}
+              darkMode={darkMode}
               onSave={() => {}}
               onInsertImage={() => {}}
               onInsertImageFromData={() => {}}
@@ -120,10 +135,12 @@ NoteViewer.propTypes = {
   kbGuid: PropTypes.string.isRequired,
   noteGuid: PropTypes.string.isRequired,
   params: PropTypes.object,
+  darkMode: PropTypes.bool,
 };
 
 NoteViewer.defaultProps = {
   params: {},
+  darkMode: false,
 };
 
 export default withTheme(withStyles(styles)(injectIntl(NoteViewer)));

@@ -64,6 +64,8 @@ export default function ThemeSwitcher(props) {
           normalButtonHover: prefersDarkMode ? '#4a4a4a' : '#eaeaea',
           platformButton: '#f0f0f0',
           platformButtonHover: '#d8d8d8',
+          previewLightMode: '#ffffff',
+          previewDarkMode: '#333333',
         },
         color: {
           textHighlight: '#e82100',
