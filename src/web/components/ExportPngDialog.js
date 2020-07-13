@@ -73,6 +73,9 @@ const styles = (theme) => ({
     paddingLeft: theme.spacing(4),
     flexDirection: 'column',
   },
+  selectList: {
+    minWidth: 150,
+  },
   grow: {
     flexGrow: 1,
   },
@@ -131,7 +134,7 @@ class ExportDialog extends React.Component {
     } = this.state;
     const {
       classes, open, onClose,
-      exportType, kbGuid, noteGuid,
+      kbGuid, noteGuid,
     } = this.props;
 
     const themeOptions = [
@@ -151,50 +154,47 @@ class ExportDialog extends React.Component {
         onEscapeKeyDown={onClose}
       >
         <DialogContent className={classes.root}>
-          {exportType && exportType === 'png' && (
-            <>
-              <div className={classes.previewBox}>
-                <LiteText className={classes.title}>Export png</LiteText>
-                <div className={classes.viewerBox}>
-                  <NoteViewer
-                    kbGuid={kbGuid}
-                    noteGuid={noteGuid}
-                    darkMode={previewTheme === 'dark'}
-                    params={{
-                      kbGuid,
-                      noteGuid,
-                    }}
-                  />
-                  <Backdrop
-                    className={classNames(
-                      classes.backdrop,
-                    )}
-                    open={loading}
-                  >
-                    <CircularProgress color="inherit" />
-                  </Backdrop>
-                </div>
-              </div>
-              <div className={classes.list}>
-                <LiteText className={classes.title}>theme</LiteText>
-                <LiteSelect
-                  options={themeOptions}
-                  value={previewTheme}
-                  onChange={this.handler.handleChangePreviewTheme}
-                />
-                <LiteText className={classes.title}>width</LiteText>
-                <LiteSelect options={widthOptions} />
-                <div className={classes.grow} />
-                <Button
-                  disabled={loading}
-                  className={classes.exportButton}
-                  onClick={this.handler.handleExportPng}
-                >
-                  { loading ? 'loading...' : 'export'}
-                </Button>
-              </div>
-            </>
-          )}
+          <div className={classes.previewBox}>
+            <LiteText className={classes.title}>Export png</LiteText>
+            <div className={classes.viewerBox}>
+              <NoteViewer
+                kbGuid={kbGuid}
+                noteGuid={noteGuid}
+                darkMode={previewTheme === 'dark'}
+                params={{
+                  kbGuid,
+                  noteGuid,
+                }}
+              />
+              <Backdrop
+                className={classNames(
+                  classes.backdrop,
+                )}
+                open={loading}
+              >
+                <CircularProgress color="inherit" />
+              </Backdrop>
+            </div>
+          </div>
+          <div className={classes.list}>
+            <LiteText className={classes.title}>theme</LiteText>
+            <LiteSelect
+              options={themeOptions}
+              value={previewTheme}
+              listClass={classes.selectList}
+              onChange={this.handler.handleChangePreviewTheme}
+            />
+            <LiteText className={classes.title}>width</LiteText>
+            <LiteSelect options={widthOptions} listClass={classes.selectList} />
+            <div className={classes.grow} />
+            <Button
+              disabled={loading}
+              className={classes.exportButton}
+              onClick={this.handler.handleExportPng}
+            >
+              { loading ? 'loading...' : 'export'}
+            </Button>
+          </div>
           <div className={classes.close}>
             <IconButton color="inherit" onClick={onClose}>
               <Icons.ClearIcon />
@@ -213,13 +213,11 @@ ExportDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   kbGuid: PropTypes.string.isRequired,
   noteGuid: PropTypes.string,
-  exportType: PropTypes.string,
 };
 
 ExportDialog.defaultProps = {
   open: false,
   noteGuid: null,
-  exportType: null,
 };
 
 export default withTheme(withStyles(styles)(injectIntl(ExportDialog)));

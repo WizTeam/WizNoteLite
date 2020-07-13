@@ -8,7 +8,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 // import isBoolean from 'lodash/isBoolean';
 import CommonHeader from './CommonHeader';
 import NoteEditor from './NoteEditor';
-import ExportDialog from './ExportDialog';
+import ExportPngDialog from './ExportPngDialog';
 import Icons from '../config/icons';
 // import FocusBtn from './FocusBtn';
 import SyncBtn from './SyncBtn';
@@ -131,19 +131,13 @@ class Content extends React.Component {
         exportMenuAnchorEl: null,
       });
     },
-    handleShowExportDialog: (exportType) => {
+    handleShowExportPngDialog: () => {
       this.handler.handleCloseExportMenu();
       //
-      this.setState({
-        showExportDialog: true,
-        exportType,
-      });
+      this.setState({ showExportDialog: true });
     },
-    handleCloseExportDialog: () => {
-      this.setState({
-        showExportDialog: false,
-        exportType: null,
-      });
+    handleCloseExportPngDialog: () => {
+      this.setState({ showExportDialog: false });
     },
   };
 
@@ -153,7 +147,6 @@ class Content extends React.Component {
       isFullScreen: false,
       exportMenuAnchorEl: null,
       showExportDialog: false,
-      exportType: null,
     };
   }
 
@@ -172,7 +165,6 @@ class Content extends React.Component {
     } = this.props;
     const {
       isFullScreen, exportMenuAnchorEl, showExportDialog,
-      exportType,
     } = this.state;
     //
     const isLite = theme.palette.type !== 'dark';
@@ -240,7 +232,7 @@ class Content extends React.Component {
           open={!!exportMenuAnchorEl}
           onClose={this.handler.handleCloseExportMenu}
         >
-          <MenuItem onClick={() => this.handler.handleShowExportDialog('png')}>Export Png</MenuItem>
+          <MenuItem onClick={this.handler.handleShowExportPngDialog}>Export Png</MenuItem>
           <MenuItem>Export md</MenuItem>
           <MenuItem>Export PDF</MenuItem>
           <MenuItem>Copy source markdown</MenuItem>
@@ -253,12 +245,11 @@ class Content extends React.Component {
             Setting publish platform
           </MenuItem>
         </Menu>
-        <ExportDialog
+        <ExportPngDialog
           open={showExportDialog}
           kbGuid={kbGuid}
           noteGuid={note?.guid ?? null}
-          exportType={exportType}
-          onClose={this.handler.handleCloseExportDialog}
+          onClose={this.handler.handleCloseExportPngDialog}
         />
       </main>
     );
