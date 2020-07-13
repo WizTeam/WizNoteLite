@@ -40,9 +40,14 @@ const styles = (theme) => ({
   previewBox: {
     flex: 1,
     height: 300,
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  viewerBox: {
+    width: '100%',
     border: '2px solid #ccc',
-    overflow: 'auto',
-    boxSizeing: 'border-box',
+    boxSizing: 'border-box',
+    flex: 1,
   },
   exportButton: {
     backgroundColor: theme.custom.background.loginButton,
@@ -131,14 +136,17 @@ class ExportDialog extends React.Component {
           {exportType && exportType === 'png' && (
             <>
               <div className={classes.previewBox}>
-                <NoteViewer
-                  kbGuid={kbGuid}
-                  noteGuid={noteGuid}
-                  params={{
-                    kbGuid,
-                    noteGuid,
-                  }}
-                />
+                <LiteText className={classes.title}>Export png</LiteText>
+                <div className={classes.viewerBox}>
+                  <NoteViewer
+                    kbGuid={kbGuid}
+                    noteGuid={noteGuid}
+                    params={{
+                      kbGuid,
+                      noteGuid,
+                    }}
+                  />
+                </div>
               </div>
               <div className={classes.list}>
                 <LiteText className={classes.title}>theme</LiteText>
