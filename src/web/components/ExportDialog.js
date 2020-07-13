@@ -7,6 +7,8 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 //
 import LiteText from './LiteText';
 import LiteSelect from './LiteSelect';
@@ -44,10 +46,17 @@ const styles = (theme) => ({
     flexDirection: 'column',
   },
   viewerBox: {
+    position: 'relative',
     width: '100%',
     border: '2px solid #ccc',
     boxSizing: 'border-box',
     flex: 1,
+  },
+  backdrop: {
+    position: 'absolute',
+    zIndex: 0,
+    backgroundColor: theme.custom.background.previewBackdrop,
+    color: theme.custom.color.matchedText,
   },
   exportButton: {
     backgroundColor: theme.custom.background.loginButton,
@@ -113,6 +122,7 @@ class ExportDialog extends React.Component {
   }
 
   componentWillUnmount() {
+    window.onCaptureScreenProgress = null;
   }
 
   render() {
@@ -155,6 +165,14 @@ class ExportDialog extends React.Component {
                       noteGuid,
                     }}
                   />
+                  <Backdrop
+                    className={classNames(
+                      classes.backdrop,
+                    )}
+                    open={loading}
+                  >
+                    <CircularProgress color="inherit" />
+                  </Backdrop>
                 </div>
               </div>
               <div className={classes.list}>
