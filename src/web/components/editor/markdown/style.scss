@@ -2,7 +2,7 @@
   position: relative;
   height: 100%;
   &.focus-mode {
-    #editor {
+    div[id^='editor_'] {
       pre.vditor-reset > * {
         opacity: 0.2;
       }
@@ -16,7 +16,7 @@
   //   }
   // }
 
-  #editor {
+  div[id^='editor_'] {
     // 正文行高
     --text-line-height: 28px;
     // 正文字号

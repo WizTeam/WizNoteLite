@@ -132,6 +132,8 @@ class Content extends React.Component {
       });
     },
     handleShowExportDialog: (exportType) => {
+      this.handler.handleCloseExportMenu();
+      //
       this.setState({
         showExportDialog: true,
         exportType,

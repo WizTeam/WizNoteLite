@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { makeStyles } from '@material-ui/core/styles';
@@ -42,7 +42,20 @@ function LiteSelect(props) {
     setAnchorEl(null);
   };
 
-  const resetSelectedKey = () => {
+  const handleSelect = (item) => {
+    if (value === null) {
+      setSelectedKey(item.title);
+      setSelectedVal(item.value);
+    }
+    //
+    if (props.onChange) {
+      props.onChange(item);
+    }
+    //
+    handleMenuClose();
+  };
+
+  const resetSelectedKey = useCallback(() => {
     if (value === null) {
       if (options.length) {
         setSelectedKey(options[0]?.title);
@@ -60,24 +73,11 @@ function LiteSelect(props) {
     }
     //
     return true;
-  };
-
-  const handleSelect = (item) => {
-    if (value === null) {
-      setSelectedKey(item.title);
-      setSelectedVal(item.value);
-    }
-    //
-    if (props.onChange) {
-      props.onChange(item);
-    }
-    //
-    handleMenuClose();
-  };
+  }, [value, options]);
 
   useEffect(() => {
     resetSelectedKey();
-  }, [value]);
+  }, [resetSelectedKey]);
 
   return (
     <div className={classNames(classes.root, className)}>

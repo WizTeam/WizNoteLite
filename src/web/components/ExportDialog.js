@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
+// import classNames from 'classnames';
 import { injectIntl } from 'react-intl';
 import { withStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
@@ -10,6 +10,7 @@ import IconButton from '@material-ui/core/IconButton';
 //
 import LiteText from './LiteText';
 import LiteSelect from './LiteSelect';
+import NoteViewer from '../pages/NoteViewer';
 import Icons from '../config/icons';
 
 const styles = (theme) => ({
@@ -107,7 +108,7 @@ class ExportDialog extends React.Component {
     const { loading } = this.state;
     const {
       classes, open, onClose,
-      exportType,
+      exportType, kbGuid, noteGuid,
     } = this.props;
 
     const themeOptions = [
@@ -129,7 +130,16 @@ class ExportDialog extends React.Component {
         <DialogContent className={classes.root}>
           {exportType && exportType === 'png' && (
             <>
-              <div className={classes.previewBox} />
+              <div className={classes.previewBox}>
+                <NoteViewer
+                  kbGuid={kbGuid}
+                  noteGuid={noteGuid}
+                  params={{
+                    kbGuid,
+                    noteGuid,
+                  }}
+                />
+              </div>
               <div className={classes.list}>
                 <LiteText className={classes.title}>theme</LiteText>
                 <LiteSelect options={themeOptions} />

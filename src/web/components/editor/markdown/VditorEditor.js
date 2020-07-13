@@ -21,6 +21,8 @@ class VditorEditor extends React.Component {
 
   isShowTagMenu = false;
 
+  timeStamp = new Date().getTime();
+
   handler = {
     handleChangeTagMenuShowState: (isShowMenu) => {
       this.isShowTagMenu = isShowMenu;
@@ -201,11 +203,11 @@ class VditorEditor extends React.Component {
   async initEditor() {
     const { darkMode, placeholder } = this.props;
     const cdn = /^https?:\/\//i.test(window.location.origin) ? `${window.location.origin}/libs/wiz-vditor` : `${(window.location.origin + window.location.pathname).replace('/index.html', '')}/libs/wiz-vditor`;
-    this.editor = new WizVditor('editor', {
+    this.editor = new WizVditor(`editor_${this.timeStamp}`, {
       ...this.props,
       height: this.props.height,
       cache: {
-        id: 'editor',
+        id: `editor_${this.timeStamp}`,
         enable: false,
       },
       // 未知原因，CDN 必须设置 完整的 http 地址，否则会导致 代码高亮的内容闪烁
@@ -517,7 +519,7 @@ class VditorEditor extends React.Component {
         {this.styleRender()}
         {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
         <div
-          id="editor"
+          id={`editor_${this.timeStamp}`}
           onKeyDown={this.handler.handleEditorKeyDown}
         />
         <HeadingMenu
