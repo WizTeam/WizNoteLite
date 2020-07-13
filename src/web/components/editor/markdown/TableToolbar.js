@@ -8,7 +8,7 @@ import Icons from '../../../config/icons';
 import { filterParentElement, hasClass } from '../libs/dom_utils';
 import { getRange } from '../libs/range_utils';
 
-const useStyles = makeStyles(({ spacing }) => ({
+const useStyles = makeStyles(({ spacing, custom }) => ({
   menu: {
     position: 'absolute',
     display: 'none',
@@ -19,6 +19,14 @@ const useStyles = makeStyles(({ spacing }) => ({
   iconButton: {
     width: 32,
     height: 32,
+    '&:hover $icon': {
+      color: custom.color.contentToolIconHover,
+    },
+  },
+  icon: {
+    width: spacing(3),
+    height: spacing(3),
+    color: custom.color.contentToolIcon,
   },
   menuContainer: {
     padding: spacing(2, 3, 1, 3),
@@ -36,8 +44,10 @@ const useStyles = makeStyles(({ spacing }) => ({
   box: {
     width: '16px',
     height: '16px',
-    border: 'solid 1px #333333',
+    border: `solid 1px ${custom.color.contentToolIcon}`,
     cursor: 'pointer',
+    outline: 'none',
+    backgroundColor: 'transparent',
     '&:not(:nth-last-child(1))': {
       marginRight: '3px',
     },
@@ -50,7 +60,7 @@ const useStyles = makeStyles(({ spacing }) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    color: '#333333',
+    color: custom.color.contentToolIcon,
   },
   input: {
     width: '24px',
@@ -76,7 +86,47 @@ function TableToolbar(props) {
     y: -1,
   });
 
+  const [rowCount, setRowCount] = useState(0);
+  const [colCount, setColCount] = useState(0);
+
   const [anchorEl, setAnchorEl] = useState(null);
+
+  function updatedTable(rowNumber, colNumber) {
+    const row = parseInt(rowNumber, 10);
+    const col = parseInt(colNumber, 10);
+    if (Number.isNaN(row) || Number.isNaN(col)) {
+      return;
+    }
+    const tableBoxHtmlArr = [...tableElement.rows].map(
+      (rows) => [...rows.children].map((box) => box.outerHTML),
+    );
+    tableElement.querySelector('thead tr').innerHTML = Array.from(Array(col), (item, index) => tableBoxHtmlArr[0]?.[index] ?? '<th></th>').join('');
+    const tbody = tableElement.querySelector('tbody');
+    if (row === 1) {
+      if (tbody) {
+        tbody.outerHTML = '';
+      }
+    } else {
+      const htmlArr = [];
+      for (let i = 1; i < row; i++) {
+        let htmlStr = '<tr>';
+        for (let j = 0; j < col; j++) {
+          if (i < tableElement.length && j < tableElement[i].length) {
+            htmlStr += tableElement[i][j];
+          } else {
+            htmlStr += '<td></td>';
+          }
+        }
+        htmlArr.push(`${htmlStr}</tr>`);
+      }
+      if (tbody) {
+        tbody.innerHTML = htmlArr.join('');
+      } else {
+        tableElement.innerHTML += `<tbody>${htmlArr.join('')}</tbody>`;
+      }
+    }
+    props.onSaveNote();
+  }
 
   function menuBtnClickHandler(e) {
     setAnchorEl(e.currentTarget);
@@ -85,6 +135,11 @@ function TableToolbar(props) {
 
   function closeMenuHandler() {
     setAnchorEl(null);
+  }
+
+  function boxClickHandler(row, col) {
+    updatedTable(row, col);
+    closeMenuHandler();
   }
 
   useEffect(() => {
@@ -153,6 +208,13 @@ function TableToolbar(props) {
     };
   }, [props.editor, menuPos, classes]);
 
+  useEffect(() => {
+    if (anchorEl) {
+      setRowCount(tableElement?.rows.length ?? 0);
+      setColCount(tableElement?.rows[0].childElementCount ?? 0);
+    }
+  }, [anchorEl]);
+
   return (
     <div
       className={classNames(classes.menu, {
@@ -161,7 +223,7 @@ function TableToolbar(props) {
       style={menuPos}
     >
       <IconButton className={classes.iconButton} onMouseDown={menuBtnClickHandler}>
-        <Icons.QuitFullScreenIcon className={classes.icon} />
+        <Icons.TableBarIcon className={classes.icon} />
       </IconButton>
       <Menu
         anchorEl={anchorEl}
@@ -184,12 +246,15 @@ function TableToolbar(props) {
             {Array.from(Array(8), (row, y) => (
               <div className={classes.row} key={y.toString()}>
                 {Array.from(Array(8), (item, x) => (
-                  <div
+                  // eslint-disable-next-line jsx-a11y/control-has-associated-label
+                  <button
+                    type="button"
                     className={classNames(classes.box, {
                       active: y <= selectIndex.y && x <= selectIndex.x,
                     })}
                     key={`${y.toString()}-${x.toString()}`}
                     data-coordinate={`${y}-${x}`}
+                    onClick={() => boxClickHandler(y + 1, x + 1)}
                   />
                 ))}
               </div>
@@ -197,9 +262,21 @@ function TableToolbar(props) {
           </div>
 
           <div className={classes.inputContainer}>
-            <input type="text" className={classes.input} value={tableElement?.rows.length ?? 0} />
+            <input
+              type="text"
+              className={classes.input}
+              value={rowCount}
+              onChange={(e) => setRowCount(e.target.value)}
+              onBlur={() => updatedTable(rowCount, colCount)}
+            />
             <span className={classes.unit}>x</span>
-            <input type="text" className={classes.input} value={tableElement?.rows[0].childElementCount ?? 0} />
+            <input
+              type="text"
+              className={classes.input}
+              value={colCount}
+              onChange={(e) => setColCount(e.target.value)}
+              onBlur={() => updatedTable(rowCount, colCount)}
+            />
           </div>
         </div>
       </Menu>
@@ -209,6 +286,7 @@ function TableToolbar(props) {
 
 TableToolbar.propTypes = {
   editor: PropTypes.object,
+  onSaveNote: PropTypes.func.isRequired,
 };
 
 TableToolbar.defaultProps = {
