@@ -28,6 +28,7 @@ function LiteSelect(props) {
   const classes = useStyles();
   const {
     options, className, value,
+    listClass,
   } = props;
   //
   const [selectedKey, setSelectedKey] = useState('select');
@@ -94,6 +95,9 @@ function LiteSelect(props) {
       </Button>
       <Menu
         className={classes.menu}
+        classes={{
+          list: listClass ?? null,
+        }}
         anchorEl={anchorEl}
         keepMounted
         open={Boolean(anchorEl)}
@@ -126,6 +130,7 @@ LiteSelect.propTypes = {
     PropTypes.number,
   ]),
   onChange: PropTypes.func,
+  listClass: PropTypes.string,
 };
 
 LiteSelect.defaultProps = {
@@ -133,6 +138,7 @@ LiteSelect.defaultProps = {
   options: [],
   value: null,
   onChange: null,
+  listClass: null,
 };
 
 export default LiteSelect;
