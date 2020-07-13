@@ -246,7 +246,6 @@ class VditorEditor extends React.Component {
 
           return newHtml;
         },
-        maxWidth: 600,
       },
       select: (value) => {
         const { onSelect } = this.props;

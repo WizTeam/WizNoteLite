@@ -30,7 +30,7 @@ function Scrollbar(props) {
   const renderThumbVertical = (options) => {
     const { style, ...otherProps } = options;
     const customStyle = {
-      backgroundColor: `#555555`,
+      backgroundColor: `#999999`,
       borderRadius: 4,
     };
     return (
@@ -64,7 +64,7 @@ Scrollbar.defaultProps = {
   classes: {},
   hideTracksWhenNotNeeded: true,
   autoHide: true,
-  autoHideTimeout: 100,
+  autoHideTimeout: 1000,
   themeType: 'auto',
 };
 

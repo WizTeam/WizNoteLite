@@ -209,7 +209,9 @@ handleApi('captureScreen', async (event, userGuid, kbGuid, noteGuid, options = {
     slashes: true,
   });
 
-  window.loadURL(`${mainUrl}?kbGuid=${kbGuid}&noteGuid=${noteGuid}`);
+  const theme = options.theme || 'lite';
+
+  window.loadURL(`${mainUrl}?kbGuid=${kbGuid}&noteGuid=${noteGuid}&padding=16&theme=${theme}`);
   // window.webContents.toggleDevTools();
   //
   window.webContents.on('ipc-message', async (e, channel, ...args) => {
@@ -302,6 +304,125 @@ handleApi('captureScreen', async (event, userGuid, kbGuid, noteGuid, options = {
       shell.showItemInFolder(filePath);
       //
       e.preventDefault();
+      //
+      setTimeout(() => {
+        unregisterWindow(window);
+        window.close();
+      }, 1000);
+    }
+  });
+});
+
+
+handleApi('printToPDF', async (event, userGuid, kbGuid, noteGuid, options = {}) => {
+  //
+  const senderWebContents = event.sender;
+  const progressCallback = options.progressCallback;
+  //
+  const onProgress = async (progress) => {
+    if (progressCallback) {
+      await senderWebContents.executeJavaScript(`${progressCallback}(${progress});`);
+    }
+  };
+  await onProgress(0);
+  //
+  const calWidth = (pdfOptions) => {
+    //
+    if (pdfOptions.landscape) {
+      //
+      switch (pdfOptions.pageSize) {
+        case 'A3':
+          return 1191;
+        case 'A5':
+          return 595;
+        case 'Legal':
+          return 975;
+        case 'Letter':
+          return 750;
+        case 'Tabloid':
+          return 1200;
+        default: // A4
+          return 842;
+      }
+    }
+    //
+    switch (pdfOptions.pageSize) {
+      case 'A3':
+        return 842;
+      case 'A5':
+        return 420;
+      case 'Legal':
+        return 563;
+      case 'Letter':
+        return 563;
+      case 'Tabloid':
+        return 750;
+      default: // A4
+        return 595;
+    }
+  };
+  //
+  const pdfOptions = {
+    marginsType: options.marginsType,
+    pageSize: options.pageSize || 'A4',
+    printBackground: options.printBackground,
+    printSelectionOnly: options.printSelectionOnly,
+    landscape: options.landscape,
+  };
+  //
+  const width = calWidth(pdfOptions);
+  //
+  const browserWindowOptions = {
+    x: 0,
+    y: 0,
+    width,
+    height: 600,
+    resizable: false,
+    show: false,
+    frame: false,
+    webPreferences: {
+      nodeIntegration: false,
+      preload: path.join(__dirname, '../web/preload.js'),
+    },
+  };
+  const window = new BrowserWindow(browserWindowOptions);
+
+  const mainUrl = process.env.ELECTRON_START_URL
+  || URL.format({
+    pathname: path.join(__dirname, '../../web-app/index.html'),
+    protocol: 'file:',
+    slashes: true,
+  });
+
+  window.loadURL(`${mainUrl}?kbGuid=${kbGuid}&noteGuid=${noteGuid}&standardScrollBar=1&padding=32&theme=lite`);
+  // window.webContents.toggleDevTools();
+  //
+  window.webContents.on('ipc-message', async (e, channel) => {
+    if (channel === 'onNoteLoaded') {
+      //
+      e.preventDefault();
+      //
+      await onProgress(10);
+      //
+      const browserWindow = BrowserWindow.fromWebContents(senderWebContents);
+      const dialogResult = await dialog.showSaveDialog(browserWindow, {
+        properties: ['saveFile'],
+        filters: [{
+          name: 'PDF (*.pdf)',
+          extensions: [
+            'pdf',
+          ],
+        }],
+      });
+      if (dialogResult.canceled) {
+        return;
+      }
+      //
+      const data = await window.webContents.printToPDF(pdfOptions);
+      const filePath = dialogResult.filePath;
+      await fs.writeFile(filePath, data);
+      //
+      shell.showItemInFolder(filePath);
       //
       setTimeout(() => {
         unregisterWindow(window);

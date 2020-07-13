@@ -11,6 +11,8 @@ import TabPanel from './TabPanel';
 const styles = (/* theme */) => ({
   root: {
     height: '100%',
+    paddingRight: 'max(16px, (100% - 600px) / 2)',
+    paddingLeft: 'max(48px, (100% - 600px) / 2)',
   },
   invisible: {
     display: 'none',

@@ -242,7 +242,13 @@ class Content extends React.Component {
         >
           <MenuItem onClick={() => this.handler.handleShowExportDialog('png')}>Export Png</MenuItem>
           <MenuItem>Export md</MenuItem>
-          <MenuItem>Export PDF</MenuItem>
+          <MenuItem
+            onClick={() => {
+              window.wizApi.userManager.printToPDF(kbGuid, note.guid, { landscape: true });
+            }}
+          >
+            Export PDF
+          </MenuItem>
           <MenuItem>Copy source markdown</MenuItem>
           <div className={classes.separator} />
           <MenuItem disabled>Publish to</MenuItem>

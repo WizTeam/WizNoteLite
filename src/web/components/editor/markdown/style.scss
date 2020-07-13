@@ -63,8 +63,6 @@
       font-size: var(--text-font-size);
       color: var(--text-font-color);
       font-family: var(--text-font-family);
-      padding-right: unquote("max(16px, (100% - 600px) / 2) !important");
-      padding-left: unquote("max(48px, (100% - 600px) / 2) !important");
       & > h1 {
         font-size: 32px;
         line-height: 44px;

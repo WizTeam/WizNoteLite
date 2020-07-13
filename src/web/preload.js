@@ -253,6 +253,11 @@ class UserManager extends EventEmitter {
     return result;
   }
 
+  async printToPDF(kbGuid, noteGuid, options) {
+    const result = await invokeApi('printToPDF', this.userGuid, kbGuid, noteGuid, options);
+    return result;
+  }
+
   async buildBindSnsUrl(server, type, postMessage, origin, extraParams) {
     const path = '/as/thirdparty/go/auth';
     const query = {
