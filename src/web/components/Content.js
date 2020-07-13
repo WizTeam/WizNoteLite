@@ -8,6 +8,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 // import isBoolean from 'lodash/isBoolean';
 import CommonHeader from './CommonHeader';
 import NoteEditor from './NoteEditor';
+import ExportDialog from './ExportDialog';
 import Icons from '../config/icons';
 // import FocusBtn from './FocusBtn';
 import SyncBtn from './SyncBtn';
@@ -130,19 +131,17 @@ class Content extends React.Component {
         exportMenuAnchorEl: null,
       });
     },
-    handleCaptureScreen: () => {
-      const { kbGuid, note } = this.props;
-      if (!note) {
-        return;
-      }
-      //
-      window.onCaptureScreenProgress = (progress) => {
-        console.log(progress);
-      };
-      const options = {
-        progressCallback: 'onCaptureScreenProgress',
-      };
-      window.wizApi.userManager.captureScreen(kbGuid, note.guid, options);
+    handleShowExportDialog: (exportType) => {
+      this.setState({
+        showExportDialog: true,
+        exportType,
+      });
+    },
+    handleCloseExportDialog: () => {
+      this.setState({
+        showExportDialog: false,
+        exportType: null,
+      });
     },
   };
 
@@ -151,6 +150,8 @@ class Content extends React.Component {
     this.state = {
       isFullScreen: false,
       exportMenuAnchorEl: null,
+      showExportDialog: false,
+      exportType: null,
     };
   }
 
@@ -167,7 +168,10 @@ class Content extends React.Component {
       note, kbGuid, classes,
       isSearch, theme, backgroundType, onClickTag,
     } = this.props;
-    const { isFullScreen, exportMenuAnchorEl } = this.state;
+    const {
+      isFullScreen, exportMenuAnchorEl, showExportDialog,
+      exportType,
+    } = this.state;
     //
     const isLite = theme.palette.type !== 'dark';
     const backgroundColorClassName = `main_${backgroundType}`;
@@ -186,15 +190,15 @@ class Content extends React.Component {
         />
         {note && !isSearch && (
         <div className={classes.toolBar}>
-          <IconButton className={classes.iconButton} onClick={this.handler.handleCaptureScreen}>
+          {/* <IconButton className={classes.iconButton}>
             <Icons.MoreHorizIcon className={classes.icon} />
-          </IconButton>
-          <IconButton className={classes.iconButton}>
+          </IconButton> */}
+          {/* <IconButton className={classes.iconButton}>
             <Icons.TableContentIcon className={classes.icon} />
-          </IconButton>
-          <IconButton className={classes.iconButton}>
+          </IconButton> */}
+          {/* <IconButton className={classes.iconButton}>
             <Icons.LinkIcon className={classes.icon} />
-          </IconButton>
+          </IconButton> */}
           {hasFullScreenButton && (
           <IconButton className={classes.iconButton} onClick={this.handler.handleFullScreen}>
             {isFullScreen && <Icons.QuitFullScreenIcon className={classes.icon} />}
@@ -234,7 +238,7 @@ class Content extends React.Component {
           open={!!exportMenuAnchorEl}
           onClose={this.handler.handleCloseExportMenu}
         >
-          <MenuItem>Export Picture</MenuItem>
+          <MenuItem onClick={() => this.handler.handleShowExportDialog('png')}>Export Png</MenuItem>
           <MenuItem>Export md</MenuItem>
           <MenuItem>Export PDF</MenuItem>
           <MenuItem>Copy source markdown</MenuItem>
@@ -247,6 +251,13 @@ class Content extends React.Component {
             Setting publish platform
           </MenuItem>
         </Menu>
+        <ExportDialog
+          open={showExportDialog}
+          kbGuid={kbGuid}
+          noteGuid={note?.guid ?? null}
+          exportType={exportType}
+          onClose={this.handler.handleCloseExportDialog}
+        />
       </main>
     );
   }
