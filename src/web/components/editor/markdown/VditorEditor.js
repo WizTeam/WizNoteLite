@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import isEqual from 'lodash/isEqual';
 import WizVditor from 'wiz-vditor';
 import classNames from 'classnames';
+import { withStyles } from '@material-ui/core/styles';
 import InsertMenu from './InsertMenu';
 import HeadingMenu from './HeadingMenu';
 import 'wiz-vditor/dist/index.css';
@@ -14,6 +15,13 @@ import {
 } from '../libs/dom_utils';
 import { getRange, getSelection } from '../libs/range_utils';
 
+const styles = (/* theme */) => ({
+  hideBlockType: {
+    '& h1:before, & h2:before, & h3:before, & h4:before, & h5:before, & h6:before': {
+      display: 'none',
+    },
+  },
+});
 class VditorEditor extends React.Component {
   resourceUrl = '';
 
@@ -510,8 +518,9 @@ class VditorEditor extends React.Component {
   }
 
   render() {
+    const { classes, hideBlockType } = this.props;
     return (
-      <div className={classNames('editor-container', {
+      <div className={classNames('editor-container', hideBlockType && classes.hideBlockType, {
         'focus-mode': this.state.isFocus,
       })}
       >
@@ -540,6 +549,7 @@ class VditorEditor extends React.Component {
 }
 
 VditorEditor.propTypes = {
+  classes: PropTypes.object.isRequired,
   isMac: PropTypes.bool,
   onInit: PropTypes.func,
   onInput: PropTypes.func,
@@ -559,6 +569,7 @@ VditorEditor.propTypes = {
   height: PropTypes.number,
   tagList: PropTypes.object,
   autoSelectTitle: PropTypes.bool,
+  hideBlockType: PropTypes.bool,
 };
 
 VditorEditor.defaultProps = {
@@ -579,6 +590,7 @@ VditorEditor.defaultProps = {
   height: undefined,
   tagList: {},
   autoSelectTitle: false,
+  hideBlockType: false,
 };
 
-export default VditorEditor;
+export default withStyles(styles)(VditorEditor);
