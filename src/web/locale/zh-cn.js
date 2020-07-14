@@ -87,5 +87,5 @@ export default {
   mobilePlusOption: 'Plus手机阅读',
   mobileOption: '手机阅读',
   exportLoading: '正在生成...',
-  exportButton: '导出',
+  exportButton: '导出为图片',
 };

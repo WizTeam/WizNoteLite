@@ -87,5 +87,5 @@ export default {
   mobilePlusOption: 'Mobile plus',
   mobileOption: 'Mobile',
   exportLoading: 'Loading...',
-  exportButton: 'Export',
+  exportButton: 'Export Image',
 };
