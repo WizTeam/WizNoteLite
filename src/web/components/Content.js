@@ -97,7 +97,7 @@ const styles = (theme) => ({
   },
   separator: {
     height: 1,
-    backgroundColor: theme.custom.color.liteSelectBorder,
+    backgroundColor: '#d8d8d8',
     margin: '4px 24px',
   },
   normalButton: {
@@ -199,9 +199,8 @@ class Content extends React.Component {
             {!isFullScreen && <Icons.FullScreenIcon className={classes.icon} />}
           </IconButton>
           )}
-          {/* TODO: export note icon */}
           <IconButton className={classes.iconButton} onClick={this.handler.handleShowExportMenu}>
-            <Icons.LinkIcon className={classes.icon} />
+            <Icons.ExportIcon className={classes.icon} />
           </IconButton>
           <div className={classes.emptyBlock} />
           <SyncBtn

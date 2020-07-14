@@ -15,10 +15,10 @@ const styles = (theme) => ({
     backgroundColor: theme.custom.background.content,
   },
   lightMode: {
-    backgroundColor: theme.custom.background.previewLightMode,
+    backgroundColor: '#fafafa',
   },
   darkMode: {
-    backgroundColor: theme.custom.background.previewDarkMode,
+    backgroundColor: '#333333',
   },
 });
 

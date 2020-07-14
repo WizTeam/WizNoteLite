@@ -17,12 +17,15 @@ import Icons from '../config/icons';
 
 const styles = (theme) => ({
   root: {
-    width: 600,
+    width: 768,
     boxSizing: 'border-box',
     display: 'flex',
     position: 'relative',
-    padding: theme.spacing(4),
+    padding: `32px !important`,
     backgroundColor: theme.custom.background.about,
+  },
+  paper: {
+    maxWidth: 'unset',
   },
   close: {
     position: 'absolute',
@@ -41,14 +44,13 @@ const styles = (theme) => ({
   },
   previewBox: {
     flex: 1,
-    height: 300,
+    height: 384,
     display: 'flex',
     flexDirection: 'column',
   },
   viewerBox: {
     position: 'relative',
     width: '100%',
-    border: '2px solid #ccc',
     boxSizing: 'border-box',
     flex: 1,
   },
@@ -59,28 +61,59 @@ const styles = (theme) => ({
     color: theme.custom.color.matchedText,
   },
   exportButton: {
-    backgroundColor: theme.custom.background.loginButton,
-    color: theme.custom.color.loginButton,
+    backgroundColor: theme.custom.background.dialogButtonBlack,
+    color: theme.custom.color.dialogButtonBlack,
     borderRadius: 0,
     '&:hover': {
-      backgroundColor: theme.custom.background.loginButtonHover,
+      backgroundColor: theme.custom.background.dialogButtonBlackHover,
+    },
+    '&.Mui-disabled': {
+      color: theme.custom.color.dialogButtonBlack,
+      opacity: 0.5,
     },
   },
   list: {
-    width: 150,
-    height: 300,
+    width: 128,
+    height: 'auto',
     display: 'flex',
     paddingLeft: theme.spacing(4),
     flexDirection: 'column',
   },
   selectList: {
-    minWidth: 150,
+    minWidth: 128,
   },
   grow: {
     flexGrow: 1,
   },
   title: {
     margin: theme.spacing(1, 0),
+    fontSize: 14,
+    color: theme.custom.color.dialogTextPrimary,
+  },
+  pc: {
+    border: '1px solid #d8d8d8 !important',
+  },
+  mobilePlus: {
+    border: 'solid 6px #333333',
+    borderBottom: 0,
+    borderRadius: '40px 40px 0 0',
+    overflow: 'hidden',
+    width: 'auto',
+    margin: '0 76px',
+  },
+  mobile: {
+    border: 'solid 6px #333333',
+    borderBottom: 0,
+    borderRadius: '40px 40px 0 0',
+    overflow: 'hidden',
+    width: 'auto',
+    margin: '0 127px',
+  },
+  darkBorderColor: {
+    borderColor: '#d8d8d8',
+  },
+  lightBorderColor: {
+    borderColor: '#333333',
   },
 });
 
@@ -109,6 +142,9 @@ class ExportDialog extends React.Component {
     handleChangePreviewTheme: (item, value) => {
       this.setState({ previewTheme: value });
     },
+    handleChangeWidth: (item, value) => {
+      this.setState({ widthValue: value });
+    },
   };
 
   constructor(props) {
@@ -116,6 +152,7 @@ class ExportDialog extends React.Component {
     this.state = {
       loading: false,
       previewTheme: null,
+      widthValue: 'pc',
     };
   }
 
@@ -130,7 +167,7 @@ class ExportDialog extends React.Component {
 
   render() {
     const {
-      loading, previewTheme,
+      loading, previewTheme, widthValue,
     } = this.state;
     const {
       classes, open, onClose,
@@ -152,11 +189,22 @@ class ExportDialog extends React.Component {
       <Dialog
         open={open}
         onEscapeKeyDown={onClose}
+        classes={{
+          paper: classes.paper,
+        }}
       >
         <DialogContent className={classes.root}>
           <div className={classes.previewBox}>
             <LiteText className={classes.title}>Export png</LiteText>
-            <div className={classes.viewerBox}>
+            <div className={classNames(
+              classes.viewerBox,
+              widthValue === 'pc' && classes.pc,
+              widthValue === 'mobilePlus' && classes.mobilePlus,
+              widthValue === 'mobile' && classes.mobile,
+              previewTheme === 'dark' && classes.darkBorderColor,
+              previewTheme === 'light' && classes.lightBorderColor,
+            )}
+            >
               <NoteViewer
                 kbGuid={kbGuid}
                 noteGuid={noteGuid}
@@ -185,7 +233,12 @@ class ExportDialog extends React.Component {
               onChange={this.handler.handleChangePreviewTheme}
             />
             <LiteText className={classes.title}>width</LiteText>
-            <LiteSelect options={widthOptions} listClass={classes.selectList} />
+            <LiteSelect
+              options={widthOptions}
+              value={widthValue}
+              listClass={classes.selectList}
+              onChange={this.handler.handleChangeWidth}
+            />
             <div className={classes.grow} />
             <Button
               disabled={loading}

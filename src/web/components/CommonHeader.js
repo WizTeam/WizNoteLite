@@ -46,8 +46,8 @@ const useStyles = makeStyles((theme) => ({
   },
   closeRoot: {
     '&:hover': {
-      backgroundColor: theme.custom.background.closeButtonHover,
-      color: theme.custom.color.closeButtonHover,
+      backgroundColor: '#e82100',
+      color: '#ffffff',
     },
   },
   name: {

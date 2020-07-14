@@ -8,10 +8,10 @@ import MenuItem from '@material-ui/core/MenuItem';
 //
 import Icons from '../config/icons/common';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((/* theme */) => ({
   root: {
     display: 'inline-block',
-    border: `1px solid ${theme.custom.color.liteSelectBorder}`,
+    border: '1px solid #d8d8d8',
   },
   button: {
     textTransform: 'none',

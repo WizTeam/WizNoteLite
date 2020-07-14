@@ -97,16 +97,16 @@ const styles = (theme) => ({
     fontWeight: 'bold',
   },
   loginButton: {
-    backgroundColor: theme.custom.background.loginButton,
-    color: theme.custom.color.loginButton,
+    backgroundColor: theme.custom.background.dialogButtonBlack,
+    color: theme.custom.color.dialogButtonBlack,
     borderRadius: 0,
     minWidth: 112,
     '&:hover': {
-      backgroundColor: theme.custom.background.loginButtonHover,
+      backgroundColor: theme.custom.background.dialogButtonBlackHover,
     },
   },
   loginButtonActive: {
-    backgroundColor: theme.custom.background.loginButtonHover,
+    backgroundColor: theme.custom.background.dialogButtonBlackHover,
   },
   normalText: {
     textTransform: 'none',
@@ -141,7 +141,7 @@ const styles = (theme) => ({
     transition: 'unset !important',
   },
   disabled: {
-    color: `${theme.custom.color.loginButton}52 !important`,
+    color: `${theme.custom.color.dialogButtonBlack}52 !important`,
   },
   serverButton: {
     color: theme.custom.color.noteTitle,
