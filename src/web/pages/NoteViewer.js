@@ -9,16 +9,17 @@ import Scrollbar from '../components/Scrollbar';
 
 const styles = (theme) => ({
   root: {
-    padding: 0,
     margin: 0,
     height: '100%',
     backgroundColor: theme.custom.background.content,
   },
-  lightMode: {
-    backgroundColor: '#fafafa',
-  },
-  darkMode: {
+  root_dark: {
     backgroundColor: '#333333',
+    color: '#f0f0f0',
+  },
+  root_lite: {
+    backgroundColor: 'white',
+    color: '#333333',
   },
 });
 
@@ -88,42 +89,69 @@ class NoteViewer extends React.Component {
   render() {
     const {
       classes, theme,
-      noteGuid, darkMode = theme.palette.type === 'dark',
+      noteGuid,
+      params,
     } = this.props;
+    //
+    let darkMode = this.props.darkMode;
+    if (darkMode === undefined) {
+      darkMode = theme.palette.type === 'dark';
+    }
+    //
+    const resetBackground = darkMode !== undefined;
+    const backgroundClass = darkMode ? classes.root_dark : classes.root_lite;
 
     const { loading, markdown, resourceUrl } = this.state;
+    //
+    const style = {
+      paddingLeft: Number.parseInt(params.paddingLeft || params.padding, 10) || 32,
+      paddingRight: Number.parseInt(params.paddingRight || params.padding, 10) || 32,
+    };
+    //
+    const contentEditor = (
+      <div
+        id="wiz-note-content-root"
+        ref={(node) => {
+          this._rootElem = node;
+        }}
+        style={style}
+        className={classNames(resetBackground && backgroundClass)}
+      >
+        <VditorEditor
+          value={markdown}
+          isMac={window.wizApi.platform.isMac}
+          contentId={loading ? '' : noteGuid}
+          onInit={this.handler.handleInitEditor}
+          onInput={() => {}}
+          resourceUrl={resourceUrl}
+          darkMode={darkMode}
+          onSave={() => {}}
+          onInsertImage={() => {}}
+          onInsertImageFromData={() => {}}
+          tagList={{}}
+          autoSelectTitle={false}
+          hideBlockType
+        />
+      </div>
+    );
+
+    const contentEditorWithScrollBar = (
+      <Scrollbar hideThumb={params.hideThumb === '1'} theme={theme}>
+        {contentEditor}
+      </Scrollbar>
+    );
+    //
+    const contentMain = params.standardScrollBar
+      ? contentEditor
+      : contentEditorWithScrollBar;
 
     return (
       <div
         className={classNames(
           classes.root,
-          darkMode && classes.darkMode,
-          !darkMode && classes.lightMode,
         )}
       >
-        <Scrollbar autoHideTimeout={100}>
-          <div
-            id="wiz-note-content-root"
-            ref={(node) => {
-              this._rootElem = node;
-            }}
-          >
-            <VditorEditor
-              value={markdown}
-              isMac={window.wizApi.platform.isMac}
-              contentId={loading ? '' : noteGuid}
-              onInit={this.handler.handleInitEditor}
-              onInput={() => {}}
-              resourceUrl={resourceUrl}
-              darkMode={darkMode}
-              onSave={() => {}}
-              onInsertImage={() => {}}
-              onInsertImageFromData={() => {}}
-              tagList={{}}
-              autoSelectTitle={false}
-            />
-          </div>
-        </Scrollbar>
+        {contentMain}
       </div>
     );
   }
@@ -140,7 +168,7 @@ NoteViewer.propTypes = {
 
 NoteViewer.defaultProps = {
   params: {},
-  darkMode: false,
+  darkMode: undefined,
 };
 
 export default withTheme(withStyles(styles)(injectIntl(NoteViewer)));

@@ -12,6 +12,7 @@ function Scrollbar(props) {
     autoHide,
     autoHideTimeout,
     hideTracksWhenNotNeeded,
+    hideThumb,
     themeType,
     ...others
   } = props;
@@ -30,20 +31,25 @@ function Scrollbar(props) {
   const renderThumbVertical = (options) => {
     const { style, ...otherProps } = options;
     const customStyle = {
-      backgroundColor: `#555555`,
+      backgroundColor: `#999999`,
       borderRadius: 4,
     };
+    if (hideThumb) {
+      customStyle.display = 'none';
+    }
     return (
       <div {...otherProps} style={{ ...style, ...customStyle }} />
     );
   };
+  //
+  const thumbRenderer = (isDark || hideThumb) ? renderThumbVertical : undefined;
   //
   return (
     <Scrollbars
       hideTracksWhenNotNeeded={hideTracksWhenNotNeeded}
       autoHide={autoHide}
       autoHideTimeout={autoHideTimeout}
-      renderThumbVertical={isDark ? renderThumbVertical : undefined}
+      renderThumbVertical={thumbRenderer}
       {...others}
     >
       {children}
@@ -55,6 +61,7 @@ Scrollbar.propTypes = {
   classes: PropTypes.object,
   children: PropTypes.node.isRequired,
   hideTracksWhenNotNeeded: PropTypes.bool,
+  hideThumb: PropTypes.bool,
   autoHide: PropTypes.bool,
   autoHideTimeout: PropTypes.number,
   themeType: PropTypes.string,
@@ -63,8 +70,9 @@ Scrollbar.propTypes = {
 Scrollbar.defaultProps = {
   classes: {},
   hideTracksWhenNotNeeded: true,
+  hideThumb: false,
   autoHide: true,
-  autoHideTimeout: 100,
+  autoHideTimeout: 1000,
   themeType: 'auto',
 };
 

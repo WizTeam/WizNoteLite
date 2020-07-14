@@ -239,9 +239,12 @@ class Content extends React.Component {
           {/* <MenuItem>
             {intl.formatMessage({ id: 'exportMd' })}
           </MenuItem> */}
-          {/* <MenuItem>
+          <MenuItem onClick={() => {
+            window.wizApi.userManager.printToPDF(kbGuid, note.guid, { landscape: true });
+          }}
+          >
             {intl.formatMessage({ id: 'exportPdf' })}
-          </MenuItem> */}
+          </MenuItem>
           {/* <MenuItem>
             {intl.formatMessage({ id: 'copySourceMarkdown' })}
           </MenuItem> */}

@@ -17,6 +17,14 @@ body {
 @media screen and (prefers-color-scheme: light) {
   body {
     background-color: white;
-    color: black;
+    color: #333333;
   }
+}
+
+div::-webkit-scrollbar {
+  background-color: transparent;
+}
+
+div::-webkit-scrollbar-thumb {
+  background-color: transparent;
 }

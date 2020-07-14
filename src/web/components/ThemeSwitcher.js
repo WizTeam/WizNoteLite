@@ -2,9 +2,24 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import queryString from 'query-string';
 
 export default function ThemeSwitcher(props) {
-  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+  //
+  const params = queryString.parse(window.location.search);
+  //
+  let prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+  if (params.theme) {
+    prefersDarkMode = params.theme === 'dark';
+    //
+    if (prefersDarkMode) {
+      window.document.body.style.backgroundColor = '#101115';
+      window.document.body.style.color = 'white';
+    } else {
+      window.document.body.style.backgroundColor = 'white';
+      window.document.body.style.color = '#333333';
+    }
+  }
 
   const theme = React.useMemo(
     () => createMuiTheme({
