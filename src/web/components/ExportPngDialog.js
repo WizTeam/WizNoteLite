@@ -131,8 +131,19 @@ class ExportDialog extends React.Component {
           this.setState({ loading: false });
         }
       };
+      //
+      const { widthValue, previewTheme } = this.state;
+      let width = 375;
+      if (widthValue === 'mobilePlus') {
+        width = 450;
+      } else if (widthValue === 'pc') {
+        width = 600;
+      }
+      //
       const options = {
         progressCallback: 'onCaptureScreenProgress',
+        theme: previewTheme,
+        width,
       };
       //
       this.setState({ loading: true });
@@ -214,6 +225,7 @@ class ExportDialog extends React.Component {
                 params={{
                   kbGuid,
                   noteGuid,
+                  padding: 16,
                 }}
               />
               <Backdrop
