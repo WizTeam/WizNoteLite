@@ -72,8 +72,8 @@ export default {
   error31005: 'Deactivate Account',
   error31013: 'This phone number has been used for registration, please change another one.',
   // export
-  exportPng: 'Export PNG',
-  exportMd: 'Export MD',
+  exportPng: 'Export Image',
+  exportMd: 'Export Markdown',
   exportPdf: 'Export PDF',
   copySourceMarkdown: 'Copy source markdown',
   publishTo: 'Publish to',
@@ -83,7 +83,9 @@ export default {
   widthTitle: 'Width',
   lightOption: 'Light',
   darkOption: 'Dark',
-  pcOption: 'Pc',
+  pcOption: 'Computer',
   mobilePlusOption: 'Mobile plus',
   mobileOption: 'Mobile',
+  exportLoading: 'Loading...',
+  exportButton: 'Export Image',
 };

@@ -64,6 +64,7 @@ const styles = (theme) => ({
     backgroundColor: theme.custom.background.dialogButtonBlack,
     color: theme.custom.color.dialogButtonBlack,
     borderRadius: 0,
+    textTransform: 'none',
     '&:hover': {
       backgroundColor: theme.custom.background.dialogButtonBlackHover,
     },
@@ -117,33 +118,30 @@ const styles = (theme) => ({
   },
 });
 
+const PC_WIDTH = 600;
+const MOBILE_PLUS_WIDTH = 450;
+const MOBILE_WIDTH = 375;
+
 class ExportDialog extends React.Component {
   handler = {
     handleExportPng: () => {
       const { kbGuid, noteGuid } = this.props;
+      //
       if (!noteGuid || this.state.loading) {
         return;
       }
       //
       window.onCaptureScreenProgress = (progress) => {
-        console.log(progress);
         if (progress === 100) {
           this.setState({ loading: false });
         }
       };
       //
-      const { widthValue, previewTheme } = this.state;
-      let width = 375;
-      if (widthValue === 'mobilePlus') {
-        width = 450;
-      } else if (widthValue === 'pc') {
-        width = 600;
-      }
-      //
+      const { previewTheme, widthValue } = this.state;
       const options = {
         progressCallback: 'onCaptureScreenProgress',
         theme: previewTheme,
-        width,
+        width: widthValue,
       };
       //
       this.setState({ loading: true });
@@ -163,7 +161,7 @@ class ExportDialog extends React.Component {
     this.state = {
       loading: false,
       previewTheme: null,
-      widthValue: 'pc',
+      widthValue: PC_WIDTH,
     };
   }
 
@@ -191,9 +189,9 @@ class ExportDialog extends React.Component {
     ];
 
     const widthOptions = [
-      { value: 'pc', title: intl.formatMessage({ id: 'pcOption' }) },
-      { value: 'mobilePlus', title: intl.formatMessage({ id: 'mobilePlusOption' }) },
-      { value: 'mobile', title: intl.formatMessage({ id: 'mobileOption' }) },
+      { value: PC_WIDTH, title: intl.formatMessage({ id: 'pcOption' }) },
+      { value: MOBILE_PLUS_WIDTH, title: intl.formatMessage({ id: 'mobilePlusOption' }) },
+      { value: MOBILE_WIDTH, title: intl.formatMessage({ id: 'mobileOption' }) },
     ];
 
     return (
@@ -206,14 +204,14 @@ class ExportDialog extends React.Component {
       >
         <DialogContent className={classes.root}>
           <div className={classes.previewBox}>
-            <LiteText className={classes.title}>
+            <LiteText className={classes.title} disableUserSelect>
               {intl.formatMessage({ id: 'exportPng' })}
             </LiteText>
             <div className={classNames(
               classes.viewerBox,
-              widthValue === 'pc' && classes.pc,
-              widthValue === 'mobilePlus' && classes.mobilePlus,
-              widthValue === 'mobile' && classes.mobile,
+              widthValue === PC_WIDTH && classes.pc,
+              widthValue === MOBILE_PLUS_WIDTH && classes.mobilePlus,
+              widthValue === MOBILE_WIDTH && classes.mobile,
               previewTheme === 'dark' && classes.darkBorderColor,
               previewTheme === 'light' && classes.lightBorderColor,
             )}
@@ -263,7 +261,11 @@ class ExportDialog extends React.Component {
               className={classes.exportButton}
               onClick={this.handler.handleExportPng}
             >
-              { loading ? 'loading...' : 'export'}
+              {
+              loading
+                ? intl.formatMessage({ id: 'exportLoading' })
+                : intl.formatMessage({ id: 'exportButton' })
+              }
             </Button>
           </div>
           <div className={classes.close}>
