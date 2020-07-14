@@ -17,7 +17,7 @@ import Icons from '../config/icons';
 
 const styles = (theme) => ({
   root: {
-    width: 768,
+    width: 840,
     boxSizing: 'border-box',
     display: 'flex',
     position: 'relative',
@@ -92,22 +92,24 @@ const styles = (theme) => ({
   },
   pc: {
     border: '1px solid #d8d8d8 !important',
+    width: 600,
+    margin: 'auto',
   },
   mobilePlus: {
     border: 'solid 6px #333333',
     borderBottom: 0,
     borderRadius: '40px 40px 0 0',
     overflow: 'hidden',
-    width: 'auto',
-    margin: '0 76px',
+    width: 450 + 6 * 2,
+    margin: 'auto',
   },
   mobile: {
     border: 'solid 6px #333333',
     borderBottom: 0,
     borderRadius: '40px 40px 0 0',
     overflow: 'hidden',
-    width: 'auto',
-    margin: '0 127px',
+    width: 375 + 6 * 2,
+    margin: 'auto',
   },
   darkBorderColor: {
     borderColor: '#d8d8d8',
@@ -134,16 +136,20 @@ class ExportDialog extends React.Component {
       //
       const { widthValue, previewTheme } = this.state;
       let width = 375;
+      let padding = 16;
       if (widthValue === 'mobilePlus') {
         width = 450;
+        padding = 24;
       } else if (widthValue === 'pc') {
         width = 600;
+        padding = 32;
       }
       //
       const options = {
         progressCallback: 'onCaptureScreenProgress',
         theme: previewTheme,
         width,
+        padding,
       };
       //
       this.setState({ loading: true });
@@ -196,6 +202,13 @@ class ExportDialog extends React.Component {
       { value: 'mobile', title: intl.formatMessage({ id: 'mobileOption' }) },
     ];
 
+    let padding = 16;
+    if (widthValue === 'pc') {
+      padding = 32;
+    } else if (widthValue === 'mobilePlus') {
+      padding = 24;
+    }
+
     return (
       <Dialog
         open={open}
@@ -223,9 +236,7 @@ class ExportDialog extends React.Component {
                 noteGuid={noteGuid}
                 darkMode={previewTheme === 'dark'}
                 params={{
-                  kbGuid,
-                  noteGuid,
-                  padding: 16,
+                  padding,
                 }}
               />
               <Backdrop

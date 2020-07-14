@@ -212,8 +212,9 @@ handleApi('captureScreen', async (event, userGuid, kbGuid, noteGuid, options = {
   });
 
   const theme = options.theme || 'lite';
+  const padding = options.padding || 16;
 
-  window.loadURL(`${mainUrl}?kbGuid=${kbGuid}&noteGuid=${noteGuid}&padding=16&theme=${theme}&hideThumb=1`);
+  window.loadURL(`${mainUrl}?kbGuid=${kbGuid}&noteGuid=${noteGuid}&padding=${padding}&theme=${theme}&hideThumb=1`);
   if (isDebug) window.webContents.toggleDevTools();
   //
   window.webContents.on('ipc-message', async (e, channel, ...args) => {
