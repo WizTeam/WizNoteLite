@@ -106,6 +106,8 @@ export default function ThemeSwitcher(props) {
           forgetPasswordButton: '#448aff',
           windowBarTool: prefersDarkMode ? '#ffffff' : '#333333',
           windowBarLogo: '#f0f0f0',
+          windowBar: '#f0f0f0',
+          closeButtonHover: '#ffffff',
           normalButtonHover: prefersDarkMode ? '#ffffff' : '#333333',
           platformButton: '#333333',
           // lite input

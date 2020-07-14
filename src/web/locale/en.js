@@ -63,6 +63,7 @@ export default {
   errorServer: 'Server error: {message}',
   errorUpdateServer: 'WizNote server is too old, update needed.',
   errorUnknownServerVersion: 'Unknown server version: {message}',
+  errorNetwork: 'Network error: {message}',
 
   errorInvalidUserId: 'User not exists (invalid email).',
   errorLicenseUserLimit: 'License error: too many active users.',
@@ -88,4 +89,8 @@ export default {
   mobileOption: 'Mobile',
   exportLoading: 'Exporting...',
   exportButton: 'Export Image',
+  // system menu
+  sendFeedback: 'Send Feedback',
+  devTool: 'Developer Tools',
+  about: 'About WizNote Lite',
 };

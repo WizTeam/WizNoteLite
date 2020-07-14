@@ -428,6 +428,12 @@ class LoginDialog extends React.Component {
         message: err.message,
       });
       //
+    } else if (err.code === 'WizErrorNetwork') {
+      //
+      state.passwordErrorText = intl.formatMessage({ id: 'errorNetwork' }, {
+        message: err.message,
+      });
+      //
     } else if (err.isNetworkError && serverType === SERVER_TYPE_PRIVATE) {
       //
       state.serverErrorText = intl.formatMessage({ id: `errorServer` }, { message: err.message });

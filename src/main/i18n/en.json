@@ -36,5 +36,6 @@
   "menuMainWindow": "Main Window",
 
   "fileFilterPNG": "PNG files (*.png)",
-  "fileFilterPDF": "PDF files (*.pdf)"
+  "fileFilterPDF": "PDF files (*.pdf)",
+  "errorConnect": "Can't connect to server: {{host}}, please check your network."
 }

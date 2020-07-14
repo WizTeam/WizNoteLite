@@ -37,5 +37,6 @@
   "menuMainWindow": "主窗口",
 
   "fileFilterPNG": "PNG files (*.png)",
-  "fileFilterPDF": "PDF files (*.pdf)"
+  "fileFilterPDF": "PDF files (*.pdf)",
+  "errorConnect": "無法連接到服務器： {{host}}，請檢查您的網絡。"
 }
