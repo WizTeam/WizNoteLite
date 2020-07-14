@@ -34,5 +34,8 @@
   "toggledevtools": "Toggle Developer Tools",
   "learnMore": "Learn More...",
   "menuMainWindow": "Main Window",
+
+  "fileFilterPNG": "PNG files (*.png)",
+  "fileFilterPDF": "PDF files (*.pdf)",
   "errorConnect": "Can't connect to server: {{host}}, please check your network."
 }

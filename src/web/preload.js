@@ -270,6 +270,16 @@ class UserManager extends EventEmitter {
     return result;
   }
 
+  async captureScreen(kbGuid, noteGuid, options) {
+    const result = await invokeApi('captureScreen', this.userGuid, kbGuid, noteGuid, options);
+    return result;
+  }
+
+  async printToPDF(kbGuid, noteGuid, options) {
+    const result = await invokeApi('printToPDF', this.userGuid, kbGuid, noteGuid, options);
+    return result;
+  }
+
   async buildBindSnsUrl(server, type, postMessage, origin, extraParams) {
     const path = '/as/thirdparty/go/auth';
     const query = {
@@ -285,6 +295,11 @@ class UserManager extends EventEmitter {
     const url = `${server}${path}?${params}`;
 
     return url;
+  }
+
+
+  async sendMessage(name, ...args) {
+    ipcRenderer.send(name, this.userGuid, ...args);
   }
 }
 

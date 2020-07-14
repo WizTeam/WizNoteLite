@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { makeStyles } from '@material-ui/core/styles';
@@ -8,17 +8,19 @@ import MenuItem from '@material-ui/core/MenuItem';
 //
 import Icons from '../config/icons/common';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((/* theme */) => ({
   root: {
     display: 'inline-block',
-    border: `1px solid ${theme.custom.color.liteSelectBorder}`,
+    border: '1px solid #d8d8d8',
   },
   button: {
-    textTransform: 'none',
     borderRadius: 0,
   },
   buttonLabel: {
     justifyContent: 'space-between',
+  },
+  paper: {
+    transform: 'translateY(4px) !important',
   },
   menu: {
   },
@@ -28,6 +30,7 @@ function LiteSelect(props) {
   const classes = useStyles();
   const {
     options, className, value,
+    listClass,
   } = props;
   //
   const [selectedKey, setSelectedKey] = useState('select');
@@ -42,7 +45,20 @@ function LiteSelect(props) {
     setAnchorEl(null);
   };
 
-  const resetSelectedKey = () => {
+  const handleSelect = (item) => {
+    if (value === null) {
+      setSelectedKey(item.title);
+      setSelectedVal(item.value);
+    }
+    //
+    if (props.onChange) {
+      props.onChange(item, item.value);
+    }
+    //
+    handleMenuClose();
+  };
+
+  const resetSelectedKey = useCallback(() => {
     if (value === null) {
       if (options.length) {
         setSelectedKey(options[0]?.title);
@@ -60,24 +76,11 @@ function LiteSelect(props) {
     }
     //
     return true;
-  };
-
-  const handleSelect = (item) => {
-    if (value === null) {
-      setSelectedKey(item.title);
-      setSelectedVal(item.value);
-    }
-    //
-    if (props.onChange) {
-      props.onChange(item);
-    }
-    //
-    handleMenuClose();
-  };
+  }, [value, options]);
 
   useEffect(() => {
     resetSelectedKey();
-  }, [value]);
+  }, [resetSelectedKey]);
 
   return (
     <div className={classNames(classes.root, className)}>
@@ -94,6 +97,10 @@ function LiteSelect(props) {
       </Button>
       <Menu
         className={classes.menu}
+        classes={{
+          paper: classes.paper,
+          list: listClass ?? null,
+        }}
         anchorEl={anchorEl}
         keepMounted
         open={Boolean(anchorEl)}
@@ -126,6 +133,7 @@ LiteSelect.propTypes = {
     PropTypes.number,
   ]),
   onChange: PropTypes.func,
+  listClass: PropTypes.string,
 };
 
 LiteSelect.defaultProps = {
@@ -133,6 +141,7 @@ LiteSelect.defaultProps = {
   options: [],
   value: null,
   onChange: null,
+  listClass: null,
 };
 
 export default LiteSelect;

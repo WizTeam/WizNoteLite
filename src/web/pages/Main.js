@@ -198,7 +198,6 @@ class Main extends React.Component {
       }, () => {
         window.wizApi.windowManager.toggleFullScreen();
       });
-
     },
   }
 

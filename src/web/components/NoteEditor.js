@@ -10,17 +10,27 @@ import TabPanel from './TabPanel';
 
 const styles = (/* theme */) => ({
   root: {
-    height: '100%',
+    minHeight: '100%',
+    boxSizing: 'border-box',
+    display: 'flex',
+    flexDirection: 'column',
+    paddingTop: 8,
+    paddingBottom: 16,
+    paddingRight: 'max(52px, (100% - 600px) / 2)',
+    paddingLeft: 'max(84px, (100% - 600px) / 2)',
   },
   invisible: {
     display: 'none',
   },
   tabPanel: {
-    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    flex: 1,
   },
 });
 
 class NoteEditor extends React.Component {
+
   handler = {
     handleSaveNote: async (kbGuid, noteGuid, markdown) => {
       await window.wizApi.userManager.setNoteMarkdown(kbGuid, noteGuid, markdown);
@@ -42,9 +52,6 @@ class NoteEditor extends React.Component {
 
   // constructor(props) {
   //   super(props);
-  //   this.state = {
-  //     worldsCount: 0,
-  //   };
   // }
 
   render() {
@@ -56,9 +63,13 @@ class NoteEditor extends React.Component {
     const type = note?.type;
     const isMarkdown = type === 'lite' || type === 'lite/note' || type === 'lite/markdown';
     const hasEditor = isMarkdown;
+
     //
     return (
-      <div className={classNames(classes.root, !note && classes.invisible)}>
+      <div
+        className={classNames(classes.root, !note && classes.invisible)}
+        ref={this.editorContainer}
+      >
         <TabPanel tabKey="lite/markdown" className={classes.tabPanel} visible={isMarkdown}>
           <MarkdownEditor
             darkMode={theme.palette.type === 'dark'}

@@ -30,10 +30,19 @@ function getNoteResources(userGuid, kbGuid, noteGuid) {
   return p;
 }
 
+function getTempPath() {
+  const base = app.getPath('temp');
+  const rand = new Date().valueOf();
+  const newTemp = path.join(base, `${rand}`);
+  fs.ensureDirSync(newTemp);
+  return newTemp;
+}
+
 module.exports = {
   getAppData,
   getUsersData,
   getUserData,
   getNoteData,
   getNoteResources,
+  getTempPath,
 };

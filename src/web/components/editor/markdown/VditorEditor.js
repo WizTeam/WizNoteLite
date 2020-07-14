@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import isEqual from 'lodash/isEqual';
 import WizVditor from 'wiz-vditor';
 import classNames from 'classnames';
+import { withStyles } from '@material-ui/core/styles';
 import InsertMenu from './InsertMenu';
 import HeadingMenu from './HeadingMenu';
 import 'wiz-vditor/dist/index.css';
@@ -14,12 +15,21 @@ import {
 } from '../libs/dom_utils';
 import { getRange, getSelection } from '../libs/range_utils';
 
+const styles = (/* theme */) => ({
+  hideBlockType: {
+    '& h1:before, & h2:before, & h3:before, & h4:before, & h5:before, & h6:before': {
+      display: 'none',
+    },
+  },
+});
 class VditorEditor extends React.Component {
   resourceUrl = '';
 
   waitSetValue = null;
 
   isShowTagMenu = false;
+
+  timeStamp = new Date().getTime();
 
   handler = {
     handleChangeTagMenuShowState: (isShowMenu) => {
@@ -205,11 +215,11 @@ class VditorEditor extends React.Component {
   async initEditor() {
     const { darkMode, placeholder } = this.props;
     const cdn = /^https?:\/\//i.test(window.location.origin) ? `${window.location.origin}/libs/wiz-vditor` : `${(window.location.origin + window.location.pathname).replace('/index.html', '')}/libs/wiz-vditor`;
-    this.editor = new WizVditor('editor', {
+    this.editor = new WizVditor(`editor_${this.timeStamp}`, {
       ...this.props,
       height: this.props.height,
       cache: {
-        id: 'editor',
+        id: `editor_${this.timeStamp}`,
         enable: false,
       },
       // 未知原因，CDN 必须设置 完整的 http 地址，否则会导致 代码高亮的内容闪烁
@@ -248,7 +258,6 @@ class VditorEditor extends React.Component {
 
           return newHtml;
         },
-        maxWidth: 600,
         hljs: {
           style: darkMode ? 'native' : 'pygments',
         },
@@ -516,15 +525,17 @@ class VditorEditor extends React.Component {
   }
 
   render() {
+    const { classes, hideBlockType } = this.props;
     return (
-      <div className={classNames('editor-container', {
-        'focus-mode': this.state.isFocus,
-      })}
+      <div
+        className={classNames('editor-container', hideBlockType && classes.hideBlockType, {
+          'focus-mode': this.state.isFocus,
+        })}
       >
         {this.styleRender()}
         {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
         <div
-          id="editor"
+          id={`editor_${this.timeStamp}`}
           onKeyDown={this.handler.handleEditorKeyDown}
         />
         <HeadingMenu
@@ -546,6 +557,7 @@ class VditorEditor extends React.Component {
 }
 
 VditorEditor.propTypes = {
+  classes: PropTypes.object.isRequired,
   isMac: PropTypes.bool,
   onInit: PropTypes.func,
   onInput: PropTypes.func,
@@ -565,6 +577,7 @@ VditorEditor.propTypes = {
   height: PropTypes.number,
   tagList: PropTypes.object,
   autoSelectTitle: PropTypes.bool,
+  hideBlockType: PropTypes.bool,
 };
 
 VditorEditor.defaultProps = {
@@ -585,6 +598,7 @@ VditorEditor.defaultProps = {
   height: undefined,
   tagList: {},
   autoSelectTitle: false,
+  hideBlockType: false,
 };
 
-export default VditorEditor;
+export default withStyles(styles)(VditorEditor);

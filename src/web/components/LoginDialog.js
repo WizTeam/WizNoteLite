@@ -97,19 +97,16 @@ const styles = (theme) => ({
     fontWeight: 'bold',
   },
   loginButton: {
-    backgroundColor: theme.custom.background.loginButton,
-    color: theme.custom.color.loginButton,
+    backgroundColor: theme.custom.background.dialogButtonBlack,
+    color: theme.custom.color.dialogButtonBlack,
     borderRadius: 0,
     minWidth: 112,
     '&:hover': {
-      backgroundColor: theme.custom.background.loginButtonHover,
+      backgroundColor: theme.custom.background.dialogButtonBlackHover,
     },
   },
   loginButtonActive: {
-    backgroundColor: theme.custom.background.loginButtonHover,
-  },
-  normalText: {
-    textTransform: 'none',
+    backgroundColor: theme.custom.background.dialogButtonBlackHover,
   },
   logo: {
     display: 'flex',
@@ -141,7 +138,7 @@ const styles = (theme) => ({
     transition: 'unset !important',
   },
   disabled: {
-    color: `${theme.custom.color.loginButton}52 !important`,
+    color: `${theme.custom.color.dialogButtonBlack}52 !important`,
   },
   serverButton: {
     color: theme.custom.color.noteTitle,
@@ -497,13 +494,13 @@ class LoginDialog extends React.Component {
             <div className={classes.grow} />
             <Button
               onClick={() => this.handler.handleChangeType('login')}
-              className={classNames(classes.tabButton, classes.normalFontSize, classes.normalText, classes.normalFontWeight, type === 'login' && classes.activeTab)}
+              className={classNames(classes.tabButton, classes.normalFontSize, classes.normalFontWeight, type === 'login' && classes.activeTab)}
             >
               {intl.formatMessage({ id: 'tabLogin' })}
             </Button>
             <Button
               onClick={() => this.handler.handleChangeType('register')}
-              className={classNames(classes.tabButton, classes.normalFontSize, classes.normalText, classes.normalFontWeight, type === 'register' && classes.activeTab)}
+              className={classNames(classes.tabButton, classes.normalFontSize, classes.normalFontWeight, type === 'register' && classes.activeTab)}
             >
               {intl.formatMessage({ id: 'tabRegister' })}
             </Button>
@@ -566,7 +563,6 @@ class LoginDialog extends React.Component {
                     classes.loginButton,
                     classes.normalFontSize,
                     classes.normalFontWeight,
-                    classes.normalText,
                     validActive && classes.loginButtonActive,
                   )}
                   classes={{
@@ -581,7 +577,6 @@ class LoginDialog extends React.Component {
                   className={classNames(
                     classes.normalFontSize,
                     classes.normalFontWeight,
-                    classes.normalText,
                     classes.forgetButton,
                   )}
                   onClick={this.handler.handleForgotPassword}
@@ -604,7 +599,6 @@ class LoginDialog extends React.Component {
                     classes.loginButton,
                     classes.normalFontSize,
                     classes.normalFontWeight,
-                    classes.normalText,
                     validActive && classes.loginButtonActive,
                   )}
                   classes={{

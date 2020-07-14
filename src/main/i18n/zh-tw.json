@@ -35,5 +35,8 @@
   "toggledevtools": "切換開發者工具",
   "learnMore": "了解更多...",
   "menuMainWindow": "主窗口",
+
+  "fileFilterPNG": "PNG files (*.png)",
+  "fileFilterPDF": "PDF files (*.pdf)",
   "errorConnect": "無法連接到服務器： {{host}}，請檢查您的網絡。"
 }
