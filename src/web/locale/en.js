@@ -83,7 +83,9 @@ export default {
   widthTitle: 'Width',
   lightOption: 'Light',
   darkOption: 'Dark',
-  pcOption: 'PC',
+  pcOption: 'Computer',
   mobilePlusOption: 'Mobile plus',
   mobileOption: 'Mobile',
+  exportLoading: 'Exporting...',
+  exportButton: 'Export Image',
 };

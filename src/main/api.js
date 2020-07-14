@@ -13,7 +13,7 @@ const globalSettings = require('./settings/global_settings');
 const wait = require('./utils/wait');
 const paths = require('./common/paths');
 
-const isDebug = true;
+const isDebug = false;
 
 function unregisterWindow(window) {
   users.unregisterWindow(window.webContents);
@@ -214,7 +214,7 @@ handleApi('captureScreen', async (event, userGuid, kbGuid, noteGuid, options = {
   const theme = options.theme || 'lite';
   const padding = options.padding || 16;
 
-  window.loadURL(`${mainUrl}?kbGuid=${kbGuid}&noteGuid=${noteGuid}&padding=${padding}&theme=${theme}&hideThumb=1`);
+  window.loadURL(`${mainUrl}?kbGuid=${kbGuid}&noteGuid=${noteGuid}&padding=${padding}&theme=${theme}&hideThumb=1&showFooter=1`);
   if (isDebug) window.webContents.toggleDevTools();
   //
   window.webContents.on('ipc-message', async (e, channel, ...args) => {

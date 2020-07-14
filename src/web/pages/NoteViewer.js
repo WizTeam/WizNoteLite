@@ -21,6 +21,19 @@ const styles = (theme) => ({
     backgroundColor: 'white',
     color: '#333333',
   },
+  footer: {
+    borderTop: 'solid 1px',
+    textAlign: 'center',
+    lineHeight: '64px',
+  },
+  footer_lite: {
+    borderColor: '#d8d8d8',
+    color: '#d8d8d8',
+  },
+  footer_dark: {
+    borderColor: '#555555',
+    color: '#555555',
+  },
 });
 
 class NoteViewer extends React.Component {
@@ -100,6 +113,7 @@ class NoteViewer extends React.Component {
     //
     const resetBackground = darkMode !== undefined;
     const backgroundClass = darkMode ? classes.root_dark : classes.root_lite;
+    const footerClass = darkMode ? classes.footer_dark : classes.footer_lite;
 
     const { loading, markdown, resourceUrl } = this.state;
     //
@@ -132,6 +146,9 @@ class NoteViewer extends React.Component {
           autoSelectTitle={false}
           hideBlockType
         />
+        {params.showFooter === '1' && (
+          <div className={classNames(classes.footer, footerClass)}>Powerd by WizNote Lite</div>
+        )}
       </div>
     );
 

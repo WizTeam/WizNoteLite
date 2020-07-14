@@ -19,6 +19,9 @@ const useStyles = makeStyles((/* theme */) => ({
   buttonLabel: {
     justifyContent: 'space-between',
   },
+  paper: {
+    transform: 'translateY(4px) !important',
+  },
   menu: {
   },
 }));
@@ -95,6 +98,7 @@ function LiteSelect(props) {
       <Menu
         className={classes.menu}
         classes={{
+          paper: classes.paper,
           list: listClass ?? null,
         }}
         anchorEl={anchorEl}
