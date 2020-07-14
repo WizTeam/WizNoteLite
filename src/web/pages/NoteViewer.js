@@ -118,6 +118,8 @@ class NoteViewer extends React.Component {
     const { loading, markdown, resourceUrl } = this.state;
     //
     const style = {
+      paddingTop: Number.parseInt(params.paddingTop || params.padding, 10) || 32,
+      paddingBottom: Number.parseInt(params.paddingBottom || params.padding, 10) || 32,
       paddingLeft: Number.parseInt(params.paddingLeft || params.padding, 10) || 32,
       paddingRight: Number.parseInt(params.paddingRight || params.padding, 10) || 32,
     };

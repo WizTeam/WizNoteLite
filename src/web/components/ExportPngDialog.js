@@ -141,13 +141,11 @@ class ExportDialog extends React.Component {
       };
       //
       const { widthValue, previewTheme } = this.state;
-      let width = 375;
+      const width = widthValue;
       let padding = 16;
-      if (widthValue === 'mobilePlus') {
-        width = 450;
+      if (widthValue === MOBILE_PLUS_WIDTH) {
         padding = 24;
-      } else if (widthValue === 'pc') {
-        width = 600;
+      } else if (widthValue === PC_WIDTH) {
         padding = 32;
       }
       //
@@ -209,9 +207,9 @@ class ExportDialog extends React.Component {
     ];
 
     let padding = 16;
-    if (widthValue === 'pc') {
+    if (widthValue === PC_WIDTH) {
       padding = 32;
-    } else if (widthValue === 'mobilePlus') {
+    } else if (widthValue === MOBILE_PLUS_WIDTH) {
       padding = 24;
     }
 
@@ -242,7 +240,7 @@ class ExportDialog extends React.Component {
                 noteGuid={noteGuid}
                 darkMode={previewTheme === 'dark'}
                 params={{
-                  padding,
+                  padding: `${padding}`,
                 }}
               />
               <Backdrop
