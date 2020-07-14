@@ -7,7 +7,9 @@ import { getTagSpan } from '../libs/dom_utils';
 
 const styles = (/* theme */) => ({
   root: {
-    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    flex: 1,
   },
   invisible: {
     display: 'none',
@@ -177,7 +179,7 @@ class MarkdownEditor extends React.Component {
   render() {
     //
     const { note, tagList } = this.state;
-    const { classes, theme, minHeight } = this.props;
+    const { classes, theme } = this.props;
     //
     return (
       <div className={classNames(classes.root, !note && classes.invisible)}>
@@ -186,7 +188,6 @@ class MarkdownEditor extends React.Component {
           value={this.oldMarkdown}
           isMac={window.wizApi.platform.isMac}
           contentId={note ? note.guid : 'empty'}
-          minHeight={minHeight}
           onInit={this.initEditor}
           onInput={this.handler.handleNoteModified}
           resourceUrl={this.resourceUrl}
@@ -206,7 +207,6 @@ MarkdownEditor.propTypes = {
   classes: PropTypes.object.isRequired,
   note: PropTypes.object,
   kbGuid: PropTypes.string,
-  minHeight: PropTypes.number,
   theme: PropTypes.object.isRequired,
   onLoadNote: PropTypes.func.isRequired,
   onSaveNote: PropTypes.func.isRequired,
@@ -217,7 +217,6 @@ MarkdownEditor.propTypes = {
 MarkdownEditor.defaultProps = {
   note: null,
   kbGuid: null,
-  minHeight: 0,
 };
 
 export default withTheme(withStyles(styles)(MarkdownEditor));

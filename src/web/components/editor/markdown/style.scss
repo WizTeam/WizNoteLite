@@ -1,6 +1,8 @@
 .editor-container {
   position: relative;
-  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
   &.focus-mode {
     div[id^='editor_'] {
       pre.vditor-reset > * {
@@ -49,13 +51,22 @@
     }
   
     border: none;
-    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
     
     .vditor-toolbar {
       display: none;
     }
+    .vditor-ir {
+      display: flex !important;
+      flex-direction: column;
+      flex: 1;
+    }
     .vditor-reset {
       overflow: visible;
+      height: auto;
+      flex: 1;
       padding: 0 !important;
       --panel-background-color: transparent;
       line-height: var(--text-line-height);
