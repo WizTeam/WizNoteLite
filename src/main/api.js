@@ -13,7 +13,7 @@ const globalSettings = require('./settings/global_settings');
 const wait = require('./utils/wait');
 const paths = require('./common/paths');
 
-const isDebug = false;
+const isDebug = true;
 
 function unregisterWindow(window) {
   users.unregisterWindow(window.webContents);
@@ -381,7 +381,7 @@ handleApi('printToPDF', async (event, userGuid, kbGuid, noteGuid, options = {}) 
     width,
     height: 600,
     resizable: false,
-    show: false,
+    show: isDebug,
     frame: false,
     webPreferences: {
       nodeIntegration: false,
@@ -398,7 +398,7 @@ handleApi('printToPDF', async (event, userGuid, kbGuid, noteGuid, options = {}) 
   });
 
   window.loadURL(`${mainUrl}?kbGuid=${kbGuid}&noteGuid=${noteGuid}&standardScrollBar=1&padding=32&theme=lite`);
-  // window.webContents.toggleDevTools();
+  if (isDebug) window.webContents.toggleDevTools();
   //
   window.webContents.on('ipc-message', async (e, channel) => {
     if (channel === 'onNoteLoaded') {
@@ -428,8 +428,10 @@ handleApi('printToPDF', async (event, userGuid, kbGuid, noteGuid, options = {}) 
       shell.showItemInFolder(filePath);
       //
       setTimeout(() => {
-        unregisterWindow(window);
-        window.close();
+        if (!isDebug) {
+          unregisterWindow(window);
+          window.close();
+        }
       }, 1000);
     }
   });

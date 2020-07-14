@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { injectIntl } from 'react-intl';
 import { withStyles, withTheme } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
@@ -97,7 +98,7 @@ const styles = (theme) => ({
   },
   separator: {
     height: 1,
-    backgroundColor: theme.custom.color.liteSelectBorder,
+    backgroundColor: '#d8d8d8',
     margin: '4px 24px',
   },
   normalButton: {
@@ -162,6 +163,7 @@ class Content extends React.Component {
     const {
       note, kbGuid, classes,
       isSearch, theme, backgroundType, onClickTag,
+      intl,
     } = this.props;
     const {
       isFullScreen, exportMenuAnchorEl, showExportDialog,
@@ -199,9 +201,8 @@ class Content extends React.Component {
             {!isFullScreen && <Icons.FullScreenIcon className={classes.icon} />}
           </IconButton>
           )}
-          {/* TODO: export note icon */}
           <IconButton className={classes.iconButton} onClick={this.handler.handleShowExportMenu}>
-            <Icons.LinkIcon className={classes.icon} />
+            <Icons.ExportIcon className={classes.icon} />
           </IconButton>
           <div className={classes.emptyBlock} />
           <SyncBtn
@@ -232,24 +233,31 @@ class Content extends React.Component {
           open={!!exportMenuAnchorEl}
           onClose={this.handler.handleCloseExportMenu}
         >
-          <MenuItem onClick={this.handler.handleShowExportPngDialog}>Export Png</MenuItem>
-          <MenuItem>Export md</MenuItem>
-          <MenuItem
-            onClick={() => {
-              window.wizApi.userManager.printToPDF(kbGuid, note.guid, { landscape: true });
-            }}
-          >
-            Export PDF
+          <MenuItem onClick={this.handler.handleShowExportPngDialog}>
+            {intl.formatMessage({ id: 'exportPng' })}
           </MenuItem>
-          <MenuItem>Copy source markdown</MenuItem>
-          <div className={classes.separator} />
-          <MenuItem disabled>Publish to</MenuItem>
-          <MenuItem
+          {/* <MenuItem>
+            {intl.formatMessage({ id: 'exportMd' })}
+          </MenuItem> */}
+          <MenuItem onClick={() => {
+            window.wizApi.userManager.printToPDF(kbGuid, note.guid, { landscape: true });
+          }}
+          >
+            {intl.formatMessage({ id: 'exportPdf' })}
+          </MenuItem>
+          {/* <MenuItem>
+            {intl.formatMessage({ id: 'copySourceMarkdown' })}
+          </MenuItem> */}
+          {/* <div className={classes.separator} /> */}
+          {/* <MenuItem disabled>
+            {intl.formatMessage({ id: 'publishTo' })}
+          </MenuItem> */}
+          {/* <MenuItem
             disableRipple
             className={classes.normalButton}
           >
-            Setting publish platform
-          </MenuItem>
+            {intl.formatMessage({ id: 'settingPublishPlatform' })}
+          </MenuItem> */}
         </Menu>
         <ExportPngDialog
           open={showExportDialog}
@@ -265,6 +273,7 @@ class Content extends React.Component {
 Content.propTypes = {
   theme: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
+  intl: PropTypes.object.isRequired,
   kbGuid: PropTypes.string.isRequired,
   isSearch: PropTypes.bool.isRequired,
   note: PropTypes.object,
@@ -279,4 +288,4 @@ Content.defaultProps = {
   backgroundType: 'white',
 };
 
-export default withTheme(withStyles(styles)(Content));
+export default withTheme(withStyles(styles)(injectIntl(Content)));

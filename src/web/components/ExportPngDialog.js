@@ -17,12 +17,15 @@ import Icons from '../config/icons';
 
 const styles = (theme) => ({
   root: {
-    width: 600,
+    width: 768,
     boxSizing: 'border-box',
     display: 'flex',
     position: 'relative',
-    padding: theme.spacing(4),
+    padding: `32px !important`,
     backgroundColor: theme.custom.background.about,
+  },
+  paper: {
+    maxWidth: 'unset',
   },
   close: {
     position: 'absolute',
@@ -41,14 +44,13 @@ const styles = (theme) => ({
   },
   previewBox: {
     flex: 1,
-    height: 300,
+    height: 384,
     display: 'flex',
     flexDirection: 'column',
   },
   viewerBox: {
     position: 'relative',
     width: '100%',
-    border: '2px solid #ccc',
     boxSizing: 'border-box',
     flex: 1,
   },
@@ -59,28 +61,59 @@ const styles = (theme) => ({
     color: theme.custom.color.matchedText,
   },
   exportButton: {
-    backgroundColor: theme.custom.background.loginButton,
-    color: theme.custom.color.loginButton,
+    backgroundColor: theme.custom.background.dialogButtonBlack,
+    color: theme.custom.color.dialogButtonBlack,
     borderRadius: 0,
     '&:hover': {
-      backgroundColor: theme.custom.background.loginButtonHover,
+      backgroundColor: theme.custom.background.dialogButtonBlackHover,
+    },
+    '&.Mui-disabled': {
+      color: theme.custom.color.dialogButtonBlack,
+      opacity: 0.5,
     },
   },
   list: {
-    width: 150,
-    height: 300,
+    width: 128,
+    height: 'auto',
     display: 'flex',
     paddingLeft: theme.spacing(4),
     flexDirection: 'column',
   },
   selectList: {
-    minWidth: 150,
+    minWidth: 128,
   },
   grow: {
     flexGrow: 1,
   },
   title: {
     margin: theme.spacing(1, 0),
+    fontSize: 14,
+    color: theme.custom.color.dialogTextPrimary,
+  },
+  pc: {
+    border: '1px solid #d8d8d8 !important',
+  },
+  mobilePlus: {
+    border: 'solid 6px #333333',
+    borderBottom: 0,
+    borderRadius: '40px 40px 0 0',
+    overflow: 'hidden',
+    width: 'auto',
+    margin: '0 76px',
+  },
+  mobile: {
+    border: 'solid 6px #333333',
+    borderBottom: 0,
+    borderRadius: '40px 40px 0 0',
+    overflow: 'hidden',
+    width: 'auto',
+    margin: '0 127px',
+  },
+  darkBorderColor: {
+    borderColor: '#d8d8d8',
+  },
+  lightBorderColor: {
+    borderColor: '#333333',
   },
 });
 
@@ -98,8 +131,19 @@ class ExportDialog extends React.Component {
           this.setState({ loading: false });
         }
       };
+      //
+      const { widthValue, previewTheme } = this.state;
+      let width = 375;
+      if (widthValue === 'mobilePlus') {
+        width = 450;
+      } else if (widthValue === 'pc') {
+        width = 600;
+      }
+      //
       const options = {
         progressCallback: 'onCaptureScreenProgress',
+        theme: previewTheme,
+        width,
       };
       //
       this.setState({ loading: true });
@@ -109,6 +153,9 @@ class ExportDialog extends React.Component {
     handleChangePreviewTheme: (item, value) => {
       this.setState({ previewTheme: value });
     },
+    handleChangeWidth: (item, value) => {
+      this.setState({ widthValue: value });
+    },
   };
 
   constructor(props) {
@@ -116,6 +163,7 @@ class ExportDialog extends React.Component {
     this.state = {
       loading: false,
       previewTheme: null,
+      widthValue: 'pc',
     };
   }
 
@@ -130,33 +178,46 @@ class ExportDialog extends React.Component {
 
   render() {
     const {
-      loading, previewTheme,
+      loading, previewTheme, widthValue,
     } = this.state;
     const {
       classes, open, onClose,
-      kbGuid, noteGuid,
+      kbGuid, noteGuid, intl,
     } = this.props;
 
     const themeOptions = [
-      { value: 'light', title: 'light' },
-      { value: 'dark', title: 'dark' },
+      { value: 'light', title: intl.formatMessage({ id: 'lightOption' }) },
+      { value: 'dark', title: intl.formatMessage({ id: 'darkOption' }) },
     ];
 
     const widthOptions = [
-      { value: 'pc', title: 'Pc' },
-      { value: 'mobilePlus', title: 'Mobile plus' },
-      { value: 'mobile', title: 'Mobile' },
+      { value: 'pc', title: intl.formatMessage({ id: 'pcOption' }) },
+      { value: 'mobilePlus', title: intl.formatMessage({ id: 'mobilePlusOption' }) },
+      { value: 'mobile', title: intl.formatMessage({ id: 'mobileOption' }) },
     ];
 
     return (
       <Dialog
         open={open}
         onEscapeKeyDown={onClose}
+        classes={{
+          paper: classes.paper,
+        }}
       >
         <DialogContent className={classes.root}>
           <div className={classes.previewBox}>
-            <LiteText className={classes.title}>Export png</LiteText>
-            <div className={classes.viewerBox}>
+            <LiteText className={classes.title}>
+              {intl.formatMessage({ id: 'exportPng' })}
+            </LiteText>
+            <div className={classNames(
+              classes.viewerBox,
+              widthValue === 'pc' && classes.pc,
+              widthValue === 'mobilePlus' && classes.mobilePlus,
+              widthValue === 'mobile' && classes.mobile,
+              previewTheme === 'dark' && classes.darkBorderColor,
+              previewTheme === 'light' && classes.lightBorderColor,
+            )}
+            >
               <NoteViewer
                 kbGuid={kbGuid}
                 noteGuid={noteGuid}
@@ -164,6 +225,7 @@ class ExportDialog extends React.Component {
                 params={{
                   kbGuid,
                   noteGuid,
+                  padding: 16,
                 }}
               />
               <Backdrop
@@ -177,15 +239,24 @@ class ExportDialog extends React.Component {
             </div>
           </div>
           <div className={classes.list}>
-            <LiteText className={classes.title}>theme</LiteText>
+            <LiteText className={classes.title}>
+              {intl.formatMessage({ id: 'themeTitle' })}
+            </LiteText>
             <LiteSelect
               options={themeOptions}
               value={previewTheme}
               listClass={classes.selectList}
               onChange={this.handler.handleChangePreviewTheme}
             />
-            <LiteText className={classes.title}>width</LiteText>
-            <LiteSelect options={widthOptions} listClass={classes.selectList} />
+            <LiteText className={classes.title}>
+              {intl.formatMessage({ id: 'widthTitle' })}
+            </LiteText>
+            <LiteSelect
+              options={widthOptions}
+              value={widthValue}
+              listClass={classes.selectList}
+              onChange={this.handler.handleChangeWidth}
+            />
             <div className={classes.grow} />
             <Button
               disabled={loading}
@@ -209,6 +280,7 @@ class ExportDialog extends React.Component {
 ExportDialog.propTypes = {
   classes: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
+  intl: PropTypes.object.isRequired,
   open: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
   kbGuid: PropTypes.string.isRequired,
