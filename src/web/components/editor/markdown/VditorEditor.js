@@ -17,6 +17,10 @@ import { getRange, getSelection } from '../libs/range_utils';
 
 const styles = (/* theme */) => ({
   hideBlockType: {
+    '& .vditor-reset': {
+      paddingLeft: '0 !important',
+      paddingRight: '0 !important',
+    },
     '& h1:before, & h2:before, & h3:before, & h4:before, & h5:before, & h6:before': {
       display: 'none',
     },
