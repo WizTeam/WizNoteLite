@@ -118,10 +118,14 @@ const styles = (theme) => ({
   },
 });
 
+const PC_WIDTH = 740;
+const MOBILE_PLUS_WIDTH = 540;
+const MOBILE_WIDTH = 400;
+
 class ExportDialog extends React.Component {
   handler = {
     handleExportPng: () => {
-      const { previewTheme } = this.state;
+      const { previewTheme, widthValue } = this.state;
       const { kbGuid, noteGuid } = this.props;
       const theme = previewTheme === 'light' ? 'lite' : previewTheme;
       //
@@ -137,6 +141,7 @@ class ExportDialog extends React.Component {
       const options = {
         progressCallback: 'onCaptureScreenProgress',
         theme,
+        width: widthValue,
       };
       //
       this.setState({ loading: true });
@@ -156,7 +161,7 @@ class ExportDialog extends React.Component {
     this.state = {
       loading: false,
       previewTheme: null,
-      widthValue: 'pc',
+      widthValue: PC_WIDTH,
     };
   }
 
@@ -184,9 +189,9 @@ class ExportDialog extends React.Component {
     ];
 
     const widthOptions = [
-      { value: 'pc', title: intl.formatMessage({ id: 'pcOption' }) },
-      { value: 'mobilePlus', title: intl.formatMessage({ id: 'mobilePlusOption' }) },
-      { value: 'mobile', title: intl.formatMessage({ id: 'mobileOption' }) },
+      { value: PC_WIDTH, title: intl.formatMessage({ id: 'pcOption' }) },
+      { value: MOBILE_PLUS_WIDTH, title: intl.formatMessage({ id: 'mobilePlusOption' }) },
+      { value: MOBILE_WIDTH, title: intl.formatMessage({ id: 'mobileOption' }) },
     ];
 
     return (
@@ -204,9 +209,9 @@ class ExportDialog extends React.Component {
             </LiteText>
             <div className={classNames(
               classes.viewerBox,
-              widthValue === 'pc' && classes.pc,
-              widthValue === 'mobilePlus' && classes.mobilePlus,
-              widthValue === 'mobile' && classes.mobile,
+              widthValue === PC_WIDTH && classes.pc,
+              widthValue === MOBILE_PLUS_WIDTH && classes.mobilePlus,
+              widthValue === MOBILE_WIDTH && classes.mobile,
               previewTheme === 'dark' && classes.darkBorderColor,
               previewTheme === 'light' && classes.lightBorderColor,
             )}
