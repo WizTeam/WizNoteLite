@@ -86,4 +86,6 @@ export default {
   pcOption: 'Pc',
   mobilePlusOption: 'Mobile plus',
   mobileOption: 'Mobile',
+  exportLoading: 'Loading...',
+  exportButton: 'Export',
 };

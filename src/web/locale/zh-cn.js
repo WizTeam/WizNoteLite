@@ -86,4 +86,6 @@ export default {
   pcOption: '电脑阅读',
   mobilePlusOption: 'Plus手机阅读',
   mobileOption: '手机阅读',
+  exportLoading: '正在生成...',
+  exportButton: '导出',
 };

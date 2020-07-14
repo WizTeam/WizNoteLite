@@ -64,6 +64,7 @@ const styles = (theme) => ({
     backgroundColor: theme.custom.background.dialogButtonBlack,
     color: theme.custom.color.dialogButtonBlack,
     borderRadius: 0,
+    textTransform: 'none',
     '&:hover': {
       backgroundColor: theme.custom.background.dialogButtonBlackHover,
     },
@@ -120,19 +121,22 @@ const styles = (theme) => ({
 class ExportDialog extends React.Component {
   handler = {
     handleExportPng: () => {
+      const { previewTheme } = this.state;
       const { kbGuid, noteGuid } = this.props;
+      const theme = previewTheme === 'light' ? 'lite' : previewTheme;
+      //
       if (!noteGuid || this.state.loading) {
         return;
       }
       //
       window.onCaptureScreenProgress = (progress) => {
-        console.log(progress);
         if (progress === 100) {
           this.setState({ loading: false });
         }
       };
       const options = {
         progressCallback: 'onCaptureScreenProgress',
+        theme,
       };
       //
       this.setState({ loading: true });
@@ -195,7 +199,7 @@ class ExportDialog extends React.Component {
       >
         <DialogContent className={classes.root}>
           <div className={classes.previewBox}>
-            <LiteText className={classes.title}>
+            <LiteText className={classes.title} disableUserSelect>
               {intl.formatMessage({ id: 'exportPng' })}
             </LiteText>
             <div className={classNames(
@@ -251,7 +255,11 @@ class ExportDialog extends React.Component {
               className={classes.exportButton}
               onClick={this.handler.handleExportPng}
             >
-              { loading ? 'loading...' : 'export'}
+              {
+              loading
+                ? intl.formatMessage({ id: 'exportLoading' })
+                : intl.formatMessage({ id: 'exportButton' })
+              }
             </Button>
           </div>
           <div className={classes.close}>
