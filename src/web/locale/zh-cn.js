@@ -73,7 +73,7 @@ export default {
   error31013: '手机号已经被注册，请更换手机号！',
   // export
   exportPng: '导出为图片',
-  exportMd: '导出为 md',
+  exportMd: '导出为 Markdown',
   exportPdf: '导出为 PDF',
   copySourceMarkdown: '复制 Markdown 原文',
   publishTo: '发布至',

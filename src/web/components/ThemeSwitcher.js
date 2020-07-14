@@ -29,6 +29,9 @@ export default function ThemeSwitcher(props) {
       },
       typography: {
         fontFamily: `'Open Sans', 'Noto Sans SC', Menlo, "Ubuntu Mono", Consolas, "Courier New", "Microsoft Yahei", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif`,
+        button: {
+          textTransform: 'none',
+        },
       },
       overrides: {
         MuiIconButton: {

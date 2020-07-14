@@ -14,7 +14,6 @@ const useStyles = makeStyles((/* theme */) => ({
     border: '1px solid #d8d8d8',
   },
   button: {
-    textTransform: 'none',
     borderRadius: 0,
   },
   buttonLabel: {

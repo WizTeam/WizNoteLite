@@ -118,16 +118,14 @@ const styles = (theme) => ({
   },
 });
 
-const PC_WIDTH = 740;
-const MOBILE_PLUS_WIDTH = 540;
-const MOBILE_WIDTH = 400;
+const PC_WIDTH = 600;
+const MOBILE_PLUS_WIDTH = 450;
+const MOBILE_WIDTH = 375;
 
 class ExportDialog extends React.Component {
   handler = {
     handleExportPng: () => {
-      const { previewTheme, widthValue } = this.state;
       const { kbGuid, noteGuid } = this.props;
-      const theme = previewTheme === 'light' ? 'lite' : previewTheme;
       //
       if (!noteGuid || this.state.loading) {
         return;
@@ -138,9 +136,11 @@ class ExportDialog extends React.Component {
           this.setState({ loading: false });
         }
       };
+      //
+      const { previewTheme, widthValue } = this.state;
       const options = {
         progressCallback: 'onCaptureScreenProgress',
-        theme,
+        theme: previewTheme,
         width: widthValue,
       };
       //
@@ -223,6 +223,7 @@ class ExportDialog extends React.Component {
                 params={{
                   kbGuid,
                   noteGuid,
+                  padding: 16,
                 }}
               />
               <Backdrop
