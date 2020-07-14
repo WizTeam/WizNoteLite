@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { injectIntl } from 'react-intl';
 import { withStyles, withTheme } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
@@ -162,6 +163,7 @@ class Content extends React.Component {
     const {
       note, kbGuid, classes,
       isSearch, theme, backgroundType, onClickTag,
+      intl,
     } = this.props;
     const {
       isFullScreen, exportMenuAnchorEl, showExportDialog,
@@ -231,18 +233,28 @@ class Content extends React.Component {
           open={!!exportMenuAnchorEl}
           onClose={this.handler.handleCloseExportMenu}
         >
-          <MenuItem onClick={this.handler.handleShowExportPngDialog}>Export Png</MenuItem>
-          <MenuItem>Export md</MenuItem>
-          <MenuItem>Export PDF</MenuItem>
-          <MenuItem>Copy source markdown</MenuItem>
-          <div className={classes.separator} />
-          <MenuItem disabled>Publish to</MenuItem>
-          <MenuItem
+          <MenuItem onClick={this.handler.handleShowExportPngDialog}>
+            {intl.formatMessage({ id: 'exportPng' })}
+          </MenuItem>
+          {/* <MenuItem>
+            {intl.formatMessage({ id: 'exportMd' })}
+          </MenuItem> */}
+          {/* <MenuItem>
+            {intl.formatMessage({ id: 'exportPdf' })}
+          </MenuItem> */}
+          {/* <MenuItem>
+            {intl.formatMessage({ id: 'copySourceMarkdown' })}
+          </MenuItem> */}
+          {/* <div className={classes.separator} /> */}
+          {/* <MenuItem disabled>
+            {intl.formatMessage({ id: 'publishTo' })}
+          </MenuItem> */}
+          {/* <MenuItem
             disableRipple
             className={classes.normalButton}
           >
-            Setting publish platform
-          </MenuItem>
+            {intl.formatMessage({ id: 'settingPublishPlatform' })}
+          </MenuItem> */}
         </Menu>
         <ExportPngDialog
           open={showExportDialog}
@@ -258,6 +270,7 @@ class Content extends React.Component {
 Content.propTypes = {
   theme: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
+  intl: PropTypes.object.isRequired,
   kbGuid: PropTypes.string.isRequired,
   isSearch: PropTypes.bool.isRequired,
   note: PropTypes.object,
@@ -272,4 +285,4 @@ Content.defaultProps = {
   backgroundType: 'white',
 };
 
-export default withTheme(withStyles(styles)(Content));
+export default withTheme(withStyles(styles)(injectIntl(Content)));

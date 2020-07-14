@@ -171,18 +171,18 @@ class ExportDialog extends React.Component {
     } = this.state;
     const {
       classes, open, onClose,
-      kbGuid, noteGuid,
+      kbGuid, noteGuid, intl,
     } = this.props;
 
     const themeOptions = [
-      { value: 'light', title: 'light' },
-      { value: 'dark', title: 'dark' },
+      { value: 'light', title: intl.formatMessage({ id: 'lightOption' }) },
+      { value: 'dark', title: intl.formatMessage({ id: 'darkOption' }) },
     ];
 
     const widthOptions = [
-      { value: 'pc', title: 'Pc' },
-      { value: 'mobilePlus', title: 'Mobile plus' },
-      { value: 'mobile', title: 'Mobile' },
+      { value: 'pc', title: intl.formatMessage({ id: 'pcOption' }) },
+      { value: 'mobilePlus', title: intl.formatMessage({ id: 'mobilePlusOption' }) },
+      { value: 'mobile', title: intl.formatMessage({ id: 'mobileOption' }) },
     ];
 
     return (
@@ -195,7 +195,9 @@ class ExportDialog extends React.Component {
       >
         <DialogContent className={classes.root}>
           <div className={classes.previewBox}>
-            <LiteText className={classes.title}>Export png</LiteText>
+            <LiteText className={classes.title}>
+              {intl.formatMessage({ id: 'exportPng' })}
+            </LiteText>
             <div className={classNames(
               classes.viewerBox,
               widthValue === 'pc' && classes.pc,
@@ -225,14 +227,18 @@ class ExportDialog extends React.Component {
             </div>
           </div>
           <div className={classes.list}>
-            <LiteText className={classes.title}>theme</LiteText>
+            <LiteText className={classes.title}>
+              {intl.formatMessage({ id: 'themeTitle' })}
+            </LiteText>
             <LiteSelect
               options={themeOptions}
               value={previewTheme}
               listClass={classes.selectList}
               onChange={this.handler.handleChangePreviewTheme}
             />
-            <LiteText className={classes.title}>width</LiteText>
+            <LiteText className={classes.title}>
+              {intl.formatMessage({ id: 'widthTitle' })}
+            </LiteText>
             <LiteSelect
               options={widthOptions}
               value={widthValue}
@@ -262,6 +268,7 @@ class ExportDialog extends React.Component {
 ExportDialog.propTypes = {
   classes: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
+  intl: PropTypes.object.isRequired,
   open: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
   kbGuid: PropTypes.string.isRequired,

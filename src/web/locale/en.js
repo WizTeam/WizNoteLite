@@ -71,4 +71,19 @@ export default {
   error31004: 'Log in too frequently, please try again later.',
   error31005: 'Deactivate Account',
   error31013: 'This phone number has been used for registration, please change another one.',
+  // export
+  exportPng: 'Export PNG',
+  exportMd: 'Export MD',
+  exportPdf: 'Export PDF',
+  copySourceMarkdown: 'Copy source markdown',
+  publishTo: 'Publish to',
+  settingPublishPlatform: 'Setting publish Platform',
+
+  themeTitle: 'Theme',
+  widthTitle: 'Width',
+  lightOption: 'Light',
+  darkOption: 'Dark',
+  pcOption: 'Pc',
+  mobilePlusOption: 'Mobile plus',
+  mobileOption: 'Mobile',
 };
