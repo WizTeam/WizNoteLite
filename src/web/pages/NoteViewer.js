@@ -136,7 +136,7 @@ class NoteViewer extends React.Component {
     );
 
     const contentEditorWithScrollBar = (
-      <Scrollbar autoHideTimeout={100} theme={theme}>
+      <Scrollbar hideThumb={params.hideThumb === '1'} theme={theme}>
         {contentEditor}
       </Scrollbar>
     );

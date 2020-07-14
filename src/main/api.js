@@ -13,6 +13,8 @@ const globalSettings = require('./settings/global_settings');
 const wait = require('./utils/wait');
 const paths = require('./common/paths');
 
+const isDebug = false;
+
 function unregisterWindow(window) {
   users.unregisterWindow(window.webContents);
 }
@@ -185,15 +187,15 @@ handleApi('captureScreen', async (event, userGuid, kbGuid, noteGuid, options = {
   await onProgress(0);
   //
   const width = options.width || 375; // iPhone X
-  const height = 400; // default
+  const pageHeight = 600; // default
   //
   const browserWindowOptions = {
     x: 0,
     y: 0,
     width,
-    height,
+    height: pageHeight,
     resizable: false,
-    show: false,
+    show: isDebug,
     frame: false,
     webPreferences: {
       nodeIntegration: false,
@@ -211,8 +213,8 @@ handleApi('captureScreen', async (event, userGuid, kbGuid, noteGuid, options = {
 
   const theme = options.theme || 'lite';
 
-  window.loadURL(`${mainUrl}?kbGuid=${kbGuid}&noteGuid=${noteGuid}&padding=16&theme=${theme}`);
-  // window.webContents.toggleDevTools();
+  window.loadURL(`${mainUrl}?kbGuid=${kbGuid}&noteGuid=${noteGuid}&padding=16&theme=${theme}&hideThumb=1`);
+  if (isDebug) window.webContents.toggleDevTools();
   //
   window.webContents.on('ipc-message', async (e, channel, ...args) => {
     if (channel === 'onNoteLoaded') {
@@ -220,7 +222,6 @@ handleApi('captureScreen', async (event, userGuid, kbGuid, noteGuid, options = {
       const [, , , noteOptions] = args;
       const totalHeight = noteOptions.height;
       const windowWidth = window.getSize()[0];
-      const pageHeight = 400;
       window.setSize(windowWidth, pageHeight);
       await window.webContents.executeJavaScript('window.requestAnimationFrame;');
       const pageCount = Math.floor((totalHeight + pageHeight - 1) / pageHeight);
@@ -243,7 +244,7 @@ handleApi('captureScreen', async (event, userGuid, kbGuid, noteGuid, options = {
         }
         const top = await window.webContents.executeJavaScript(`document.getElementById('wiz-note-content-root').parentElement.scrollTop;`);
         //
-        await wait(1000); // wait scrollbar
+        await wait(300); // wait scrollbar
         await window.webContents.executeJavaScript('window.requestAnimationFrame;');
         const image = await window.capturePage();
         const imageSize = image.getSize();
@@ -306,8 +307,10 @@ handleApi('captureScreen', async (event, userGuid, kbGuid, noteGuid, options = {
       e.preventDefault();
       //
       setTimeout(() => {
-        unregisterWindow(window);
-        window.close();
+        if (!isDebug) {
+          unregisterWindow(window);
+          window.close();
+        }
       }, 1000);
     }
   });
