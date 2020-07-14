@@ -108,9 +108,6 @@ const styles = (theme) => ({
   loginButtonActive: {
     backgroundColor: theme.custom.background.dialogButtonBlackHover,
   },
-  normalText: {
-    textTransform: 'none',
-  },
   logo: {
     display: 'flex',
     alignItems: 'center',
@@ -491,13 +488,13 @@ class LoginDialog extends React.Component {
             <div className={classes.grow} />
             <Button
               onClick={() => this.handler.handleChangeType('login')}
-              className={classNames(classes.tabButton, classes.normalFontSize, classes.normalText, classes.normalFontWeight, type === 'login' && classes.activeTab)}
+              className={classNames(classes.tabButton, classes.normalFontSize, classes.normalFontWeight, type === 'login' && classes.activeTab)}
             >
               {intl.formatMessage({ id: 'tabLogin' })}
             </Button>
             <Button
               onClick={() => this.handler.handleChangeType('register')}
-              className={classNames(classes.tabButton, classes.normalFontSize, classes.normalText, classes.normalFontWeight, type === 'register' && classes.activeTab)}
+              className={classNames(classes.tabButton, classes.normalFontSize, classes.normalFontWeight, type === 'register' && classes.activeTab)}
             >
               {intl.formatMessage({ id: 'tabRegister' })}
             </Button>
@@ -560,7 +557,6 @@ class LoginDialog extends React.Component {
                     classes.loginButton,
                     classes.normalFontSize,
                     classes.normalFontWeight,
-                    classes.normalText,
                     validActive && classes.loginButtonActive,
                   )}
                   classes={{
@@ -575,7 +571,6 @@ class LoginDialog extends React.Component {
                   className={classNames(
                     classes.normalFontSize,
                     classes.normalFontWeight,
-                    classes.normalText,
                     classes.forgetButton,
                   )}
                   onClick={this.handler.handleForgotPassword}
@@ -598,7 +593,6 @@ class LoginDialog extends React.Component {
                     classes.loginButton,
                     classes.normalFontSize,
                     classes.normalFontWeight,
-                    classes.normalText,
                     validActive && classes.loginButtonActive,
                   )}
                   classes={{

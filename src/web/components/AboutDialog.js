@@ -36,7 +36,6 @@ const styles = (theme) => ({
   button: {
     color: theme.custom.color.forgetPasswordButton,
     padding: '0 2px',
-    textTransform: 'none',
     textDecoration: 'none',
     fontSize: 14,
     '&:hover': {
@@ -98,7 +97,6 @@ const styles = (theme) => ({
       backgroundColor: theme.custom.background.platformButton,
       color: theme.custom.color.platformButton,
       borderRadius: 0,
-      textTransform: 'none',
       padding: '6px 12px',
       '&:hover': {
         backgroundColor: theme.custom.background.platformButtonHover,
