@@ -17,10 +17,6 @@ import { getRange, getSelection } from '../libs/range_utils';
 
 const styles = (/* theme */) => ({
   hideBlockType: {
-    '& .vditor-reset': {
-      paddingLeft: '0 !important',
-      paddingRight: '0 !important',
-    },
     '& h1:before, & h2:before, & h3:before, & h4:before, & h5:before, & h6:before': {
       display: 'none',
     },
@@ -192,6 +188,10 @@ class VditorEditor extends React.Component {
     }
     if (nextState.isInitedEditor && !this.state.isInitedEditor) {
       updated = true;
+    }
+
+    if (this.editor) {
+      this.editor.vditor.element.style.minHeight = `${nextProps.minHeight}px`;
     }
 
     //
@@ -524,9 +524,10 @@ class VditorEditor extends React.Component {
   render() {
     const { classes, hideBlockType } = this.props;
     return (
-      <div className={classNames('editor-container', hideBlockType && classes.hideBlockType, {
-        'focus-mode': this.state.isFocus,
-      })}
+      <div
+        className={classNames('editor-container', hideBlockType && classes.hideBlockType, {
+          'focus-mode': this.state.isFocus,
+        })}
       >
         {this.styleRender()}
         {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
@@ -568,6 +569,7 @@ VditorEditor.propTypes = {
   // eslint-disable-next-line react/no-unused-prop-types
   value: PropTypes.string,
   contentId: PropTypes.string.isRequired,
+  minHeight: PropTypes.number,
   placeholder: PropTypes.string,
   resourceUrl: PropTypes.string,
   height: PropTypes.number,
@@ -589,6 +591,7 @@ VditorEditor.defaultProps = {
   disabled: false,
   darkMode: false,
   value: '',
+  minHeight: 0,
   placeholder: '',
   resourceUrl: 'wiz://',
   height: undefined,

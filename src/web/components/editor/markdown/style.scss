@@ -56,8 +56,7 @@
     }
     .vditor-reset {
       overflow: visible;
-      padding-top: 16px !important;
-      padding-bottom: 64px !important;
+      padding: 0 !important;
       --panel-background-color: transparent;
       line-height: var(--text-line-height);
       font-size: var(--text-font-size);
