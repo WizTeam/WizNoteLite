@@ -130,6 +130,7 @@ class NoteViewer extends React.Component {
           onInsertImageFromData={() => {}}
           tagList={{}}
           autoSelectTitle={false}
+          hideBlockType
         />
       </div>
     );
