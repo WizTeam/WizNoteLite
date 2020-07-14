@@ -33,5 +33,8 @@
   "helpMenu": "Help",
   "toggledevtools": "Toggle Developer Tools",
   "learnMore": "Learn More...",
-  "menuMainWindow": "Main Window"
+  "menuMainWindow": "Main Window",
+
+  "fileFilterPNG": "PNG files (*.png)",
+  "fileFilterPDF": "PDF files (*.pdf)"
 }

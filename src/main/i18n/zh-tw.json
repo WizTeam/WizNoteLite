@@ -34,5 +34,8 @@
   "helpMenu": "幫助",
   "toggledevtools": "切換開發者工具",
   "learnMore": "了解更多...",
-  "menuMainWindow": "主窗口"
+  "menuMainWindow": "主窗口",
+
+  "fileFilterPNG": "PNG files (*.png)",
+  "fileFilterPDF": "PDF files (*.pdf)"
 }

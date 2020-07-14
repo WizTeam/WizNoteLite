@@ -7,6 +7,7 @@ const fs = require('fs-extra');
 const URL = require('url');
 const path = require('path');
 const PImage = require('pureimage');
+const i18next = require('i18next');
 
 const users = require('./user/users');
 const globalSettings = require('./settings/global_settings');
@@ -174,6 +175,18 @@ handleApi('hasNotesInTrash', async (event, ...args) => {
   return result;
 });
 
+function noteTitleToFileName(title) {
+  let result = '';
+  for (const ch of title) {
+    if (`\\/<>:"|?*`.indexOf(ch) === -1) {
+      result += ch;
+    } else {
+      // result += '-';
+    }
+  }
+  return result;
+}
+
 handleApi('captureScreen', async (event, userGuid, kbGuid, noteGuid, options = {}) => {
   //
   const senderWebContents = event.sender;
@@ -285,11 +298,15 @@ handleApi('captureScreen', async (event, userGuid, kbGuid, noteGuid, options = {
       //
       await onProgress(100);
       //
+      const note = await users.getNote(userGuid, kbGuid, noteGuid);
+      const fileName = noteTitleToFileName(note.title);
+      //
       const browserWindow = BrowserWindow.fromWebContents(senderWebContents);
       const dialogResult = await dialog.showSaveDialog(browserWindow, {
+        defaultPath: `${fileName}.png`,
         properties: ['saveFile'],
         filters: [{
-          name: 'Images (*.png)',
+          name: i18next.t('fileFilterPNG'),
           extensions: [
             'png',
           ],
@@ -306,6 +323,8 @@ handleApi('captureScreen', async (event, userGuid, kbGuid, noteGuid, options = {
       shell.showItemInFolder(filePath);
       //
       e.preventDefault();
+      //
+      await onProgress(-1);
       //
       setTimeout(() => {
         if (!isDebug) {
@@ -408,11 +427,15 @@ handleApi('printToPDF', async (event, userGuid, kbGuid, noteGuid, options = {}) 
       //
       await onProgress(10);
       //
+      const note = await users.getNote(userGuid, kbGuid, noteGuid);
+      const fileName = noteTitleToFileName(note.title);
+      //
       const browserWindow = BrowserWindow.fromWebContents(senderWebContents);
       const dialogResult = await dialog.showSaveDialog(browserWindow, {
         properties: ['saveFile'],
+        defaultPath: `${fileName}.pdf`,
         filters: [{
-          name: 'PDF (*.pdf)',
+          name: i18next.t('fileFilterPDF'),
           extensions: [
             'pdf',
           ],
@@ -427,6 +450,7 @@ handleApi('printToPDF', async (event, userGuid, kbGuid, noteGuid, options = {}) 
       await fs.writeFile(filePath, data);
       //
       shell.showItemInFolder(filePath);
+      await onProgress(-1);
       //
       setTimeout(() => {
         if (!isDebug) {

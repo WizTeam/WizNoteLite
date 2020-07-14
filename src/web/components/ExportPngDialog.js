@@ -136,6 +136,7 @@ class ExportDialog extends React.Component {
       window.onCaptureScreenProgress = (progress) => {
         if (progress === 100) {
           this.setState({ loading: false });
+        } else if (progress === -1) {
           this.props.onClose();
         }
       };
