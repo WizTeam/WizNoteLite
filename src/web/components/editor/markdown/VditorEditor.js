@@ -190,10 +190,6 @@ class VditorEditor extends React.Component {
       updated = true;
     }
 
-    if (this.editor) {
-      this.editor.vditor.element.style.minHeight = `${nextProps.minHeight}px`;
-    }
-
     //
     if (updated) {
       return true;
@@ -569,7 +565,6 @@ VditorEditor.propTypes = {
   // eslint-disable-next-line react/no-unused-prop-types
   value: PropTypes.string,
   contentId: PropTypes.string.isRequired,
-  minHeight: PropTypes.number,
   placeholder: PropTypes.string,
   resourceUrl: PropTypes.string,
   height: PropTypes.number,
@@ -591,7 +586,6 @@ VditorEditor.defaultProps = {
   disabled: false,
   darkMode: false,
   value: '',
-  minHeight: 0,
   placeholder: '',
   resourceUrl: 'wiz://',
   height: undefined,
