@@ -124,7 +124,7 @@ const PC_WIDTH = 600;
 const MOBILE_PLUS_WIDTH = 450;
 const MOBILE_WIDTH = 375;
 
-class ExportDialog extends React.Component {
+class ExportPngDialog extends React.Component {
   handler = {
     handleExportPng: () => {
       const { kbGuid, noteGuid } = this.props;
@@ -297,7 +297,7 @@ class ExportDialog extends React.Component {
   }
 }
 
-ExportDialog.propTypes = {
+ExportPngDialog.propTypes = {
   classes: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
   intl: PropTypes.object.isRequired,
@@ -307,9 +307,9 @@ ExportDialog.propTypes = {
   noteGuid: PropTypes.string,
 };
 
-ExportDialog.defaultProps = {
+ExportPngDialog.defaultProps = {
   open: false,
   noteGuid: null,
 };
 
-export default withTheme(withStyles(styles)(injectIntl(ExportDialog)));
+export default withTheme(withStyles(styles)(injectIntl(ExportPngDialog)));

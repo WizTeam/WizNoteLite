@@ -155,7 +155,7 @@ class NoteViewer extends React.Component {
         />
         {params.showFooter === '1' && (
           <div className={classNames(classes.footer, footerClass)}>
-            <Icons.LiteMarkIcon />
+            <Icons.LiteMarkerIcon />
           </div>
         )}
       </div>
