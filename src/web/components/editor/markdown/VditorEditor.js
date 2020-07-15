@@ -469,6 +469,9 @@ class VditorEditor extends React.Component {
     // Down (Chrome Patch: 文字 后面跟着 img，img 被自动换行，这时候从该行前面的问题使用 下方向键，无法将光标移动到后面的段落)
     const sel = getSelection();
     let range = getRange();
+    if (filterParentElement(range.startContainer, this.editor.vditor.element, (dom) => dom.tagName.toLowerCase() === 'table')) {
+      return;
+    }
     try {
       sel.modify('move', 'forward', 'line');
       const rangeNew = getRange;
