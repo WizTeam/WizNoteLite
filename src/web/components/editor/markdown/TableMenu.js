@@ -15,7 +15,7 @@ import { setRangeByDomBeforeEnd } from '../libs/range_utils';
 
 const useStyles = makeStyles(({ spacing, palette }) => ({
   menuRoot: {
-    width: '224px',
+    minWidth: '224px',
     color: palette.type === 'dark' ? '#fff' : '#333',
   },
   menuItem: {
@@ -86,6 +86,7 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
     flex: '1',
     fontSize: '15px',
     letterSpacing: '1px',
+    marginRight: spacing(2),
   },
   menuLine: {
     height: '1px',
