@@ -134,7 +134,7 @@ class AboutDialog extends React.Component {
       classes, open, onClose,
     } = this.props;
 
-    const version = '1.0';
+    const version = window.wizApi.version;
     const releaseNotesLink = 'https://wiz.cn/pages/go?blogName=lite-release-notes';
 
     return (
