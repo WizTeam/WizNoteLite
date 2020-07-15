@@ -82,13 +82,18 @@ export default {
 
   themeTitle: 'Theme',
   widthTitle: 'Width',
+  directionTitle: 'Direction',
+  paperSizeTitle: 'Paper Size',
   lightOption: 'Light',
   darkOption: 'Dark',
   pcOption: 'Computer',
   mobilePlusOption: 'Mobile plus',
   mobileOption: 'Mobile',
+  portraitOption: 'Portrait',
+  landscapeOption: 'Landscape',
   exportLoading: 'Exporting...',
   exportButton: 'Export Image',
+  exportPdfButton: 'Export PDF',
   // system menu
   sendFeedback: 'Send Feedback',
   devTool: 'Developer Tools',

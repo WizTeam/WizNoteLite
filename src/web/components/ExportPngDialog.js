@@ -80,9 +80,6 @@ const styles = (theme) => ({
     paddingLeft: theme.spacing(4),
     flexDirection: 'column',
   },
-  selectList: {
-    minWidth: 128,
-  },
   grow: {
     flexGrow: 1,
   },
@@ -124,7 +121,7 @@ const PC_WIDTH = 600;
 const MOBILE_PLUS_WIDTH = 450;
 const MOBILE_WIDTH = 375;
 
-class ExportDialog extends React.Component {
+class ExportPngDialog extends React.Component {
   handler = {
     handleExportPng: () => {
       const { kbGuid, noteGuid } = this.props;
@@ -161,26 +158,27 @@ class ExportDialog extends React.Component {
       //
       window.wizApi.userManager.captureScreen(kbGuid, noteGuid, options);
     },
-    handleChangePreviewTheme: (item, value) => {
+    handleChangePreviewTheme: async (item, value) => {
+      await window.wizApi.userManager.setUserSettings('exportPngTheme', value);
       this.setState({ previewTheme: value });
     },
-    handleChangeWidth: (item, value) => {
+    handleChangeWidth: async (item, value) => {
+      await window.wizApi.userManager.setUserSettings('exportPngWidth', value);
       this.setState({ widthValue: value });
     },
   };
 
   constructor(props) {
     super(props);
+    const um = window.wizApi.userManager;
     this.state = {
       loading: false,
-      previewTheme: null,
-      widthValue: PC_WIDTH,
+      previewTheme: um.getUserSettingsSync('exportPngTheme', props.theme.palette.type),
+      widthValue: um.getUserSettingsSync('exportPngWidth', MOBILE_WIDTH),
     };
   }
 
   componentDidMount() {
-    const { theme } = this.props;
-    this.setState({ previewTheme: theme.palette.type });
   }
 
   componentWillUnmount() {
@@ -261,7 +259,6 @@ class ExportDialog extends React.Component {
             <LiteSelect
               options={themeOptions}
               value={previewTheme}
-              listClass={classes.selectList}
               onChange={this.handler.handleChangePreviewTheme}
             />
             <LiteText className={classes.title}>
@@ -270,7 +267,6 @@ class ExportDialog extends React.Component {
             <LiteSelect
               options={widthOptions}
               value={widthValue}
-              listClass={classes.selectList}
               onChange={this.handler.handleChangeWidth}
             />
             <div className={classes.grow} />
@@ -297,7 +293,7 @@ class ExportDialog extends React.Component {
   }
 }
 
-ExportDialog.propTypes = {
+ExportPngDialog.propTypes = {
   classes: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
   intl: PropTypes.object.isRequired,
@@ -307,9 +303,9 @@ ExportDialog.propTypes = {
   noteGuid: PropTypes.string,
 };
 
-ExportDialog.defaultProps = {
+ExportPngDialog.defaultProps = {
   open: false,
   noteGuid: null,
 };
 
-export default withTheme(withStyles(styles)(injectIntl(ExportDialog)));
+export default withTheme(withStyles(styles)(injectIntl(ExportPngDialog)));

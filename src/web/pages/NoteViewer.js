@@ -5,6 +5,7 @@ import { withStyles, withTheme } from '@material-ui/core/styles';
 import { injectIntl } from 'react-intl';
 import VditorEditor from '../components/editor/markdown/VditorEditor';
 import Scrollbar from '../components/Scrollbar';
+import Icons from '../config/icons';
 //
 
 const styles = (theme) => ({
@@ -23,8 +24,12 @@ const styles = (theme) => ({
   },
   footer: {
     borderTop: 'solid 1px',
-    textAlign: 'center',
     lineHeight: '64px',
+    textAlign: 'center',
+    '& .MuiSvgIcon-root': {
+      width: 161,
+      height: 12,
+    },
   },
   footer_lite: {
     borderColor: '#d8d8d8',
@@ -149,7 +154,9 @@ class NoteViewer extends React.Component {
           hideBlockType
         />
         {params.showFooter === '1' && (
-          <div className={classNames(classes.footer, footerClass)}>Powerd by WizNote Lite</div>
+          <div className={classNames(classes.footer, footerClass)}>
+            <Icons.LiteMarkerIcon />
+          </div>
         )}
       </div>
     );

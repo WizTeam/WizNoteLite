@@ -82,13 +82,18 @@ export default {
 
   themeTitle: '主题',
   widthTitle: '宽度',
+  directionTitle: '方向',
+  paperSizeTitle: '纸张',
   lightOption: '亮色',
   darkOption: '暗色',
   pcOption: '电脑阅读',
   mobilePlusOption: 'Plus手机阅读',
   mobileOption: '手机阅读',
+  portraitOption: '竖版',
+  landscapeOption: '横版',
   exportLoading: '正在生成...',
   exportButton: '导出为图片',
+  exportPdfButton: '导出为 PDF',
   // system menu
   sendFeedback: '意见反馈',
   devTool: '开发者工具',
