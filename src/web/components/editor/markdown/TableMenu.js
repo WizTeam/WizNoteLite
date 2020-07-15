@@ -215,7 +215,9 @@ function TableMenu(props) {
         break;
       case 'CpHtml':
         if (tableElement) {
-          copy(tableElement.outerHTML);
+          copy(tableElement.outerHTML, {
+            format: 'text/html',
+          });
         }
         break;
       case 'CpMd':
