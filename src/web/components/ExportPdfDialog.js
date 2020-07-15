@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-// import classNames from 'classnames';
+import classNames from 'classnames';
 import { injectIntl } from 'react-intl';
 import { withStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
@@ -67,9 +67,15 @@ const styles = (theme) => ({
     flexGrow: 1,
   },
   title: {
-    margin: theme.spacing(1, 0),
+    marginBottom: theme.spacing(1),
     fontSize: 14,
     color: theme.custom.color.dialogTextPrimary,
+  },
+  headTitle: {
+    margin: theme.spacing(0, 0, 5, 0),
+  },
+  select: {
+    marginBottom: theme.spacing(3),
   },
 });
 
@@ -161,13 +167,14 @@ class ExportPdfDialog extends React.Component {
       >
         <DialogContent className={classes.root}>
           <div className={classes.previewBox}>
-            <LiteText className={classes.title} disableUserSelect>
+            <LiteText className={classNames(classes.title, classes.headTitle)} disableUserSelect>
               {intl.formatMessage({ id: 'exportPdf' })}
             </LiteText>
             <LiteText className={classes.title}>
               {intl.formatMessage({ id: 'directionTitle' })}
             </LiteText>
             <LiteSelect
+              className={classes.select}
               options={directionOptions}
               value={directionValue}
               listClass={classes.selectList}
@@ -177,6 +184,7 @@ class ExportPdfDialog extends React.Component {
               {intl.formatMessage({ id: 'paperSizeTitle' })}
             </LiteText>
             <LiteSelect
+              className={classes.select}
               options={paperOptions}
               value={paperSizeValue}
               listClass={classes.selectList}
