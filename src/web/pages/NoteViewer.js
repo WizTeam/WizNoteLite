@@ -24,20 +24,20 @@ const styles = (theme) => ({
   },
   footer: {
     borderTop: 'solid 1px',
-    lineHeight: '64px',
+    lineHeight: '80px',
     textAlign: 'center',
     '& .MuiSvgIcon-root': {
-      width: 161,
-      height: 12,
+      width: '100%',
+      height: 16,
     },
   },
   footer_lite: {
     borderColor: '#d8d8d8',
-    color: '#d8d8d8',
+    color: '#aaaaaa',
   },
   footer_dark: {
-    borderColor: '#555555',
-    color: '#555555',
+    borderColor: '#404040',
+    color: '#969696',
   },
 });
 
