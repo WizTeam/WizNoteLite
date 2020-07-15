@@ -27,7 +27,7 @@ const styles = (theme) => ({
     lineHeight: '64px',
     textAlign: 'center',
     '& .MuiSvgIcon-root': {
-      width: 153,
+      width: 161,
       height: 12,
     },
   },
