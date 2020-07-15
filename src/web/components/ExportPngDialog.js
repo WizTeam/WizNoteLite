@@ -161,26 +161,27 @@ class ExportPngDialog extends React.Component {
       //
       window.wizApi.userManager.captureScreen(kbGuid, noteGuid, options);
     },
-    handleChangePreviewTheme: (item, value) => {
+    handleChangePreviewTheme: async (item, value) => {
+      await window.wizApi.userManager.setUserSettings('exportPngTheme', value);
       this.setState({ previewTheme: value });
     },
-    handleChangeWidth: (item, value) => {
+    handleChangeWidth: async (item, value) => {
+      await window.wizApi.userManager.setUserSettings('exportPngWidth', value);
       this.setState({ widthValue: value });
     },
   };
 
   constructor(props) {
     super(props);
+    const um = window.wizApi.userManager;
     this.state = {
       loading: false,
-      previewTheme: null,
-      widthValue: PC_WIDTH,
+      previewTheme: um.getUserSettingsSync('exportPngTheme', props.theme.palette.type),
+      widthValue: um.getUserSettingsSync('exportPngWidth', MOBILE_WIDTH),
     };
   }
 
   componentDidMount() {
-    const { theme } = this.props;
-    this.setState({ previewTheme: theme.palette.type });
   }
 
   componentWillUnmount() {

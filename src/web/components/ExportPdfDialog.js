@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { injectIntl } from 'react-intl';
+import { injectIntl, FormattedMessage } from 'react-intl';
 import { withStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -88,7 +88,7 @@ class ExportPdfDialog extends React.Component {
         return;
       }
       //
-      window.onCaptureScreenProgress = (progress) => {
+      window.onPrintToPDFProgress = (progress) => {
         if (progress === 100) {
           this.setState({ loading: false });
         } else if (progress === -1) {
@@ -98,7 +98,7 @@ class ExportPdfDialog extends React.Component {
       //
       const { directionValue, paperSizeValue } = this.state;
       const options = {
-        progressCallback: 'onCaptureScreenProgress',
+        progressCallback: 'onPrintToPDFProgress',
         landscape: directionValue === 'landscape',
         pageSize: paperSizeValue,
       };
@@ -107,20 +107,23 @@ class ExportPdfDialog extends React.Component {
       //
       window.wizApi.userManager.printToPDF(kbGuid, noteGuid, options);
     },
-    handleChangeDirection: (item, value) => {
+    handleChangeDirection: async (item, value) => {
+      await window.wizApi.userManager.setUserSettings('exportPdfDirection', value);
       this.setState({ directionValue: value });
     },
-    handleChangePaperSize: (item, value) => {
+    handleChangePaperSize: async (item, value) => {
+      await window.wizApi.userManager.setUserSettings('exportPdfPaperSize', value);
       this.setState({ paperSizeValue: value });
     },
   };
 
   constructor(props) {
     super(props);
+    const um = window.wizApi.userManager;
     this.state = {
       loading: false,
-      directionValue: 'portrait',
-      paperSizeValue: 'A4',
+      directionValue: um.getUserSettingsSync('exportPdfDirection', 'portrait'),
+      paperSizeValue: um.getUserSettingsSync('exportPdfPaperSize', 'A4'),
     };
   }
 
@@ -128,7 +131,7 @@ class ExportPdfDialog extends React.Component {
   }
 
   componentWillUnmount() {
-    window.onCaptureScreenProgress = null;
+    window.onPrintToPDFProgress = null;
   }
 
   render() {
@@ -168,10 +171,10 @@ class ExportPdfDialog extends React.Component {
         <DialogContent className={classes.root}>
           <div className={classes.previewBox}>
             <LiteText className={classNames(classes.title, classes.headTitle)} disableUserSelect>
-              {intl.formatMessage({ id: 'exportPdf' })}
+              <FormattedMessage id="exportPdf" />
             </LiteText>
             <LiteText className={classes.title}>
-              {intl.formatMessage({ id: 'directionTitle' })}
+              <FormattedMessage id="directionTitle" />
             </LiteText>
             <LiteSelect
               className={classes.select}
@@ -181,7 +184,7 @@ class ExportPdfDialog extends React.Component {
               onChange={this.handler.handleChangeDirection}
             />
             <LiteText className={classes.title}>
-              {intl.formatMessage({ id: 'paperSizeTitle' })}
+              <FormattedMessage id="paperSizeTitle" />
             </LiteText>
             <LiteSelect
               className={classes.select}
@@ -198,8 +201,8 @@ class ExportPdfDialog extends React.Component {
             >
               {
               loading
-                ? intl.formatMessage({ id: 'exportLoading' })
-                : intl.formatMessage({ id: 'exportPdfButton' })
+                ? <FormattedMessage id="exportLoading" />
+                : <FormattedMessage id="exportPdfButton" />
               }
             </Button>
           </div>
