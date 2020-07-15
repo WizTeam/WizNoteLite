@@ -81,11 +81,6 @@ function TableToolbar(props) {
 
   const [menuPos, setMenuPos] = useState(undefined);
 
-  const [selectIndex, setSelectIndex] = useState({
-    x: -1,
-    y: -1,
-  });
-
   const [rowCount, setRowCount] = useState(0);
   const [colCount, setColCount] = useState(0);
 
@@ -130,10 +125,6 @@ function TableToolbar(props) {
 
   function menuBtnClickHandler(e) {
     setAnchorEl(e.currentTarget);
-    setSelectIndex({
-      x: tableElement?.rows[0].childElementCount - 1 ?? -1,
-      y: tableElement?.rows.length - 1 ?? -1,
-    });
     e.preventDefault();
   }
 
@@ -191,16 +182,9 @@ function TableToolbar(props) {
         );
         if (box) {
           const indexArr = box.getAttribute('data-coordinate').split('-');
-          setSelectIndex({
-            x: parseInt(indexArr[1], 10),
-            y: parseInt(indexArr[0], 10),
-          });
+          setRowCount(parseInt(indexArr[0], 10) + 1);
+          setColCount(parseInt(indexArr[1], 10) + 1);
         }
-      } else {
-        setSelectIndex({
-          x: tableElement?.rows[0].childElementCount - 1 ?? -1,
-          y: tableElement?.rows.length - 1 ?? -1,
-        });
       }
     }
 
@@ -255,7 +239,7 @@ function TableToolbar(props) {
                   <button
                     type="button"
                     className={classNames(classes.box, {
-                      active: y <= selectIndex.y && x <= selectIndex.x,
+                      active: y <= rowCount - 1 && x <= colCount - 1,
                     })}
                     key={`${y.toString()}-${x.toString()}`}
                     data-coordinate={`${y}-${x}`}
