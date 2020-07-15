@@ -16,7 +16,7 @@
       "env": {
         "ELECTRON_START_URL": "http://localhost:3000",
         "ELECTRON_ENABLE_LOGGING": "1",
-        "SHOW_TITLE_BAR": "1"
+        "SHOW_TITLE_BAR": "0"
       },
       "args" : ["."]
     }

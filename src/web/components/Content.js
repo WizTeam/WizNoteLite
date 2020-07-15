@@ -50,11 +50,14 @@ const styles = (theme) => ({
     display: 'flex',
     position: 'absolute',
     right: theme.spacing(3),
-    top: theme.spacing(4),
+    top: theme.spacing(8),
     bottom: theme.spacing(3),
     flexDirection: 'column',
     zIndex: 10,
     pointerEvents: 'none',
+  },
+  toolBar_mac: {
+    top: theme.spacing(4),
   },
   iconButton: {
     '&:not(:nth-last-child(1))': {
@@ -125,7 +128,7 @@ class Content extends React.Component {
     },
     handleShowExportMenu: (e) => {
       this.setState({
-        exportMenuAnchorEl: e.target,
+        exportMenuAnchorEl: e.currentTarget,
       });
     },
     handleCloseExportMenu: () => {
@@ -185,6 +188,7 @@ class Content extends React.Component {
     const backgroundClass = isLite && (classes[backgroundColorClassName] ?? '');
 
     const hasFullScreenButton = window.wizApi.isElectron && window.wizApi.windowManager.platform === 'darwin';
+    const isMac = window.wizApi.platform.isMac;
 
     return (
       <main
@@ -192,11 +196,11 @@ class Content extends React.Component {
       >
         <CommonHeader
           systemButton
-          className={classNames(classes.header, window.wizApi.platform.isMac && classes.header_mac)}
+          className={classNames(classes.header, isMac && classes.header_mac)}
           onRequestFullScreen={this.props.onRequestFullScreen}
         />
         {note && !isSearch && (
-        <div className={classes.toolBar}>
+        <div className={classNames(classes.toolBar, isMac && classes.toolBar_mac)}>
           {/* <IconButton className={classes.iconButton}>
             <Icons.MoreHorizIcon className={classes.icon} />
           </IconButton> */}
