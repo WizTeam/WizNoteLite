@@ -130,6 +130,10 @@ function TableToolbar(props) {
 
   function menuBtnClickHandler(e) {
     setAnchorEl(e.currentTarget);
+    setSelectIndex({
+      x: tableElement?.rows[0].childElementCount - 1 ?? -1,
+      y: tableElement?.rows.length - 1 ?? -1,
+    });
     e.preventDefault();
   }
 
@@ -176,6 +180,7 @@ function TableToolbar(props) {
         e.target,
         document.body,
         (dom) => hasClass(dom, classes.boxContainer),
+        true,
       );
       if (ele) {
         const box = filterParentElement(
@@ -193,8 +198,8 @@ function TableToolbar(props) {
         }
       } else {
         setSelectIndex({
-          x: -1,
-          y: -1,
+          x: tableElement?.rows[0].childElementCount - 1 ?? -1,
+          y: tableElement?.rows.length - 1 ?? -1,
         });
       }
     }
