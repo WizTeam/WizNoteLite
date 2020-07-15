@@ -93,4 +93,6 @@ export default {
   sendFeedback: '意见反馈',
   devTool: '开发者工具',
   about: '关于 WizNote Lite',
+
+  editorContents: '目录',
 };

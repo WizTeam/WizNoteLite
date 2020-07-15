@@ -15,11 +15,17 @@ import {
 } from '../libs/dom_utils';
 import { getRange, getSelection } from '../libs/range_utils';
 
+import EditorContents from './EditorContents';
+
 const styles = (/* theme */) => ({
   hideBlockType: {
     '& h1:before, & h2:before, & h3:before, & h4:before, & h5:before, & h6:before': {
       display: 'none',
     },
+  },
+  container: {
+    display: 'flex',
+    flexDirection: 'row',
   },
 });
 class VditorEditor extends React.Component {
@@ -528,7 +534,7 @@ class VditorEditor extends React.Component {
     const { classes, hideBlockType } = this.props;
     return (
       <div
-        className={classNames('editor-container', hideBlockType && classes.hideBlockType, {
+        className={classNames(classes.container, 'editor-container', hideBlockType && classes.hideBlockType, {
           'focus-mode': this.state.isFocus,
         })}
       >
@@ -538,6 +544,7 @@ class VditorEditor extends React.Component {
           id={`editor_${this.timeStamp}`}
           onKeyDown={this.handler.handleEditorKeyDown}
         />
+        <EditorContents />
         <HeadingMenu
           editor={this.editor}
           onClick={this.handler.handleHeadingMenuClick}

@@ -93,4 +93,6 @@ export default {
   sendFeedback: 'Send Feedback',
   devTool: 'Developer Tools',
   about: 'About WizNote Lite',
+
+  editorContents: 'Contents',
 };
