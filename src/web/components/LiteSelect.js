@@ -1,4 +1,7 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, {
+  useEffect, useState, useCallback,
+  useMemo, useRef,
+} from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { makeStyles } from '@material-ui/core/styles';
@@ -30,12 +33,12 @@ function LiteSelect(props) {
   const classes = useStyles();
   const {
     options, className, value,
-    listClass,
   } = props;
   //
   const [selectedKey, setSelectedKey] = useState('select');
   const [selectedVal, setSelectedVal] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
+  const buttonRef = useRef();
 
   const handleOpenMenu = (e) => {
     setAnchorEl(e.currentTarget);
@@ -82,9 +85,21 @@ function LiteSelect(props) {
     resetSelectedKey();
   }, [resetSelectedKey]);
 
+  const paperProps = useMemo(() => {
+    if (buttonRef && buttonRef.current) {
+      return {
+        style: {
+          minWidth: buttonRef.current.clientWidth,
+        },
+      };
+    }
+    return {};
+  }, [buttonRef.current]);
+
   return (
     <div className={classNames(classes.root, className)}>
       <Button
+        ref={buttonRef}
         fullWidth
         className={classes.button}
         classes={{
@@ -99,7 +114,6 @@ function LiteSelect(props) {
         className={classes.menu}
         classes={{
           paper: classes.paper,
-          list: listClass ?? null,
         }}
         anchorEl={anchorEl}
         keepMounted
@@ -108,6 +122,7 @@ function LiteSelect(props) {
           vertical: 'bottom',
           horizontal: 'left',
         }}
+        PaperProps={paperProps}
         getContentAnchorEl={null}
         onClose={handleMenuClose}
       >
@@ -133,7 +148,6 @@ LiteSelect.propTypes = {
     PropTypes.number,
   ]),
   onChange: PropTypes.func,
-  listClass: PropTypes.string,
 };
 
 LiteSelect.defaultProps = {
@@ -141,7 +155,6 @@ LiteSelect.defaultProps = {
   options: [],
   value: null,
   onChange: null,
-  listClass: null,
 };
 
 export default LiteSelect;

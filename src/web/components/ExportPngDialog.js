@@ -80,9 +80,6 @@ const styles = (theme) => ({
     paddingLeft: theme.spacing(4),
     flexDirection: 'column',
   },
-  selectList: {
-    minWidth: 128,
-  },
   grow: {
     flexGrow: 1,
   },
@@ -262,7 +259,6 @@ class ExportPngDialog extends React.Component {
             <LiteSelect
               options={themeOptions}
               value={previewTheme}
-              listClass={classes.selectList}
               onChange={this.handler.handleChangePreviewTheme}
             />
             <LiteText className={classes.title}>
@@ -271,7 +267,6 @@ class ExportPngDialog extends React.Component {
             <LiteSelect
               options={widthOptions}
               value={widthValue}
-              listClass={classes.selectList}
               onChange={this.handler.handleChangeWidth}
             />
             <div className={classes.grow} />

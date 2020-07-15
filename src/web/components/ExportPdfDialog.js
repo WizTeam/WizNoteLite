@@ -60,9 +60,6 @@ const styles = (theme) => ({
       opacity: 0.5,
     },
   },
-  selectList: {
-    minWidth: 288,
-  },
   grow: {
     flexGrow: 1,
   },
@@ -180,7 +177,6 @@ class ExportPdfDialog extends React.Component {
               className={classes.select}
               options={directionOptions}
               value={directionValue}
-              listClass={classes.selectList}
               onChange={this.handler.handleChangeDirection}
             />
             <LiteText className={classes.title}>
@@ -190,7 +186,6 @@ class ExportPdfDialog extends React.Component {
               className={classes.select}
               options={paperOptions}
               value={paperSizeValue}
-              listClass={classes.selectList}
               onChange={this.handler.handleChangePaperSize}
             />
             <div className={classes.grow} />
