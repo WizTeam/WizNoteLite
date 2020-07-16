@@ -91,7 +91,6 @@ const styles = (theme) => ({
   pc: {
     border: '1px solid #d8d8d8 !important',
     width: 600,
-    margin: 'auto',
   },
   mobilePlus: {
     border: 'solid 6px #333333',
@@ -134,7 +133,7 @@ class ExportPngDialog extends React.Component {
         if (progress === 100) {
           this.setState({ loading: false });
         } else if (progress === -1) {
-          this.props.onClose();
+          this.setState({ loading: false }, this.props.onClose);
         }
       };
       //

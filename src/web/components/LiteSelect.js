@@ -1,6 +1,6 @@
 import React, {
   useEffect, useState, useCallback,
-  useMemo, useRef,
+  useRef,
 } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -85,16 +85,14 @@ function LiteSelect(props) {
     resetSelectedKey();
   }, [resetSelectedKey]);
 
-  const paperProps = useMemo(() => {
-    if (buttonRef && buttonRef.current) {
-      return {
-        style: {
-          minWidth: buttonRef.current.clientWidth,
-        },
-      };
-    }
-    return {};
-  }, [buttonRef.current]);
+  let paperProps = {};
+  if (buttonRef.current) {
+    paperProps = {
+      style: {
+        minWidth: buttonRef.current.clientWidth,
+      },
+    };
+  }
 
   return (
     <div className={classNames(classes.root, className)}>

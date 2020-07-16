@@ -50,6 +50,7 @@ function Scrollbar(props) {
       autoHide={autoHide}
       autoHideTimeout={autoHideTimeout}
       renderThumbVertical={thumbRenderer}
+      renderThumbHorizontal={renderThumbVertical}
       {...others}
     >
       {children}

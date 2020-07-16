@@ -31,7 +31,7 @@ export default {
   serverTypeDefault: 'WizNote Server',
   serverTypePrivate: 'Private Server',
   //
-  registerDeclare: 'By registering, you have read and agreed to the <a target="_blank" href="https://wiz.cn/pages/go?blogName=share-termsofuse">Terms of Service</a> and <a target="_blank" href="https://wiz.cn/pages/go?blogName=wiz-privacy">Privacy Policy</a>',
+  registerDeclare: 'By registering, you have read and agreed to the <a target="_blank" href="https://wiz.cn/pages/go?blogName=share-termsofuse&lang=en">Terms of Service</a> and <a target="_blank" href="https://wiz.cn/pages/go?blogName=wiz-privacy&lang=en">Privacy Policy</a>',
   //
   trash: 'Trash',
   menuDelete: 'Delete',
