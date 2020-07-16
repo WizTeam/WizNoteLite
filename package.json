@@ -105,8 +105,7 @@
     },
     "mac": {
       "target": [
-        "mas",
-        "dmg"
+        "mas"
       ],
       "icon": "build/mac/wiznote.icns",
       "electronLanguages": [
@@ -124,11 +123,6 @@
     },
     "mas": {
       "type": "distribution",
-      "electronLanguages": [
-        "en",
-        "zh-CN",
-        "zh-TW"
-      ],
       "provisioningProfile": "embedded.provisionprofile",
       "entitlements": "build/mac/entitlements.mas.plist",
       "entitlementsInherit": "build/mac/entitlements.mas.inherit.plist",
