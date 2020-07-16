@@ -133,7 +133,7 @@ class ExportPngDialog extends React.Component {
         if (progress === 100) {
           this.setState({ loading: false });
         } else if (progress === -1) {
-          this.props.onClose();
+          this.setState({ loading: false }, this.props.onClose);
         }
       };
       //
