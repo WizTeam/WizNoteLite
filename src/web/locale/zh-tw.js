@@ -31,7 +31,7 @@ export default {
   serverTypeDefault: 'WizNote Server',
   serverTypePrivate: 'Private Server',
   //
-  registerDeclare: '註冊即表示您已閱讀並同意<a target="_blank" href="https://wiz.cn/pages/go?blogName=share-termsofuse">服務條款</a>與<a target="_blank" href="https://wiz.cn/pages/go?blogName=wiz-privacy">隱私政策</a>',
+  registerDeclare: '註冊即表示您已閱讀並同意<a target="_blank" href="https://wiz.cn/pages/go?blogName=share-termsofuse&lang=zh-tw">服務條款</a>與<a target="_blank" href="https://wiz.cn/pages/go?blogName=wiz-privacy&lang=zh-tw">隱私政策</a>',
   //
   trash: '回收站',
   menuDelete: '刪除',
