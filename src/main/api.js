@@ -313,6 +313,7 @@ handleApi('captureScreen', async (event, userGuid, kbGuid, noteGuid, options = {
         }],
       });
       if (dialogResult.canceled) {
+        await onProgress(-1);
         return;
       }
       //
@@ -442,6 +443,7 @@ handleApi('printToPDF', async (event, userGuid, kbGuid, noteGuid, options = {}) 
         }],
       });
       if (dialogResult.canceled) {
+        await onProgress(-1);
         return;
       }
       //
