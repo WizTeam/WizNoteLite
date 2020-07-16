@@ -91,7 +91,6 @@ const styles = (theme) => ({
   pc: {
     border: '1px solid #d8d8d8 !important',
     width: 600,
-    margin: 'auto',
   },
   mobilePlus: {
     border: 'solid 6px #333333',

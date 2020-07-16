@@ -442,6 +442,7 @@ handleApi('printToPDF', async (event, userGuid, kbGuid, noteGuid, options = {}) 
         }],
       });
       if (dialogResult.canceled) {
+        await onProgress(100);
         return;
       }
       //

@@ -152,9 +152,9 @@ class ExportPdfDialog extends React.Component {
       { value: 'A5', title: 'A5' },
       // { value: 'B4', title: 'B4' },
       // { value: 'B6', title: 'B6' },
-      { value: 'letter', title: 'Letter' },
-      { value: 'legal', title: 'Legal' },
-      { value: 'tabloid', title: 'Tabloid' },
+      { value: 'Letter', title: 'Letter' },
+      { value: 'Legal', title: 'Legal' },
+      { value: 'Tabloid', title: 'Tabloid' },
     ];
 
     return (
