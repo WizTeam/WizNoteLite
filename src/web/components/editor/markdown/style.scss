@@ -141,10 +141,21 @@
       // 临时处理 代码段 浅色/深色 模式切换，避免预览 & 编辑区域 样式冲突
       pre {
         .hljs {
-          display: block;
-          overflow-x: auto;
-          padding: 0.5em;
-          background: #eee; color: black;
+          background: #eee;
+          color: black;
+        }
+        .hljs-attr,
+        .hljs-built_in,
+        .hljs-doctag, 
+        .hljs-formula,
+        .hljs-meta,
+        .hljs-meta-string,
+        .hljs-selector-class,
+        .hljs-selector-attr,
+        .hljs-selector-pseudo,
+        .hljs-subst,
+        .hljs-symbol {
+          color: black;
         }
         
         .hljs-link,
@@ -154,24 +165,15 @@
             color: #070;
         }
         
-        .hljs-emphasis {
-            font-style: italic;
-        }
-        
         .hljs-strong,
         .hljs-string,
         .hljs-deletion {
             color: #d14;
         }
         
-        .hljs-strong {
-            font-weight: bold;
-        }
-        
         .hljs-quote,
         .hljs-comment {
             color: #998;
-            font-style: italic;
         }
         
         .hljs-section,
@@ -257,9 +259,13 @@
 
       pre {
         .hljs {
-        }
-        .hljs {
           background-color: #404040;
+          color: #f0f0f0;
+        }
+        .hljs-code,
+        .hljs-emphasis,
+        .hljs-strong,
+        .hljs-tag {
           color: #f0f0f0;
         }
         
