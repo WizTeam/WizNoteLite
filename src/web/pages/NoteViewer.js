@@ -140,6 +140,7 @@ class NoteViewer extends React.Component {
       >
         <VditorEditor
           value={markdown}
+          disabled
           isMac={window.wizApi.platform.isMac}
           contentId={loading ? '' : noteGuid}
           onInit={this.handler.handleInitEditor}
