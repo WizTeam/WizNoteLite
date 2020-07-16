@@ -111,8 +111,8 @@
       "icon": "build/mac/wiznote.icns",
       "electronLanguages": [
         "en",
-        "zh-CN",
-        "zh-TW"
+        "zh_CN",
+        "zh_TW"
       ],
       "binaries": [
         "src/main/sqlite3/build/Release/wizsqlite3.node"
