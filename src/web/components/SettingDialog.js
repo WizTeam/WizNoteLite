@@ -81,13 +81,13 @@ const styles = (theme) => ({
     },
   },
   changePasswordButton: {
-    backgroundColor: theme.custom.background.loginButton,
-    color: theme.custom.color.loginButton,
+    backgroundColor: theme.custom.background.dialogButtonBlack,
+    color: theme.custom.color.dialogButtonBlack,
     borderRadius: 0,
     marginTop: theme.spacing(5),
     marginBottom: theme.spacing(5),
     '&:hover': {
-      backgroundColor: theme.custom.background.loginButtonHover,
+      backgroundColor: theme.custom.background.dialogButtonBlackHover,
     },
   },
 });

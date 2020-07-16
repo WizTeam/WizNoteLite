@@ -7,7 +7,9 @@ import { getTagSpan } from '../libs/dom_utils';
 
 const styles = (/* theme */) => ({
   root: {
-    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    flex: 1,
   },
   invisible: {
     display: 'none',

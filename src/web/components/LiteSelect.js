@@ -1,4 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, {
+  useEffect, useState, useCallback,
+  useRef,
+} from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { makeStyles } from '@material-ui/core/styles';
@@ -8,17 +11,19 @@ import MenuItem from '@material-ui/core/MenuItem';
 //
 import Icons from '../config/icons/common';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((/* theme */) => ({
   root: {
     display: 'inline-block',
-    border: `1px solid ${theme.custom.color.liteSelectBorder}`,
+    border: '1px solid #d8d8d8',
   },
   button: {
-    textTransform: 'none',
     borderRadius: 0,
   },
   buttonLabel: {
     justifyContent: 'space-between',
+  },
+  paper: {
+    transform: 'translateY(4px) !important',
   },
   menu: {
   },
@@ -33,6 +38,7 @@ function LiteSelect(props) {
   const [selectedKey, setSelectedKey] = useState('select');
   const [selectedVal, setSelectedVal] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
+  const buttonRef = useRef();
 
   const handleOpenMenu = (e) => {
     setAnchorEl(e.currentTarget);
@@ -42,7 +48,20 @@ function LiteSelect(props) {
     setAnchorEl(null);
   };
 
-  const resetSelectedKey = () => {
+  const handleSelect = (item) => {
+    if (value === null) {
+      setSelectedKey(item.title);
+      setSelectedVal(item.value);
+    }
+    //
+    if (props.onChange) {
+      props.onChange(item, item.value);
+    }
+    //
+    handleMenuClose();
+  };
+
+  const resetSelectedKey = useCallback(() => {
     if (value === null) {
       if (options.length) {
         setSelectedKey(options[0]?.title);
@@ -60,28 +79,25 @@ function LiteSelect(props) {
     }
     //
     return true;
-  };
-
-  const handleSelect = (item) => {
-    if (value === null) {
-      setSelectedKey(item.title);
-      setSelectedVal(item.value);
-    }
-    //
-    if (props.onChange) {
-      props.onChange(item);
-    }
-    //
-    handleMenuClose();
-  };
+  }, [value, options]);
 
   useEffect(() => {
     resetSelectedKey();
-  }, [value]);
+  }, [resetSelectedKey]);
+
+  let paperProps = {};
+  if (buttonRef.current) {
+    paperProps = {
+      style: {
+        minWidth: buttonRef.current.clientWidth,
+      },
+    };
+  }
 
   return (
     <div className={classNames(classes.root, className)}>
       <Button
+        ref={buttonRef}
         fullWidth
         className={classes.button}
         classes={{
@@ -94,6 +110,9 @@ function LiteSelect(props) {
       </Button>
       <Menu
         className={classes.menu}
+        classes={{
+          paper: classes.paper,
+        }}
         anchorEl={anchorEl}
         keepMounted
         open={Boolean(anchorEl)}
@@ -101,6 +120,7 @@ function LiteSelect(props) {
           vertical: 'bottom',
           horizontal: 'left',
         }}
+        PaperProps={paperProps}
         getContentAnchorEl={null}
         onClose={handleMenuClose}
       >

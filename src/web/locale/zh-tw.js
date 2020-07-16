@@ -31,7 +31,7 @@ export default {
   serverTypeDefault: 'WizNote Server',
   serverTypePrivate: 'Private Server',
   //
-  registerDeclare: '註冊即表示您已閱讀並同意<a target="_blank" href="https://wiz.cn/pages/go?blogName=share-termsofuse">服務條款</a>與<a target="_blank" href="https://wiz.cn/pages/go?blogName=wiz-privacy">隱私政策</a>',
+  registerDeclare: '註冊即表示您已閱讀並同意<a target="_blank" href="https://wiz.cn/pages/go?blogName=share-termsofuse&lang=zh-tw">服務條款</a>與<a target="_blank" href="https://wiz.cn/pages/go?blogName=wiz-privacy&lang=zh-tw">隱私政策</a>',
   //
   trash: '回收站',
   menuDelete: '刪除',
@@ -72,4 +72,30 @@ export default {
   error31004: '登錄太頻繁啦，休息一下吧！',
   error31005: '用戶被鎖定',
   error31013: '手機號已經被註冊，請更換手機號！',
+  // export
+  exportPng: '導出為圖片',
+  exportMd: '導出為 md',
+  exportPdf: '導出為 PDF',
+  copySourceMarkdown: '複製 Markdown 原文',
+  publishTo: '發佈至',
+  settingPublishPlatform: '配置發佈平台',
+
+  themeTitle: '主題',
+  widthTitle: '寬度',
+  directionTitle: '方向',
+  paperSizeTitle: '紙張',
+  lightOption: '亮色',
+  darkOption: '暗色',
+  pcOption: '電腦閱讀',
+  mobilePlusOption: 'Plus手機閱讀',
+  mobileOption: '手機閱讀',
+  portraitOption: '豎版',
+  landscapeOption: '橫版',
+  exportLoading: '正在生成...',
+  exportButton: '導出為圖片',
+  exportPdfButton: '導出為 PDF',
+  // system menu
+  sendFeedback: '意見反饋',
+  devTool: '開發者工具',
+  about: '關於 WizNote Lite',
 };

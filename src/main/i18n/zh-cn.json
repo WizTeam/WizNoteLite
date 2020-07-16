@@ -35,5 +35,8 @@
   "toggledevtools": "切换开发者工具",
   "learnMore": "了解更多...",
   "menuMainWindow": "主窗口",
+
+  "fileFilterPNG": "PNG 文件 (*.png)",
+  "fileFilterPDF": "PDF 文件 (*.pdf)",
   "errorConnect": "无法连接到服务器： {{host}}，请检查您的网络。"
 }

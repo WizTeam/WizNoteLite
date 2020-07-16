@@ -90,7 +90,6 @@ const styles = (theme) => ({
   },
   updateButton: {
     color: theme.custom.color.drawerTitle,
-    textTransform: 'none',
     '&:hover': {
       'background-color': theme.custom.background.sidebarItemHover,
     },

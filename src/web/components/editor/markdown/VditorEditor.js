@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import isEqual from 'lodash/isEqual';
 import WizVditor from 'wiz-vditor';
 import classNames from 'classnames';
+import { withStyles } from '@material-ui/core/styles';
 import InsertMenu from './InsertMenu';
 import HeadingMenu from './HeadingMenu';
 import 'wiz-vditor/dist/index.css';
@@ -14,12 +15,21 @@ import {
 } from '../libs/dom_utils';
 import { getRange, getSelection } from '../libs/range_utils';
 
+const styles = (/* theme */) => ({
+  hideBlockType: {
+    '& h1:before, & h2:before, & h3:before, & h4:before, & h5:before, & h6:before': {
+      display: 'none',
+    },
+  },
+});
 class VditorEditor extends React.Component {
   resourceUrl = '';
 
   waitSetValue = null;
 
   isShowTagMenu = false;
+
+  timeStamp = new Date().getTime();
 
   handler = {
     handleChangeTagMenuShowState: (isShowMenu) => {
@@ -160,13 +170,18 @@ class VditorEditor extends React.Component {
       this.setTags(nextProps.tagList);
     }
     if (nextProps.darkMode !== this.props.darkMode && this.isEditorReady()) {
-      this.editor.setTheme(nextProps.darkMode ? 'dark' : 'classic');
+      if (nextProps.darkMode) {
+        this.editor.setTheme('dark', 'dark', 'native');
+      } else {
+        this.editor.setTheme('classic', 'light', 'pygments');
+      }
     }
     if (nextProps.disabled !== this.props.disabled && this.isEditorReady()) {
+      // TODO 临时处理 disabled 状态，用于导出图片
       if (nextProps.disabled) {
-        this.editor.disabled();
-      } else {
-        this.editor.enable();
+        this.setEditorDisabled();
+      } else if (nextProps.disabled === false) {
+        this.setEditorEnable();
       }
     }
     //
@@ -192,6 +207,26 @@ class VditorEditor extends React.Component {
     this.unbind();
   }
 
+  setEditorEnable() {
+    if (!this.isEditorReady()) {
+      return;
+    }
+    this.editor.enable();
+    const pre = this.editor.vditor.element.querySelector('.vditor-ir pre.vditor-reset');
+    pre.style.opacity = null;
+    pre.style.pointerEvents = null;
+  }
+
+  setEditorDisabled() {
+    if (!this.isEditorReady()) {
+      return;
+    }
+    this.editor.disabled();
+    const pre = this.editor.vditor.element.querySelector('.vditor-ir pre.vditor-reset');
+    pre.style.opacity = 1;
+    pre.style.pointerEvents = 'none';
+  }
+
   setTags(tagList) {
     const tags = [];
     this.convertToTreeData(tags, tagList);
@@ -201,11 +236,11 @@ class VditorEditor extends React.Component {
   async initEditor() {
     const { darkMode, placeholder } = this.props;
     const cdn = /^https?:\/\//i.test(window.location.origin) ? `${window.location.origin}/libs/wiz-vditor` : `${(window.location.origin + window.location.pathname).replace('/index.html', '')}/libs/wiz-vditor`;
-    this.editor = new WizVditor('editor', {
+    this.editor = new WizVditor(`editor_${this.timeStamp}`, {
       ...this.props,
       height: this.props.height,
       cache: {
-        id: 'editor',
+        id: `editor_${this.timeStamp}`,
         enable: false,
       },
       // 未知原因，CDN 必须设置 完整的 http 地址，否则会导致 代码高亮的内容闪烁
@@ -222,7 +257,7 @@ class VditorEditor extends React.Component {
           }
         }
         if (disabled) {
-          this.editor.disabled();
+          this.setEditorDisabled();
         }
         // this._removePanelNode();
       },
@@ -244,7 +279,9 @@ class VditorEditor extends React.Component {
 
           return newHtml;
         },
-        maxWidth: 600,
+        hljs: {
+          style: darkMode ? 'native' : 'pygments',
+        },
       },
       select: (value) => {
         const { onSelect } = this.props;
@@ -509,15 +546,17 @@ class VditorEditor extends React.Component {
   }
 
   render() {
+    const { classes, hideBlockType } = this.props;
     return (
-      <div className={classNames('editor-container', {
-        'focus-mode': this.state.isFocus,
-      })}
+      <div
+        className={classNames('editor-container', hideBlockType && classes.hideBlockType, {
+          'focus-mode': this.state.isFocus,
+        })}
       >
         {this.styleRender()}
         {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
         <div
-          id="editor"
+          id={`editor_${this.timeStamp}`}
           onKeyDown={this.handler.handleEditorKeyDown}
         />
         <HeadingMenu
@@ -539,6 +578,7 @@ class VditorEditor extends React.Component {
 }
 
 VditorEditor.propTypes = {
+  classes: PropTypes.object.isRequired,
   isMac: PropTypes.bool,
   onInit: PropTypes.func,
   onInput: PropTypes.func,
@@ -558,6 +598,7 @@ VditorEditor.propTypes = {
   height: PropTypes.number,
   tagList: PropTypes.object,
   autoSelectTitle: PropTypes.bool,
+  hideBlockType: PropTypes.bool,
 };
 
 VditorEditor.defaultProps = {
@@ -578,6 +619,7 @@ VditorEditor.defaultProps = {
   height: undefined,
   tagList: {},
   autoSelectTitle: false,
+  hideBlockType: false,
 };
 
-export default VditorEditor;
+export default withStyles(styles)(VditorEditor);

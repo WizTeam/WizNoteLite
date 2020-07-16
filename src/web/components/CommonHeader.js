@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { useIntl } from 'react-intl';
 import classNames from 'classnames';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
 import LiteText from './LiteText';
 import Icons from '../config/icons';
 
@@ -16,19 +16,6 @@ const useStyles = makeStyles((theme) => ({
   dragLayer: {
     flex: 1,
     '-webkit-app-region': 'drag',
-  },
-  logoBox: {
-    display: 'flex',
-    fontSize: 12,
-    color: theme.custom.color.windowBarLogo,
-    alignItems: 'center',
-    height: '100%',
-    userSelect: 'none',
-    '& .MuiSvgIcon-root': {
-      width: 16,
-      height: 16,
-      margin: theme.spacing(0, 0.5, 0, 1),
-    },
   },
   systemButtonContainer: {
     '& .MuiButton-root': {
@@ -46,21 +33,43 @@ const useStyles = makeStyles((theme) => ({
   },
   closeRoot: {
     '&:hover': {
-      backgroundColor: theme.custom.background.closeButtonHover,
-      color: theme.custom.color.closeButtonHover,
+      backgroundColor: '#e82100',
+      color: '#ffffff',
     },
   },
   name: {
-    color: theme.custom.color.noteTitle,
     whiteSpace: 'nowrap',
   },
   liteLogo: {
-    color: '#f0f0f0',
+    color: theme.custom.color.windowBar,
+  },
+  logoIcon: {
+    width: 16,
+    height: 16,
+    marginRight: theme.spacing(1),
+  },
+  liteButton: {
+    padding: 0,
+    lineHeight: 1,
+    textTransform: 'unset',
+    marginLeft: theme.spacing(2),
+    fontSize: 14,
+    '& .MuiButton-endIcon': {
+      marginLeft: 0,
+      color: theme.custom.color.windowBar,
+    },
+    '&:hover': {
+      backgroundColor: 'transparent',
+    },
+    '&:active': {
+      backgroundColor: 'transparent',
+    },
   },
 }));
 
 export default function CommonHeader(props) {
   const classes = useStyles();
+  const intl = useIntl();
   const wm = window.wizApi.windowManager;
   const hasSystemButton = window.wizApi.isElectron && wm.platform !== 'darwin';
   //
@@ -111,7 +120,7 @@ export default function CommonHeader(props) {
 
   const handleClickLogo = (event) => {
     const elem = event.currentTarget;
-    wm.showSystemMenu(elem.offsetLeft + 8, elem.offsetTop + elem.offsetHeight);
+    wm.showSystemMenu(elem.offsetLeft + 8, elem.offsetTop + elem.offsetHeight, intl);
   };
 
   const handleDoubleClickLogo = () => {
@@ -127,14 +136,18 @@ export default function CommonHeader(props) {
     <div className={classNames(classes.root, className)} onDoubleClick={handleDoubleClickHeader}>
       {hasSystemButton && showLogo && (
         <>
-          <IconButton onClick={handleClickLogo} onDoubleClick={handleDoubleClickLogo}>
-            <Icons.LiteLogoIcon />
-          </IconButton>
-          <div className={classNames(classes.logoBox, classes.dragLayer)}>
+          <Button
+            className={classes.liteButton}
+            endIcon={<Icons.ArrowDropDownIcon />}
+            onClick={handleClickLogo}
+            onDoubleClick={handleDoubleClickLogo}
+            disableRipple
+          >
+            <Icons.LiteLogoIcon className={classes.logoIcon} />
             <LiteText className={classNames(classes.name, liteLogo && classes.liteLogo)}>
               WizNote Lite
             </LiteText>
-          </div>
+          </Button>
         </>
       )}
       <div className={classes.dragLayer} />

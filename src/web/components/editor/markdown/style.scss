@@ -1,8 +1,10 @@
 .editor-container {
   position: relative;
-  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
   &.focus-mode {
-    #editor {
+    div[id^='editor_'] {
       pre.vditor-reset > * {
         opacity: 0.2;
       }
@@ -16,7 +18,7 @@
   //   }
   // }
 
-  #editor {
+  div[id^='editor_'] {
     // 正文行高
     --text-line-height: 28px;
     // 正文字号
@@ -49,22 +51,28 @@
     }
   
     border: none;
-    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
     
     .vditor-toolbar {
       display: none;
     }
+    .vditor-ir {
+      display: flex !important;
+      flex-direction: column;
+      flex: 1;
+    }
     .vditor-reset {
       overflow: visible;
-      padding-top: 16px !important;
-      padding-bottom: 64px !important;
+      height: auto;
+      flex: 1;
+      padding: 0 !important;
       --panel-background-color: transparent;
       line-height: var(--text-line-height);
       font-size: var(--text-font-size);
       color: var(--text-font-color);
       font-family: var(--text-font-family);
-      padding-right: unquote("max(16px, (100% - 600px) / 2) !important");
-      padding-left: unquote("max(48px, (100% - 600px) / 2) !important");
       & > h1 {
         font-size: 32px;
         line-height: 44px;
@@ -129,10 +137,97 @@
       .vditor-ir__node.vditor-ir__node--expand .vditor-ir__preview code.hljs {
         display: none;
       }
+
+      // 临时处理 代码段 浅色/深色 模式切换，避免预览 & 编辑区域 样式冲突
+      pre {
+        .hljs {
+          background: #eee;
+          color: black;
+        }
+        .hljs-attr,
+        .hljs-built_in,
+        .hljs-doctag, 
+        .hljs-formula,
+        .hljs-meta,
+        .hljs-meta-string,
+        .hljs-selector-class,
+        .hljs-selector-attr,
+        .hljs-selector-pseudo,
+        .hljs-subst,
+        .hljs-symbol {
+          color: black;
+        }
+        
+        .hljs-link,
+        .hljs-emphasis,
+        .hljs-attribute,
+        .hljs-addition {
+            color: #070;
+        }
+        
+        .hljs-strong,
+        .hljs-string,
+        .hljs-deletion {
+            color: #d14;
+        }
+        
+        .hljs-quote,
+        .hljs-comment {
+            color: #998;
+        }
+        
+        .hljs-section,
+        .hljs-title {
+            color: #900;
+        }
+        
+        .hljs-class .hljs-title,
+        .hljs-type {
+            color: #458;
+        }
+        
+        .hljs-variable,
+        .hljs-template-variable {
+            color: #336699;
+        }
+        
+        .hljs-bullet {
+            color: #997700;
+        }
+        
+        .hljs-meta {
+            color: #3344bb;
+        }
+        
+        .hljs-code,
+        .hljs-number,
+        .hljs-literal,
+        .hljs-keyword,
+        .hljs-selector-tag {
+            color: #099;
+        }
+        
+        .hljs-regexp {
+            background-color: #fff0ff;
+            color: #880088;
+        }
+        
+        .hljs-symbol {
+            color: #990073;
+        }
+        
+        .hljs-tag,
+        .hljs-name,
+        .hljs-selector-id,
+        .hljs-selector-class {
+            color: #007700;
+        }
+      }
     }
     .vditor-ir pre.vditor-reset:focus {
       background-color: inherit;
     }
+    
     &.vditor--dark {
       // 背景颜色
       --panel-background-color: transparent;
@@ -161,10 +256,76 @@
       .tag-span {
         background-color: #555555;
       }
-      .hljs {
-        background-color: #404040;
-        color: #f0f0f0;
+
+      pre {
+        .hljs {
+          background-color: #404040;
+          color: #f0f0f0;
+        }
+        .hljs-code,
+        .hljs-emphasis,
+        .hljs-strong,
+        .hljs-tag {
+          color: #f0f0f0;
+        }
+        
+        .hljs-comment,
+        .hljs-quote {
+            color: #5c6370;
+        }
+        
+        .hljs-doctag,
+        .hljs-keyword,
+        .hljs-formula {
+            color: #c678dd;
+        }
+        
+        .hljs-section,
+        .hljs-name,
+        .hljs-selector-tag,
+        .hljs-deletion,
+        .hljs-subst {
+            color: #e06c75;
+        }
+        
+        .hljs-literal {
+            color: #56b6c2;
+        }
+        
+        .hljs-string,
+        .hljs-regexp,
+        .hljs-addition,
+        .hljs-attribute,
+        .hljs-meta-string {
+            color: #98c379;
+        }
+        
+        .hljs-built_in,
+        .hljs-class .hljs-title {
+            color: #e6c07b;
+        }
+        
+        .hljs-attr,
+        .hljs-variable,
+        .hljs-template-variable,
+        .hljs-type,
+        .hljs-selector-class,
+        .hljs-selector-attr,
+        .hljs-selector-pseudo,
+        .hljs-number {
+            color: #d19a66;
+        }
+        
+        .hljs-symbol,
+        .hljs-bullet,
+        .hljs-link,
+        .hljs-meta,
+        .hljs-selector-id,
+        .hljs-title {
+            color: #61aeee;
+        }
       }
+      
       .vditor-hint {
         background-color: #444;
       }

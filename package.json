@@ -1,7 +1,7 @@
 {
   "name": "wiznotelite",
   "description": "WizNote Lite - An instant rendering markdown note tool.",
-  "version": "1.0.8",
+  "version": "1.1.0",
   "private": true,
   "homepage": ".",
   "productName": "WizNote Lite",
@@ -17,6 +17,7 @@
     "lodash": "^4.17.15",
     "md5": "^2.2.1",
     "mime": "^2.4.5",
+    "pureimage": "^0.2.1",
     "remove-markdown": "^0.3.0",
     "uuid": "^8.0.0",
     "xregexp": "^4.3.0"
@@ -104,14 +105,13 @@
     },
     "mac": {
       "target": [
-        "mas",
-        "dmg"
+        "mas"
       ],
       "icon": "build/mac/wiznote.icns",
       "electronLanguages": [
         "en",
-        "zh-CN",
-        "zh-TW"
+        "zh_CN",
+        "zh_TW"
       ],
       "binaries": [
         "src/main/sqlite3/build/Release/wizsqlite3.node"
@@ -123,11 +123,6 @@
     },
     "mas": {
       "type": "distribution",
-      "electronLanguages": [
-        "en",
-        "zh-CN",
-        "zh-TW"
-      ],
       "provisioningProfile": "embedded.provisionprofile",
       "entitlements": "build/mac/entitlements.mas.plist",
       "entitlementsInherit": "build/mac/entitlements.mas.inherit.plist",
@@ -174,6 +169,7 @@
     "customize-cra": "^1.0.0",
     "electron": "^8.2.5",
     "electron-builder": "^22.7.0",
+    "electron-rebuild": "^1.11.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb": "^18.1.0",
     "eslint-plugin-import": "^2.20.2",
