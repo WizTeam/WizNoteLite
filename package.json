@@ -105,6 +105,7 @@
     },
     "mac": {
       "target": [
+        "dmg",
         "mas"
       ],
       "icon": "build/mac/wiznote.icns",
