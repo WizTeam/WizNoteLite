@@ -105,14 +105,13 @@
     },
     "mac": {
       "target": [
-        "mas",
-        "dmg"
+        "mas"
       ],
       "icon": "build/mac/wiznote.icns",
       "electronLanguages": [
         "en",
-        "zh-CN",
-        "zh-TW"
+        "zh_CN",
+        "zh_TW"
       ],
       "binaries": [
         "src/main/sqlite3/build/Release/wizsqlite3.node"
@@ -124,11 +123,6 @@
     },
     "mas": {
       "type": "distribution",
-      "electronLanguages": [
-        "en",
-        "zh-CN",
-        "zh-TW"
-      ],
       "provisioningProfile": "embedded.provisionprofile",
       "entitlements": "build/mac/entitlements.mas.plist",
       "entitlementsInherit": "build/mac/entitlements.mas.inherit.plist",
