@@ -7,7 +7,7 @@ export function getFontBtnStatus(editor, type) {
 }
 
 export function isCtrl(event) {
-  if (navigator.platform.toUpperCase().indexOf('MAC') >= 0) {
+  if (window.wizApi.platform.isMac) {
     if (event.metaKey && !event.ctrlKey) {
       return true;
     }
@@ -96,7 +96,7 @@ export function getScrollContainer(dom) {
 
 export function updateHotkeyTip(hotkeyStr) {
   let hotkey;
-  if (/Mac/.test(navigator.platform) || navigator.platform === 'iPhone') {
+  if (window.wizApi.platform.isMac) {
     hotkey = hotkeyStr.replace('ctrl', '⌘').replace('shift', '⇧')
       .replace('alt', '⌥');
     if (hotkey.indexOf('⇧') > -1) {
@@ -117,7 +117,7 @@ export function matchHotKey(hotKey, event) {
   const hotKeys = updateHotkeyTip(hotKey).split('-');
   const hasAlt = hotKeys.length > 2 && (hotKeys[1] === 'alt' || hotKeys[1] === '⌥');
   let key = (hasAlt ? hotKeys[2] : hotKeys[1]) || '-';
-  if (hasAlt && key === '-' && (!/Mac/.test(navigator.platform))) {
+  if (hasAlt && key === '-' && (!window.wizApi.platform.isMac)) {
     key = '_';
   }
   if (isCtrl(event) && event.key.toLowerCase() === key.toLowerCase() && !event.shiftKey

@@ -161,7 +161,7 @@ function TableMenu(props) {
       let ctrlKey = false;
       let metaKey = false;
       if (hotKeys.length > 1 && (hotKeys[0] === 'ctrl' || hotKeys[0] === '⌘')) {
-        if (/Mac/.test(navigator.platform)) {
+        if (window.wizApi.platform.isMac) {
           metaKey = true;
         } else {
           ctrlKey = true;
@@ -169,7 +169,7 @@ function TableMenu(props) {
       }
       const shiftKey = hotKeys.length > 2 && (hotKeys[1] === 'shift' || hotKeys[1] === '⇧');
       let key = (shiftKey ? hotKeys[2] : hotKeys[1]) || '-';
-      if (shiftKey && key === '-' && !/Mac/.test(navigator.platform)) {
+      if (shiftKey && key === '-' && !window.wizApi.platform.isMac) {
         key = '_';
       }
       const mockKeyboardEvent = new KeyboardEvent('keydown', {
