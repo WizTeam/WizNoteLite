@@ -139,30 +139,32 @@ function TableToolbar(props) {
 
   useEffect(() => {
     function selectionchangeHandler() {
-      const range = getRange();
-      if (range) {
-        const ele = filterParentElement(range.startContainer, props.editor.vditor.element, (dom) => dom.tagName.toLocaleLowerCase() === 'table');
-        if (ele) {
-          if (ele !== tableElement) {
-            tableElement = ele;
-            setMenuPos({
-              top: `${tableElement.offsetTop - 32}px`,
-              left: `${tableElement.offsetLeft + tableElement.offsetWidth - 32}px`,
-            });
+      if (!anchorEl) {
+        const range = getRange();
+        if (range) {
+          const ele = filterParentElement(range.startContainer, props.editor.vditor.element, (dom) => dom.tagName.toLocaleLowerCase() === 'table');
+          if (ele) {
+            if (ele !== tableElement) {
+              tableElement = ele;
+              setMenuPos({
+                top: `${tableElement.offsetTop - 32}px`,
+                left: `${tableElement.offsetLeft + tableElement.offsetWidth - 32}px`,
+              });
+            }
+            return;
+          } else if (filterParentElement(
+            range.startContainer,
+            document.body,
+            (dom) => hasClass(dom, classes.menuContainer),
+          )) {
+            return;
           }
-          return;
-        } else if (filterParentElement(
-          range.startContainer,
-          document.body,
-          (dom) => hasClass(dom, classes.menuContainer),
-        )) {
-          return;
         }
-      }
-      if (menuPos) {
-        tableElement = undefined;
-        setMenuPos(undefined);
-        closeMenuHandler();
+        if (menuPos) {
+          tableElement = undefined;
+          setMenuPos(undefined);
+          closeMenuHandler();
+        }
       }
     }
 
@@ -188,14 +190,22 @@ function TableToolbar(props) {
       }
     }
 
+    function mousedownHandler(e) {
+      if (anchorEl && (!filterParentElement(e.target, document, (dom) => hasClass(dom, 'table-toolbar-menu'), true))) {
+        closeMenuHandler();
+        e.preventDefault();
+      }
+    }
+
     document.addEventListener('selectionchange', selectionchangeHandler);
     document.addEventListener('mouseover', mouseoverHandler);
-
+    document.addEventListener('mousedown', mousedownHandler, true);
     return () => {
       document.removeEventListener('selectionchange', selectionchangeHandler);
       document.removeEventListener('mouseover', mouseoverHandler);
+      document.removeEventListener('mousedown', mousedownHandler, true);
     };
-  }, [props.editor, menuPos, classes]);
+  }, [props.editor, menuPos, classes, anchorEl]);
 
   useEffect(() => {
     if (anchorEl) {
@@ -226,7 +236,9 @@ function TableToolbar(props) {
           vertical: 'top',
           horizontal: 'left',
         }}
-        onClose={closeMenuHandler}
+        classes={{
+          paper: 'table-toolbar-menu',
+        }}
         getContentAnchorEl={null}
       >
         <div className={classes.menuContainer}>
