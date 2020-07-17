@@ -37,6 +37,10 @@ function SyncBtn(props) {
 
   async function handleClick() {
     try {
+      if (isSyncing) {
+        return;
+      }
+      //
       if (props.kbGuid) {
         await window.wizApi.userManager.syncKb(props.kbGuid, {
           manual: true,
@@ -126,7 +130,6 @@ function SyncBtn(props) {
           <IconButton
             className={props.className}
             onClick={handleClick}
-            disabled={isSyncing}
           >
             {err && <Icons.UploadIcon className={props.iconClassName} />}
             {(!err && syncing) && <SyncingIcon />}
