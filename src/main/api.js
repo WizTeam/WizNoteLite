@@ -483,7 +483,7 @@ handleApi('writeToMarkdown', async (event, userGuid, kbGuid, noteGuid) => {
     const resourcePath = await paths.getNoteResources(userGuid, kbGuid, noteGuid);
     const files = await fs.readdir(resourcePath);
     //
-    if (!fs.existsSync(targetFilesDirname)) {
+    if (!fs.existsSync(targetFilesDirname) && files.length) {
       await fs.mkdir(targetFilesDirname);
     }
     //
