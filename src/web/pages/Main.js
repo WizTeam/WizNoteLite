@@ -3,7 +3,10 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { injectIntl } from 'react-intl';
 import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
 import trim from 'lodash/trim';
+import { withSnackbar } from 'notistack';
 //
 import NoteList from '../components/NoteList';
 import Content from '../components/Content';
@@ -12,6 +15,7 @@ import SideBar from '../components/SideBar';
 import LiteText from '../components/LiteText';
 import LoginDialog from '../components/LoginDialog';
 // import SettingDialog from '../components/SettingDialog';
+import Icons from '../config/icons';
 
 const noteListWidth = '25%';
 
@@ -86,7 +90,19 @@ const styles = (theme) => ({
   header: {
     marginBottom: theme.spacing(1),
   },
+  anchorOriginTopCenter: {
+    top: -24,
+  },
+  closeButton: {
+    width: 24,
+    height: 24,
+    '& .MuiIconButton-root': {
+      padding: 0,
+    },
+  },
 });
+
+const SNACKBAR_KEY = 'WizErrorPayedPersonalExpired';
 
 class Main extends React.Component {
   handler = {
@@ -208,14 +224,22 @@ class Main extends React.Component {
           this.props.onInvalidPassword();
           return;
         } else if (err.externCode === 'WizErrorPayedPersonalExpired') {
+          this.showUpgradeVipMessage(true);
           // TODO: 添加通知，用户VIP服务到期
-          // alert(this.props.intl.formatMessage({ id: 'errorVipExpired' }));
           return;
         }
         //
         console.error(result.error);
         alert(result.error.message);
       }
+    },
+
+    handleUpgradeVip: () => {
+      this.props.closeSnackbar(SNACKBAR_KEY);
+    },
+
+    handleCloseSnackbar: () => {
+      this.props.closeSnackbar(SNACKBAR_KEY);
     },
   }
 
@@ -257,6 +281,36 @@ class Main extends React.Component {
 
   componentWillUnmount() {
     window.wizApi.userManager.off('syncFinish', this.handler.handleSyncFinish);
+  }
+
+  showUpgradeVipMessage(isVipExpired) {
+    const { classes, intl, enqueueSnackbar } = this.props;
+
+    const messageId = isVipExpired ? 'errorVipExpired' : 'errorUpgradeVip';
+    const message = intl.formatMessage({ id: messageId });
+    //
+    const buttonMessageId = isVipExpired ? 'buttonRenewVip' : 'buttonUpgradeVip';
+    const buttonMessage = intl.formatMessage({ id: buttonMessageId });
+    //
+    enqueueSnackbar(message, {
+      anchorOrigin: {
+        vertical: 'top',
+        horizontal: 'center',
+      },
+      variant: 'error',
+      persist: true,
+      key: SNACKBAR_KEY,
+      action: (() => (
+        <>
+          <Button onClick={this.handler.handleUpgradeVip}>
+            {buttonMessage}
+          </Button>
+          <IconButton onClick={this.handler.handleCloseSnackbar} className={classes.closeButton}>
+            <Icons.CloseIcon />
+          </IconButton>
+        </>
+      )),
+    });
   }
 
   //
@@ -358,6 +412,8 @@ Main.propTypes = {
   onInvalidPassword: PropTypes.func.isRequired,
   mergeLocalAccount: PropTypes.bool.isRequired,
   onLoggedIn: PropTypes.func.isRequired,
+  enqueueSnackbar: PropTypes.func.isRequired,
+  closeSnackbar: PropTypes.func.isRequired,
 };
 
 Main.defaultProps = {
@@ -365,4 +421,4 @@ Main.defaultProps = {
   onCreateAccount: null,
 };
 
-export default withStyles(styles)(injectIntl(Main));
+export default withSnackbar(withStyles(styles)(injectIntl(Main)));
