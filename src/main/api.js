@@ -312,18 +312,15 @@ handleApi('captureScreen', async (event, userGuid, kbGuid, noteGuid, options = {
           ],
         }],
       });
-      if (dialogResult.canceled) {
-        return;
+      if (!dialogResult.canceled) {
+        const filePath = dialogResult.filePath;
+        //
+        await PImage.encodePNGToStream(resultImage, fs.createWriteStream(filePath));
+        //
+        shell.showItemInFolder(filePath);
       }
       //
-      const filePath = dialogResult.filePath;
-      //
-      await PImage.encodePNGToStream(resultImage, fs.createWriteStream(filePath));
-      //
-      shell.showItemInFolder(filePath);
-      //
       e.preventDefault();
-      //
       await onProgress(-1);
       //
       setTimeout(() => {
@@ -441,15 +438,13 @@ handleApi('printToPDF', async (event, userGuid, kbGuid, noteGuid, options = {}) 
           ],
         }],
       });
-      if (dialogResult.canceled) {
-        return;
+      if (!dialogResult.canceled) {
+        const data = await window.webContents.printToPDF(pdfOptions);
+        const filePath = dialogResult.filePath;
+        await fs.writeFile(filePath, data);
+        //
+        shell.showItemInFolder(filePath);
       }
-      //
-      const data = await window.webContents.printToPDF(pdfOptions);
-      const filePath = dialogResult.filePath;
-      await fs.writeFile(filePath, data);
-      //
-      shell.showItemInFolder(filePath);
       await onProgress(-1);
       //
       setTimeout(() => {

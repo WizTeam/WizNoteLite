@@ -183,10 +183,11 @@ class VditorEditor extends React.Component {
       }
     }
     if (nextProps.disabled !== this.props.disabled && this.isEditorReady()) {
+      // TODO 临时处理 disabled 状态，用于导出图片
       if (nextProps.disabled) {
-        this.editor.disabled();
-      } else {
-        this.editor.enable();
+        this.setEditorDisabled();
+      } else if (nextProps.disabled === false) {
+        this.setEditorEnable();
       }
     }
     //
@@ -210,6 +211,26 @@ class VditorEditor extends React.Component {
 
   componentWillUnmount() {
     this.unbind();
+  }
+
+  setEditorEnable() {
+    if (!this.isEditorReady()) {
+      return;
+    }
+    this.editor.enable();
+    const pre = this.editor.vditor.element.querySelector('.vditor-ir pre.vditor-reset');
+    pre.style.opacity = null;
+    pre.style.pointerEvents = null;
+  }
+
+  setEditorDisabled() {
+    if (!this.isEditorReady()) {
+      return;
+    }
+    this.editor.disabled();
+    const pre = this.editor.vditor.element.querySelector('.vditor-ir pre.vditor-reset');
+    pre.style.opacity = 1;
+    pre.style.pointerEvents = 'none';
   }
 
   setTags(tagList) {
@@ -242,7 +263,7 @@ class VditorEditor extends React.Component {
           }
         }
         if (disabled) {
-          this.editor.disabled();
+          this.setEditorDisabled();
         }
         // this._removePanelNode();
       },

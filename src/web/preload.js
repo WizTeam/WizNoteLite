@@ -364,6 +364,7 @@ function init(options) {
 
 window.wizApi = {
   isElectron: true,
+  version: remote.app.getVersion(),
   init,
   windowManager,
   userManager,

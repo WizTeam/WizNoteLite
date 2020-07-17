@@ -31,7 +31,7 @@ export default {
   serverTypeDefault: 'WizNote Server',
   serverTypePrivate: 'Private Server',
   //
-  registerDeclare: 'By registering, you have read and agreed to the <a target="_blank" href="https://wiz.cn/pages/go?blogName=share-termsofuse">Terms of Service</a> and <a target="_blank" href="https://wiz.cn/pages/go?blogName=wiz-privacy">Privacy Policy</a>',
+  registerDeclare: 'By registering, you have read and agreed to the <a target="_blank" href="https://wiz.cn/pages/go?blogName=share-termsofuse&lang=en">Terms of Service</a> and <a target="_blank" href="https://wiz.cn/pages/go?blogName=wiz-privacy&lang=en">Privacy Policy</a>',
   //
   trash: 'Trash',
   menuDelete: 'Delete',
@@ -82,13 +82,18 @@ export default {
 
   themeTitle: 'Theme',
   widthTitle: 'Width',
+  directionTitle: 'Direction',
+  paperSizeTitle: 'Paper Size',
   lightOption: 'Light',
   darkOption: 'Dark',
   pcOption: 'Computer',
   mobilePlusOption: 'Mobile plus',
   mobileOption: 'Mobile',
+  portraitOption: 'Portrait',
+  landscapeOption: 'Landscape',
   exportLoading: 'Exporting...',
   exportButton: 'Export Image',
+  exportPdfButton: 'Export PDF',
   // system menu
   sendFeedback: 'Send Feedback',
   devTool: 'Developer Tools',

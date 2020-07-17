@@ -10,6 +10,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import CommonHeader from './CommonHeader';
 import NoteEditor from './NoteEditor';
 import ExportPngDialog from './ExportPngDialog';
+import ExportPdfDialog from './ExportPdfDialog';
 import Icons from '../config/icons';
 // import FocusBtn from './FocusBtn';
 import SyncBtn from './SyncBtn';
@@ -138,10 +139,18 @@ class Content extends React.Component {
     handleShowExportPngDialog: () => {
       this.handler.handleCloseExportMenu();
       //
-      this.setState({ showExportDialog: true });
+      this.setState({ showExportPngDialog: true });
     },
     handleCloseExportPngDialog: () => {
-      this.setState({ showExportDialog: false });
+      this.setState({ showExportPngDialog: false });
+    },
+    handleShowExportPdfDialog: () => {
+      this.handler.handleCloseExportMenu();
+      //
+      this.setState({ showExportPdfDialog: true });
+    },
+    handleCloseExportPdfDialog: () => {
+      this.setState({ showExportPdfDialog: false });
     },
   };
 
@@ -150,7 +159,8 @@ class Content extends React.Component {
     this.state = {
       isFullScreen: false,
       exportMenuAnchorEl: null,
-      showExportDialog: false,
+      showExportPngDialog: false,
+      showExportPdfDialog: false,
     };
   }
 
@@ -169,7 +179,8 @@ class Content extends React.Component {
       intl,
     } = this.props;
     const {
-      isFullScreen, exportMenuAnchorEl, showExportDialog,
+      isFullScreen, exportMenuAnchorEl, showExportPngDialog,
+      showExportPdfDialog,
     } = this.state;
     //
     const isLite = theme.palette.type !== 'dark';
@@ -243,10 +254,7 @@ class Content extends React.Component {
           {/* <MenuItem>
             {intl.formatMessage({ id: 'exportMd' })}
           </MenuItem> */}
-          <MenuItem onClick={() => {
-            window.wizApi.userManager.printToPDF(kbGuid, note.guid, { landscape: true });
-          }}
-          >
+          <MenuItem onClick={this.handler.handleShowExportPdfDialog}>
             {intl.formatMessage({ id: 'exportPdf' })}
           </MenuItem>
           {/* <MenuItem>
@@ -264,10 +272,16 @@ class Content extends React.Component {
           </MenuItem> */}
         </Menu>
         <ExportPngDialog
-          open={showExportDialog}
+          open={showExportPngDialog}
           kbGuid={kbGuid}
           noteGuid={note?.guid ?? null}
           onClose={this.handler.handleCloseExportPngDialog}
+        />
+        <ExportPdfDialog
+          open={showExportPdfDialog}
+          kbGuid={kbGuid}
+          noteGuid={note?.guid ?? null}
+          onClose={this.handler.handleCloseExportPdfDialog}
         />
       </main>
     );

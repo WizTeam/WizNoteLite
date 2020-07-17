@@ -31,7 +31,7 @@ export default {
   serverTypeDefault: '为知笔记服务',
   serverTypePrivate: '私有服务器/为知盒子',
   //
-  registerDeclare: '注册即表示您已阅读并同意<a target="_blank" href="https://wiz.cn/pages/go?blogName=share-termsofuse">服务条款</a>与<a target="_blank" href="https://wiz.cn/pages/go?blogName=wiz-privacy">隐私政策</a>',
+  registerDeclare: '注册即表示您已阅读并同意<a target="_blank" href="https://wiz.cn/pages/go?blogName=share-termsofuse&lang=zh-cn">服务条款</a>与<a target="_blank" href="https://wiz.cn/pages/go?blogName=wiz-privacy&lang=zh-cn">隐私政策</a>',
   //
   trash: '回收站',
   menuDelete: '删除',
@@ -82,13 +82,18 @@ export default {
 
   themeTitle: '主题',
   widthTitle: '宽度',
+  directionTitle: '方向',
+  paperSizeTitle: '纸张',
   lightOption: '亮色',
   darkOption: '暗色',
   pcOption: '电脑阅读',
   mobilePlusOption: 'Plus手机阅读',
   mobileOption: '手机阅读',
+  portraitOption: '竖版',
+  landscapeOption: '横版',
   exportLoading: '正在生成...',
   exportButton: '导出为图片',
+  exportPdfButton: '导出为 PDF',
   // system menu
   sendFeedback: '意见反馈',
   devTool: '开发者工具',
