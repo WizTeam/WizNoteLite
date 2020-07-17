@@ -93,13 +93,6 @@ const styles = (theme) => ({
   anchorOriginTopCenter: {
     top: -24,
   },
-  closeButton: {
-    width: 24,
-    height: 24,
-    '& .MuiIconButton-root': {
-      padding: 0,
-    },
-  },
 });
 
 const SNACKBAR_KEY = 'WizErrorPayedPersonalExpired';
@@ -225,7 +218,9 @@ class Main extends React.Component {
           return;
         } else if (err.externCode === 'WizErrorPayedPersonalExpired') {
           this.showUpgradeVipMessage(true);
-          // TODO: 添加通知，用户VIP服务到期
+          return;
+        } else if (err.externCode === 'WizErrorFreePersonalExpired') {
+          this.showUpgradeVipMessage(false);
           return;
         }
         //
