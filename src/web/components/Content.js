@@ -15,6 +15,7 @@ import Icons from '../config/icons';
 // import FocusBtn from './FocusBtn';
 import SyncBtn from './SyncBtn';
 import Scrollbar from './Scrollbar';
+import EditorContents from './editor/markdown/EditorContents';
 
 const styles = (theme) => ({
   main: {
@@ -44,6 +45,7 @@ const styles = (theme) => ({
   content: {
     flex: 1,
     position: 'relative',
+    display: 'flex',
     // padding: theme.spacing(3),
   },
   toolBar: {
@@ -136,6 +138,16 @@ class Content extends React.Component {
         exportMenuAnchorEl: null,
       });
     },
+    handleShowContents: () => {
+      this.setState({
+        showEditorContents: true,
+      });
+    },
+    handleCloseContents: () => {
+      this.setState({
+        showEditorContents: false,
+      });
+    },
     handleShowExportPngDialog: () => {
       this.handler.handleCloseExportMenu();
       //
@@ -161,6 +173,7 @@ class Content extends React.Component {
       exportMenuAnchorEl: null,
       showExportPngDialog: false,
       showExportPdfDialog: false,
+      showEditorContents: true,
     };
   }
 
@@ -199,7 +212,7 @@ class Content extends React.Component {
           className={classNames(classes.header, isMac && classes.header_mac)}
           onRequestFullScreen={this.props.onRequestFullScreen}
         />
-        {note && !isSearch && (
+        {!this.state.showEditorContents && note && !isSearch && (
         <div className={classNames(classes.toolBar, isMac && classes.toolBar_mac)}>
           {/* <IconButton className={classes.iconButton}>
             <Icons.MoreHorizIcon className={classes.icon} />
@@ -216,7 +229,7 @@ class Content extends React.Component {
             {!isFullScreen && <Icons.FullScreenIcon className={classes.icon} />}
           </IconButton>
           )}
-          <IconButton className={classes.iconButton}>
+          <IconButton className={classes.iconButton} onClick={this.handler.handleShowContents}>
             <Icons.OutlineIcon className={classes.icon} />
           </IconButton>
           <IconButton className={classes.iconButton} onClick={this.handler.handleShowExportMenu}>
@@ -242,6 +255,27 @@ class Content extends React.Component {
               onClickTag={onClickTag}
             />
           </Scrollbar>
+          <EditorContents
+            contents={[{
+              key: '1s',
+              title: 'test',
+            }, {
+              title: 'test2',
+              key: '4s',
+              children: [
+                {
+                  key: '2s',
+                  title: 'test3',
+                },
+                {
+                  key: '3s',
+                  title: 'test4',
+                },
+              ],
+            }]}
+            open={this.state.showEditorContents}
+            onClose={this.handler.handleCloseContents}
+          />
         </div>
         <Menu
           className={classes.exportMenu}

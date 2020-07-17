@@ -37,6 +37,7 @@ function TreeView(props) {
   const {
     data, textClassName, deep, selected,
     itemClassName, className, itemSelectedClassName,
+    openIcon, closeIcon,
   } = props;
   //
   const [newData, setNewData] = useState([]);
@@ -91,21 +92,29 @@ function TreeView(props) {
     //
     if (node.open) {
       return (
-        <Icons.ArrowBottomIcon
+        <div
+          aria-hidden
           style={style}
           onClick={(e) => toggleCollapse(e, node)}
           className={classes.icon}
-        />
+          role="button"
+        >
+          {openIcon ?? <Icons.ArrowBottomIcon />}
+        </div>
       );
     }
     //
     if (!node.open) {
       return (
-        <Icons.ArrowRightIcon
+        <div
+          aria-hidden
           style={style}
           onClick={(e) => toggleCollapse(e, node)}
           className={classes.icon}
-        />
+          role="button"
+        >
+          {closeIcon ?? <Icons.ArrowRightIcon />}
+        </div>
       );
     }
     return <></>;
@@ -163,6 +172,8 @@ TreeView.propTypes = {
   itemSelectedClassName: PropTypes.string,
   deep: PropTypes.number,
   selected: PropTypes.object,
+  openIcon: PropTypes.object,
+  closeIcon: PropTypes.object,
 };
 
 TreeView.defaultProps = {
@@ -175,6 +186,8 @@ TreeView.defaultProps = {
   itemSelectedClassName: '',
   deep: 0,
   selected: undefined,
+  openIcon: undefined,
+  closeIcon: undefined,
 };
 
 export default TreeView;
