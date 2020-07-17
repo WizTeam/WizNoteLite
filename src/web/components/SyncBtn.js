@@ -55,9 +55,9 @@ function SyncBtn(props) {
     setSyncing(true);
   }
 
-  function handleSyncFinish(kbGuid, err) {
+  function handleSyncFinish(kbGuid, result) {
     setSyncing(false);
-    setError(err);
+    setError(result.error);
   }
 
   useEffect(() => {
