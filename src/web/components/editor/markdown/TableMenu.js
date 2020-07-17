@@ -103,7 +103,7 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
   },
 }));
 
-let makeCellEle;
+let currentCellElement;
 let tableElement;
 
 function TableMenu(props) {
@@ -124,21 +124,21 @@ function TableMenu(props) {
   }
 
   function addRowAbove() {
-    if (makeCellEle) {
+    if (currentCellElement) {
       let rowHTML = '';
-      for (let m = 0; m < makeCellEle.parentElement.childElementCount; m++) {
+      for (let m = 0; m < currentCellElement.parentElement.childElementCount; m++) {
         rowHTML += '<td> </td>';
       }
-      makeCellEle.parentElement.insertAdjacentHTML('beforebegin', `<tr>${rowHTML}</tr>`);
-      setRangeByDomBeforeEnd(makeCellEle.parentElement.previousElementSibling.children[0]);
+      currentCellElement.parentElement.insertAdjacentHTML('beforebegin', `<tr>${rowHTML}</tr>`);
+      setRangeByDomBeforeEnd(currentCellElement.parentElement.previousElementSibling.children[0]);
       props.onSaveNote();
     }
   }
 
   function addColBefore() {
-    if (makeCellEle && tableElement) {
+    if (currentCellElement && tableElement) {
       let index = 0;
-      let previousElement = makeCellEle.previousElementSibling;
+      let previousElement = currentCellElement.previousElementSibling;
       while (previousElement) {
         index++;
         previousElement = previousElement.previousElementSibling;
@@ -180,7 +180,7 @@ function TableMenu(props) {
   }, [props.editor]);
 
   function clickHandler(type, e) {
-    setRangeByDomBeforeEnd(makeCellEle);
+    setRangeByDomBeforeEnd(currentCellElement);
 
     switch (type) {
       case 'addRowAbove':
@@ -247,11 +247,11 @@ function TableMenu(props) {
         const ele = filterParentElement(e.target, props.editor.vditor.element, (dom) => dom.tagName.toLocaleLowerCase() === 'table');
         if (e.button === 2 && ele) {
           tableElement = ele;
-          makeCellEle = filterParentElement(e.target, props.editor.vditor.element, (dom) => ['th', 'td'].includes(dom.tagName?.toLocaleLowerCase()), true);
-          if (makeCellEle) {
-            const makeCellEleAlign = makeCellEle.getAttribute('align') ?? 'left';
-            if (makeCellEleAlign !== align) {
-              setAlign(makeCellEleAlign);
+          currentCellElement = filterParentElement(e.target, props.editor.vditor.element, (dom) => ['th', 'td'].includes(dom.tagName?.toLocaleLowerCase()), true);
+          if (currentCellElement) {
+            const currentCellElementAlign = currentCellElement.getAttribute('align') ?? 'left';
+            if (currentCellElementAlign !== align) {
+              setAlign(currentCellElementAlign);
             }
             setMenuPosition({
               top: e.clientY,
@@ -289,7 +289,7 @@ function TableMenu(props) {
   const subMenuPosClass = (menuPosition?.left ?? 0) + 344 < window.innerWidth
     ? classes.rightMenu : classes.leftMenu;
 
-  const isHead = makeCellEle && makeCellEle.tagName.toLocaleLowerCase() === 'th';
+  const isHead = currentCellElement && currentCellElement.tagName.toLocaleLowerCase() === 'th';
 
   return (
     <Menu
