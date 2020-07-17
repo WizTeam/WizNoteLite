@@ -114,7 +114,7 @@ function TableMenu(props) {
   const [menuPosition, setMenuPosition] = useState(undefined);
   const [showSubMenu, setShowSubMenu] = useState(false);
   const [align, setAlign] = useState('left');
-  const subMenuRef = useRef();
+  const menuRef = useRef();
 
   function deleteTable() {
     if (tableElement) {
@@ -285,8 +285,13 @@ function TableMenu(props) {
     };
   }, [menuPosition, showSubMenu, props.editor, align, dispatchKey]);
 
-  const subMenuPosClass = (menuPosition?.left ?? 0) + 344 < window.innerWidth
-    ? classes.rightMenu : classes.leftMenu;
+  let subMenuPosClass = classes.rightMenu;
+  if (menuRef.current) {
+    const subMenuRect = menuRef.current.querySelector(`.${classes.menuRoot}`)?.getBoundingClientRect() ?? { width: 0 };
+    if ((menuPosition?.left ?? 0) + 1.5 * subMenuRect.width > window.innerWidth) {
+      subMenuPosClass = classes.leftMenu;
+    }
+  }
 
   const isHead = currentCellElement && currentCellElement.tagName.toLocaleLowerCase() === 'th';
 
@@ -300,6 +305,7 @@ function TableMenu(props) {
         list: classes.menuRoot,
         paper: classes.clearOverflow,
       }}
+      ref={menuRef}
     >
       {isHead || (
         <MenuItem onClick={(e) => clickHandler('addRowAbove', e)}>
@@ -341,7 +347,6 @@ function TableMenu(props) {
             className={classNames(classes.subMenu, {
               active: showSubMenu,
             }, subMenuPosClass)}
-            ref={subMenuRef}
           >
             <div className={classes.subMenuContainer}>
               <button type="button" className={classes.subMenuItem} onClick={(e) => clickHandler('alignLeft', e)}>
