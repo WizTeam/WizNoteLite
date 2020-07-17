@@ -267,7 +267,6 @@ function TableMenu(props) {
 
     function keydownHandler(e) {
       if (matchHotKey('⌘-Enter', e)) {
-        console.log('asd');
         dispatchKey('⌘-=');
         e.preventDefault();
       } else if (matchHotKey('⌘-⌥-Enter', e)) {
