@@ -208,7 +208,8 @@ class Main extends React.Component {
           this.props.onInvalidPassword();
           return;
         } else if (err.externCode === 'WizErrorPayedPersonalExpired') {
-          alert(this.props.intl.formatMessage({ id: 'errorVipExpired' }));
+          // TODO: 添加通知，用户VIP服务到期
+          // alert(this.props.intl.formatMessage({ id: 'errorVipExpired' }));
           return;
         }
         //
