@@ -126,7 +126,7 @@ function TableMenu(props) {
   function addRowAbove() {
     if (currentCellElement) {
       let rowHTML = '';
-      for (let m = 0; m < currentCellElement.parentElement.childElementCount; m++) {
+      for (let i = 0; i < currentCellElement.parentElement.childElementCount; i++) {
         rowHTML += '<td> </td>';
       }
       currentCellElement.parentElement.insertAdjacentHTML('beforebegin', `<tr>${rowHTML}</tr>`);
