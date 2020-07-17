@@ -138,7 +138,7 @@ function TableToolbar(props) {
   }
 
   useEffect(() => {
-    function selectionchangeHandler() {
+    function selectionChangeHandler() {
       if (!anchorEl) {
         const range = getRange();
         if (range) {
@@ -197,11 +197,11 @@ function TableToolbar(props) {
       }
     }
 
-    document.addEventListener('selectionchange', selectionchangeHandler);
+    document.addEventListener('selectionchange', selectionChangeHandler);
     document.addEventListener('mouseover', mouseoverHandler);
     document.addEventListener('mousedown', mousedownHandler, true);
     return () => {
-      document.removeEventListener('selectionchange', selectionchangeHandler);
+      document.removeEventListener('selectionchange', selectionChangeHandler);
       document.removeEventListener('mouseover', mouseoverHandler);
       document.removeEventListener('mousedown', mousedownHandler, true);
     };
