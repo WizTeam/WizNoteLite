@@ -20,12 +20,6 @@ function unregisterWindow(window) {
   users.unregisterWindow(window.webContents);
 }
 
-ipcMain.on('init', (event, options) => {
-  console.log(options);
-  // eslint-disable-next-line no-param-reassign
-  event.returnValue = {};
-});
-
 async function handleApi(name, api) {
   ipcMain.handle(name, async (event, ...args) => {
     try {

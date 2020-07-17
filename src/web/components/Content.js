@@ -187,8 +187,8 @@ class Content extends React.Component {
     const backgroundColorClassName = `main_${backgroundType}`;
     const backgroundClass = isLite && (classes[backgroundColorClassName] ?? '');
 
-    const hasFullScreenButton = window.wizApi.isElectron && window.wizApi.windowManager.platform === 'darwin';
     const isMac = window.wizApi.platform.isMac;
+    const hasFullScreenButton = window.wizApi.isElectron && isMac;
 
     return (
       <main

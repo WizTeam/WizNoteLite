@@ -71,7 +71,7 @@ export default function CommonHeader(props) {
   const classes = useStyles();
   const intl = useIntl();
   const wm = window.wizApi.windowManager;
-  const hasSystemButton = window.wizApi.isElectron && wm.platform !== 'darwin';
+  const hasSystemButton = window.wizApi.isElectron && !window.wizApi.platform.isMac;
   //
   const fullScreen = wm.isFullScreen();
   const maximized = fullScreen || wm.isMaximized();
