@@ -216,6 +216,9 @@ class Content extends React.Component {
             {!isFullScreen && <Icons.FullScreenIcon className={classes.icon} />}
           </IconButton>
           )}
+          <IconButton className={classes.iconButton}>
+            <Icons.OutlineIcon className={classes.icon} />
+          </IconButton>
           <IconButton className={classes.iconButton} onClick={this.handler.handleShowExportMenu}>
             <Icons.ExportIcon className={classes.icon} />
           </IconButton>
