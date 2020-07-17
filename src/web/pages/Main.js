@@ -186,8 +186,8 @@ class Main extends React.Component {
         tagName = tagText.substr(lastChildIndex + 1);
       }
       const tag = {
-        key: tagText,
-        title: tagName,
+        key: tagText.toLowerCase(),
+        title: tagName.toLowerCase(),
       };
       this.handler.handleTagSelected(tag);
     },

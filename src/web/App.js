@@ -32,16 +32,6 @@ const styles = (/* theme */) => ({
 });
 
 const locale = getLocale();
-const langMap = {
-  en: 'en',
-  'zh-cn': 'zh-cn',
-};
-window.wizApi.init({
-  lang: langMap[locale] ?? 'en',
-});
-window.wizApi.platform = {
-  isMac: window.wizApi.isElectron && window.wizApi.windowManager.platform === 'darwin',
-};
 
 moment.locale(locale);
 const messages = Object.assign(localeMessages.en, localeMessages[locale]);

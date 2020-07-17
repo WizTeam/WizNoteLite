@@ -506,6 +506,10 @@ class NoteList extends React.Component {
       return !!note.trash;
     }
     //
+    if (note.trash) {
+      return false;
+    }
+    //
     if (type === 'tag') {
       const tagKey = tag.key;
       if (filter === 'starred') {

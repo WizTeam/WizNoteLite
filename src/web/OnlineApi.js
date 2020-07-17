@@ -7,6 +7,7 @@ import CryptoJS from 'crypto-js';
 import isEqual from 'lodash/isEqual';
 import trim from 'lodash/trim';
 import removeMd from 'remove-markdown';
+import platform from 'platform';
 import { getResourcesFromHtml, extractTagsFromMarkdown } from '../share/note_analysis';
 import {
   WizInvalidUserError,
@@ -193,14 +194,6 @@ const globalSettings = new GlobalSettings();
 
 
 class WindowManager {
-  constructor() {
-    this._platform = '';
-  }
-
-  get platform() {
-    return this._platform;
-  }
-
   toggleMaximize() {
     console.error('not support');
   }
@@ -713,12 +706,9 @@ refreshToken = async () => {
   return token;
 };
 
-function init() {
-}
-
 export default {
   isElectron: false,
-  init,
+  platform,
   windowManager,
   userManager,
 };
