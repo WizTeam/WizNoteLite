@@ -342,7 +342,6 @@ class VditorEditor extends React.Component {
             'export',
             'outline',
             'preview',
-            'format',
             'devtools',
             'info',
             'help',
