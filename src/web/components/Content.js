@@ -152,6 +152,15 @@ class Content extends React.Component {
     handleCloseExportPdfDialog: () => {
       this.setState({ showExportPdfDialog: false });
     },
+    handleExportMarkdown: () => {
+      const { kbGuid, note } = this.props;
+      //
+      if (!note.guid) return;
+      //
+      this.handler.handleCloseExportMenu();
+      //
+      window.wizApi.userManager.writeToMarkdown(kbGuid, note.guid, {});
+    },
   };
 
   constructor(props) {
@@ -251,9 +260,9 @@ class Content extends React.Component {
           <MenuItem onClick={this.handler.handleShowExportPngDialog}>
             {intl.formatMessage({ id: 'exportPng' })}
           </MenuItem>
-          {/* <MenuItem>
+          <MenuItem onClick={this.handler.handleExportMarkdown}>
             {intl.formatMessage({ id: 'exportMd' })}
-          </MenuItem> */}
+          </MenuItem>
           <MenuItem onClick={this.handler.handleShowExportPdfDialog}>
             {intl.formatMessage({ id: 'exportPdf' })}
           </MenuItem>

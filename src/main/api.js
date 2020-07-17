@@ -457,6 +457,49 @@ handleApi('printToPDF', async (event, userGuid, kbGuid, noteGuid, options = {}) 
   });
 });
 
+handleApi('writeToMarkdown', async (event, userGuid, kbGuid, noteGuid) => {
+  const webContents = event.sender;
+  const browserWindow = BrowserWindow.fromWebContents(webContents);
+  //
+  const note = await users.getNote(userGuid, kbGuid, noteGuid);
+  const fileName = noteTitleToFileName(note.title);
+  //
+  const dialogResult = await dialog.showSaveDialog(browserWindow, {
+    properties: ['saveFile'],
+    defaultPath: `${fileName}.md`,
+    filters: [{
+      name: i18next.t('fileFilterMarkdown'),
+      extensions: [
+        'md',
+      ],
+    }],
+  });
+
+  if (!dialogResult.canceled) {
+    const filePath = dialogResult.filePath;
+    const targetDirname = path.dirname(filePath);
+    const targetFilesDirname = path.join(targetDirname, 'index_files');
+    //
+    const resourcePath = await paths.getNoteResources(userGuid, kbGuid, noteGuid);
+    const files = await fs.readdir(resourcePath);
+    //
+    if (!fs.existsSync(targetFilesDirname)) {
+      await fs.mkdir(targetFilesDirname);
+    }
+    //
+    for (const file of files) {
+      const oldFilePath = path.join(resourcePath, file);
+      const newFilePath = path.join(targetFilesDirname, file);
+      await fs.copyFile(oldFilePath, newFilePath);
+    }
+    //
+    const data = await users.getNoteMarkdown(userGuid, kbGuid, noteGuid);
+    await fs.writeFile(filePath, data);
+    //
+    shell.showItemInFolder(filePath);
+  }
+});
+
 
 module.exports = {
   unregisterWindow,
