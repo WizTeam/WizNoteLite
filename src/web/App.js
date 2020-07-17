@@ -81,6 +81,11 @@ class App extends React.Component {
     window.wizApi.userManager.on('showAbout', this.handler.handleShowAboutDialog);
   }
 
+  componentWillUnmount() {
+    window.wizApi.userManager.off('logout', this.handler.handleLogout);
+    window.wizApi.userManager.off('showAbout', this.handler.handleShowAboutDialog);
+  }
+
   //
   render() {
     const { classes } = this.props;

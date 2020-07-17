@@ -129,9 +129,6 @@ class Main extends React.Component {
       this.setState({ currentNote });
       window.wizApi.userManager.setUserSettings('lastNote', currentNote?.guid);
     },
-    handleInvalidPassword: () => {
-
-    },
     handleTagSelected: async (tag) => {
       this.setState({
         type: 'tag',
@@ -199,6 +196,26 @@ class Main extends React.Component {
         window.wizApi.windowManager.toggleFullScreen();
       });
     },
+
+    handleSyncFinish: (kbGuid, result) => {
+      if (kbGuid !== this.props.kbGuid) {
+        return;
+      }
+      if (result.error) {
+        const err = result.error;
+        if (err.code === 'WizErrorInvalidPassword') {
+          alert(this.props.intl.formatMessage({ id: 'errorInvalidPassword' }));
+          this.props.onInvalidPassword();
+          return;
+        } else if (err.externCode === 'WizErrorPayedPersonalExpired') {
+          alert(this.props.intl.formatMessage({ id: 'errorVipExpired' }));
+          return;
+        }
+        //
+        console.error(result.error);
+        alert(result.error.message);
+      }
+    },
   }
 
   constructor(props) {
@@ -234,9 +251,11 @@ class Main extends React.Component {
         //
       }
     }
+    window.wizApi.userManager.on('syncFinish', this.handler.handleSyncFinish);
   }
 
   componentWillUnmount() {
+    window.wizApi.userManager.off('syncFinish', this.handler.handleSyncFinish);
   }
 
   //
@@ -335,7 +354,7 @@ Main.propTypes = {
   user: PropTypes.object.isRequired,
   kbGuid: PropTypes.string,
   onCreateAccount: PropTypes.func,
-  onInvalidPassword: PropTypes.func,
+  onInvalidPassword: PropTypes.func.isRequired,
   mergeLocalAccount: PropTypes.bool.isRequired,
   onLoggedIn: PropTypes.func.isRequired,
 };
@@ -343,7 +362,6 @@ Main.propTypes = {
 Main.defaultProps = {
   kbGuid: null,
   onCreateAccount: null,
-  onInvalidPassword: null,
 };
 
 export default withStyles(styles)(injectIntl(Main));
