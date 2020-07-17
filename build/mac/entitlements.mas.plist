@@ -15,6 +15,8 @@
         <key>com.apple.security.files.user-selected.read-only</key>
         <true/>
         <key>com.apple.security.files.user-selected.read-write</key>
-        <true/>        
+        <true/>
+        <key>com.apple.security.network.client</key>
+        <true/>
     </dict>
 </plist>

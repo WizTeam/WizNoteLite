@@ -79,15 +79,37 @@ class WindowManager {
     return window.isFullScreen();
   }
 
-  showSystemMenu(x, y) {
+  setMenu(menu, options) {
+    options.forEach((mItem) => {
+      menu.append(new MenuItem(mItem));
+    });
+  }
+
+  showSystemMenu(x, y, intl) {
     if (!this._systemMenu) {
-      const menu = new Menu();
-      menu.append(new MenuItem({
-        label: 'About WizNote Lite',
-        click() {
-          window.wizApi.userManager.emit('showAbout');
+      const options = [
+        {
+          label: intl.formatMessage({ id: 'sendFeedback' }),
+          click() {
+            window.open('https://support.qq.com/products/174045');
+          },
         },
-      }));
+        {
+          label: intl.formatMessage({ id: 'devTool' }),
+          role: 'toggledevtools',
+        },
+        {
+          label: intl.formatMessage({ id: 'about' }),
+          click() {
+            window.wizApi.userManager.emit('showAbout');
+          },
+        },
+      ];
+      //
+      const menu = new Menu();
+
+      this.setMenu(menu, options);
+
       this._systemMenu = menu;
     }
 
@@ -248,6 +270,16 @@ class UserManager extends EventEmitter {
     return result;
   }
 
+  async captureScreen(kbGuid, noteGuid, options) {
+    const result = await invokeApi('captureScreen', this.userGuid, kbGuid, noteGuid, options);
+    return result;
+  }
+
+  async printToPDF(kbGuid, noteGuid, options) {
+    const result = await invokeApi('printToPDF', this.userGuid, kbGuid, noteGuid, options);
+    return result;
+  }
+
   async buildBindSnsUrl(server, type, postMessage, origin, extraParams) {
     const path = '/as/thirdparty/go/auth';
     const query = {
@@ -263,6 +295,11 @@ class UserManager extends EventEmitter {
     const url = `${server}${path}?${params}`;
 
     return url;
+  }
+
+
+  async sendMessage(name, ...args) {
+    ipcRenderer.send(name, this.userGuid, ...args);
   }
 }
 
@@ -327,6 +364,7 @@ function init(options) {
 
 window.wizApi = {
   isElectron: true,
+  version: remote.app.getVersion(),
   init,
   windowManager,
   userManager,

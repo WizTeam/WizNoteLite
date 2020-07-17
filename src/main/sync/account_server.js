@@ -93,7 +93,6 @@ class AccountServer {
     if (url.hostname === 'as.wiz.cn') {
       return;
     }
-    //
     try {
       const options = {
         url: `${server}/manage/server/version`,
@@ -103,7 +102,7 @@ class AccountServer {
         throw new WizServerError('Server update needed', 'WizErrorUpdateServer');
       }
     } catch (err) {
-      throw new WizServerError(`Unknown server version: ${err.message}`, 'WizErrorUnknownServerVersion');
+      throw new WizServerError(err.message, 'WizErrorUnknownServerVersion');
     }
   }
 }
