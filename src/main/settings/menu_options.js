@@ -79,7 +79,7 @@ function getMainMenuTemplate() {
       { role: 'toggledevtools', label: i18next.t('toggledevtools') },
       { type: 'separator' },
       { role: 'resetzoom', label: i18next.t('resetzoom') },
-      { role: 'zoomin', label: i18next.t('zoomin') },
+      { role: 'zoomin', label: i18next.t('zoomin'), accelerator: 'CmdOrCtrl+=' },
       { role: 'zoomout', label: i18next.t('zoomout') },
       { type: 'separator' },
       { role: 'togglefullscreen', label: i18next.t('togglefullscreen') },
