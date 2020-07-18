@@ -28,6 +28,7 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
     bottom: 0,
     right: 0,
     zIndex: 9999,
+    boxShadow: '0px 1px 4px 0px rgba(0, 0, 0, 0.31)',
   },
   container: {
     padding: spacing(4, 2),
