@@ -120,7 +120,9 @@ windows:
 
 ### 运行
 
+``` bash
 npm start
+```
 
 ### debug
 
