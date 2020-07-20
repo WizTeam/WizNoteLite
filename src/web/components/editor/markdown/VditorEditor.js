@@ -211,6 +211,7 @@ class VditorEditor extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
+    console.log('bb');
     let updated = false;
     if (!isEqual(this.props.tagList, nextProps.tagList)) {
       updated = true;

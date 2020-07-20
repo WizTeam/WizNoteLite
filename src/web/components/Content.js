@@ -282,7 +282,7 @@ class Content extends React.Component {
           </Scrollbar>
           <EditorContents
             contents={this.state.contentsList}
-            open={this.state.showEditorContents}
+            open={note && this.state.showEditorContents}
             onClose={this.handler.handleCloseContents}
             onNodeClick={this.handler.handleContentsNodeClick}
           />
