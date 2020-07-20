@@ -13,7 +13,7 @@ import Content from '../components/Content';
 import CommonHeader from '../components/CommonHeader';
 import SideBar from '../components/SideBar';
 import LiteText from '../components/LiteText';
-import LoginDialog from '../components/LoginDialog';
+import LoginDialog from '../dialogs/LoginDialog';
 // import SettingDialog from '../components/SettingDialog';
 import Icons from '../config/icons';
 

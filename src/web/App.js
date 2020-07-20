@@ -15,7 +15,7 @@ import 'moment/locale/zh-mo';
 import Login from './pages/Login';
 import Main from './pages/Main';
 import NoteViewer from './pages/NoteViewer';
-import AboutDialog from './components/AboutDialog';
+import AboutDialog from './dialogs/AboutDialog';
 import ThemeSwitcher from './components/ThemeSwitcher';
 import localeMessages from './locale';
 import { getLocale } from './utils/lang';
