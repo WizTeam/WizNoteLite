@@ -42,7 +42,9 @@ export function hasClass(dom, className) {
 export function getCodeBlock(root) {
   const range = getRange();
   const container = range.startContainer;
-  return filterParentElement(container, root, (dom) => dom.tagName.toLowerCase() === 'code');
+  return filterParentElement(container, root,
+    (dom) => dom.nodeType === 1 && dom.tagName.toLowerCase() === 'code',
+    true);
 }
 export function getTagSpan(root, target = null) {
   let tagDom = target;
