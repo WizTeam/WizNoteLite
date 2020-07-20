@@ -153,6 +153,8 @@ function TreeView(props) {
                 itemClassName={itemClassName}
                 itemSelectedClassName={itemSelectedClassName}
                 deep={deep + 1}
+                openIcon={openIcon}
+                closeIcon={closeIcon}
               />
             </Collapse>
           )}

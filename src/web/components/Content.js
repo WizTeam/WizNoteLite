@@ -164,6 +164,11 @@ class Content extends React.Component {
     handleCloseExportPdfDialog: () => {
       this.setState({ showExportPdfDialog: false });
     },
+    handleChangeEditorContents: (list) => {
+      this.setState({
+        contentsList: list,
+      });
+    },
   };
 
   constructor(props) {
@@ -174,15 +179,18 @@ class Content extends React.Component {
       showExportPngDialog: false,
       showExportPdfDialog: false,
       showEditorContents: true,
+      contentsList: [],
     };
   }
 
   componentDidMount() {
     window.addEventListener('resize', this.handler.handleResize);
+    window.wizApi.userManager.on('changeEditorContents', this.handler.handleChangeEditorContents);
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.handler.handleResize);
+    window.wizApi.UserManager.remove('changeEditorContents', this.handler.handleChangeEditorContents);
   }
 
   render() {
@@ -256,23 +264,7 @@ class Content extends React.Component {
             />
           </Scrollbar>
           <EditorContents
-            contents={[{
-              key: '1s',
-              title: 'test',
-            }, {
-              title: 'test2',
-              key: '4s',
-              children: [
-                {
-                  key: '2s',
-                  title: 'test3',
-                },
-                {
-                  key: '3s',
-                  title: 'test4',
-                },
-              ],
-            }]}
+            contents={this.state.contentsList}
             open={this.state.showEditorContents}
             onClose={this.handler.handleCloseContents}
           />
