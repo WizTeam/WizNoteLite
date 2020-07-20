@@ -213,13 +213,12 @@ class UserData extends EventEmitter {
         this.emit('syncStart', this.userGuid, task.kbGuid);
       });
 
-      syncTask.on('finish', (task, ret) => {
-        this.emit('syncFinish', this.userGuid, task.kbGuid, ret);
+      syncTask.on('finish', (task, ret, syncOptions) => {
+        this.emit('syncFinish', this.userGuid, task.kbGuid, ret, syncOptions);
       });
 
-      syncTask.on('error', (err) => {
-        const task = err.task;
-        this.emit('syncError', this.userGuid, task.kbGuid, err);
+      syncTask.on('error', (task, err, syncOptions) => {
+        this.emit('syncError', this.userGuid, task.kbGuid, err, syncOptions);
       });
 
       syncTask.on('downloadNotes', (task, notes) => {

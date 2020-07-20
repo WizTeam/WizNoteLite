@@ -73,6 +73,13 @@ export default {
   error31004: '登錄太頻繁啦，休息一下吧！',
   error31005: '用戶被鎖定',
   error31013: '手機號已經被註冊，請更換手機號！',
+
+  // upgrade vip
+  buttonUpgradeVip: '升级VIP',
+  buttonRenewVip: '续费VIP',
+  errorVipExpiredSync: 'VIP服务已到期，无法上传笔记。',
+  errorUpgradeVipSync: '试用期已结束，无法上传笔记。',
+
   // export
   exportPng: '導出為圖片',
   exportMd: '導出為 md',

@@ -66,11 +66,11 @@ class SyncKbTask extends EventEmitter {
       this.emit('finish', this, {
         uploadedCount,
         downloadedCount,
-      });
+      }, this._options);
     } catch (err) {
       this._isRunning = false;
       err.task = this;
-      this.emit('error', err);
+      this.emit('error', this, err, this._options);
     }
   }
 

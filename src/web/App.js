@@ -20,6 +20,7 @@ import ThemeSwitcher from './components/ThemeSwitcher';
 import localeMessages from './locale';
 import { getLocale } from './utils/lang';
 import onlineApi from './OnlineApi';
+import Icons from './config/icons';
 
 if (window.navigator.userAgent.indexOf(' Electron/') === -1) {
   window.wizApi = onlineApi;
@@ -29,6 +30,10 @@ const styles = (/* theme */) => ({
   root: {
     width: '100%',
     height: '100vh',
+  },
+  snackbarIcon: {
+    width: 16,
+    paddingRight: 8,
   },
 });
 
@@ -132,6 +137,9 @@ class App extends React.Component {
             preventDuplicate
             classes={{
               anchorOriginTopCenter: 'snackbar-top-center',
+            }}
+            iconVariant={{
+              error: <Icons.WarningIcon className={classes.snackbarIcon} />,
             }}
           >
 

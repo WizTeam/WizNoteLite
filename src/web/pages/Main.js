@@ -90,8 +90,8 @@ const styles = (theme) => ({
   header: {
     marginBottom: theme.spacing(1),
   },
-  anchorOriginTopCenter: {
-    top: -24,
+  snackbarButton: {
+    color: 'white',
   },
 });
 
@@ -206,7 +206,7 @@ class Main extends React.Component {
       });
     },
 
-    handleSyncFinish: (kbGuid, result) => {
+    handleSyncFinish: (kbGuid, result, syncOptions) => {
       if (kbGuid !== this.props.kbGuid) {
         return;
       }
@@ -217,10 +217,10 @@ class Main extends React.Component {
           this.props.onInvalidPassword();
           return;
         } else if (err.externCode === 'WizErrorPayedPersonalExpired') {
-          this.showUpgradeVipMessage(true);
+          this.showUpgradeVipMessage(true, syncOptions);
           return;
         } else if (err.externCode === 'WizErrorFreePersonalExpired') {
-          this.showUpgradeVipMessage(false);
+          this.showUpgradeVipMessage(false, syncOptions);
           return;
         }
         //
@@ -253,6 +253,7 @@ class Main extends React.Component {
       backgroundType: window.wizApi.userManager.getUserSettingsSync('background', 'white'),
       isFullScreen: window.wizApi.windowManager.isFullScreen(),
     };
+    this._upgradeVipDisplayed = false;
   }
 
   async componentDidMount() {
@@ -278,10 +279,16 @@ class Main extends React.Component {
     window.wizApi.userManager.off('syncFinish', this.handler.handleSyncFinish);
   }
 
-  showUpgradeVipMessage(isVipExpired) {
+  showUpgradeVipMessage(isVipExpired, syncOptions) {
+    const shouldShow = !this._upgradeVipDisplayed || syncOptions.manual;
+    if (!shouldShow) {
+      return;
+    }
+    this._upgradeVipDisplayed = true;
+    //
     const { classes, intl, enqueueSnackbar } = this.props;
 
-    const messageId = isVipExpired ? 'errorVipExpired' : 'errorUpgradeVip';
+    const messageId = isVipExpired ? 'errorVipExpiredSync' : 'errorUpgradeVipSync';
     const message = intl.formatMessage({ id: messageId });
     //
     const buttonMessageId = isVipExpired ? 'buttonRenewVip' : 'buttonUpgradeVip';
@@ -297,10 +304,10 @@ class Main extends React.Component {
       key: SNACKBAR_KEY,
       action: (() => (
         <>
-          <Button onClick={this.handler.handleUpgradeVip}>
+          <Button onClick={this.handler.handleUpgradeVip} className={classes.snackbarButton}>
             {buttonMessage}
           </Button>
-          <IconButton onClick={this.handler.handleCloseSnackbar} className={classes.closeButton}>
+          <IconButton onClick={this.handler.handleCloseSnackbar} className={classes.snackbarButton}>
             <Icons.CloseIcon />
           </IconButton>
         </>
