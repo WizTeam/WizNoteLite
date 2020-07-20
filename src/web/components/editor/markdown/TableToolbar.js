@@ -17,9 +17,12 @@ const useStyles = makeStyles(({ spacing, custom }) => ({
     },
   },
   iconButton: {
-    '&:hover': {
-      backgroundColor: 'transparent',
+    '&:hover $icon': {
+      color: custom.color.contentToolIconHover,
     },
+    // '&:hover': {
+    //   backgroundColor: 'transparent',
+    // },
   },
   icon: {
     width: spacing(3),
@@ -93,7 +96,7 @@ function TableToolbar(props) {
     const tableBoxHtmlArr = [...tableElement.rows].map(
       (rows) => [...rows.children].map((box) => box.outerHTML),
     );
-    tableElement.querySelector('thead tr').innerHTML = Array.from(Array(col), (item, index) => tableBoxHtmlArr[0]?.[index] ?? '<th></th>').join('');
+    tableElement.querySelector('thead tr').innerHTML = Array.from(Array(col), (item, index) => tableBoxHtmlArr[0]?.[index] ?? '<th> </th>').join('');
     const tbody = tableElement.querySelector('tbody');
     if (row === 1) {
       if (tbody) {
@@ -107,7 +110,7 @@ function TableToolbar(props) {
           if (i < tableElement.length && j < tableElement[i].length) {
             htmlStr += tableElement[i][j];
           } else {
-            htmlStr += '<td></td>';
+            htmlStr += '<td> </td>';
           }
         }
         htmlArr.push(`${htmlStr}</tr>`);
@@ -118,6 +121,8 @@ function TableToolbar(props) {
         tableElement.innerHTML += `<tbody>${htmlArr.join('')}</tbody>`;
       }
     }
+    // 修改 DOM 后，要触发 addToUndoStack 方法，保证 可以正常 undo
+    props.editor.vditor.undo.addToUndoStack(props.editor.vditor);
     props.onSaveNote();
   }
 
