@@ -169,6 +169,13 @@ class Content extends React.Component {
         contentsList: list,
       });
     },
+    handleContentsNodeClick: (item) => {
+      if (this.scrollContentRef?.current) {
+        const rect = item.element.getBoundingClientRect();
+        const top = this.scrollContentRef?.current.getScrollTop() + rect.top;
+        this.scrollContentRef.current.scrollTop(top);
+      }
+    },
   };
 
   constructor(props) {
@@ -178,9 +185,10 @@ class Content extends React.Component {
       exportMenuAnchorEl: null,
       showExportPngDialog: false,
       showExportPdfDialog: false,
-      showEditorContents: true,
+      showEditorContents: false,
       contentsList: [],
     };
+    this.scrollContentRef = React.createRef();
   }
 
   componentDidMount() {
@@ -256,7 +264,7 @@ class Content extends React.Component {
         </div>
         )}
         <div className={classes.content}>
-          <Scrollbar>
+          <Scrollbar ref={this.scrollContentRef}>
             <NoteEditor
               note={note}
               kbGuid={kbGuid}
@@ -267,6 +275,7 @@ class Content extends React.Component {
             contents={this.state.contentsList}
             open={this.state.showEditorContents}
             onClose={this.handler.handleCloseContents}
+            onNodeClick={this.handler.handleContentsNodeClick}
           />
         </div>
         <Menu

@@ -100,6 +100,7 @@ function EditorContents(props) {
               itemClassName={classes.listItem}
               textClassName={classes.itemText}
               itemSelectedClassName={classes.itemSelected}
+              onNodeClick={props.onNodeClick}
               openIcon={(
                 <ArrowDropDownIcon />
               )}
@@ -121,11 +122,13 @@ EditorContents.propTypes = {
   contents: PropTypes.array.isRequired,
   onClose: PropTypes.func,
   open: PropTypes.bool,
+  onNodeClick: PropTypes.func,
 };
 
 EditorContents.defaultProps = {
   onClose: null,
   open: false,
+  onNodeClick: null,
 };
 
 export default injectIntl(EditorContents);
