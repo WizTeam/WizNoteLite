@@ -53,6 +53,20 @@ export default {
   editorFooterLocal: '本地保存未同步',
   editorFooterSyncTime: '已同步',
   editorFooterWordsSize: '字數',
+  // tableMenu
+  tableMenuAddRowAbove: '上方增加行',
+  tableMenuAddRowBelow: '下方增加行',
+  tableMenuAddColBefore: '左側增加列',
+  tableMenuAddColAfter: '右側增加列',
+  tableMenuAlign: '對齊方式',
+  tableMenuLeft: '左對齊',
+  tableMenuCenter: '居中對齊',
+  tableMenuRight: '右對齊',
+  tableMenuDeleteRow: '刪除當前行',
+  tableMenuDeleteCol: '刪除當前列',
+  tableMenuDeleteTable: '刪除表格',
+  tableMenuCpHtml: '復制表格 HTML',
+  tableMenuCpMd: '復制表格 md 源碼',
   // error
   errorDisableRegister: '註冊已禁用',
   errorMaxTimesForIP: '您當前的 IP 註冊次數過多，請稍後再試...',
@@ -69,9 +83,17 @@ export default {
   errorLicenseUserLimit: '許可錯誤。 當前用戶超出許可用戶限制。',
   errorLicenseExpired: '您的許可已經過期。',
   errorInvalidPassword: '密碼錯誤。',
+  errorVipExpired: 'VIP服务已经到期。',
   error31004: '登錄太頻繁啦，休息一下吧！',
   error31005: '用戶被鎖定',
   error31013: '手機號已經被註冊，請更換手機號！',
+
+  // upgrade vip
+  buttonUpgradeVip: '升级VIP',
+  buttonRenewVip: '续费VIP',
+  errorVipExpiredSync: 'VIP服务已到期，无法上传笔记。',
+  errorUpgradeVipSync: '试用期已结束，无法上传笔记。',
+
   // export
   exportPng: '導出為圖片',
   exportMd: '導出為 md',

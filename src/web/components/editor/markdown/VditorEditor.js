@@ -15,6 +15,8 @@ import {
   isCtrl, filterParentElement, hasClass, getDomIndexForParent,
 } from '../libs/dom_utils';
 import { getRange, getSelection } from '../libs/range_utils';
+import TableMenu from './TableMenu';
+import TableToolbar from './TableToolbar';
 
 const styles = (/* theme */) => ({
   hideBlockType: {
@@ -389,7 +391,6 @@ class VditorEditor extends React.Component {
             'export',
             'outline',
             'preview',
-            'format',
             'devtools',
             'info',
             'help',
@@ -552,6 +553,9 @@ class VditorEditor extends React.Component {
     // Down (Chrome Patch: 文字 后面跟着 img，img 被自动换行，这时候从该行前面的问题使用 下方向键，无法将光标移动到后面的段落)
     const sel = getSelection();
     let range = getRange();
+    if (filterParentElement(range.startContainer, this.editor.vditor.element, (dom) => dom.tagName.toLowerCase() === 'table')) {
+      return;
+    }
     try {
       sel.modify('move', 'forward', 'line');
       const rangeNew = getRange;
@@ -619,6 +623,14 @@ class VditorEditor extends React.Component {
           editor={this.editor}
           wordList={this.tags}
           onChangeShowState={this.handler.handleChangeTagMenuShowState}
+        />
+        <TableMenu
+          editor={this.editor}
+          onSaveNote={this.props.onSave}
+        />
+        <TableToolbar
+          editor={this.editor}
+          onSaveNote={this.props.onSave}
         />
       </div>
     );

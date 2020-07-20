@@ -23,7 +23,7 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
     position: 'absolute',
     padding: type !== 'icon' ? spacing(1, 0) : 0,
     minWidth: type !== 'icon' ? 126 : 104,
-    zIndex: 999,
+    zIndex: 9999,
     color: palette.type === 'dark' ? '#fff' : '#333',
   }),
 
@@ -264,7 +264,7 @@ export default function LiteMenu(props) {
       style={pos}
       ref={menuRef}
     >
-      {menuList.map((item, index) => (props.type === 'icon' ? renderIconMenuItem(item, index.toString()) : renderTextMenuItem(item, index.toString(), props.type === 'checkbox')))}
+      {props.children ? props.children : menuList.map((item, index) => (props.type === 'icon' ? renderIconMenuItem(item, index.toString()) : renderTextMenuItem(item, index.toString(), props.type === 'checkbox')))}
     </div>
   ), window.document.body);
 }
@@ -283,13 +283,14 @@ const PropTypesPosition = PropTypes.shape({
 });
 
 LiteMenu.propTypes = {
-  positionName: PropTypes.oneOf(['top', 'bottom', 'left']),
-  menuList: PropTypes.arrayOf(MenuItem).isRequired,
+  positionName: PropTypes.oneOf(['top', 'bottom', 'left', 'none']),
+  menuList: PropTypes.arrayOf(MenuItem),
   type: PropTypes.oneOf(['icon', 'label', 'checkbox']),
   editorRoot: PropTypes.object,
   show: PropTypes.bool,
   keyControl: PropTypes.bool,
   position: PropTypesPosition,
+  children: PropTypes.object,
 };
 
 LiteMenu.defaultProps = {
@@ -298,6 +299,8 @@ LiteMenu.defaultProps = {
   editorRoot: null,
   show: false,
   keyControl: false,
+  children: null,
+  menuList: [],
   position: {
     left: 0,
     top: 0,

@@ -9,8 +9,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 // import isBoolean from 'lodash/isBoolean';
 import CommonHeader from './CommonHeader';
 import NoteEditor from './NoteEditor';
-import ExportPngDialog from './ExportPngDialog';
-import ExportPdfDialog from './ExportPdfDialog';
+import ExportPngDialog from '../dialogs/ExportPngDialog';
+import ExportPdfDialog from '../dialogs/ExportPdfDialog';
 import Icons from '../config/icons';
 // import FocusBtn from './FocusBtn';
 import SyncBtn from './SyncBtn';
@@ -176,6 +176,15 @@ class Content extends React.Component {
         this.scrollContentRef.current.scrollTop(top);
       }
     },
+    handleExportMarkdown: () => {
+      const { kbGuid, note } = this.props;
+      //
+      if (!note.guid) return;
+      //
+      this.handler.handleCloseExportMenu();
+      //
+      window.wizApi.userManager.writeToMarkdown(kbGuid, note.guid, {});
+    },
   };
 
   constructor(props) {
@@ -216,8 +225,8 @@ class Content extends React.Component {
     const backgroundColorClassName = `main_${backgroundType}`;
     const backgroundClass = isLite && (classes[backgroundColorClassName] ?? '');
 
-    const hasFullScreenButton = window.wizApi.isElectron && window.wizApi.windowManager.platform === 'darwin';
     const isMac = window.wizApi.platform.isMac;
+    const hasFullScreenButton = window.wizApi.isElectron && isMac;
 
     return (
       <main
@@ -289,9 +298,9 @@ class Content extends React.Component {
           <MenuItem onClick={this.handler.handleShowExportPngDialog}>
             {intl.formatMessage({ id: 'exportPng' })}
           </MenuItem>
-          {/* <MenuItem>
+          <MenuItem onClick={this.handler.handleExportMarkdown}>
             {intl.formatMessage({ id: 'exportMd' })}
-          </MenuItem> */}
+          </MenuItem>
           <MenuItem onClick={this.handler.handleShowExportPdfDialog}>
             {intl.formatMessage({ id: 'exportPdf' })}
           </MenuItem>

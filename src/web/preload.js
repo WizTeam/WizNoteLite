@@ -1,5 +1,6 @@
 const EventEmitter = require('events');
 const { remote, ipcRenderer } = require('electron');
+const platform = require('platform');
 
 const { Menu, MenuItem } = remote;
 
@@ -23,14 +24,6 @@ async function invokeApi(name, ...args) {
 }
 
 class WindowManager {
-  constructor() {
-    this._platform = process.platform;
-  }
-
-  get platform() {
-    return this._platform;
-  }
-
   toggleMaximize() {
     const window = remote.getCurrentWindow();
     if (window.isFullScreen()) {
@@ -284,6 +277,11 @@ class UserManager extends EventEmitter {
     return result;
   }
 
+  async writeToMarkdown(kbGuid, noteGuid) {
+    const result = await invokeApi('writeToMarkdown', this.userGuid, kbGuid, noteGuid);
+    return result;
+  }
+
   async buildBindSnsUrl(server, type, postMessage, origin, extraParams) {
     const path = '/as/thirdparty/go/auth';
     const query = {
@@ -361,14 +359,14 @@ ipcRenderer.on('showAbout', (event, ...args) => {
   userManager.emit('showAbout', ...args);
 });
 
-function init(options) {
-  ipcRenderer.sendSync('init', options);
-}
+platform.isMac = platform.os.family === 'OS X';
+platform.isWindows = platform.os.family === 'Windows';
+platform.isLinux = platform.os.family === 'Linux';
 
 window.wizApi = {
   isElectron: true,
   version: remote.app.getVersion(),
-  init,
+  platform,
   windowManager,
   userManager,
 };

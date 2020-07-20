@@ -392,11 +392,11 @@ class Users {
       this.emitEvent(userGuid, 'syncStart', kbGuid);
     });
 
-    userData.on('syncFinish', (_userGuid, kbGuid, ret) => {
-      this.emitEvent(userGuid, 'syncFinish', kbGuid, ret);
+    userData.on('syncFinish', (_userGuid, kbGuid, ret, options) => {
+      this.emitEvent(userGuid, 'syncFinish', kbGuid, ret, options);
     });
 
-    userData.on('syncError', (_userGuid, kbGuid, err) => {
+    userData.on('syncError', (_userGuid, kbGuid, err, options) => {
       const error = {
         code: err.code,
         externCode: err.externCode,
@@ -405,7 +405,7 @@ class Users {
         returnMessage: err.returnMessage,
         stack: err.stack,
       };
-      this.emitEvent(userGuid, 'syncFinish', kbGuid, { error });
+      this.emitEvent(userGuid, 'syncFinish', kbGuid, { error }, options);
     });
 
     userData.on('downloadNotes', (_userGuid, kbGuid, downloadedNotes) => {

@@ -10,8 +10,8 @@ import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 //
-import LiteInput from './LiteInput';
-import LiteText from './LiteText';
+import LiteInput from '../components/LiteInput';
+import LiteText from '../components/LiteText';
 import Icons from '../config/icons';
 
 const styles = (theme) => ({

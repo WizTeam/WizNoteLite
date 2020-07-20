@@ -53,6 +53,20 @@ export default {
   inputUserIdNullError: 'Please input email',
   inputPasswordNullError: 'Please input password',
   inputServerNullError: 'Please input server address',
+  // tableMenu
+  tableMenuAddRowAbove: 'Add Row Above',
+  tableMenuAddRowBelow: 'Add Row Below',
+  tableMenuAddColBefore: 'Add Column Before',
+  tableMenuAddColAfter: 'Add Column After',
+  tableMenuAlign: 'Align',
+  tableMenuLeft: 'Left',
+  tableMenuCenter: 'Center',
+  tableMenuRight: 'Right',
+  tableMenuDeleteRow: 'Delete Row',
+  tableMenuDeleteCol: 'Delete Column',
+  tableMenuDeleteTable: 'Delete Table',
+  tableMenuCpHtml: 'Copy Table HTML',
+  tableMenuCpMd: 'Copy Table Markdown',
   // error
   errorDisableRegister: 'Disable register',
   errorMaxTimesForIP: 'Your IP sign up too much, please retry later...',
@@ -69,9 +83,17 @@ export default {
   errorLicenseUserLimit: 'License error: too many active users.',
   errorLicenseExpired: 'Your license has expired.',
   errorInvalidPassword: 'Invalid password.',
+  errorVipExpired: 'VIP service expired',
   error31004: 'Log in too frequently, please try again later.',
   error31005: 'Deactivate Account',
   error31013: 'This phone number has been used for registration, please change another one.',
+
+  // upgrade vip
+  buttonUpgradeVip: 'Upgrade VIP',
+  buttonRenewVip: 'Renewal VIP',
+  errorVipExpiredSync: 'VIP服务已到期，无法上传笔记。',
+  errorUpgradeVipSync: '试用期已结束，无法上传笔记。',
+
   // export
   exportPng: 'Export Image',
   exportMd: 'Export Markdown',
