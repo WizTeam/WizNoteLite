@@ -38,5 +38,6 @@
 
   "fileFilterPNG": "PNG files (*.png)",
   "fileFilterPDF": "PDF files (*.pdf)",
+  "fileFilterMarkdown": "Markdown files (*.md)",
   "errorConnect": "無法連接到服務器： {{host}}，請檢查您的網絡。"
 }

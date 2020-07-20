@@ -273,6 +273,11 @@ class UserManager extends EventEmitter {
     return result;
   }
 
+  async writeToMarkdown(kbGuid, noteGuid) {
+    const result = await invokeApi('writeToMarkdown', this.userGuid, kbGuid, noteGuid);
+    return result;
+  }
+
   async buildBindSnsUrl(server, type, postMessage, origin, extraParams) {
     const path = '/as/thirdparty/go/auth';
     const query = {
