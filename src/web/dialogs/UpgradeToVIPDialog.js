@@ -122,18 +122,17 @@ class UpgradeToVIPDialog extends React.Component {
     },
 
     handlePurchase: async () => {
-      await window.wizApi.userManager.showUpgradeVipDialog();
-      // if (window.wizApi.platform.isMac) {
-      //   try {
-      //     this.setState({ purchasing: true });
-      //     await window.wizApi.userManager.purchaseProduct(this.state.yearProduct);
-      //   } catch (err) {
-      //     this.setState({ purchasing: false });
-      //     console.error(err);
-      //   }
-      // } else {
-      //   await window.wizApi.userManager.showUpgradeVipDialog();
-      // }
+      if (window.wizApi.platform.isMac) {
+        try {
+          this.setState({ purchasing: true });
+          await window.wizApi.userManager.purchaseProduct(this.state.yearProduct);
+        } catch (err) {
+          this.setState({ purchasing: false });
+          console.error(err);
+        }
+      } else {
+        await window.wizApi.userManager.showUpgradeVipDialog();
+      }
     },
 
     onTransactionsUpdated: (params) => {
