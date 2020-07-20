@@ -209,12 +209,14 @@ function TableMenu(props) {
         break;
       case 'CpHtml':
         if (tableElement) {
-          copy(props.editor.html2md(tableElement.outerHTML), {
-            format: 'text/plain',
-          });
-          copy(tableElement.outerHTML, {
-            format: 'text/html',
-          });
+          const copyHandler = (event) => {
+            event.preventDefault();
+            event.clipboardData.setData('text/plain', props.editor.html2md(tableElement.outerHTML));
+            event.clipboardData.setData('text/html', tableElement.outerHTML);
+          };
+          document.addEventListener('copy', copyHandler);
+          copy();
+          document.removeEventListener('copy', copyHandler);
         }
         break;
       case 'CpMd':
