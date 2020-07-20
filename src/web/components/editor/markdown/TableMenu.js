@@ -7,11 +7,11 @@ import { makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
-import classNames from 'classnames';
 import copy from 'copy-to-clipboard';
 import Icon from '../../../config/icons';
 import { filterParentElement, updateHotkeyTip, matchHotKey } from '../libs/dom_utils';
 import { setRangeByDomBeforeEnd } from '../libs/range_utils';
+import LiteMenu from './LiteMenu';
 
 const useStyles = makeStyles(({ spacing, palette }) => ({
   menuRoot: {
@@ -47,10 +47,7 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
     paddingRight: spacing(3),
   },
   subMenuContainer: {
-    backgroundColor: palette.type === 'dark' ? '#555555' : '#fff',
     color: palette.type === 'dark' ? '#fff' : '#333',
-    boxShadow: '0px 1px 4px 0px rgba(0, 0, 0, 0.3)',
-    borderRadius: 4,
   },
   subMenuItem: {
     display: 'flex',
@@ -112,7 +109,7 @@ function TableMenu(props) {
   const { intl } = props;
 
   const [menuPosition, setMenuPosition] = useState(undefined);
-  const [showSubMenu, setShowSubMenu] = useState(false);
+  const [subMenuPos, setSubMenuPos] = useState(null);
   const [align, setAlign] = useState('left');
   const menuRef = useRef();
 
@@ -235,10 +232,14 @@ function TableMenu(props) {
   useEffect(() => {
     function showSubMenuHandler(e) {
       const ele = filterParentElement(e.target, document.body, (dom) => dom.getAttribute('data-type') === 'subMenu', true);
-      if (ele && !showSubMenu) {
-        setShowSubMenu(true);
-      } else if (!ele && showSubMenu) {
-        setShowSubMenu(false);
+      if (ele && !subMenuPos) {
+        const eleRect = ele.getBoundingClientRect();
+        setSubMenuPos({
+          left: eleRect.left + eleRect.width,
+          top: eleRect.top,
+        });
+      } else if (!ele && !filterParentElement(e.target, document.body, (dom) => dom.getAttribute('data-type') === 'subMenuContainer', true) && subMenuPos) {
+        setSubMenuPos(null);
       }
     }
 
@@ -283,15 +284,7 @@ function TableMenu(props) {
       window.removeEventListener('mouseover', showSubMenuHandler);
       window.removeEventListener('mousedown', mousedownHandler);
     };
-  }, [menuPosition, showSubMenu, props.editor, align, dispatchKey]);
-
-  let subMenuPosClass = classes.rightMenu;
-  if (menuRef.current) {
-    const subMenuRect = menuRef.current.querySelector(`.${classes.menuRoot}`)?.getBoundingClientRect() ?? { width: 0 };
-    if ((menuPosition?.left ?? 0) + 1.5 * subMenuRect.width > window.innerWidth) {
-      subMenuPosClass = classes.leftMenu;
-    }
-  }
+  }, [menuPosition, subMenuPos, props.editor, align, dispatchKey]);
 
   const isHead = currentCellElement && currentCellElement.tagName.toLocaleLowerCase() === 'th';
 
@@ -343,12 +336,8 @@ function TableMenu(props) {
         >
           <div className={classes.menuName}>{intl.formatMessage({ id: 'tableMenuAlign' })}</div>
           <ArrowForwardIosIcon className={classes.iconArrow} />
-          <div
-            className={classNames(classes.subMenu, {
-              active: showSubMenu,
-            }, subMenuPosClass)}
-          >
-            <div className={classes.subMenuContainer}>
+          <LiteMenu position={subMenuPos ?? undefined} show={!!subMenuPos} positionName="none">
+            <div className={classes.subMenuContainer} data-type="subMenuContainer">
               <button type="button" className={classes.subMenuItem} onClick={(e) => clickHandler('alignLeft', e)}>
                 <div className={classes.menuItemIcon}>
                   {align === 'left' && (<Icon.SelectedIcon className={classes.selectedIcon} />)}
@@ -368,7 +357,7 @@ function TableMenu(props) {
                 <div>{intl.formatMessage({ id: 'tableMenuRight' })}</div>
               </button>
             </div>
-          </div>
+          </LiteMenu>
         </div>
       </MenuItem>
       <div className={classes.menuLine} />
