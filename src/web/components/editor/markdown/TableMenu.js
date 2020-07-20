@@ -25,9 +25,6 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
     width: '100%',
     position: 'relative',
   },
-  clearOverflow: {
-    overflow: 'visible',
-  },
   subMenu: {
     position: 'absolute',
     top: '-6px',
@@ -212,6 +209,9 @@ function TableMenu(props) {
         break;
       case 'CpHtml':
         if (tableElement) {
+          copy(props.editor.html2md(tableElement.outerHTML), {
+            format: 'text/plain',
+          });
           copy(tableElement.outerHTML, {
             format: 'text/html',
           });
@@ -296,7 +296,6 @@ function TableMenu(props) {
       anchorPosition={menuPosition}
       classes={{
         list: classes.menuRoot,
-        paper: classes.clearOverflow,
       }}
       ref={menuRef}
     >
@@ -326,10 +325,7 @@ function TableMenu(props) {
         </div>
       </MenuItem>
       <div className={classes.menuLine} />
-      <MenuItem classes={{
-        root: classes.clearOverflow,
-      }}
-      >
+      <MenuItem>
         <div
           className={classes.menuItem}
           data-type="subMenu"
