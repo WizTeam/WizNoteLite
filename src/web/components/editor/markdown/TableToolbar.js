@@ -17,10 +17,8 @@ const useStyles = makeStyles(({ spacing, custom }) => ({
     },
   },
   iconButton: {
-    width: 32,
-    height: 32,
-    '&:hover $icon': {
-      color: custom.color.contentToolIconHover,
+    '&:hover': {
+      backgroundColor: 'transparent',
     },
   },
   icon: {
@@ -147,7 +145,7 @@ function TableToolbar(props) {
             if (ele !== tableElement) {
               tableElement = ele;
               setMenuPos({
-                top: `${tableElement.offsetTop - 32}px`,
+                top: `${tableElement.offsetTop - 12}px`,
                 left: `${tableElement.offsetLeft - 32}px`,
               });
             }
