@@ -8,8 +8,8 @@ import DialogContent from '@material-ui/core/DialogContent';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 //
-import LiteText from './LiteText';
-import LiteSelect from './LiteSelect';
+import LiteText from '../components/LiteText';
+import LiteSelect from '../components/LiteSelect';
 import Icons from '../config/icons';
 
 const styles = (theme) => ({

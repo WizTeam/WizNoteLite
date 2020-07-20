@@ -73,6 +73,13 @@ export default {
   error31004: 'Log in too frequently, please try again later.',
   error31005: 'Deactivate Account',
   error31013: 'This phone number has been used for registration, please change another one.',
+
+  // upgrade vip
+  buttonUpgradeVip: 'Upgrade VIP',
+  buttonRenewVip: 'Renewal VIP',
+  errorVipExpiredSync: 'VIP服务已到期，无法上传笔记。',
+  errorUpgradeVipSync: '试用期已结束，无法上传笔记。',
+
   // export
   exportPng: 'Export Image',
   exportMd: 'Export Markdown',

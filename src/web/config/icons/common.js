@@ -4,6 +4,7 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import CheckIcon from '@material-ui/icons/Check';
 import ClearIcon from '@material-ui/icons/Clear';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import WarningIcon from '@material-ui/icons/Warning';
 
 
 const customIcon = require.context('./custom', false, /\.js$/);
@@ -15,6 +16,7 @@ const CommonIcons = {
   SelectedIcon: CheckIcon,
   ClearIcon,
   ArrowDropDownIcon,
+  WarningIcon,
 
   ...customIcon.keys().reduce((modules, path) => {
     // eslint-disable-next-line no-param-reassign
