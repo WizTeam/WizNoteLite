@@ -36,6 +36,12 @@
   "learnMore": "了解更多...",
   "menuMainWindow": "主窗口",
 
+  "errorNotAllowMakeInAppPurchase": "The user is not allowed to make in-app purchase.",
+  "errorReceiveProductionInfo": "Unable to retrieve the product information.",
+  "errorProductInNotValid": "The product is not valid.",
+  "errorDownloadReceipt": "Failed to download receipt: {message}",
+  "errorVerifyPurchase": "Failed to verify purchase: {message}",
+
   "fileFilterPNG": "PNG files (*.png)",
   "fileFilterPDF": "PDF files (*.pdf)",
   "fileFilterMarkdown": "Markdown files (*.md)",

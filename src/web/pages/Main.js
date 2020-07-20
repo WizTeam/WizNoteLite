@@ -14,6 +14,7 @@ import CommonHeader from '../components/CommonHeader';
 import SideBar from '../components/SideBar';
 import LiteText from '../components/LiteText';
 import LoginDialog from '../dialogs/LoginDialog';
+import UpgradeToVIPDialog from '../dialogs/UpgradeToVIPDialog';
 // import SettingDialog from '../components/SettingDialog';
 import Icons from '../config/icons';
 
@@ -231,10 +232,15 @@ class Main extends React.Component {
 
     handleUpgradeVip: () => {
       this.props.closeSnackbar(SNACKBAR_KEY);
+      this.setState({ showUpgradeToVipDialog: true });
     },
 
     handleCloseSnackbar: () => {
       this.props.closeSnackbar(SNACKBAR_KEY);
+    },
+
+    handleCloseUpgradeToVipDialog: () => {
+      this.setState({ showUpgradeToVipDialog: false });
     },
   }
 
@@ -249,6 +255,7 @@ class Main extends React.Component {
       matchedNotesCount: 0,
       showMatched: false,
       showLoginDialog: false,
+      showUpgradeToVipDialog: false,
       // showSettingDialog: false,
       backgroundType: window.wizApi.userManager.getUserSettingsSync('background', 'white'),
       isFullScreen: window.wizApi.windowManager.isFullScreen(),
@@ -326,7 +333,9 @@ class Main extends React.Component {
       currentNote,
       showDrawer,
       tag, matchedNotesCount, showMatched,
-      backgroundType, showLoginDialog,
+      backgroundType,
+      showLoginDialog,
+      showUpgradeToVipDialog,
       isFullScreen,
       // showSettingDialog,
     } = this.state;
@@ -393,6 +402,11 @@ class Main extends React.Component {
           mergeLocalAccount={mergeLocalAccount}
           onClose={this.handler.handleLoginDialogClose}
           onLoggedIn={this.props.onLoggedIn}
+        />
+
+        <UpgradeToVIPDialog
+          open={showUpgradeToVipDialog}
+          onClose={this.handler.handleCloseUpgradeToVipDialog}
         />
 
         {/* <SettingDialog

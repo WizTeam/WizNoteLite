@@ -295,6 +295,20 @@ class UserManager extends EventEmitter {
     return url;
   }
 
+  async queryProducts() {
+    const result = await invokeApi('queryProducts', this.userGuid);
+    return result;
+  }
+
+  async purchaseProduct(product) {
+    const result = await invokeApi('purchaseProduct', this.userGuid, product);
+    return result;
+  }
+
+  async showUpgradeVipDialog() {
+    const result = await invokeApi('showUpgradeVipDialog', this.userGuid);
+    return result;
+  }
 
   async sendMessage(name, ...args) {
     ipcRenderer.send(name, this.userGuid, ...args);

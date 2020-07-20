@@ -10,6 +10,8 @@ async function standardRequest(opt) {
   //
   const options = opt;
   assert(options);
+  options.maxContentLength = Infinity;
+  options.maxBodyLength = Infinity;
   //
   const token = options.token;
   //
@@ -82,6 +84,22 @@ async function standardRequest(opt) {
   }
 }
 
+
+async function downloadToData(opt) {
+  const options = opt;
+  options.responseType = 'blob';
+  const response = await axios(options);
+  if (response.status !== 200) {
+    throw new WizNetworkError(response.statusText);
+  }
+  //
+  if (!response.data) {
+    throw new WizInternalError('no data returned');
+  }
+  return response.data;
+}
+
 module.exports = {
   standardRequest,
+  downloadToData,
 };
