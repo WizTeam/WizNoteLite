@@ -148,7 +148,7 @@ function TableToolbar(props) {
               tableElement = ele;
               setMenuPos({
                 top: `${tableElement.offsetTop - 32}px`,
-                left: `${tableElement.offsetLeft + tableElement.offsetWidth - 32}px`,
+                left: `${tableElement.offsetLeft - 32}px`,
               });
             }
             return;
