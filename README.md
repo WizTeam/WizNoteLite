@@ -87,11 +87,14 @@ npm install -g node-gyp
 
 #### windows 依赖
 
-1. 安装 Python [https://www.python.org/]，并且把 Python.exe 的目录设置在系统的 Path 内
-2. [https://github.com/nodejs/node-gyp#on-windows] 按照操作安装组件(Cmd or PowerShell `run as Administrator`)
-  
-  > npm install --global --production windows-build-tools
-  > 注意，该过程时间比较长，等待即可
+1. 安装 [Python](https://www.python.org/)，并且把 Python.exe 的目录设置在系统的 Path 内
+2. 安装 [nodejs-gyp](https://github.com/nodejs/node-gyp#on-windows), 并且按照操作安装组件(Cmd or PowerShell `run as Administrator`)
+
+``` bash
+npm install --global --production windows-build-tools
+```
+
+**注意**：该过程时间比较长，等待即可
 
 ### 初始化
 
@@ -117,7 +120,9 @@ windows:
 
 ### 运行
 
+``` bash
 npm start
+```
 
 ### debug
 
