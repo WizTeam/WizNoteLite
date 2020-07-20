@@ -233,6 +233,45 @@ class VditorEditor extends React.Component {
     this.tags = tags;
   }
 
+  getContentsList() {
+    const list = [];
+    if (this.editor?.vditor) {
+      for (let i = 0; i < this.editor.vditor.ir.element.childElementCount; i++) {
+        const tagName = this.editor.vditor.ir.element.children[i].tagName.toLowerCase();
+        if (/^h[1-6]$/.test(tagName)) {
+          const rank = parseInt(tagName[1], 10);
+          if (list.length) {
+            let target = list;
+            for (let j = 1; j < rank; j++) {
+              if (!target[target.length - 1].children) {
+                target[target.length - 1].children = [];
+              }
+              target = target[target.length - 1].children;
+            }
+            target.push({
+              key: `${i}-${rank}`,
+              title: this.editor.vditor.ir.element.children[i].innerText,
+            });
+          } else {
+            list.push({});
+            let item = list[list.length - 1];
+            for (let j = 0; j < rank; j++) {
+              if (j === rank - 1) {
+                item.key = `${i}-${j}`;
+                item.title = this.editor.vditor.ir.element.children[i].innerText;
+              } else {
+                item.key = `${i}-${j}`;
+                item.children = [{}];
+                item = item.children[0];
+              }
+            }
+          }
+        }
+      }
+    }
+    console.log('list', list);
+  }
+
   async initEditor() {
     const { darkMode, placeholder } = this.props;
     const cdn = /^https?:\/\//i.test(window.location.origin) ? `${window.location.origin}/libs/wiz-vditor` : `${(window.location.origin + window.location.pathname).replace('/index.html', '')}/libs/wiz-vditor`;
@@ -259,6 +298,7 @@ class VditorEditor extends React.Component {
         if (disabled) {
           this.setEditorDisabled();
         }
+        setTimeout(() => this.getContentsList(), 500);
         // this._removePanelNode();
       },
       input: (text, html) => {
