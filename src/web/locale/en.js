@@ -83,6 +83,7 @@ export default {
   errorLicenseUserLimit: 'License error: too many active users.',
   errorLicenseExpired: 'Your license has expired.',
   errorInvalidPassword: 'Invalid password.',
+  errorVipExpired: 'VIP service expired',
   error31004: 'Log in too frequently, please try again later.',
   error31005: 'Deactivate Account',
   error31013: 'This phone number has been used for registration, please change another one.',

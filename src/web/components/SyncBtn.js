@@ -33,9 +33,14 @@ function SyncBtn(props) {
 
   const [updatedTime, setUpdatedTime] = useState('');
   const [isSyncing, setSyncing] = useState(false);
+  const [error, setError] = useState(null);
 
   async function handleClick() {
     try {
+      if (isSyncing) {
+        return;
+      }
+      //
       if (props.kbGuid) {
         await window.wizApi.userManager.syncKb(props.kbGuid, {
           manual: true,
@@ -54,8 +59,9 @@ function SyncBtn(props) {
     setSyncing(true);
   }
 
-  function handleSyncFinish() {
+  function handleSyncFinish(kbGuid, result) {
     setSyncing(false);
+    setError(result.error);
   }
 
   useEffect(() => {
@@ -82,16 +88,33 @@ function SyncBtn(props) {
   const isLoggedIn = !isLocalUser;
 
   function infoRender() {
+    //
+    let message;
+    if (isLoggedIn && !error) {
+      message = props.intl.formatMessage({ id: 'editorFooterSyncTime' }, {
+        updatedTime,
+      });
+    } else {
+      message = props.intl.formatMessage({ id: 'editorFooterLocal' }, {
+        updatedTime,
+      });
+    }
+    //
     return (
       <div className={classes.syncInfo}>
         <span className={classes.label}>
-          {isLoggedIn
-            ? `${props.intl.formatMessage({ id: 'editorFooterSyncTime' })}:`
-            : props.intl.formatMessage({ id: 'editorFooterLocal' })}
+          {message}
         </span>
-        {isLoggedIn && (<span className={classes.value}>{updatedTime}</span>)}
       </div>
     );
+  }
+
+  let err = false;
+  let syncing = false;
+  if (error || !isLoggedIn) {
+    err = true;
+  } else {
+    syncing = isSyncing;
   }
 
   return (
@@ -107,11 +130,10 @@ function SyncBtn(props) {
           <IconButton
             className={props.className}
             onClick={handleClick}
-            disabled={isSyncing}
           >
-            {isLoggedIn && isSyncing && <SyncingIcon />}
-            {isLoggedIn && !isSyncing && <Icons.RefreshIcon className={props.iconClassName} />}
-            {!isLoggedIn && <Icons.UploadIcon className={props.iconClassName} />}
+            {err && <Icons.UploadIcon className={props.iconClassName} />}
+            {(!err && syncing) && <SyncingIcon />}
+            {(!err && !syncing) && <Icons.RefreshIcon className={props.iconClassName} />}
           </IconButton>
         </div>
       </Tooltip>

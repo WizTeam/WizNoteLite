@@ -180,6 +180,7 @@
     "eslint-plugin-react": "^7.19.0",
     "moment": "^2.26.0",
     "node-sass": "^4.14.1",
+    "notistack": "^0.9.17",
     "prop-types": "^15.7.2",
     "query-string": "^6.13.1",
     "react": "^16.13.1",
@@ -191,7 +192,7 @@
     "react-scripts": "3.4.1",
     "run-script-os": "^1.0.7",
     "timer.js": "^1.0.4",
-    "wiz-vditor": "^1.0.7"
+    "wiz-vditor": "^1.0.9"
   },
   "__npminstall_done": false
 }

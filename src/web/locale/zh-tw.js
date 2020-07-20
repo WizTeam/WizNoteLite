@@ -83,6 +83,7 @@ export default {
   errorLicenseUserLimit: '許可錯誤。 當前用戶超出許可用戶限制。',
   errorLicenseExpired: '您的許可已經過期。',
   errorInvalidPassword: '密碼錯誤。',
+  errorVipExpired: 'VIP服务已经到期。',
   error31004: '登錄太頻繁啦，休息一下吧！',
   error31005: '用戶被鎖定',
   error31013: '手機號已經被註冊，請更換手機號！',

@@ -5,6 +5,7 @@ import { withStyles } from '@material-ui/core/styles';
 import queryString from 'query-string';
 // v4.5.12 Document: https://formatjs.io/docs/react-intl
 import { IntlProvider } from 'react-intl';
+import { SnackbarProvider } from 'notistack';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 import 'moment/locale/zh-tw';
@@ -81,6 +82,11 @@ class App extends React.Component {
     window.wizApi.userManager.on('showAbout', this.handler.handleShowAboutDialog);
   }
 
+  componentWillUnmount() {
+    window.wizApi.userManager.off('logout', this.handler.handleLogout);
+    window.wizApi.userManager.off('showAbout', this.handler.handleShowAboutDialog);
+  }
+
   //
   render() {
     const { classes } = this.props;
@@ -121,38 +127,47 @@ class App extends React.Component {
           locale={locale}
           messages={messages}
         >
-          <div className={classes.root}>
-            {!loggedIn && !isAutoLogging && (
-              <Login
-                onLoggedIn={this.handler.handleLoggedIn}
-                mergeLocalAccount={mergeLocalAccount}
-              />
-            )}
-            {loggedIn && !isAutoLogging && (
-              this._viewNote
-                ? (
-                  <NoteViewer
-                    kbGuid={this._params.kbGuid}
-                    noteGuid={this._params.noteGuid}
-                    params={this._params}
-                  />
-                )
-                : (
-                  <Main
-                    kbGuid={kbGuid}
-                    user={currentUser}
-                    onLoggedIn={this.handler.handleLoggedIn}
-                    mergeLocalAccount={mergeLocalAccount}
-                    onCreateAccount={this.handler.handleCreateAccount}
-                    onInvalidPassword={this.handler.handleInvalidPassword}
-                  />
-                )
-            )}
-          </div>
-          <AboutDialog
-            open={showAboutDialog}
-            onClose={this.handler.handleCloseAboutDialog}
-          />
+          <SnackbarProvider
+            maxSnack={3}
+            preventDuplicate
+            classes={{
+              anchorOriginTopCenter: 'snackbar-top-center',
+            }}
+          >
+
+            <div className={classes.root}>
+              {!loggedIn && !isAutoLogging && (
+                <Login
+                  onLoggedIn={this.handler.handleLoggedIn}
+                  mergeLocalAccount={mergeLocalAccount}
+                />
+              )}
+              {loggedIn && !isAutoLogging && (
+                this._viewNote
+                  ? (
+                    <NoteViewer
+                      kbGuid={this._params.kbGuid}
+                      noteGuid={this._params.noteGuid}
+                      params={this._params}
+                    />
+                  )
+                  : (
+                    <Main
+                      kbGuid={kbGuid}
+                      user={currentUser}
+                      onLoggedIn={this.handler.handleLoggedIn}
+                      mergeLocalAccount={mergeLocalAccount}
+                      onCreateAccount={this.handler.handleCreateAccount}
+                      onInvalidPassword={this.handler.handleInvalidPassword}
+                    />
+                  )
+              )}
+            </div>
+            <AboutDialog
+              open={showAboutDialog}
+              onClose={this.handler.handleCloseAboutDialog}
+            />
+          </SnackbarProvider>
         </IntlProvider>
       </ThemeSwitcher>
     );
