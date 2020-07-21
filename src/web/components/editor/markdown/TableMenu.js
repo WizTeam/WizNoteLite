@@ -101,6 +101,12 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
 
 let currentCellElement;
 let tableElement;
+// 修复md表头分割线 | - | - | - |   => | ----- | ----- | ----- |
+function fixTableMd(md) {
+  const textArr = md.split('\n');
+  textArr[1] = textArr[1].replace(/-/g, '-----');
+  return textArr.join('\n');
+}
 
 function TableMenu(props) {
   const classes = useStyles();
@@ -222,7 +228,7 @@ function TableMenu(props) {
         break;
       case 'CpMd':
         if (props.editor && tableElement) {
-          copy(props.editor.html2md(tableElement.outerHTML));
+          copy(fixTableMd(props.editor.html2md(tableElement.outerHTML)));
         }
         break;
       default:
