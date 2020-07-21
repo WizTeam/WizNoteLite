@@ -17,6 +17,7 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
     display: 'none',
     width: contentsWidth,
     boxSizing: 'border-box',
+    minWidth: 300,
     flexShrink: 0,
     '&.active': {
       display: 'block',
@@ -28,7 +29,9 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
     bottom: 0,
     right: 0,
     zIndex: 9999,
+    backgroundColor: palette.type === 'dark' ? '#333333' : '#fafafa',
     boxShadow: '0px 1px 4px 0px rgba(0, 0, 0, 0.31)',
+    opacity: 0.95,
   },
   container: {
     padding: spacing(4, 2),
@@ -66,6 +69,9 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
   itemText: {
     fontSize: 14,
   },
+  openIcon: {
+    color: 'rgba(0, 0, 0, 0.54)',
+  },
 }));
 
 function EditorContents(props) {
@@ -102,7 +108,7 @@ function EditorContents(props) {
               itemSelectedClassName={classes.itemSelected}
               onNodeClick={props.onNodeClick}
               openIcon={(
-                <ArrowDropDownIcon />
+                <ArrowDropDownIcon className={classes.openIcon} />
               )}
               closeIcon={(
                 <ArrowRightIcon />
