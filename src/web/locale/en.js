@@ -108,7 +108,7 @@ export default {
   messagePurchaseRestoreSucceeded: '恢复购买成功',
   userTypeUpgrade: '升级',
   userTypeRenew: '续费',
-  messageVipServiceDate: 'Your WizNote VIP service will expire in {date}.',
+  messageVipServiceDate: 'Your WizNote VIP service will expire on {date}.',
 
   // export
   exportPng: 'Export Image',
