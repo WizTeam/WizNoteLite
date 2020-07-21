@@ -101,12 +101,14 @@ export default {
   buttonUpgradeVIPWithPrice: '升级VIP ¥60/年',
   buttonRestorePurchases: '恢复购买',
   buttonPurchaseLoading: '正在查询...',
+  buttonVerifying: '正在验证购买信息...',
   errorPurchaseFailed: 'Failed to purchase product: {message}',
   buttonPurchasing: '正在购买...',
   messagePurchaseSucceeded: '购买成功',
   messagePurchaseRestoreSucceeded: '恢复购买成功',
   userTypeUpgrade: '升级',
   userTypeRenew: '续费',
+  messageVipServiceDate: 'Your WizNote VIP service will expire in {date}.',
 
   // export
   exportPng: '导出为图片',

@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { useIntl } from 'react-intl';
+import { injectIntl } from 'react-intl';
+import { withStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
-import { makeStyles } from '@material-ui/core/styles';
 
 import Icons from '../config/icons';
 import LiteText from './LiteText';
 
 
-const useStyles = makeStyles((theme) => ({
+const styles = (/* theme */) => ({
   root: {
     display: 'flex',
   },
@@ -29,56 +29,78 @@ const useStyles = makeStyles((theme) => ({
     width: 16,
     height: 16,
   },
-}));
+});
 
 
-export default function VipIndicator(props) {
-  const { className } = props;
-  const classes = useStyles();
-  const intl = useIntl();
+class VipIndicator extends React.Component {
+  handler = {
+    handleKeyPress: (e) => {
+      if (e.keyCode === 13) {
+        this.props.onClick();
+      }
+    },
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      user: null,
+    };
+  }
+
+  async componentDidMount() {
+    const user = await window.wizApi.userManager.getUserInfo();
+    this.setState({ user });
+  }
   //
-  const user = window.wizApi.userManager.getUserInfo();
-  let typeText;
-  if (user.vip) {
-    typeText = 'VIP';
-  } else {
+
+  render() {
     //
-    // eslint-disable-next-line no-lonely-if
-    if (!user.vipDate) {
-      typeText = intl.formatMessage({ id: 'userTypeUpgrade' });
+    const { className, classes, intl } = this.props;
+    const { user } = this.state;
+    //
+    if (!user) {
+      return <div />;
+    }
+    //
+    let typeText;
+    if (user.vip) {
+      typeText = 'VIP';
     } else {
-      typeText = intl.formatMessage({ id: 'userTypeRenew' });
+      //
+      // eslint-disable-next-line no-lonely-if
+      if (!user.vipDate) {
+        typeText = intl.formatMessage({ id: 'userTypeUpgrade' });
+      } else {
+        typeText = intl.formatMessage({ id: 'userTypeRenew' });
+      }
+      //
     }
-    //
-  }
 
-  function handleKeyPress(e) {
-    if (e.keyCode === 13) {
-      props.onClick();
-    }
-  }
-
-  return (
-    <div
-      className={classNames(classes.root, className)}
-    >
-      {/* eslint-disable-next-line jsx-a11y/interactive-supports-focus */}
+    return (
       <div
-        className={classes.content}
-        onClick={props.onClick}
-        role="link"
-        onKeyPress={handleKeyPress}
-        // tabIndex={0} // 不希望点击的时候转移键盘焦点
+        className={classNames(classes.root, className)}
       >
-        <Icons.CrownIcon className={classes.icon} />
-        <LiteText fullWidth={false}>{typeText}</LiteText>
+        {/* eslint-disable-next-line jsx-a11y/interactive-supports-focus */}
+        <div
+          className={classes.content}
+          onClick={this.props.onClick}
+          role="link"
+          onKeyPress={this.handler.handleKeyPress}
+          // tabIndex={0} // 不希望点击的时候转移键盘焦点
+        >
+          <Icons.CrownIcon className={classes.icon} />
+          <LiteText fullWidth={false}>{typeText}</LiteText>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 }
 
 
 VipIndicator.propTypes = {
+  classes: PropTypes.object.isRequired,
+  intl: PropTypes.object.isRequired,
   className: PropTypes.string,
   onClick: PropTypes.func,
 };
@@ -87,3 +109,5 @@ VipIndicator.defaultProps = {
   className: null,
   onClick: PropTypes.func,
 };
+
+export default withStyles(styles)(injectIntl(VipIndicator));

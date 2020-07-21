@@ -30,9 +30,10 @@ async function verifyPurchase(transaction, receiptURL) {
       });
     }
   } catch (err) {
-    throw new WizInternalError(i18n.t('errorDownloadReceipt', {
+    const errorMessage = i18n.t('errorDownloadReceipt', {
       message: err.message,
-    }));
+    });
+    throw new WizInternalError(errorMessage);
   }
 
   const userData = users.getUserData(getCurrentUserGuid());
@@ -58,9 +59,10 @@ async function verifyPurchase(transaction, receiptURL) {
     //
     return true;
   } catch (err) {
-    throw new WizInternalError(i18n.t('errorVerifyPurchase', {
+    const errorMessage = i18n.t('errorVerifyPurchase', {
       message: err.message,
-    }));
+    });
+    throw new WizInternalError(errorMessage);
   }
 }
 
@@ -99,10 +101,16 @@ inAppPurchase.on('transactions-updated', async (event, transactions) => {
 
       case 'purchased': {
         console.log(`${payment.productIdentifier} purchased.`);
+        await sendTransactionsEvents('verifying', payment.productIdentifier);
         const receiptURL = inAppPurchase.getReceiptURL();
-        const userGuid = await verifyPurchase(transaction, receiptURL);
-        await sendTransactionsEvents('purchased', payment.productIdentifier, userGuid);
-        inAppPurchase.finishTransactionByDate(transaction.transactionDate);
+        try {
+          const userGuid = await verifyPurchase(transaction, receiptURL);
+          await sendTransactionsEvents('purchased', payment.productIdentifier, userGuid);
+          inAppPurchase.finishTransactionByDate(transaction.transactionDate);
+        } catch (err) {
+          console.error(err);
+          await sendTransactionsEvents('failed', payment.productIdentifier, null, err.message);
+        }
         break;
       }
 
@@ -114,9 +122,15 @@ inAppPurchase.on('transactions-updated', async (event, transactions) => {
 
       case 'restored': {
         console.log(`The purchase of ${payment.productIdentifier} has been restored.`);
+        await sendTransactionsEvents('verifying', payment.productIdentifier);
         const receiptURL = inAppPurchase.getReceiptURL();
-        const userGuid = await verifyPurchase(transaction, receiptURL);
-        await sendTransactionsEvents('restored', payment.productIdentifier, userGuid);
+        try {
+          const userGuid = await verifyPurchase(transaction, receiptURL);
+          await sendTransactionsEvents('restored', payment.productIdentifier, userGuid);
+        } catch (err) {
+          console.error(err);
+          await sendTransactionsEvents('failed', payment.productIdentifier, null, err.message);
+        }
         break;
       }
 

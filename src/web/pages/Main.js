@@ -248,6 +248,10 @@ class Main extends React.Component {
     handleCloseUpgradeToVipDialog: () => {
       this.setState({ showUpgradeToVipDialog: false });
     },
+
+    handlerUserInfoChanged: () => {
+      this.setState({});
+    }
   }
 
   constructor(props) {
@@ -286,10 +290,12 @@ class Main extends React.Component {
       }
     }
     window.wizApi.userManager.on('syncFinish', this.handler.handleSyncFinish);
+    window.wizApi.userManager.on('userInfoChanged', this.handler.handlerUserInfoChanged);
   }
 
   componentWillUnmount() {
     window.wizApi.userManager.off('syncFinish', this.handler.handleSyncFinish);
+    window.wizApi.userManager.off('userInfoChanged', this.handler.handlerUserInfoChanged);
   }
 
   showUpgradeVipMessage(isVipExpired, syncOptions) {
