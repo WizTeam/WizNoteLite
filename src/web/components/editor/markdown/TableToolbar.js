@@ -107,8 +107,8 @@ function TableToolbar(props) {
       for (let i = 1; i < row; i++) {
         let htmlStr = '<tr>';
         for (let j = 0; j < col; j++) {
-          if (i < tableElement.length && j < tableElement[i].length) {
-            htmlStr += tableElement[i][j];
+          if (i < tableBoxHtmlArr.length && j < tableBoxHtmlArr[i].length) {
+            htmlStr += tableBoxHtmlArr[i][j];
           } else {
             htmlStr += '<td> </td>';
           }

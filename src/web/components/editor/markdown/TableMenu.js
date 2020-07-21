@@ -1,5 +1,5 @@
 import React, {
-  useEffect, useState, useRef, useCallback,
+  useEffect, useState, useCallback,
 } from 'react';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -9,7 +9,9 @@ import { injectIntl } from 'react-intl';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import copy from 'copy-to-clipboard';
 import Icon from '../../../config/icons';
-import { filterParentElement, updateHotkeyTip, matchHotKey } from '../libs/dom_utils';
+import {
+  filterParentElement, updateHotkeyTip, matchHotKey, hasClass,
+} from '../libs/dom_utils';
 import { setRangeByDomBeforeEnd } from '../libs/range_utils';
 import LiteMenu from './LiteMenu';
 
@@ -99,6 +101,12 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
 
 let currentCellElement;
 let tableElement;
+// 修复md表头分割线 | - | - | - |   => | ----- | ----- | ----- |
+function fixTableMd(md) {
+  const textArr = md.split('\n');
+  textArr[1] = textArr[1].replace(/-/g, '-----');
+  return textArr.join('\n');
+}
 
 function TableMenu(props) {
   const classes = useStyles();
@@ -108,7 +116,6 @@ function TableMenu(props) {
   const [menuPosition, setMenuPosition] = useState(undefined);
   const [subMenuPos, setSubMenuPos] = useState(null);
   const [align, setAlign] = useState('left');
-  const menuRef = useRef();
 
   function deleteTable() {
     if (tableElement) {
@@ -221,7 +228,7 @@ function TableMenu(props) {
         break;
       case 'CpMd':
         if (props.editor && tableElement) {
-          copy(props.editor.html2md(tableElement.outerHTML));
+          copy(fixTableMd(props.editor.html2md(tableElement.outerHTML)));
         }
         break;
       default:
@@ -262,7 +269,7 @@ function TableMenu(props) {
             });
           }
           e.preventDefault();
-        } else if (!filterParentElement(e.target, document.body, (dom) => dom.getAttribute('data-type') === 'subMenu', true) && menuPosition) {
+        } else if (!filterParentElement(e.target, document.body, (dom) => hasClass(dom, classes.menuRoot), true) && menuPosition) {
           setMenuPosition(undefined);
         }
       }
@@ -299,9 +306,8 @@ function TableMenu(props) {
       classes={{
         list: classes.menuRoot,
       }}
-      ref={menuRef}
     >
-      {isHead || (
+      {isHead ? '' : (
         <MenuItem onClick={(e) => clickHandler('addRowAbove', e)}>
           <div className={classes.menuItem}>
             <div className={classes.menuName}>{intl.formatMessage({ id: 'tableMenuAddRowAbove' })}</div>
@@ -359,7 +365,7 @@ function TableMenu(props) {
         </div>
       </MenuItem>
       <div className={classes.menuLine} />
-      {isHead || (
+      {isHead ? '' : (
         <MenuItem onClick={(e) => clickHandler('deleteRow', e)}>
           <div className={classes.menuItem}>
             <div className={classes.menuName}>{intl.formatMessage({ id: 'tableMenuDeleteRow' })}</div>
