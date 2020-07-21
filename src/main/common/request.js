@@ -10,8 +10,6 @@ async function standardRequest(opt) {
   //
   const options = opt;
   assert(options);
-  options.maxContentLength = Infinity;
-  options.maxBodyLength = Infinity;
   //
   const token = options.token;
   //
