@@ -172,7 +172,7 @@ class Content extends React.Component {
     handleContentsNodeClick: (item) => {
       if (this.scrollContentRef?.current) {
         const rect = item.element.getBoundingClientRect();
-        const top = this.scrollContentRef?.current.getScrollTop() + rect.top;
+        const top = this.scrollContentRef?.current.getScrollTop() + rect.top - this.headeerRef.current?.offsetHeight ?? 0;
         this.scrollContentRef.current.scrollTop(top);
       }
     },
@@ -198,6 +198,7 @@ class Content extends React.Component {
       contentsList: [],
     };
     this.scrollContentRef = React.createRef();
+    this.headeerRef = React.createRef();
   }
 
   componentDidMount() {
@@ -236,6 +237,7 @@ class Content extends React.Component {
           systemButton
           className={classNames(classes.header, isMac && classes.header_mac)}
           onRequestFullScreen={this.props.onRequestFullScreen}
+          ref={this.headeerRef}
         />
         {!this.state.showEditorContents && note && !isSearch && (
         <div className={classNames(classes.toolBar, isMac && classes.toolBar_mac)}>
