@@ -67,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function CommonHeader(props) {
+const CommonHeader = React.forwardRef((props, ref) => {
   const classes = useStyles();
   const intl = useIntl();
   const wm = window.wizApi.windowManager;
@@ -133,7 +133,7 @@ export default function CommonHeader(props) {
   } = props;
 
   return (
-    <div className={classNames(classes.root, className)} onDoubleClick={handleDoubleClickHeader}>
+    <div className={classNames(classes.root, className)} onDoubleClick={handleDoubleClickHeader} ref={ref}>
       {hasSystemButton && showLogo && (
         <>
           <Button
@@ -170,7 +170,7 @@ export default function CommonHeader(props) {
       )}
     </div>
   );
-}
+});
 
 CommonHeader.propTypes = {
   className: PropTypes.string,
@@ -187,3 +187,5 @@ CommonHeader.defaultProps = {
   systemButton: false,
   onRequestFullScreen: null,
 };
+
+export default CommonHeader;
