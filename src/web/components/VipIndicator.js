@@ -25,6 +25,9 @@ const styles = (/* theme */) => ({
     padding: '0 4px',
     pointerEvents: 'all',
   },
+  content_normal: {
+    marginTop: 8,
+  },
   icon: {
     width: 16,
     height: 16,
@@ -77,13 +80,15 @@ class VipIndicator extends React.Component {
       //
     }
 
+    const isMac = window.wizApi.platform.isMac;
+
     return (
       <div
         className={classNames(classes.root, className)}
       >
         {/* eslint-disable-next-line jsx-a11y/interactive-supports-focus */}
         <div
-          className={classes.content}
+          className={classNames(classes.content, !isMac && classes.content_normal)}
           onClick={this.props.onClick}
           role="link"
           onKeyPress={this.handler.handleKeyPress}

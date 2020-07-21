@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
     padding: 0,
     lineHeight: 1,
     textTransform: 'unset',
-    marginLeft: theme.spacing(2),
+    marginLeft: theme.spacing(1),
     fontSize: 14,
     '& .MuiButton-endIcon': {
       marginLeft: 0,
