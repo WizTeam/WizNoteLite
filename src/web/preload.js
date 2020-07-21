@@ -310,6 +310,11 @@ class UserManager extends EventEmitter {
     return result;
   }
 
+  async refreshUserInfo() {
+    const result = await invokeApi('refreshUserInfo', this.userGuid);
+    return result;
+  }
+
   async sendMessage(name, ...args) {
     ipcRenderer.send(name, this.userGuid, ...args);
   }

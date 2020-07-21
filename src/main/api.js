@@ -512,6 +512,11 @@ handleApi('showUpgradeVipDialog', async (event, userGuid) => {
   upgradeVipDialog.show();
 });
 
+handleApi('refreshUserInfo', async (event, userGuid) => {
+  const user = await users.refreshUserInfo(userGuid);
+  return user;
+});
+
 
 module.exports = {
   unregisterWindow,

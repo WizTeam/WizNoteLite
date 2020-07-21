@@ -88,6 +88,10 @@ class WizDb extends EventEmitter {
     await this.setMeta('user', JSON.stringify(user));
   }
 
+  async updateUserInfo(user) {
+    await this.setMeta('user', JSON.stringify(user));
+  }
+
   // account info
   async getAccountInfo() {
     const userText = await this.getMeta('user');

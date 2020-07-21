@@ -135,7 +135,7 @@ class UpgradeToVIPDialog extends React.Component {
       }
     },
 
-    onTransactionsUpdated: (params) => {
+    onTransactionsUpdated: async (params) => {
       const {
         productIdentifier, state,
         message,
@@ -151,12 +151,20 @@ class UpgradeToVIPDialog extends React.Component {
         //
       } else if (state === 'purchased') {
         //
+        await this.refreshUserInfo();
+        const successMessage = this.props.intl.formatMessage({ id: 'messagePurchaseSucceeded' });
+        alert(successMessage);
+        //
       } else if (state === 'failed') {
         //
         const errorMessage = this.props.intl.formatMessage({ id: 'errorPurchaseFailed' }, { message });
         alert(errorMessage);
         //
       } else if (state === 'restored') {
+        //
+        await this.refreshUserInfo();
+        const successMessage = this.props.intl.formatMessage({ id: 'messagePurchaseRestoreSucceeded' });
+        alert(successMessage);
         //
       } else {
         //
@@ -189,6 +197,10 @@ class UpgradeToVIPDialog extends React.Component {
 
   componentWillUnmount() {
     window.onTransactionsUpdated = null;
+  }
+
+  async refreshUserInfo() {
+    await window.wizApi.userManager.refreshUserInfo();
   }
 
   render() {

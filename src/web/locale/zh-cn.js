@@ -103,6 +103,8 @@ export default {
   buttonPurchaseLoading: '正在查询...',
   errorPurchaseFailed: 'Failed to purchase product: {message}',
   buttonPurchasing: '正在购买...',
+  messagePurchaseSucceeded: '购买成功',
+  messagePurchaseRestoreSucceeded: '恢复购买成功',
 
   // export
   exportPng: '导出为图片',

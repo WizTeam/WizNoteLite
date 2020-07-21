@@ -56,6 +56,14 @@ class UserData extends EventEmitter {
     //
   }
 
+  async refreshUserInfo() {
+    const db = this._personalDb;
+    const newUser = await this._as.refreshUserInfo(this.token);
+    this._user = newUser;
+    await db.updateUserInfo(newUser);
+    return newUser;
+  }
+
   getLink(name) {
     this._as.getLink(name);
   }

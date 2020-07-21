@@ -80,7 +80,7 @@ class Users {
   }
 
   async getLink(userGuid, name) {
-    const userData = await this.getUserData(userGuid);
+    const userData = this.getUserData(userGuid);
     await userData.getLink(name);
   }
 
@@ -170,8 +170,15 @@ class Users {
     return user;
   }
 
+  async refreshUserInfo(userGuid) {
+    const userData = this.getUserData(userGuid);
+    const user = await userData.refreshUserInfo();
+    this.emitEvent(userGuid, 'userInfoChanged', user);
+    return user;
+  }
+
   async logout(userGuid) {
-    const userData = await this.getUserData(userGuid);
+    const userData = this.getUserData(userGuid);
     await dataStore.closeDb(userData.user.kbGuid);
     globalSettings.setLastAccount('');
     this.emitEvent(userGuid, 'logout');
@@ -179,12 +186,14 @@ class Users {
   }
 
   async createNote(userGuid, kbGuid, note) {
-    const db = await this.getUserData(userGuid).getDb(kbGuid);
+    const userData = this.getUserData(userGuid);
+    const db = await userData.getDb(kbGuid);
     await db.createNote(note);
   }
 
   async deleteNote(userGuid, kbGuid, noteGuid) {
-    const db = await this.getUserData(userGuid).getDb(kbGuid);
+    const userData = this.getUserData(userGuid);
+    const db = await userData.getDb(kbGuid);
     const note = await db.getNote(noteGuid);
     if (!note) {
       return;
@@ -197,7 +206,8 @@ class Users {
   }
 
   async putBackNote(userGuid, kbGuid, noteGuid) {
-    const db = await this.getUserData(userGuid).getDb(kbGuid);
+    const userData = this.getUserData(userGuid);
+    const db = await userData.getDb(kbGuid);
     const note = await db.getNote(noteGuid);
     if (!note) {
       return;
