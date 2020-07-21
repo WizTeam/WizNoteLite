@@ -13,7 +13,7 @@ const users = require('./user/users');
 const globalSettings = require('./settings/global_settings');
 const wait = require('./utils/wait');
 const paths = require('./common/paths');
-const inAppPurchase = require('./inapp/in-app-purchase');
+const inAppPurchase = require('./inapp/in_app_purchase');
 
 const isDebug = false;
 
@@ -510,7 +510,6 @@ handleApi('showUpgradeVipDialog', async (event, userGuid) => {
 
   upgradeVipDialog.loadURL(url);
   upgradeVipDialog.show();
-
 });
 
 

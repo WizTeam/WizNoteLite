@@ -213,6 +213,8 @@ class UpgradeToVIPDialog extends React.Component {
       buttonText = intl.formatMessage({ id: 'buttonUpgradeVIPWithPrice' });
     }
 
+    const isLoading = (isMac && !yearProduct);
+
     return (
       <Dialog
         open={open}
@@ -231,6 +233,7 @@ class UpgradeToVIPDialog extends React.Component {
           </div>
           <div className={classNames(classes.actions, classes.verticalFlex)}>
             <Button
+              disabled={isLoading || purchasing}
               onClick={this.handler.handlePurchase}
               className={classes.purchaseButton}
             >
