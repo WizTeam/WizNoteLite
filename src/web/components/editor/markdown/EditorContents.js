@@ -24,16 +24,16 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
       display: 'block',
     },
   }),
-  fixed: {
+  fixed: ({isWinClient}) => ({
     position: 'fixed',
-    top: 0,
+    top: isWinClient ? spacing(4) : 0,
     bottom: 0,
     right: 0,
     zIndex: 9999,
     backgroundColor: palette.type === 'dark' ? '#333333' : '#fafafa',
     boxShadow: '0px 1px 4px 0px rgba(0, 0, 0, 0.31)',
     opacity: 0.95,
-  },
+  }),
   container: {
     padding: spacing(4, 2),
   },
@@ -76,7 +76,9 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
 }));
 
 function EditorContents(props) {
-  const classes = useStyles({ contentsWidth: window.innerWidth / 4 });
+  const isWinClient = window.wizApi.isElectron && !window.wizApi.platform.isMac;
+
+  const classes = useStyles({ contentsWidth: window.innerWidth / 4, isWinClient });
 
   const [isFixed, setIsFixed] = useState(true);
 
