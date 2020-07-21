@@ -180,6 +180,11 @@ function TableMenu(props) {
     }
   }, [props.editor]);
 
+
+  function getTableMd() {
+    return fixTableMd(props.editor.html2md(tableElement.outerHTML));
+  }
+
   function clickHandler(type, e) {
     setRangeByDomBeforeEnd(currentCellElement);
 
@@ -218,7 +223,7 @@ function TableMenu(props) {
         if (tableElement) {
           const copyHandler = (event) => {
             event.preventDefault();
-            event.clipboardData.setData('text/plain', props.editor.html2md(tableElement.outerHTML));
+            event.clipboardData.setData('text/plain', getTableMd());
             event.clipboardData.setData('text/html', tableElement.outerHTML);
           };
           document.addEventListener('copy', copyHandler);
@@ -228,7 +233,7 @@ function TableMenu(props) {
         break;
       case 'CpMd':
         if (props.editor && tableElement) {
-          copy(fixTableMd(props.editor.html2md(tableElement.outerHTML)));
+          copy(getTableMd());
         }
         break;
       default:
