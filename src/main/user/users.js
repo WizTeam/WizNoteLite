@@ -340,6 +340,10 @@ class Users {
 
   emitEvent(userGuid, eventName, ...args) {
     const userData = this.getUserData(userGuid);
+    if (!userData) {
+      console.error(`failed to get user data: ${userGuid}, ${new Error().stack}`);
+      return;
+    }
     const windows = userData.windows;
     if (!windows) {
       return;

@@ -147,31 +147,31 @@ class UpgradeToVIPDialog extends React.Component {
       //
       if (state === 'purchasing') {
         //
-        return;
-        //
       } else if (state === 'purchased') {
         //
         await this.refreshUserInfo();
+        this.setState({ purchasing: false });
         const successMessage = this.props.intl.formatMessage({ id: 'messagePurchaseSucceeded' });
         alert(successMessage);
+        this.props.onClose();
         //
       } else if (state === 'failed') {
         //
+        this.setState({ purchasing: false });
         const errorMessage = this.props.intl.formatMessage({ id: 'errorPurchaseFailed' }, { message });
         alert(errorMessage);
         //
       } else if (state === 'restored') {
         //
         await this.refreshUserInfo();
+        this.setState({ purchasing: false });
         const successMessage = this.props.intl.formatMessage({ id: 'messagePurchaseRestoreSucceeded' });
         alert(successMessage);
+        this.props.onClose();
         //
       } else {
         //
       }
-      //
-      this.setState({ purchasing: false });
-      //
     },
 
     // handleRestorePurchases: () => {

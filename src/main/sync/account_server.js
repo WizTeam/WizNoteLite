@@ -40,6 +40,10 @@ class AccountServer {
     return false;
   }
 
+  get server() {
+    return this._server;
+  }
+
   getLink(name) {
     if (this.isOfficial) {
       return `https://api.wiz.cn/?p=wiz&c=link&n=${name}`;

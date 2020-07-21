@@ -2,6 +2,7 @@ const {
   inAppPurchase, BrowserWindow, app,
 } = require('electron');
 const i18n = require('i18next');
+const fs = require('fs-extra');
 const { WizInternalError } = require('../../share/error');
 const request = require('../common/request');
 const users = require('../user/users');
@@ -20,10 +21,14 @@ async function verifyPurchase(transaction, receiptURL) {
   //
   let receiptData = null;
   try {
-    receiptData = await request.downloadToData({
-      url: receiptURL,
-      method: 'GET',
-    });
+    if (receiptURL.startsWith('/')) {
+      receiptData = await fs.readFile(receiptURL);
+    } else {
+      receiptData = await request.downloadToData({
+        url: receiptURL,
+        method: 'GET',
+      });
+    }
   } catch (err) {
     throw new WizInternalError(i18n.t('errorDownloadReceipt', {
       message: err.message,
@@ -32,6 +37,8 @@ async function verifyPurchase(transaction, receiptURL) {
 
   const userData = users.getUserData(getCurrentUserGuid());
   const user = userData.user;
+  //
+  const server = userData.accountServer.server;
   //
   const data = {
     receipt: receiptData.toString('base64'),
@@ -44,7 +51,7 @@ async function verifyPurchase(transaction, receiptURL) {
   //
   try {
     await request.standardRequest({
-      url: `https://as.wiz.cn/as/a/pay2/ios`,
+      url: `${server}/as/pay2/ios`,
       data,
       method: 'POST',
     });
