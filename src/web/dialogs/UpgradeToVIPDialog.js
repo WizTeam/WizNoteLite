@@ -147,13 +147,9 @@ class UpgradeToVIPDialog extends React.Component {
 
     onTransactionsUpdated: async (params) => {
       const {
-        productIdentifier, state,
+        state,
         message,
       } = params;
-      //
-      if (productIdentifier !== 'cn.wiz.note.lite.year') {
-        return;
-      }
       //
       const purchaseState = state;
       //

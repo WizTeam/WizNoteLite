@@ -44,11 +44,16 @@ class AccountServer {
     return this._server;
   }
 
-  getLink(name) {
+  get apiServer() {
     if (this.isOfficial) {
-      return `https://api.wiz.cn/?p=wiz&c=link&n=${name}`;
+      return `https://api.wiz.cn`;
     }
-    return `${this._server}/?p=wiz&c=link&n=${name}`;
+    return this._server;
+  }
+
+  getLink(name) {
+    const apiServer = this.apiServer;
+    return `${apiServer}/?p=wiz&c=link&n=${name}`;
   }
 
   // login

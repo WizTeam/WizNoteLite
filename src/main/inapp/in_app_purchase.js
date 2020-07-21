@@ -6,6 +6,7 @@ const fs = require('fs-extra');
 const { WizInternalError } = require('../../share/error');
 const request = require('../common/request');
 const users = require('../user/users');
+const { refreshUserInfo } = require('../user/users');
 
 let currentUserGuid;
 
@@ -183,7 +184,64 @@ async function purchaseProduct(event, userGuid, selectedProduct) {
   return true;
 }
 
+async function showUpgradeVipDialog(event, userGuid) {
+  const userData = users.getUserData(userGuid);
+  const apiServer = userData.accountServer.apiServer;
+  const token = userData.token;
+  const url = `${apiServer}/?p=wiz&c=vip_lite&token=${token}&clientType=lite&clientVersion={${app.getVersion()}}`;
+
+  //
+  const mainWindow = BrowserWindow.fromWebContents(event.sender);
+  //
+  const upgradeVipDialog = new BrowserWindow({
+    width: 400,
+    height: 600,
+    parent: mainWindow,
+    modal: true,
+    resizable: false,
+    minimizable: false,
+    show: false,
+  });
+
+  //
+  const user = users.getUserInfo(userGuid);
+
+  upgradeVipDialog.on('closed', async () => {
+    //
+    try {
+      setTimeout(() => {
+        mainWindow.setAlwaysOnTop(false);
+      }, 300);
+      //
+      const newUser = await users.refreshUserInfo(userGuid);
+      if (newUser.vip && newUser.vipDate !== user.vipDate) {
+        await sendTransactionsEvents('purchased', '', userGuid);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  });
+
+  // aoid flicker
+  // https://github.com/electron/electron/issues/10616
+  //
+  mainWindow.setAlwaysOnTop(true);
+
+  upgradeVipDialog.on('focus', () => {
+    mainWindow.setAlwaysOnTop(true);
+  });
+
+  upgradeVipDialog.on('blur', () => {
+    mainWindow.setAlwaysOnTop(false);
+  });
+
+  upgradeVipDialog.loadURL(url);
+  upgradeVipDialog.removeMenu();
+  upgradeVipDialog.show();
+}
+
 module.exports = {
   queryProducts,
   purchaseProduct,
+  showUpgradeVipDialog,
 };
