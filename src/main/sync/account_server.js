@@ -33,11 +33,15 @@ class AccountServer {
   }
 
   get isOfficial() {
-    const url = URL.parse(server);
+    const url = URL.parse(this._server);
     if (url.hostname === 'as.wiz.cn') {
       return true;
     }
     return false;
+  }
+
+  get server() {
+    return this._server;
   }
 
   getLink(name) {
@@ -104,6 +108,18 @@ class AccountServer {
     } catch (err) {
       throw new WizServerError(err.message, 'WizErrorUnknownServerVersion');
     }
+  }
+
+  async refreshUserInfo(token) {
+    const options = {
+      url: `${this._server}/as/user/token`,
+      method: 'post',
+      data: {
+        token,
+      },
+    };
+    const user = await WizRequest.standardRequest(options);
+    return user;
   }
 }
 

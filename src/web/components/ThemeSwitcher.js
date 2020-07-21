@@ -62,6 +62,11 @@ export default function ThemeSwitcher(props) {
             },
           },
         },
+        MuiTypography: {
+          h1: {
+            fontWeight: 700,
+          },
+        },
       },
       custom: {
         background: {

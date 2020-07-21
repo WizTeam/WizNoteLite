@@ -1,7 +1,7 @@
 const {
   ipcMain, BrowserWindow,
   dialog,
-  shell,
+  shell, app,
 } = require('electron');
 const fs = require('fs-extra');
 const URL = require('url');
@@ -13,6 +13,7 @@ const users = require('./user/users');
 const globalSettings = require('./settings/global_settings');
 const wait = require('./utils/wait');
 const paths = require('./common/paths');
+const inAppPurchase = require('./inapp/in_app_purchase');
 
 const isDebug = false;
 
@@ -492,6 +493,28 @@ handleApi('writeToMarkdown', async (event, userGuid, kbGuid, noteGuid) => {
   await fs.writeFile(filePath, data);
   //
   shell.showItemInFolder(filePath);
+});
+
+handleApi('queryProducts', inAppPurchase.queryProducts);
+handleApi('purchaseProduct', inAppPurchase.purchaseProduct);
+
+handleApi('showUpgradeVipDialog', async (event, userGuid) => {
+  const userData = users.getUserData(userGuid);
+  const token = userData.token;
+  const url = `https://api.wiz.cn/?p=wiz&c=vip&token=${token}&clientType=lite&clientVersion={${app.getVersion()}}`;
+  //
+  const upgradeVipDialog = new BrowserWindow({
+    parent: BrowserWindow.fromWebContents(event.sender),
+    modal: true,
+  });
+
+  upgradeVipDialog.loadURL(url);
+  upgradeVipDialog.show();
+});
+
+handleApi('refreshUserInfo', async (event, userGuid) => {
+  const user = await users.refreshUserInfo(userGuid);
+  return user;
 });
 
 

@@ -93,6 +93,18 @@ export default {
   buttonRenewVip: '续费VIP',
   errorVipExpiredSync: 'VIP服务已到期，无法上传笔记。',
   errorUpgradeVipSync: '试用期已结束，无法上传笔记。',
+  labelUpgradeToVip: '升级为为知笔记VIP',
+  labelUpgradeToVipWhy: '一个账号，畅享为知笔记服务于Lite功能',
+  labelUpgradeVipMessage1: '上传到服务器，随时随地同步',
+  labelUpgradeVipMessage2: '无需备份，防止丢失',
+  buttonUpgradeVIP: '升级VIP {price}/年',
+  buttonUpgradeVIPWithPrice: '升级VIP ¥60/年',
+  buttonRestorePurchases: '恢复购买',
+  buttonPurchaseLoading: '正在查询...',
+  errorPurchaseFailed: 'Failed to purchase product: {message}',
+  buttonPurchasing: '正在购买...',
+  messagePurchaseSucceeded: '购买成功',
+  messagePurchaseRestoreSucceeded: '恢复购买成功',
 
   // export
   exportPng: '导出为图片',
