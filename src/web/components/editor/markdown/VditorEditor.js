@@ -159,7 +159,13 @@ class VditorEditor extends React.Component {
           if (list.length) {
             let target = list;
             for (let j = 1; j < rank; j++) {
-              if (!target[target.length - 1].children) {
+              if (target.length === 0) {
+                target.push({
+                  key: `${i}-${rank}`,
+                  children: [],
+                  open: true,
+                });
+              } else if (!target[target.length - 1].children) {
                 target[target.length - 1].children = [];
               }
               target = target[target.length - 1].children;
