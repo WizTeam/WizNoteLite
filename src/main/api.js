@@ -512,6 +512,12 @@ handleApi('showUpgradeVipDialog', async (event, userGuid) => {
   upgradeVipDialog.show();
 });
 
+handleApi('getUserInfo', async (event, userGuid) => {
+  const user = users.getUserInfo(userGuid);
+  return user;
+});
+
+
 handleApi('refreshUserInfo', async (event, userGuid) => {
   const user = await users.refreshUserInfo(userGuid);
   return user;

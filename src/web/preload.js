@@ -310,6 +310,11 @@ class UserManager extends EventEmitter {
     return result;
   }
 
+  async getUserInfo() {
+    const result = await invokeApi('getUserInfo', this.userGuid);
+    return result;
+  }
+
   async refreshUserInfo() {
     const result = await invokeApi('refreshUserInfo', this.userGuid);
     return result;

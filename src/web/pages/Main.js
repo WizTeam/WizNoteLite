@@ -93,6 +93,12 @@ const styles = (theme) => ({
   },
   snackbarButton: {
     color: 'white',
+    padding: 4,
+  },
+  snackbarButtonUpgrade: {
+    backgroundColor: 'rgba(0, 0, 0, 0.08)',
+    padding: 4,
+    marginRight: 8,
   },
 });
 
@@ -311,7 +317,10 @@ class Main extends React.Component {
       key: SNACKBAR_KEY,
       action: (() => (
         <>
-          <Button onClick={this.handler.handleUpgradeVip} className={classes.snackbarButton}>
+          <Button
+            onClick={this.handler.handleUpgradeVip}
+            className={classNames(classes.snackbarButton, classes.snackbarButtonUpgrade)}
+          >
             {buttonMessage}
           </Button>
           <IconButton onClick={this.handler.handleCloseSnackbar} className={classes.snackbarButton}>
@@ -351,6 +360,7 @@ class Main extends React.Component {
           onClickLogin={this.handler.handleShowLoginDialog}
           onClickSetting={this.handler.handleShowSettingDialog}
           selectedTag={tag}
+          onUpgradeVip={this.handler.handleUpgradeVip}
         />
         <div className={classNames(
           classes.noteListContainer,
@@ -358,7 +368,12 @@ class Main extends React.Component {
           isFullScreen && classes.noteListContainer_fullScreen,
         )}
         >
-          <CommonHeader showLogo={!showDrawer} className={classes.header} />
+          <CommonHeader
+            showLogo={!showDrawer}
+            showUserType={!showDrawer}
+            className={classes.header}
+            onUpgradeVip={this.handler.handleUpgradeVip}
+          />
           <NoteList
             className={classes.noteList}
             selectedNoteGuid={currentNote?.guid}

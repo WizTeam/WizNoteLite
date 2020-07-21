@@ -170,6 +170,13 @@ class Users {
     return user;
   }
 
+  getUserInfo(userGuid) {
+    const userData = this.getUserData(userGuid);
+    const user = userData.user;
+    //
+    return user;
+  }
+
   async refreshUserInfo(userGuid) {
     const userData = this.getUserData(userGuid);
     const user = await userData.refreshUserInfo();

@@ -105,6 +105,8 @@ export default {
   buttonPurchasing: '正在购买...',
   messagePurchaseSucceeded: '购买成功',
   messagePurchaseRestoreSucceeded: '恢复购买成功',
+  userTypeUpgrade: '升级',
+  userTypeRenew: '续费',
 
   // export
   exportPng: '导出为图片',

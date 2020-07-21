@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import LiteText from './LiteText';
 import Icons from '../config/icons';
+import VipIndicator from './VipIndicator';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -128,7 +129,7 @@ export default function CommonHeader(props) {
   };
 
   const {
-    className, showLogo,
+    className, showLogo, showUserType,
     liteLogo, systemButton,
   } = props;
 
@@ -150,7 +151,14 @@ export default function CommonHeader(props) {
           </Button>
         </>
       )}
-      <div className={classes.dragLayer} />
+
+      {showUserType && (
+        <>
+          <div className={classes.dragLayer} />
+          <VipIndicator onClick={props.onUpgradeVip} />
+        </>
+      )}
+      {!showUserType && <div className={classes.dragLayer} />}
       {hasSystemButton && systemButton && (
         <div className={classes.systemButtonContainer}>
           <Button onClick={handleMinimizeWindow} classes={{ root: classes.systemButtonRoot }}>
@@ -175,15 +183,19 @@ export default function CommonHeader(props) {
 CommonHeader.propTypes = {
   className: PropTypes.string,
   showLogo: PropTypes.bool,
+  showUserType: PropTypes.bool,
   liteLogo: PropTypes.bool,
   systemButton: PropTypes.bool,
   onRequestFullScreen: PropTypes.func,
+  onUpgradeVip: PropTypes.func,
 };
 
 CommonHeader.defaultProps = {
   className: null,
   showLogo: false,
+  showUserType: false,
   liteLogo: false,
   systemButton: false,
   onRequestFullScreen: null,
+  onUpgradeVip: null,
 };
