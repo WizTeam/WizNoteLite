@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { makeStyles } from '@material-ui/core/styles';
@@ -10,6 +10,7 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import Scrollbar from '../../Scrollbar';
 import Icons from '../../../config/icons';
 import TreeView from '../../TreeView';
+import { filterParentElement, hasClass } from '../libs/dom_utils';
 
 const useStyles = makeStyles(({ spacing, palette }) => ({
   editorContents: ({ contentsWidth }) => ({
@@ -78,6 +79,29 @@ function EditorContents(props) {
   const classes = useStyles({ contentsWidth: window.innerWidth / 4 });
 
   const [isFixed, setIsFixed] = useState(true);
+
+  useEffect(() => {
+    function clickHandler(e) {
+      if (
+        props.onClose
+        && props.open
+        && isFixed
+        && e.target
+        && !filterParentElement(
+          e.target,
+          document.body,
+          (dom) => hasClass(dom, classes.editorContents),
+          true,
+        )
+      ) {
+        props.onClose();
+      }
+    }
+    document.addEventListener('click', clickHandler);
+    return () => {
+      document.removeEventListener('click', clickHandler);
+    };
+  }, [props.onClose, props.open, isFixed]);
 
   return (
     <div className={classNames(classes.editorContents, {
