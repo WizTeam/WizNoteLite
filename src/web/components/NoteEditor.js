@@ -30,7 +30,6 @@ const styles = (/* theme */) => ({
 });
 
 class NoteEditor extends React.Component {
-
   handler = {
     handleSaveNote: async (kbGuid, noteGuid, markdown) => {
       await window.wizApi.userManager.setNoteMarkdown(kbGuid, noteGuid, markdown);
