@@ -71,7 +71,10 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
     fontSize: 14,
   },
   openIcon: {
-    color: 'rgba(0, 0, 0, 0.54)',
+    color: palette.type === 'dark' ? 'rgba(255, 255, 255, 0.54)' : 'rgba(0, 0, 0, 0.54)',
+  },
+  closeIcon: {
+    color: palette.type === 'dark' ? '#fff' : '#000',
   },
 }));
 
@@ -137,7 +140,7 @@ function EditorContents(props) {
                 <ArrowDropDownIcon className={classes.openIcon} />
               )}
               closeIcon={(
-                <ArrowRightIcon />
+                <ArrowRightIcon className={classes.closeIcon} />
               )}
               data={props.contents}
               deep={0}
