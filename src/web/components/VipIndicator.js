@@ -42,6 +42,10 @@ class VipIndicator extends React.Component {
         this.props.onClick();
       }
     },
+    handleUserInfoChanged: (user) => {
+      console.log('user info changed');
+      this.setState({ user });
+    },
   };
 
   constructor(props) {
@@ -52,10 +56,14 @@ class VipIndicator extends React.Component {
   }
 
   async componentDidMount() {
+    window.wizApi.userManager.on('userInfoChanged', this.handler.handleUserInfoChanged);
     const user = await window.wizApi.userManager.getUserInfo();
     this.setState({ user });
   }
-  //
+
+  componentWillUnmount() {
+    window.wizApi.userManager.off('userInfoChanged', this.handler.handleUserInfoChanged);
+  }
 
   render() {
     //
