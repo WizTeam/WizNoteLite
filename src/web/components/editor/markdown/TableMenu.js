@@ -180,7 +180,6 @@ function TableMenu(props) {
     }
   }, [props.editor]);
 
-
   function getTableMd() {
     return fixTableMd(props.editor.html2md(tableElement.outerHTML));
   }
@@ -274,7 +273,11 @@ function TableMenu(props) {
             });
           }
           e.preventDefault();
-        } else if (!filterParentElement(e.target, document.body, (dom) => hasClass(dom, classes.menuRoot), true) && menuPosition) {
+        } else if (!filterParentElement(
+          e.target, document.body,
+          (dom) => hasClass(dom, classes.menuRoot),
+          true,
+        ) && menuPosition) {
           setMenuPosition(undefined);
         }
       }
@@ -345,7 +348,7 @@ function TableMenu(props) {
         >
           <div className={classes.menuName}>{intl.formatMessage({ id: 'tableMenuAlign' })}</div>
           <ArrowForwardIosIcon className={classes.iconArrow} />
-          <LiteMenu position={subMenuPos ?? undefined} show={!!subMenuPos} positionName="none">
+          <LiteMenu position={subMenuPos ?? undefined} show={!!subMenuPos}>
             <div className={classes.subMenuContainer} data-type="subMenuContainer">
               <button type="button" className={classes.subMenuItem} onClick={(e) => clickHandler('alignLeft', e)}>
                 <div className={classes.menuItemIcon}>

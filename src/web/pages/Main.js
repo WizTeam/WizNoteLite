@@ -237,6 +237,12 @@ class Main extends React.Component {
     },
 
     handleUpgradeVip: () => {
+      const isLocalUser = window.wizApi.userManager.currentUser.isLocalUser;
+      if (isLocalUser) {
+        this.handler.handleShowLoginDialog();
+        return;
+      }
+      //
       this.props.closeSnackbar(SNACKBAR_KEY);
       this.setState({ showUpgradeToVipDialog: true });
     },
@@ -404,6 +410,7 @@ class Main extends React.Component {
               note={currentNote}
               kbGuid={kbGuid}
               isSearch={showMatched}
+              isShowDrawer={showDrawer}
               backgroundType={backgroundType}
               onCreateAccount={this.handler.handleShowLoginDialog}
               onClickTag={this.handler.handleClickTag}
