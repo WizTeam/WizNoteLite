@@ -39,17 +39,18 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
     padding: spacing(4, 2),
   },
   title: {
-    borderBottom: '1px solid #d8d8d8',
+    borderBottom: `1px solid ${palette.type === 'dark' ? '#404040' : '#d8d8d8'}`,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
     fontSize: '14px',
-    color: '#aaaaaa',
+    color: palette.type === 'dark' ? '#969696' : '#aaaaaa',
     marginBottom: spacing(2),
   },
   icon: {
     width: '24px',
     height: '24px',
+    color: palette.type === 'dark' ? '#f0f0f0' : '#aaaaaa',
   },
   treeRoot: {
     backgroundColor: 'transparent',
