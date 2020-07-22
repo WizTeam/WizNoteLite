@@ -154,7 +154,7 @@ function initInAppPurchases() {
 
 async function queryProducts() {
   if (!inAppPurchase.canMakePayments()) {
-    throw WizInternalError(i18n.t('errorNotAllowMakeInAppPurchase'));
+    throw new WizInternalError(i18n.t('errorNotAllowMakeInAppPurchase'));
   }
   //
   // 检索并显示产品描述.
@@ -162,7 +162,7 @@ async function queryProducts() {
   const products = await inAppPurchase.getProducts(PRODUCT_IDS);
   // 检查参数.
   if (!Array.isArray(products) || products.length <= 0) {
-    throw WizInternalError(i18n.t('errorReceiveProductionInfo'));
+    throw new WizInternalError(i18n.t('errorReceiveProductionInfo'));
   }
 
   // 显示每个产品的名称和价格.
@@ -176,13 +176,13 @@ async function queryProducts() {
 async function purchaseProduct(event, userGuid, selectedProduct) {
   currentUserGuid = userGuid;
   if (!inAppPurchase.canMakePayments()) {
-    throw WizInternalError(i18n.t('errorNotAllowMakeInAppPurchase'));
+    throw new WizInternalError(i18n.t('errorNotAllowMakeInAppPurchase'));
   }
   const selectedQuantity = 1;
   const productIdentifier = selectedProduct.productIdentifier;
   const isProductValid = await inAppPurchase.purchaseProduct(productIdentifier, selectedQuantity);
   if (!isProductValid) {
-    throw WizInternalError(i18n.t('errorProductInNotValid'));
+    throw new WizInternalError(i18n.t('errorProductInNotValid'));
   }
   console.log('The payment has been added to the payment queue.');
   return true;
