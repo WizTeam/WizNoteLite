@@ -1,6 +1,6 @@
 const {
   app, BrowserWindow, nativeTheme,
-  shell, Menu,
+  shell, Menu, nativeImage,
 } = require('electron');
 const path = require('path');
 const url = require('url');
@@ -13,6 +13,9 @@ const { i18nInit, getCurrentLang } = require('./main/i18n');
 const { getMainMenuTemplate, getMacDockMenuTemplate } = require('./main/settings/menu_options');
 
 const isMac = process.platform === 'darwin';
+const electronVersion = process.versions.electron;
+console.log(`electron version: ${electronVersion}`);
+
 
 app.on('ready', async () => {
   await i18nInit();
@@ -52,8 +55,9 @@ function createWindow() {
       nodeIntegration: false,
       preload: path.join(__dirname, './web/preload.js'),
     },
-    icon: path.join(__dirname, '/icons/wiznote.icns'),
+    icon: nativeImage.createFromPath(path.join(__dirname, '/icons/wiznote.icns')),
   };
+  //
   if (process.platform === 'darwin') {
     // mac
     options.titleBarStyle = 'hidden';

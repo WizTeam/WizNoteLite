@@ -497,6 +497,7 @@ handleApi('writeToMarkdown', async (event, userGuid, kbGuid, noteGuid) => {
 
 handleApi('queryProducts', inAppPurchase.queryProducts);
 handleApi('purchaseProduct', inAppPurchase.purchaseProduct);
+handleApi('restorePurchases', inAppPurchase.restorePurchases);
 handleApi('showUpgradeVipDialog', inAppPurchase.showUpgradeVipDialog);
 
 handleApi('getUserInfo', async (event, userGuid) => {

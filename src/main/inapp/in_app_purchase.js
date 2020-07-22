@@ -6,7 +6,6 @@ const fs = require('fs-extra');
 const { WizInternalError } = require('../../share/error');
 const request = require('../common/request');
 const users = require('../user/users');
-const { refreshUserInfo } = require('../user/users');
 
 let currentUserGuid;
 
@@ -84,68 +83,70 @@ async function sendTransactionsEvents(state, productIdentifier, userGuid, messag
   await mainWindow.webContents.executeJavaScript(script);
 }
 
-if (inAppPurchase && inAppPurchase.canMakePayments()) {
-  // 尽早监听transactions事件.
-  inAppPurchase.on('transactions-updated', async (event, transactions) => {
-    if (!Array.isArray(transactions)) {
-      return;
-    }
-
-    // 检查每一笔交易.
-    for (const transaction of transactions) {
-      const payment = transaction.payment;
-
-      switch (transaction.transactionState) {
-        case 'purchasing':
-          console.log(`Purchasing ${payment.productIdentifier}...`);
-          await sendTransactionsEvents('purchasing', payment.productIdentifier);
-          break;
-
-        case 'purchased': {
-          console.log(`${payment.productIdentifier} purchased.`);
-          await sendTransactionsEvents('verifying', payment.productIdentifier);
-          const receiptURL = inAppPurchase.getReceiptURL();
-          try {
-            const userGuid = await verifyPurchase(transaction, receiptURL);
-            await sendTransactionsEvents('purchased', payment.productIdentifier, userGuid);
-            inAppPurchase.finishTransactionByDate(transaction.transactionDate);
-          } catch (err) {
-            console.error(err);
-            await sendTransactionsEvents('failed', payment.productIdentifier, null, err.message);
-          }
-          break;
-        }
-
-        case 'failed':
-          console.log(`Failed to purchase ${payment.productIdentifier}.`);
-          await sendTransactionsEvents('failed', payment.productIdentifier, null, transaction.errorMessage);
-          inAppPurchase.finishTransactionByDate(transaction.transactionDate);
-          break;
-
-        case 'restored': {
-          console.log(`The purchase of ${payment.productIdentifier} has been restored.`);
-          await sendTransactionsEvents('verifying', payment.productIdentifier);
-          const receiptURL = inAppPurchase.getReceiptURL();
-          try {
-            const userGuid = await verifyPurchase(transaction, receiptURL);
-            await sendTransactionsEvents('restored', payment.productIdentifier, userGuid);
-          } catch (err) {
-            console.error(err);
-            await sendTransactionsEvents('failed', payment.productIdentifier, null, err.message);
-          }
-          break;
-        }
-
-        case 'deferred':
-          console.log(`The purchase of ${payment.productIdentifier} has been deferred.`);
-          await sendTransactionsEvents('deferred', payment.productIdentifier);
-          break;
-
-        default:
-          break;
+function initInAppPurchases() {
+  if (inAppPurchase && inAppPurchase.canMakePayments()) {
+    // 尽早监听transactions事件.
+    inAppPurchase.on('transactions-updated', async (event, transactions) => {
+      if (!Array.isArray(transactions)) {
+        return;
       }
-    }
-  });
+
+      // 检查每一笔交易.
+      for (const transaction of transactions) {
+        const payment = transaction.payment;
+
+        switch (transaction.transactionState) {
+          case 'purchasing':
+            console.log(`Purchasing ${payment.productIdentifier}...`);
+            await sendTransactionsEvents('purchasing', payment.productIdentifier);
+            break;
+
+          case 'purchased': {
+            console.log(`${payment.productIdentifier} purchased.`);
+            await sendTransactionsEvents('verifying', payment.productIdentifier);
+            const receiptURL = inAppPurchase.getReceiptURL();
+            try {
+              const userGuid = await verifyPurchase(transaction, receiptURL);
+              await sendTransactionsEvents('purchased', payment.productIdentifier, userGuid);
+              inAppPurchase.finishTransactionByDate(transaction.transactionDate);
+            } catch (err) {
+              console.error(err);
+              await sendTransactionsEvents('failed', payment.productIdentifier, null, err.message);
+            }
+            break;
+          }
+
+          case 'failed':
+            console.log(`Failed to purchase ${payment.productIdentifier}.`);
+            await sendTransactionsEvents('failed', payment.productIdentifier, null, transaction.errorMessage);
+            inAppPurchase.finishTransactionByDate(transaction.transactionDate);
+            break;
+
+          case 'restored': {
+            console.log(`The purchase of ${payment.productIdentifier} has been restored.`);
+            await sendTransactionsEvents('verifying', payment.productIdentifier);
+            const receiptURL = inAppPurchase.getReceiptURL();
+            try {
+              const userGuid = await verifyPurchase(transaction, receiptURL);
+              await sendTransactionsEvents('restored', payment.productIdentifier, userGuid);
+            } catch (err) {
+              console.error(err);
+              await sendTransactionsEvents('failed', payment.productIdentifier, null, err.message);
+            }
+            break;
+          }
+
+          case 'deferred':
+            console.log(`The purchase of ${payment.productIdentifier} has been deferred.`);
+            await sendTransactionsEvents('deferred', payment.productIdentifier);
+            break;
+
+          default:
+            break;
+        }
+      }
+    });
+  }
 }
 
 async function queryProducts() {
@@ -240,8 +241,16 @@ async function showUpgradeVipDialog(event, userGuid) {
   upgradeVipDialog.show();
 }
 
+async function restorePurchases(userGuid) {
+  currentUserGuid = userGuid;
+  inAppPurchase.restoreCompletedTransactions();
+}
+
+initInAppPurchases();
+
 module.exports = {
   queryProducts,
   purchaseProduct,
+  restorePurchases,
   showUpgradeVipDialog,
 };

@@ -186,13 +186,13 @@ class UpgradeToVIPDialog extends React.Component {
       this.setState({ purchaseState });
     },
 
-    // handleRestorePurchases: () => {
-    //   if (!window.wizApi.platform.isMac) {
-    //     return;
-    //   }
-    //   //
-    //   window.wizApi.userManager.restorePurchases();
-    // },
+    handleRestorePurchases: () => {
+      if (!window.wizApi.platform.isMac) {
+        return;
+      }
+      //
+      window.wizApi.userManager.restorePurchases();
+    },
   }
 
   constructor(props) {
@@ -279,14 +279,15 @@ class UpgradeToVIPDialog extends React.Component {
               <Icons.CrownIcon />
               {buttonText}
             </Button>
-            {/* {isMac && (
+            {isMac && (
               <Button
+                disabled={isLoading || purchasing}
                 className={classes.restorePurchase}
                 onClick={this.handler.handleRestorePurchases}
               >
                 <FormattedMessage id="buttonRestorePurchases" />
               </Button>
-            )} */}
+            )}
           </div>
           <div className={classes.close}>
             <IconButton color="inherit" onClick={onClose}>
