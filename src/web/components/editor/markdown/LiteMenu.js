@@ -145,8 +145,11 @@ export default function LiteMenu(props) {
 
       if (bottom > window.innerHeight - tolerance) {
         // 上移的 Menu 不能挡住 光标
-        // top = window.innerHeight - tolerance - menuRef.current.offsetHeight;
-        top = position.top - scrollContainer.scrollTop - menuRef.current.offsetHeight;
+        if (positionName === 'bottom') {
+          top = position.top - scrollContainer.scrollTop - menuRef.current.offsetHeight;
+        } else {
+          top = window.innerHeight - tolerance - menuRef.current.offsetHeight;
+        }
       }
       if (top < tolerance) {
         top = tolerance;
@@ -283,7 +286,7 @@ const PropTypesPosition = PropTypes.shape({
 });
 
 LiteMenu.propTypes = {
-  positionName: PropTypes.oneOf(['top', 'bottom', 'left', 'none']),
+  positionName: PropTypes.oneOf(['top', 'bottom', 'left']),
   menuList: PropTypes.arrayOf(MenuItem),
   type: PropTypes.oneOf(['icon', 'label', 'checkbox']),
   editorRoot: PropTypes.object,
@@ -294,7 +297,7 @@ LiteMenu.propTypes = {
 };
 
 LiteMenu.defaultProps = {
-  positionName: 'top',
+  positionName: undefined,
   type: 'label',
   editorRoot: null,
   show: false,
