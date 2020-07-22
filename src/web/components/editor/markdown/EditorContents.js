@@ -31,8 +31,9 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
     right: 0,
     zIndex: 9999,
     backgroundColor: palette.type === 'dark' ? '#333333' : '#fafafa',
-    boxShadow: '0px 1px 4px 0px rgba(0, 0, 0, 0.31)',
-    opacity: 0.95,
+    boxShadow: '0px 1px 16px 0px rgba(0, 0, 0, 0.31)',
+    opacity: 0.8,
+    backdropFilter: 'blur(8px)',
   }),
   container: {
     padding: spacing(4, 2),
