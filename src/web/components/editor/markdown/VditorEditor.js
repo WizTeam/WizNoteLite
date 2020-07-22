@@ -149,54 +149,57 @@ class VditorEditor extends React.Component {
   //   }
   // }, 800);
 
-  sendContentsList = debounce(() => {
-    const list = [];
-    if (this.editor?.vditor) {
-      for (let i = 0; i < this.editor.vditor.ir.element.childElementCount; i++) {
-        const tagName = this.editor.vditor.ir.element.children[i].tagName.toLowerCase();
-        if (/^h[1-6]$/.test(tagName)) {
-          const rank = parseInt(tagName[1], 10);
-          if (list.length) {
-            let target = list;
-            for (let j = 1; j < rank; j++) {
-              if (target.length === 0) {
-                target.push({
-                  key: `${i}-${rank}`,
-                  children: [],
-                  open: true,
-                });
-              } else if (!target[target.length - 1].children) {
-                target[target.length - 1].children = [];
+  updateContentsList = debounce(() => {
+    if (this.props.onUpdateContentsList) {
+      const list = [];
+      if (this.editor?.vditor) {
+        const editorRootElement = this.editor.vditor.ir.element;
+        for (let i = 0; i < editorRootElement.childElementCount; i++) {
+          const tagName = editorRootElement.children[i].tagName.toLowerCase();
+          if (/^h[1-6]$/.test(tagName)) {
+            const rank = parseInt(tagName[1], 10);
+            if (list.length) {
+              let target = list;
+              for (let j = 1; j < rank; j++) {
+                if (target.length === 0) {
+                  target.push({
+                    key: `${i}-${rank}`,
+                    children: [],
+                    open: true,
+                  });
+                } else if (!target[target.length - 1].children) {
+                  target[target.length - 1].children = [];
+                }
+                target = target[target.length - 1].children;
               }
-              target = target[target.length - 1].children;
-            }
-            target.push({
-              key: `${i}-${rank}`,
-              title: this.editor.vditor.ir.element.children[i].innerText.replace(/^#+\s/, ''),
-              element: this.editor.vditor.ir.element.children[i],
-              open: true,
-            });
-          } else {
-            list.push({});
-            let item = list[list.length - 1];
-            for (let j = 0; j < rank; j++) {
-              if (j === rank - 1) {
-                item.key = `${i}-${j}`;
-                item.title = this.editor.vditor.ir.element.children[i].innerText.replace(/^#+\s/, '');
-                item.element = this.editor.vditor.ir.element.children[i];
-                item.open = true;
-              } else {
-                item.key = `${i}-${j}`;
-                item.open = true;
-                item.children = [{}];
-                item = item.children[0];
+              target.push({
+                key: `${i}-${rank}`,
+                title: editorRootElement.children[i].innerText.replace(/^#+\s/, ''),
+                element: editorRootElement.children[i],
+                open: true,
+              });
+            } else {
+              list.push({});
+              let item = list[list.length - 1];
+              for (let j = 0; j < rank; j++) {
+                if (j === rank - 1) {
+                  item.key = `${i}-${j}`;
+                  item.title = editorRootElement.children[i].innerText.replace(/^#+\s/, '');
+                  item.element = editorRootElement.children[i];
+                  item.open = true;
+                } else {
+                  item.key = `${i}-${j}`;
+                  item.open = true;
+                  item.children = [{}];
+                  item = item.children[0];
+                }
               }
             }
           }
         }
       }
+      this.props.onUpdateContentsList(list);
     }
-    window.wizApi.userManager.changeContentsList(list);
   }, 300);
 
   constructor(props) {
@@ -312,14 +315,14 @@ class VditorEditor extends React.Component {
         if (disabled) {
           this.setEditorDisabled();
         }
-        this.sendContentsList();
+        this.updateContentsList();
         // this._removePanelNode();
       },
       input: (text, html) => {
         const { onInput } = this.props;
         // this.setWordsNumber();
         if (onInput) onInput(text, html ?? this.editor.getHTML());
-        this.sendContentsList();
+        this.updateContentsList();
       },
       preview: {
         transform: (html) => {
@@ -514,7 +517,7 @@ class VditorEditor extends React.Component {
       return;
     }
     this.editor.setValue(value, true);
-    this.sendContentsList();
+    this.updateContentsList();
     setTimeout(() => {
       // this.setWordsNumber();
       this.focusEnd();
@@ -665,6 +668,7 @@ VditorEditor.propTypes = {
   tagList: PropTypes.object,
   autoSelectTitle: PropTypes.bool,
   hideBlockType: PropTypes.bool,
+  onUpdateContentsList: PropTypes.func,
 };
 
 VditorEditor.defaultProps = {
@@ -686,6 +690,7 @@ VditorEditor.defaultProps = {
   tagList: {},
   autoSelectTitle: false,
   hideBlockType: false,
+  onUpdateContentsList: null,
 };
 
 export default withStyles(styles)(VditorEditor);

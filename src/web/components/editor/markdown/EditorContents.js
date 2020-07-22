@@ -118,8 +118,8 @@ function EditorContents(props) {
             <div className={classes.titleBtnList}>
               <IconButton className={classes.iconButton} onClick={() => setIsFixed(!isFixed)}>
                 {isFixed
-                  ? <Icons.Unstop className={classes.icon} />
-                  : <Icons.Stop className={classes.icon} />}
+                  ? <Icons.UnpinIcon className={classes.icon} />
+                  : <Icons.PinIcon className={classes.icon} />}
               </IconButton>
               <IconButton className={classes.iconButton} onClick={props.onClose}>
                 <ClearIcon className={classes.icon} />

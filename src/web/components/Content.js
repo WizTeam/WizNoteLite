@@ -172,7 +172,9 @@ class Content extends React.Component {
     handleContentsNodeClick: (item) => {
       if (this.scrollContentRef?.current) {
         const rect = item.element.getBoundingClientRect();
-        const top = this.scrollContentRef?.current.getScrollTop() + rect.top - this.headeerRef.current?.offsetHeight ?? 0;
+        const top = this.scrollContentRef?.current.getScrollTop()
+          + rect.top
+          - this.headerRef.current?.offsetHeight ?? 0;
         this.scrollContentRef.current.scrollTop(top);
       }
     },
@@ -198,17 +200,15 @@ class Content extends React.Component {
       contentsList: [],
     };
     this.scrollContentRef = React.createRef();
-    this.headeerRef = React.createRef();
+    this.headerRef = React.createRef();
   }
 
   componentDidMount() {
     window.addEventListener('resize', this.handler.handleResize);
-    window.wizApi.userManager.on('changeEditorContents', this.handler.handleChangeEditorContents);
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.handler.handleResize);
-    window.wizApi.UserManager.remove('changeEditorContents', this.handler.handleChangeEditorContents);
   }
 
   render() {
@@ -237,7 +237,7 @@ class Content extends React.Component {
           systemButton
           className={classNames(classes.header, isMac && classes.header_mac)}
           onRequestFullScreen={this.props.onRequestFullScreen}
-          ref={this.headeerRef}
+          ref={this.headerRef}
         />
         {!this.state.showEditorContents && note && !isSearch && (
         <div className={classNames(classes.toolBar, isMac && classes.toolBar_mac)}>
@@ -280,6 +280,7 @@ class Content extends React.Component {
               note={note}
               kbGuid={kbGuid}
               onClickTag={onClickTag}
+              onUpdateContentsList={this.handler.handleChangeEditorContents}
             />
           </Scrollbar>
           <EditorContents

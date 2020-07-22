@@ -197,6 +197,7 @@ class MarkdownEditor extends React.Component {
           onInsertImageFromData={this.handler.handleInsertImagesFromData}
           tagList={tagList}
           autoSelectTitle={note && new Date().getTime() - note.created <= 10 * 1000}
+          onUpdateContentsList={this.props.onUpdateContentsList}
         />
       </div>
     );
@@ -212,11 +213,13 @@ MarkdownEditor.propTypes = {
   onSaveNote: PropTypes.func.isRequired,
   onSelectImages: PropTypes.func.isRequired,
   onClickTag: PropTypes.func.isRequired,
+  onUpdateContentsList: PropTypes.func,
 };
 
 MarkdownEditor.defaultProps = {
   note: null,
   kbGuid: null,
+  onUpdateContentsList: null,
 };
 
 export default withTheme(withStyles(styles)(MarkdownEditor));

@@ -273,7 +273,11 @@ function TableMenu(props) {
             });
           }
           e.preventDefault();
-        } else if (!filterParentElement(e.target, document.body, (dom) => hasClass(dom, classes.menuRoot), true) && menuPosition) {
+        } else if (!filterParentElement(
+          e.target, document.body,
+          (dom) => hasClass(dom, classes.menuRoot),
+          true,
+        ) && menuPosition) {
           setMenuPosition(undefined);
         }
       }
