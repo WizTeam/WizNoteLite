@@ -34,7 +34,7 @@
     "postinstall": "run-script-os",
     "postinstall:win32": "post-install.cmd",
     "postinstall:default": "bash ./post-install.sh",
-    "pack32": ".\\node_modules\\.bin\\electron ./tools/build_sqlite3 --ia32 && npm run build && electron-builder --ia32 &&  && ren out\\WizNoteLite-1.1.0.exe WizNoteLite-x86-1.1.0.exe",
+    "pack32": ".\\node_modules\\.bin\\electron ./tools/build_sqlite3 --ia32 && npm run build && electron-builder --ia32 && ren out\\WizNoteLite-1.1.0.exe WizNoteLite-x86-1.1.0.exe",
     "pack": "run-script-os",
     "pack:win32": ".\\node_modules\\.bin\\electron ./tools/build_sqlite3  && npm run build && electron-builder && ren out\\WizNoteLite-1.1.0.exe WizNoteLite-x64-1.1.0.exe",
     "pack:default": "npm run build && electron-builder"
