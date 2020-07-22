@@ -97,8 +97,10 @@ export default {
   labelUpgradeToVipWhy: '一个账号，畅享为知笔记服务与 Lite 功能',
   labelUpgradeVipMessage1: '上传到服务器，随时随地同步',
   labelUpgradeVipMessage2: '无需备份，防止丢失',
-  buttonUpgradeVIP: '升级 VIP {price}/年',
+  buttonUpgradeVIPPrice: '升级 VIP {price}/年',
+  buttonRenewVIPPrice: '续费 VIP {price}/年',
   buttonUpgradeVIPWithPrice: '升级 VIP ¥60/年',
+  buttonRenewVIPWithPrice: '续费 VIP ¥60/年',
   buttonRestorePurchases: '恢复购买',
   buttonPurchaseLoading: '正在查询...',
   buttonVerifying: '正在验证购买信息...',
@@ -109,6 +111,7 @@ export default {
   userTypeUpgrade: '升级',
   userTypeRenew: '续费',
   messageVipServiceDate: 'VIP 到期时间 {date}.',
+  buttonFailedToQueryProduct: '无法获取产品信息',
 
   // export
   exportPng: '导出为图片',

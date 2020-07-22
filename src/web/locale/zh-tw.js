@@ -97,8 +97,10 @@ export default {
   labelUpgradeToVipWhy: '一個賬號，暢享為知筆記服務與 Lite 功能',
   labelUpgradeVipMessage1: '上傳到服務器，隨時隨地同步',
   labelUpgradeVipMessage2: '無需備份，防止丟失',
-  buttonUpgradeVIP: '升級 VIP {price}/年',
-  buttonUpgradeVIPWithPrice: '升級 VIP ¥60/年',
+  buttonUpgradeVIPPrice: '升級 VIP {price}/年',
+  buttonRenewVIPPrice: '續費 VIP {price}/年',
+  buttonUpgradeVIPWithPrice: '升級 VIP $9.9/年',
+  buttonRenewVIPWithPrice: '續費 VIP $9.9/年',
   buttonRestorePurchases: '恢復購買',
   buttonPurchaseLoading: '正在查詢...',
   buttonVerifying: '正在驗證購買信息...',
@@ -109,6 +111,7 @@ export default {
   userTypeUpgrade: '升級',
   userTypeRenew: '續費',
   messageVipServiceDate: 'VIP 到期日期 {date}.',
+  buttonFailedToQueryProduct: '无法获取产品信息',
 
   // export
   exportPng: '導出為圖片',

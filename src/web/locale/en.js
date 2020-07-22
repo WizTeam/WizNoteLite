@@ -97,8 +97,10 @@ export default {
   labelUpgradeToVipWhy: 'One Account, for WizNote Service and All Features on Lite',
   labelUpgradeVipMessage1: 'Upload notes to server, keep syncing data ',
   labelUpgradeVipMessage2: 'No backup needed',
-  buttonUpgradeVIP: 'Upgrade VIP {price}/year',
-  buttonUpgradeVIPWithPrice: 'Upgrade VIP ¥60/year',
+  buttonUpgradeVIPPrice: 'Upgrade VIP {price}/year',
+  buttonRenewVIPPrice: 'Renewal VIP {price}/year',
+  buttonUpgradeVIPWithPrice: 'Upgrade VIP $9.9/year',
+  buttonRenewVIPWithPrice: 'Renew VIP $9.9/year',
   buttonRestorePurchases: 'Restore Purchase',
   buttonPurchaseLoading: 'Checking...',
   buttonVerifying: 'Verifying...',
@@ -109,6 +111,7 @@ export default {
   userTypeUpgrade: 'Upgrade',
   userTypeRenew: 'Renew',
   messageVipServiceDate: 'Your WizNote VIP service will expire on {date}.',
+  buttonFailedToQueryProduct: 'Failed to query product',
 
   // export
   exportPng: 'Export Image',

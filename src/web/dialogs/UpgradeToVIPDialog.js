@@ -53,12 +53,12 @@ const styles = (theme) => ({
   },
 
   textMargin: {
-    margin: 4,
+    margin: '4px 16px',
   },
 
   header: {
     width: '100%',
-    padding: '48px 16px',
+    padding: '32px 16px',
     backgroundColor: theme.custom.background.noteList,
   },
   verticalFlex: {
@@ -70,7 +70,7 @@ const styles = (theme) => ({
     padding: '32px 16px',
   },
   actions: {
-    padding: '48px 16px',
+    padding: '32px 16px',
   },
 
   why: {
@@ -126,6 +126,8 @@ class UpgradeToVIPDialog extends React.Component {
             this.setState({ yearProduct });
           } catch (err) {
             console.error(err);
+            alert(err.message);
+            this.setState({ yearProduct: null });
           }
         }
       }
@@ -198,7 +200,7 @@ class UpgradeToVIPDialog extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      yearProduct: null,
+      yearProduct: undefined,
       purchasing: false,
       purchaseState: '',
       user: null,
@@ -240,19 +242,38 @@ class UpgradeToVIPDialog extends React.Component {
         } else {
           buttonText = intl.formatMessage({ id: 'buttonPurchasing' });
         }
+      } else if (yearProduct === null) {
+        //
+        buttonText = intl.formatMessage({ id: 'buttonFailedToQueryProduct' });
+        //
       } else if (yearProduct) {
-        buttonText = intl.formatMessage({ id: 'buttonUpgradeVIP' }, { price: yearProduct.formattedPrice });
+        if (user && (user.vip || user.vipDate)) {
+          buttonText = intl.formatMessage({ id: 'buttonRenewVIPPrice' }, { price: yearProduct.formattedPrice });
+        } else {
+          buttonText = intl.formatMessage({ id: 'buttonUpgradeVIPPrice' }, { price: yearProduct.formattedPrice });
+        }
       } else {
         buttonText = intl.formatMessage({ id: 'buttonPurchaseLoading' });
       }
     } else {
-      buttonText = intl.formatMessage({ id: 'buttonUpgradeVIPWithPrice' });
+      //
+      // eslint-disable-next-line no-lonely-if
+      if (user && (user.vip || user.vipDate)) {
+        buttonText = intl.formatMessage({ id: 'buttonRenewVIPWithPrice' });
+      } else {
+        buttonText = intl.formatMessage({ id: 'buttonUpgradeVIPWithPrice' });
+      }
     }
 
     let userVipMessage = '';
-    if (user && user.vip) {
-      const date = new Date(user.vipDate).toLocaleDateString();
-      userVipMessage = intl.formatMessage({ id: 'messageVipServiceDate' }, { date });
+    if (user) {
+      if (user.vip) {
+        const date = new Date(user.vipDate).toLocaleDateString();
+        userVipMessage = intl.formatMessage({ id: 'messageVipServiceDate' }, { date });
+      } else if (user.vipDate) {
+        const date = new Date(user.vipDate).toLocaleDateString();
+        userVipMessage = intl.formatMessage({ id: 'messageVipServiceDate' }, { date });
+      }
     }
 
     const isLoading = (isMac && !yearProduct);
