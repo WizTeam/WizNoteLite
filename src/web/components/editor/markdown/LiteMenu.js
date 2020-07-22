@@ -146,7 +146,7 @@ export default function LiteMenu(props) {
       if (bottom > window.innerHeight - tolerance) {
         // 上移的 Menu 不能挡住 光标
         // top = window.innerHeight - tolerance - menuRef.current.offsetHeight;
-        top = position.top - menuRef.current.offsetHeight;
+        top = position.top - scrollContainer.scrollTop - menuRef.current.offsetHeight;
       }
       if (top < tolerance) {
         top = tolerance;
