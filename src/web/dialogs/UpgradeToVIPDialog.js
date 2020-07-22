@@ -74,11 +74,11 @@ const styles = (theme) => ({
   },
 
   why: {
-    color: '#333333',
+    color: theme.custom.color.noteTitle,
   },
 
   vipMessage: {
-    color: '#333333',
+    color: theme.custom.color.noteTitle,
     fontSize: 12,
     marginTop: 16,
   },
