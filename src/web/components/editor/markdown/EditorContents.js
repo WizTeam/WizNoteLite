@@ -19,6 +19,7 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
     width: contentsWidth,
     boxSizing: 'border-box',
     minWidth: 300,
+    maxWidth: 448,
     flexShrink: 0,
     '&.active': {
       display: 'block',
@@ -81,7 +82,10 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
 function EditorContents(props) {
   const isWinClient = window.wizApi.isElectron && !window.wizApi.platform.isMac;
 
-  const classes = useStyles({ contentsWidth: window.innerWidth / 4, isWinClient });
+  const classes = useStyles({
+    contentsWidth: window.innerWidth / (props.isShowDrawer ? 5 : 4),
+    isWinClient,
+  });
 
   const [isFixed, setIsFixed] = useState(true);
 
@@ -158,12 +162,14 @@ EditorContents.propTypes = {
   onClose: PropTypes.func,
   open: PropTypes.bool,
   onNodeClick: PropTypes.func,
+  isShowDrawer: PropTypes.bool,
 };
 
 EditorContents.defaultProps = {
   onClose: null,
   open: false,
   onNodeClick: null,
+  isShowDrawer: false,
 };
 
 export default injectIntl(EditorContents);

@@ -404,6 +404,7 @@ class Main extends React.Component {
               note={currentNote}
               kbGuid={kbGuid}
               isSearch={showMatched}
+              isShowDrawer={showDrawer}
               backgroundType={backgroundType}
               onCreateAccount={this.handler.handleShowLoginDialog}
               onClickTag={this.handler.handleClickTag}

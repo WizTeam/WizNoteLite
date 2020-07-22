@@ -288,6 +288,7 @@ class Content extends React.Component {
             open={note && this.state.showEditorContents}
             onClose={this.handler.handleCloseContents}
             onNodeClick={this.handler.handleContentsNodeClick}
+            isShowDrawer={this.props.isShowDrawer}
           />
         </div>
         <Menu
@@ -349,11 +350,13 @@ Content.propTypes = {
   onCreateAccount: PropTypes.func.isRequired,
   onClickTag: PropTypes.func.isRequired,
   onRequestFullScreen: PropTypes.func.isRequired,
+  isShowDrawer: PropTypes.bool,
 };
 
 Content.defaultProps = {
   note: null,
   backgroundType: 'white',
+  isShowDrawer: false,
 };
 
 export default withTheme(withStyles(styles)(injectIntl(Content)));
