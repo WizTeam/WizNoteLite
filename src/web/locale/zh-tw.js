@@ -110,9 +110,9 @@ export default {
   messagePurchaseRestoreSucceeded: '恢復購買成功',
   userTypeUpgrade: '升級',
   userTypeRenew: '續費',
-  messageVipServiceDate: 'VIP 到期日期 {date}.',
-  buttonFailedToQueryProduct: '无法获取产品信息',
-
+  messageVipServiceDate: 'VIP 到期日期 {date}。',
+  messageVipServiceEndedDate: 'VIP 已經在 {date} 到期。',
+  buttonFailedToQueryProduct: '無法獲取產品信息',
   // export
   exportPng: '導出為圖片',
   exportMd: '導出為 md',

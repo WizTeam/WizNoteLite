@@ -111,6 +111,7 @@ export default {
   userTypeUpgrade: 'Upgrade',
   userTypeRenew: 'Renew',
   messageVipServiceDate: 'Your WizNote VIP service will expire on {date}.',
+  messageVipServiceEndedDate: 'Your WizNote VIP service has expired on {date}.',
   buttonFailedToQueryProduct: 'Failed to query product',
 
   // export

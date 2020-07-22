@@ -111,6 +111,7 @@ export default {
   userTypeUpgrade: '升级',
   userTypeRenew: '续费',
   messageVipServiceDate: 'VIP 到期时间 {date}.',
+  messageVipServiceEndedDate: 'VIP 已经在 {date} 到期.',
   buttonFailedToQueryProduct: '无法获取产品信息',
 
   // export

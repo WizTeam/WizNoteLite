@@ -272,7 +272,7 @@ class UpgradeToVIPDialog extends React.Component {
         userVipMessage = intl.formatMessage({ id: 'messageVipServiceDate' }, { date });
       } else if (user.vipDate) {
         const date = new Date(user.vipDate).toLocaleDateString();
-        userVipMessage = intl.formatMessage({ id: 'messageVipServiceDate' }, { date });
+        userVipMessage = intl.formatMessage({ id: 'messageVipServiceEndedDate' }, { date });
       }
     }
 
@@ -288,7 +288,12 @@ class UpgradeToVIPDialog extends React.Component {
           <div className={classNames(classes.header, classes.verticalFlex)}>
             <LiteText className={classes.textMargin} variant="h1" fullWidth={false}><FormattedMessage id="labelUpgradeToVip" /></LiteText>
             <LiteText className={classNames(classes.textMargin, classes.why)} fullWidth={false}><FormattedMessage id="labelUpgradeToVipWhy" /></LiteText>
-            <LiteText className={classNames(classes.textMargin, classes.vipMessage)} fullWidth={false}>{userVipMessage}</LiteText>
+            <LiteText
+              className={classNames(classes.textMargin, classes.vipMessage)}
+              fullWidth={false}
+            >
+              {userVipMessage}
+            </LiteText>
           </div>
           <div className={classNames(classes.message, classes.verticalFlex)}>
             <Icons.UploadCloudIcon className={classes.uploadCloudIcon} />
