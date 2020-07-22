@@ -36,7 +36,8 @@ async function verifyPurchase(transaction, receiptURL) {
     throw new WizInternalError(errorMessage);
   }
 
-  const userData = users.getUserData(getCurrentUserGuid());
+  const userGuid = getCurrentUserGuid();
+  const userData = users.getUserData(userGuid);
   const user = userData.user;
   //
   const server = userData.accountServer.server;
@@ -56,6 +57,8 @@ async function verifyPurchase(transaction, receiptURL) {
       data,
       method: 'POST',
     });
+    //
+    await users.refreshUserInfo(userGuid);
     //
     return true;
   } catch (err) {

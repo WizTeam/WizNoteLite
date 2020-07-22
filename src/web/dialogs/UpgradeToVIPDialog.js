@@ -216,7 +216,8 @@ class UpgradeToVIPDialog extends React.Component {
   }
 
   async refreshUserInfo() {
-    await window.wizApi.userManager.refreshUserInfo();
+    const user = await window.wizApi.userManager.refreshUserInfo();
+    this.setState({ user });
   }
 
   render() {
@@ -224,7 +225,10 @@ class UpgradeToVIPDialog extends React.Component {
       classes, open, onClose, intl,
     } = this.props;
 
-    const { yearProduct, purchasing, purchaseState, user } = this.state;
+    const {
+      yearProduct, purchasing,
+      purchaseState, user,
+    } = this.state;
 
     const isMac = window.wizApi.platform.isMac;
 

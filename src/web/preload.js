@@ -385,6 +385,10 @@ ipcRenderer.on('showAbout', (event, ...args) => {
   userManager.emit('showAbout', ...args);
 });
 
+ipcRenderer.on('userInfoChanged', (event, ...args) => {
+  userManager.emit('userInfoChanged', ...args);
+});
+
 platform.isMac = platform.os.family === 'OS X';
 platform.isWindows = platform.os.family === 'Windows';
 platform.isLinux = platform.os.family === 'Linux';
