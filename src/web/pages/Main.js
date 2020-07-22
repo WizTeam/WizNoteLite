@@ -237,6 +237,12 @@ class Main extends React.Component {
     },
 
     handleUpgradeVip: () => {
+      const isLocalUser = window.wizApi.userManager.currentUser.isLocalUser;
+      if (isLocalUser) {
+        this.handler.handleShowLoginDialog();
+        return;
+      }
+      //
       this.props.closeSnackbar(SNACKBAR_KEY);
       this.setState({ showUpgradeToVipDialog: true });
     },
