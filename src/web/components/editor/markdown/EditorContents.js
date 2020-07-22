@@ -51,7 +51,10 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
   icon: {
     width: '24px',
     height: '24px',
-    color: palette.type === 'dark' ? '#f0f0f0' : '#aaaaaa',
+    color: palette.type === 'dark' ? '#969696' : '#aaa',
+    '&:hover': {
+      color: palette.type === 'dark' ? '#f0f0f0' : '#333',
+    },
   },
   treeRoot: {
     backgroundColor: 'transparent',
