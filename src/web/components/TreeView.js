@@ -85,6 +85,9 @@ function TreeView(props) {
     const style = {
       marginLeft: deep * theme.spacing(2),
       marginRight: theme.spacing(1),
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
     };
     if (!node.children || !node.children.length) {
       return <div style={style} className={classes.block} />;

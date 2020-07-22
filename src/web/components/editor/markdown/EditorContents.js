@@ -19,6 +19,7 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
     width: contentsWidth,
     boxSizing: 'border-box',
     minWidth: 300,
+    maxWidth: 448,
     flexShrink: 0,
     '&.active': {
       display: 'block',
@@ -39,17 +40,18 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
     padding: spacing(4, 2),
   },
   title: {
-    borderBottom: '1px solid #d8d8d8',
+    borderBottom: `1px solid ${palette.type === 'dark' ? '#404040' : '#d8d8d8'}`,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
     fontSize: '14px',
-    color: '#aaaaaa',
+    color: palette.type === 'dark' ? '#969696' : '#aaaaaa',
     marginBottom: spacing(2),
   },
   icon: {
     width: '24px',
     height: '24px',
+    color: palette.type === 'dark' ? '#f0f0f0' : '#aaaaaa',
   },
   treeRoot: {
     backgroundColor: 'transparent',
@@ -72,14 +74,20 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
     fontSize: 14,
   },
   openIcon: {
-    color: 'rgba(0, 0, 0, 0.54)',
+    color: palette.type === 'dark' ? 'rgba(255, 255, 255, 0.54)' : 'rgba(0, 0, 0, 0.54)',
+  },
+  closeIcon: {
+    color: palette.type === 'dark' ? '#fff' : '#000',
   },
 }));
 
 function EditorContents(props) {
   const isWinClient = window.wizApi.isElectron && !window.wizApi.platform.isMac;
 
-  const classes = useStyles({ contentsWidth: window.innerWidth / 4, isWinClient });
+  const classes = useStyles({
+    contentsWidth: window.innerWidth / (props.isShowDrawer ? 5 : 4),
+    isWinClient,
+  });
 
   const [isFixed, setIsFixed] = useState(true);
 
@@ -100,9 +108,9 @@ function EditorContents(props) {
         props.onClose();
       }
     }
-    document.addEventListener('click', clickHandler);
+    document.addEventListener('click', clickHandler, true);
     return () => {
-      document.removeEventListener('click', clickHandler);
+      document.removeEventListener('click', clickHandler, true);
     };
   }, [props.onClose, props.open, isFixed]);
 
@@ -138,7 +146,7 @@ function EditorContents(props) {
                 <ArrowDropDownIcon className={classes.openIcon} />
               )}
               closeIcon={(
-                <ArrowRightIcon />
+                <ArrowRightIcon className={classes.closeIcon} />
               )}
               data={props.contents}
               deep={0}
@@ -156,12 +164,14 @@ EditorContents.propTypes = {
   onClose: PropTypes.func,
   open: PropTypes.bool,
   onNodeClick: PropTypes.func,
+  isShowDrawer: PropTypes.bool,
 };
 
 EditorContents.defaultProps = {
   onClose: null,
   open: false,
   onNodeClick: null,
+  isShowDrawer: false,
 };
 
 export default injectIntl(EditorContents);
