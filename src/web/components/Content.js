@@ -205,12 +205,10 @@ class Content extends React.Component {
 
   componentDidMount() {
     window.addEventListener('resize', this.handler.handleResize);
-    window.wizApi.userManager.on('changeEditorContents', this.handler.handleChangeEditorContents);
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.handler.handleResize);
-    window.wizApi.UserManager.remove('changeEditorContents', this.handler.handleChangeEditorContents);
   }
 
   render() {
@@ -282,6 +280,7 @@ class Content extends React.Component {
               note={note}
               kbGuid={kbGuid}
               onClickTag={onClickTag}
+              onUpdateContentsList={this.handler.handleChangeEditorContents}
             />
           </Scrollbar>
           <EditorContents

@@ -129,10 +129,6 @@ class UserManager extends EventEmitter {
     return this._user.userGuid;
   }
 
-  changeContentsList(contents) {
-    this.emit('changeEditorContents', contents);
-  }
-
   async signUp(server, userId, password, options = {}) {
     this._user = await invokeApi('signUp', server, userId, password, options);
     return this._user;
