@@ -6,6 +6,7 @@ const electronVersion = process.versions.electron;
 console.log(`electron version: ${electronVersion}`);
 const spawn = childProcess.spawn;
 
+const buildIA32 = process.argv.indexOf('--ia32') !== -1;
 
 class OutputData {
   constructor() {
@@ -59,13 +60,18 @@ const env = Object.assign(process.env, {
 });
 
 if (process.platform === 'win32') {
-  exec(`cmd.exe`, [
+  const params = [
     `/C`,
     `node-gyp`,
     `--target=${electronVersion}`,
     `rebuild`,
     '--dist-url=https://electronjs.org/headers',
-  ], {
+  ];
+  if (buildIA32) {
+    params.push('--arch=ia32');
+    console.log('build for ia32');
+  }
+  exec(`cmd.exe`, params, {
     cwd,
     env,
   }, () => {

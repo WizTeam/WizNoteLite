@@ -34,8 +34,10 @@
     "postinstall": "run-script-os",
     "postinstall:win32": "post-install.cmd",
     "postinstall:default": "bash ./post-install.sh",
-    "pack32": "npm run build && electron-builder --ia32",
-    "pack": "npm run build && electron-builder"
+    "pack32": ".\\node_modules\\.bin\\electron ./tools/build_sqlite3 --ia32 && npm run build && electron-builder --ia32",
+    "pack": "run-script-os",
+    "pack:win32": ".\\node_modules\\.bin\\electron ./tools/build_sqlite3  && npm run build && electron-builder",
+    "pack:default": "npm run build && electron-builder"
   },
   "build": {
     "appId": "cn.wiz.note.lite",
