@@ -99,9 +99,9 @@ function EditorContents(props) {
         props.onClose();
       }
     }
-    document.addEventListener('click', clickHandler);
+    document.addEventListener('click', clickHandler, true);
     return () => {
-      document.removeEventListener('click', clickHandler);
+      document.removeEventListener('click', clickHandler, true);
     };
   }, [props.onClose, props.open, isFixed]);
 
