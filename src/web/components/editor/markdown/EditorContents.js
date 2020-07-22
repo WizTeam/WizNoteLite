@@ -14,7 +14,7 @@ import { filterParentElement, hasClass } from '../libs/dom_utils';
 
 const useStyles = makeStyles(({ spacing, palette }) => ({
   editorContents: ({ contentsWidth }) => ({
-    backgroundColor: palette.type === 'dark' ? '#555555' : '#fff',
+    backgroundColor: palette.type === 'dark' ? '#333' : '#fff',
     display: 'none',
     width: contentsWidth,
     boxSizing: 'border-box',
@@ -24,7 +24,7 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
       display: 'block',
     },
   }),
-  fixed: ({isWinClient}) => ({
+  fixed: ({ isWinClient }) => ({
     position: 'fixed',
     top: isWinClient ? spacing(4) : 0,
     bottom: 0,
