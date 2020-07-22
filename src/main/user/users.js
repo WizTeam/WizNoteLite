@@ -180,7 +180,6 @@ class Users {
   async refreshUserInfo(userGuid) {
     const userData = this.getUserData(userGuid);
     const user = await userData.refreshUserInfo();
-    this.emitEvent(userGuid, 'userInfoChanged', user);
     return user;
   }
 
@@ -404,6 +403,9 @@ class Users {
     db.on('linksChanged', async (noteGuid) => {
       const kbGuid = await db.getKbGuid();
       this.emitEvent(userGuid, 'linksChanged', kbGuid, noteGuid);
+    });
+    db.on('userInfoChanged', async (user) => {
+      this.emitEvent(userGuid, 'userInfoChanged', user);
     });
     //
 
