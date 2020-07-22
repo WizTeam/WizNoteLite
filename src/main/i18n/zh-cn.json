@@ -39,8 +39,8 @@
   "errorNotAllowMakeInAppPurchase": "当前macOS用户无法使用内购功能.",
   "errorReceiveProductionInfo": "无法获取产品信息.",
   "errorProductInNotValid": "产品无效.",
-  "errorDownloadReceipt": "无法下载购买凭证: {message}",
-  "errorVerifyPurchase": "无法认证购买凭证: {message}",
+  "errorDownloadReceipt": "无法下载购买凭证: {{message}}",
+  "errorVerifyPurchase": "无法认证购买凭证: {{message}}",
 
   "fileFilterPNG": "PNG 文件 (*.png)",
   "fileFilterPDF": "PDF 文件 (*.pdf)",

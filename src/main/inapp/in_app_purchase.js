@@ -1,5 +1,5 @@
 const {
-  inAppPurchase, BrowserWindow, app,
+  inAppPurchase, BrowserWindow, app, shell,
 } = require('electron');
 const i18n = require('i18next');
 const fs = require('fs-extra');
@@ -30,9 +30,10 @@ async function verifyPurchase(transaction, receiptURL) {
       });
     }
   } catch (err) {
-    throw new WizInternalError(i18n.t('errorDownloadReceipt', {
+    const errorMessage = i18n.t('errorDownloadReceipt', {
       message: err.message,
-    }));
+    });
+    throw new WizInternalError(errorMessage);
   }
 
   const userData = users.getUserData(getCurrentUserGuid());
@@ -58,9 +59,10 @@ async function verifyPurchase(transaction, receiptURL) {
     //
     return true;
   } catch (err) {
-    throw new WizInternalError(i18n.t('errorVerifyPurchase', {
+    const errorMessage = i18n.t('errorVerifyPurchase', {
       message: err.message,
-    }));
+    });
+    throw new WizInternalError(errorMessage);
   }
 }
 
@@ -81,55 +83,71 @@ async function sendTransactionsEvents(state, productIdentifier, userGuid, messag
   await mainWindow.webContents.executeJavaScript(script);
 }
 
-// 尽早监听transactions事件.
-inAppPurchase.on('transactions-updated', async (event, transactions) => {
-  if (!Array.isArray(transactions)) {
-    return;
-  }
-
-  // 检查每一笔交易.
-  for (const transaction of transactions) {
-    const payment = transaction.payment;
-
-    switch (transaction.transactionState) {
-      case 'purchasing':
-        console.log(`Purchasing ${payment.productIdentifier}...`);
-        await sendTransactionsEvents('purchasing', payment.productIdentifier);
-        break;
-
-      case 'purchased': {
-        console.log(`${payment.productIdentifier} purchased.`);
-        const receiptURL = inAppPurchase.getReceiptURL();
-        const userGuid = await verifyPurchase(transaction, receiptURL);
-        await sendTransactionsEvents('purchased', payment.productIdentifier, userGuid);
-        inAppPurchase.finishTransactionByDate(transaction.transactionDate);
-        break;
+function initInAppPurchases() {
+  if (inAppPurchase && inAppPurchase.canMakePayments()) {
+    // 尽早监听transactions事件.
+    inAppPurchase.on('transactions-updated', async (event, transactions) => {
+      if (!Array.isArray(transactions)) {
+        return;
       }
 
-      case 'failed':
-        console.log(`Failed to purchase ${payment.productIdentifier}.`);
-        await sendTransactionsEvents('failed', payment.productIdentifier, null, transaction.errorMessage);
-        inAppPurchase.finishTransactionByDate(transaction.transactionDate);
-        break;
+      // 检查每一笔交易.
+      for (const transaction of transactions) {
+        const payment = transaction.payment;
 
-      case 'restored': {
-        console.log(`The purchase of ${payment.productIdentifier} has been restored.`);
-        const receiptURL = inAppPurchase.getReceiptURL();
-        const userGuid = await verifyPurchase(transaction, receiptURL);
-        await sendTransactionsEvents('restored', payment.productIdentifier, userGuid);
-        break;
+        switch (transaction.transactionState) {
+          case 'purchasing':
+            console.log(`Purchasing ${payment.productIdentifier}...`);
+            await sendTransactionsEvents('purchasing', payment.productIdentifier);
+            break;
+
+          case 'purchased': {
+            console.log(`${payment.productIdentifier} purchased.`);
+            await sendTransactionsEvents('verifying', payment.productIdentifier);
+            const receiptURL = inAppPurchase.getReceiptURL();
+            try {
+              const userGuid = await verifyPurchase(transaction, receiptURL);
+              await sendTransactionsEvents('purchased', payment.productIdentifier, userGuid);
+              inAppPurchase.finishTransactionByDate(transaction.transactionDate);
+            } catch (err) {
+              console.error(err);
+              await sendTransactionsEvents('failed', payment.productIdentifier, null, err.message);
+            }
+            break;
+          }
+
+          case 'failed':
+            console.log(`Failed to purchase ${payment.productIdentifier}.`);
+            await sendTransactionsEvents('failed', payment.productIdentifier, null, transaction.errorMessage);
+            inAppPurchase.finishTransactionByDate(transaction.transactionDate);
+            break;
+
+          case 'restored': {
+            console.log(`The purchase of ${payment.productIdentifier} has been restored.`);
+            await sendTransactionsEvents('verifying', payment.productIdentifier);
+            const receiptURL = inAppPurchase.getReceiptURL();
+            try {
+              const userGuid = await verifyPurchase(transaction, receiptURL);
+              await sendTransactionsEvents('restored', payment.productIdentifier, userGuid);
+            } catch (err) {
+              console.error(err);
+              await sendTransactionsEvents('failed', payment.productIdentifier, null, err.message);
+            }
+            break;
+          }
+
+          case 'deferred':
+            console.log(`The purchase of ${payment.productIdentifier} has been deferred.`);
+            await sendTransactionsEvents('deferred', payment.productIdentifier);
+            break;
+
+          default:
+            break;
+        }
       }
-
-      case 'deferred':
-        console.log(`The purchase of ${payment.productIdentifier} has been deferred.`);
-        await sendTransactionsEvents('deferred', payment.productIdentifier);
-        break;
-
-      default:
-        break;
-    }
+    });
   }
-});
+}
 
 async function queryProducts() {
   if (!inAppPurchase.canMakePayments()) {
@@ -167,7 +185,79 @@ async function purchaseProduct(event, userGuid, selectedProduct) {
   return true;
 }
 
+async function showUpgradeVipDialog(event, userGuid) {
+  const userData = users.getUserData(userGuid);
+  const apiServer = userData.accountServer.apiServer;
+  const token = userData.token;
+  const url = `${apiServer}/?p=wiz&c=vip_lite&token=${token}&clientType=lite&clientVersion={${app.getVersion()}}`;
+
+  //
+  const mainWindow = BrowserWindow.fromWebContents(event.sender);
+  //
+  const upgradeVipDialog = new BrowserWindow({
+    width: 400,
+    height: 600,
+    parent: mainWindow,
+    modal: true,
+    resizable: false,
+    minimizable: false,
+    show: false,
+  });
+
+  //
+  const user = users.getUserInfo(userGuid);
+
+  upgradeVipDialog.on('closed', async () => {
+    //
+    try {
+      setTimeout(() => {
+        mainWindow.setAlwaysOnTop(false);
+      }, 300);
+      //
+      const newUser = await users.refreshUserInfo(userGuid);
+      if (newUser.vip && newUser.vipDate !== user.vipDate) {
+        await sendTransactionsEvents('purchased', '', userGuid);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  });
+
+  upgradeVipDialog.webContents.on('new-window', (e, linkUrl) => {
+    mainWindow.setAlwaysOnTop(true);
+    e.preventDefault();
+    shell.openExternal(linkUrl);
+  });
+
+
+  // aoid flicker
+  // https://github.com/electron/electron/issues/10616
+  //
+  mainWindow.setAlwaysOnTop(true);
+
+  upgradeVipDialog.on('focus', () => {
+    mainWindow.setAlwaysOnTop(true);
+  });
+
+  upgradeVipDialog.on('blur', () => {
+    mainWindow.setAlwaysOnTop(false);
+  });
+
+  upgradeVipDialog.loadURL(url);
+  upgradeVipDialog.removeMenu();
+  upgradeVipDialog.show();
+}
+
+async function restorePurchases(userGuid) {
+  currentUserGuid = userGuid;
+  inAppPurchase.restoreCompletedTransactions();
+}
+
+initInAppPurchases();
+
 module.exports = {
   queryProducts,
   purchaseProduct,
+  restorePurchases,
+  showUpgradeVipDialog,
 };

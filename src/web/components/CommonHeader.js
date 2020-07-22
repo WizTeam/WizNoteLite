@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import LiteText from './LiteText';
 import Icons from '../config/icons';
+import VipIndicator from './VipIndicator';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -52,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
     padding: 0,
     lineHeight: 1,
     textTransform: 'unset',
-    marginLeft: theme.spacing(2),
+    marginLeft: theme.spacing(1),
     fontSize: 14,
     '& .MuiButton-endIcon': {
       marginLeft: 0,
@@ -128,7 +129,7 @@ const CommonHeader = React.forwardRef((props, ref) => {
   };
 
   const {
-    className, showLogo,
+    className, showLogo, showUserType,
     liteLogo, systemButton,
   } = props;
 
@@ -150,7 +151,14 @@ const CommonHeader = React.forwardRef((props, ref) => {
           </Button>
         </>
       )}
-      <div className={classes.dragLayer} />
+
+      {showUserType && (
+        <>
+          <div className={classes.dragLayer} />
+          <VipIndicator onClick={props.onUpgradeVip} />
+        </>
+      )}
+      {!showUserType && <div className={classes.dragLayer} />}
       {hasSystemButton && systemButton && (
         <div className={classes.systemButtonContainer}>
           <Button onClick={handleMinimizeWindow} classes={{ root: classes.systemButtonRoot }}>
@@ -175,17 +183,21 @@ const CommonHeader = React.forwardRef((props, ref) => {
 CommonHeader.propTypes = {
   className: PropTypes.string,
   showLogo: PropTypes.bool,
+  showUserType: PropTypes.bool,
   liteLogo: PropTypes.bool,
   systemButton: PropTypes.bool,
   onRequestFullScreen: PropTypes.func,
+  onUpgradeVip: PropTypes.func,
 };
 
 CommonHeader.defaultProps = {
   className: null,
   showLogo: false,
+  showUserType: false,
   liteLogo: false,
   systemButton: false,
   onRequestFullScreen: null,
+  onUpgradeVip: null,
 };
 
 export default CommonHeader;

@@ -39,8 +39,8 @@
   "errorNotAllowMakeInAppPurchase": "The user is not allowed to make in-app purchase.",
   "errorReceiveProductionInfo": "Unable to retrieve the product information.",
   "errorProductInNotValid": "The product is not valid.",
-  "errorDownloadReceipt": "Failed to download receipt: {message}",
-  "errorVerifyPurchase": "Failed to verify purchase: {message}",
+  "errorDownloadReceipt": "Failed to download receipt: {{message}}",
+  "errorVerifyPurchase": "Failed to verify purchase: {{message}}",
 
   "fileFilterPNG": "PNG files (*.png)",
   "fileFilterPDF": "PDF files (*.pdf)",

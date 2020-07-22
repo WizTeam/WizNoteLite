@@ -73,6 +73,16 @@ const styles = (theme) => ({
     padding: '48px 16px',
   },
 
+  why: {
+    color: theme.custom.color.noteTitle,
+  },
+
+  vipMessage: {
+    color: theme.custom.color.noteTitle,
+    fontSize: 12,
+    marginTop: 16,
+  },
+
   uploadCloudIcon: {
     width: 64,
     height: 64,
@@ -137,15 +147,15 @@ class UpgradeToVIPDialog extends React.Component {
 
     onTransactionsUpdated: async (params) => {
       const {
-        productIdentifier, state,
+        state,
         message,
       } = params;
       //
-      if (productIdentifier !== 'cn.wiz.note.lite.year') {
-        return;
-      }
+      const purchaseState = state;
       //
       if (state === 'purchasing') {
+        //
+      } else if (state === 'verifying') {
         //
       } else if (state === 'purchased') {
         //
@@ -172,15 +182,17 @@ class UpgradeToVIPDialog extends React.Component {
       } else {
         //
       }
+
+      this.setState({ purchaseState });
     },
 
-    // handleRestorePurchases: () => {
-    //   if (!window.wizApi.platform.isMac) {
-    //     return;
-    //   }
-    //   //
-    //   window.wizApi.userManager.restorePurchases();
-    // },
+    handleRestorePurchases: () => {
+      if (!window.wizApi.platform.isMac) {
+        return;
+      }
+      //
+      window.wizApi.userManager.restorePurchases();
+    },
   }
 
   constructor(props) {
@@ -188,11 +200,15 @@ class UpgradeToVIPDialog extends React.Component {
     this.state = {
       yearProduct: null,
       purchasing: false,
+      purchaseState: '',
+      user: null,
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     window.onTransactionsUpdated = this.handler.onTransactionsUpdated;
+    const user = await window.wizApi.userManager.getUserInfo();
+    this.setState({ user });
   }
 
   componentWillUnmount() {
@@ -208,14 +224,18 @@ class UpgradeToVIPDialog extends React.Component {
       classes, open, onClose, intl,
     } = this.props;
 
-    const { yearProduct, purchasing } = this.state;
+    const { yearProduct, purchasing, purchaseState, user } = this.state;
 
     const isMac = window.wizApi.platform.isMac;
 
     let buttonText = '';
     if (isMac) {
       if (purchasing) {
-        buttonText = intl.formatMessage({ id: 'buttonPurchasing' });
+        if (purchaseState === 'verifying') {
+          buttonText = intl.formatMessage({ id: 'buttonVerifying' });
+        } else {
+          buttonText = intl.formatMessage({ id: 'buttonPurchasing' });
+        }
       } else if (yearProduct) {
         buttonText = intl.formatMessage({ id: 'buttonUpgradeVIP' }, { price: yearProduct.formattedPrice });
       } else {
@@ -225,8 +245,14 @@ class UpgradeToVIPDialog extends React.Component {
       buttonText = intl.formatMessage({ id: 'buttonUpgradeVIPWithPrice' });
     }
 
-    const isLoading = (isMac && !yearProduct);
+    let userVipMessage = '';
+    if (user && user.vip) {
+      const date = new Date(user.vipDate).toLocaleDateString();
+      userVipMessage = intl.formatMessage({ id: 'messageVipServiceDate' }, { date });
+    }
 
+    const isLoading = (isMac && !yearProduct);
+    //
     return (
       <Dialog
         open={open}
@@ -236,7 +262,8 @@ class UpgradeToVIPDialog extends React.Component {
         <DialogContent className={classes.root}>
           <div className={classNames(classes.header, classes.verticalFlex)}>
             <LiteText className={classes.textMargin} variant="h1" fullWidth={false}><FormattedMessage id="labelUpgradeToVip" /></LiteText>
-            <LiteText className={classes.textMargin} fullWidth={false}><FormattedMessage id="labelUpgradeToVipWhy" /></LiteText>
+            <LiteText className={classNames(classes.textMargin, classes.why)} fullWidth={false}><FormattedMessage id="labelUpgradeToVipWhy" /></LiteText>
+            <LiteText className={classNames(classes.textMargin, classes.vipMessage)} fullWidth={false}>{userVipMessage}</LiteText>
           </div>
           <div className={classNames(classes.message, classes.verticalFlex)}>
             <Icons.UploadCloudIcon className={classes.uploadCloudIcon} />
@@ -252,14 +279,15 @@ class UpgradeToVIPDialog extends React.Component {
               <Icons.CrownIcon />
               {buttonText}
             </Button>
-            {/* {isMac && (
+            {isMac && (
               <Button
+                disabled={isLoading || purchasing}
                 className={classes.restorePurchase}
                 onClick={this.handler.handleRestorePurchases}
               >
                 <FormattedMessage id="buttonRestorePurchases" />
               </Button>
-            )} */}
+            )}
           </div>
           <div className={classes.close}>
             <IconButton color="inherit" onClick={onClose}>

@@ -309,8 +309,18 @@ class UserManager extends EventEmitter {
     return result;
   }
 
+  async restorePurchases() {
+    const result = await invokeApi('restorePurchases', this.userGuid);
+    return result;
+  }
+
   async showUpgradeVipDialog() {
     const result = await invokeApi('showUpgradeVipDialog', this.userGuid);
+    return result;
+  }
+
+  async getUserInfo() {
+    const result = await invokeApi('getUserInfo', this.userGuid);
     return result;
   }
 

@@ -497,20 +497,14 @@ handleApi('writeToMarkdown', async (event, userGuid, kbGuid, noteGuid) => {
 
 handleApi('queryProducts', inAppPurchase.queryProducts);
 handleApi('purchaseProduct', inAppPurchase.purchaseProduct);
+handleApi('restorePurchases', inAppPurchase.restorePurchases);
+handleApi('showUpgradeVipDialog', inAppPurchase.showUpgradeVipDialog);
 
-handleApi('showUpgradeVipDialog', async (event, userGuid) => {
-  const userData = users.getUserData(userGuid);
-  const token = userData.token;
-  const url = `https://api.wiz.cn/?p=wiz&c=vip&token=${token}&clientType=lite&clientVersion={${app.getVersion()}}`;
-  //
-  const upgradeVipDialog = new BrowserWindow({
-    parent: BrowserWindow.fromWebContents(event.sender),
-    modal: true,
-  });
-
-  upgradeVipDialog.loadURL(url);
-  upgradeVipDialog.show();
+handleApi('getUserInfo', async (event, userGuid) => {
+  const user = users.getUserInfo(userGuid);
+  return user;
 });
+
 
 handleApi('refreshUserInfo', async (event, userGuid) => {
   const user = await users.refreshUserInfo(userGuid);

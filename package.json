@@ -34,8 +34,10 @@
     "postinstall": "run-script-os",
     "postinstall:win32": "post-install.cmd",
     "postinstall:default": "bash ./post-install.sh",
-    "pack32": "npm run build && electron-builder --ia32",
-    "pack": "npm run build && electron-builder"
+    "pack32": ".\\node_modules\\.bin\\electron ./tools/build_sqlite3 --ia32 && npm run build && electron-builder --ia32 && ren out\\WizNoteLite-1.1.0.exe WizNoteLite-x86-1.1.0.exe",
+    "pack": "run-script-os",
+    "pack:win32": ".\\node_modules\\.bin\\electron ./tools/build_sqlite3  && npm run build && electron-builder && ren out\\WizNoteLite-1.1.0.exe WizNoteLite-x64-1.1.0.exe",
+    "pack:default": "npm run build && electron-builder"
   },
   "build": {
     "appId": "cn.wiz.note.lite",
@@ -76,7 +78,7 @@
       "src/web/preload.js"
     ],
     "win": {
-      "artifactName": "WizNoteLite-${version}-${arch}.${ext}",
+      "artifactName": "WizNoteLite-${arch}-${version}.${ext}",
       "target": [
         "appx",
         "nsis"
@@ -170,7 +172,7 @@
     "cross-env": "^7.0.2",
     "crypto-js": "^4.0.0",
     "customize-cra": "^1.0.0",
-    "electron": "^8.2.5",
+    "electron": "^9.1.1",
     "electron-builder": "^22.7.0",
     "electron-rebuild": "^1.11.0",
     "eslint": "^6.8.0",
