@@ -1,5 +1,5 @@
 const {
-  inAppPurchase, BrowserWindow, app,
+  inAppPurchase, BrowserWindow, app, shell,
 } = require('electron');
 const i18n = require('i18next');
 const fs = require('fs-extra');
@@ -222,6 +222,13 @@ async function showUpgradeVipDialog(event, userGuid) {
       console.error(err);
     }
   });
+
+  upgradeVipDialog.webContents.on('new-window', (e, linkUrl) => {
+    mainWindow.setAlwaysOnTop(true);
+    e.preventDefault();
+    shell.openExternal(linkUrl);
+  });
+
 
   // aoid flicker
   // https://github.com/electron/electron/issues/10616
