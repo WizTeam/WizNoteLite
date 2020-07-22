@@ -153,8 +153,9 @@ class VditorEditor extends React.Component {
     if (this.props.onUpdateContentsList) {
       const list = [];
       if (this.editor?.vditor) {
-        for (let i = 0; i < this.editor.vditor.ir.element.childElementCount; i++) {
-          const tagName = this.editor.vditor.ir.element.children[i].tagName.toLowerCase();
+        const editorRootElement = this.editor.vditor.ir.element;
+        for (let i = 0; i < editorRootElement.childElementCount; i++) {
+          const tagName = editorRootElement.children[i].tagName.toLowerCase();
           if (/^h[1-6]$/.test(tagName)) {
             const rank = parseInt(tagName[1], 10);
             if (list.length) {
@@ -173,8 +174,8 @@ class VditorEditor extends React.Component {
               }
               target.push({
                 key: `${i}-${rank}`,
-                title: this.editor.vditor.ir.element.children[i].innerText.replace(/^#+\s/, ''),
-                element: this.editor.vditor.ir.element.children[i],
+                title: editorRootElement.children[i].innerText.replace(/^#+\s/, ''),
+                element: editorRootElement.children[i],
                 open: true,
               });
             } else {
@@ -183,8 +184,8 @@ class VditorEditor extends React.Component {
               for (let j = 0; j < rank; j++) {
                 if (j === rank - 1) {
                   item.key = `${i}-${j}`;
-                  item.title = this.editor.vditor.ir.element.children[i].innerText.replace(/^#+\s/, '');
-                  item.element = this.editor.vditor.ir.element.children[i];
+                  item.title = editorRootElement.children[i].innerText.replace(/^#+\s/, '');
+                  item.element = editorRootElement.children[i];
                   item.open = true;
                 } else {
                   item.key = `${i}-${j}`;
