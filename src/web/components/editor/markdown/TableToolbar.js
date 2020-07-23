@@ -17,12 +17,13 @@ const useStyles = makeStyles(({ spacing, custom }) => ({
     },
   },
   iconButton: {
-    '&:hover $icon': {
-      color: custom.color.contentToolIconHover,
-    },
-    // '&:hover': {
-    //   backgroundColor: 'transparent',
+    // '&:hover $icon': {
+    //   color: custom.color.contentToolIconHover,
     // },
+    padding: 0,
+    '&:hover': {
+      backgroundColor: 'transparent',
+    },
   },
   icon: {
     width: spacing(3),
@@ -150,7 +151,7 @@ function TableToolbar(props) {
             if (ele !== tableElement) {
               tableElement = ele;
               setMenuPos({
-                top: `${tableElement.offsetTop - 12}px`,
+                top: `${tableElement.offsetTop}px`,
                 left: `${tableElement.offsetLeft - 32}px`,
               });
             }
