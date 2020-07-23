@@ -30,7 +30,6 @@ const styles = (/* theme */) => ({
 });
 
 class NoteEditor extends React.Component {
-
   handler = {
     handleSaveNote: async (kbGuid, noteGuid, markdown) => {
       await window.wizApi.userManager.setNoteMarkdown(kbGuid, noteGuid, markdown);
@@ -79,6 +78,7 @@ class NoteEditor extends React.Component {
             note={note}
             kbGuid={kbGuid}
             onClickTag={onClickTag}
+            onUpdateContentsList={this.props.onUpdateContentsList}
           />
         </TabPanel>
         <TabPanel tabKey="unknown" visible={!hasEditor}>
@@ -100,11 +100,13 @@ NoteEditor.propTypes = {
   kbGuid: PropTypes.string,
   theme: PropTypes.object.isRequired,
   onClickTag: PropTypes.func.isRequired,
+  onUpdateContentsList: PropTypes.func,
 };
 
 NoteEditor.defaultProps = {
   note: null,
   kbGuid: null,
+  onUpdateContentsList: null,
   // isLogin: true,
 };
 

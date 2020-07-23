@@ -9,12 +9,13 @@ import MenuItem from '@material-ui/core/MenuItem';
 // import isBoolean from 'lodash/isBoolean';
 import CommonHeader from './CommonHeader';
 import NoteEditor from './NoteEditor';
-import ExportPngDialog from './ExportPngDialog';
-import ExportPdfDialog from './ExportPdfDialog';
+import ExportPngDialog from '../dialogs/ExportPngDialog';
+import ExportPdfDialog from '../dialogs/ExportPdfDialog';
 import Icons from '../config/icons';
 // import FocusBtn from './FocusBtn';
 import SyncBtn from './SyncBtn';
 import Scrollbar from './Scrollbar';
+import EditorContents from './editor/markdown/EditorContents';
 
 const styles = (theme) => ({
   main: {
@@ -44,6 +45,7 @@ const styles = (theme) => ({
   content: {
     flex: 1,
     position: 'relative',
+    display: 'flex',
     // padding: theme.spacing(3),
   },
   toolBar: {
@@ -136,6 +138,16 @@ class Content extends React.Component {
         exportMenuAnchorEl: null,
       });
     },
+    handleShowContents: () => {
+      this.setState({
+        showEditorContents: true,
+      });
+    },
+    handleCloseContents: () => {
+      this.setState({
+        showEditorContents: false,
+      });
+    },
     handleShowExportPngDialog: () => {
       this.handler.handleCloseExportMenu();
       //
@@ -152,6 +164,29 @@ class Content extends React.Component {
     handleCloseExportPdfDialog: () => {
       this.setState({ showExportPdfDialog: false });
     },
+    handleChangeEditorContents: (list) => {
+      this.setState({
+        contentsList: list,
+      });
+    },
+    handleContentsNodeClick: (item) => {
+      if (this.scrollContentRef?.current && item.element) {
+        const rect = item.element.getBoundingClientRect();
+        const top = this.scrollContentRef?.current.getScrollTop()
+          + rect.top
+          - this.headerRef.current?.offsetHeight ?? 0;
+        this.scrollContentRef.current.scrollTop(top);
+      }
+    },
+    handleExportMarkdown: () => {
+      const { kbGuid, note } = this.props;
+      //
+      if (!note.guid) return;
+      //
+      this.handler.handleCloseExportMenu();
+      //
+      window.wizApi.userManager.writeToMarkdown(kbGuid, note.guid, {});
+    },
   };
 
   constructor(props) {
@@ -161,7 +196,11 @@ class Content extends React.Component {
       exportMenuAnchorEl: null,
       showExportPngDialog: false,
       showExportPdfDialog: false,
+      showEditorContents: false,
+      contentsList: [],
     };
+    this.scrollContentRef = React.createRef();
+    this.headerRef = React.createRef();
   }
 
   componentDidMount() {
@@ -187,8 +226,8 @@ class Content extends React.Component {
     const backgroundColorClassName = `main_${backgroundType}`;
     const backgroundClass = isLite && (classes[backgroundColorClassName] ?? '');
 
-    const hasFullScreenButton = window.wizApi.isElectron && window.wizApi.windowManager.platform === 'darwin';
     const isMac = window.wizApi.platform.isMac;
+    const hasFullScreenButton = window.wizApi.isElectron && isMac;
 
     return (
       <main
@@ -198,8 +237,9 @@ class Content extends React.Component {
           systemButton
           className={classNames(classes.header, isMac && classes.header_mac)}
           onRequestFullScreen={this.props.onRequestFullScreen}
+          ref={this.headerRef}
         />
-        {note && !isSearch && (
+        {!this.state.showEditorContents && note && !isSearch && (
         <div className={classNames(classes.toolBar, isMac && classes.toolBar_mac)}>
           {/* <IconButton className={classes.iconButton}>
             <Icons.MoreHorizIcon className={classes.icon} />
@@ -216,6 +256,9 @@ class Content extends React.Component {
             {!isFullScreen && <Icons.FullScreenIcon className={classes.icon} />}
           </IconButton>
           )}
+          <IconButton className={classes.iconButton} onClick={this.handler.handleShowContents}>
+            <Icons.OutlineIcon className={classes.icon} />
+          </IconButton>
           <IconButton className={classes.iconButton} onClick={this.handler.handleShowExportMenu}>
             <Icons.ExportIcon className={classes.icon} />
           </IconButton>
@@ -232,13 +275,21 @@ class Content extends React.Component {
         </div>
         )}
         <div className={classes.content}>
-          <Scrollbar>
+          <Scrollbar ref={this.scrollContentRef}>
             <NoteEditor
               note={note}
               kbGuid={kbGuid}
               onClickTag={onClickTag}
+              onUpdateContentsList={this.handler.handleChangeEditorContents}
             />
           </Scrollbar>
+          <EditorContents
+            contents={this.state.contentsList}
+            open={note && this.state.showEditorContents}
+            onClose={this.handler.handleCloseContents}
+            onNodeClick={this.handler.handleContentsNodeClick}
+            isShowDrawer={this.props.isShowDrawer}
+          />
         </div>
         <Menu
           className={classes.exportMenu}
@@ -251,9 +302,9 @@ class Content extends React.Component {
           <MenuItem onClick={this.handler.handleShowExportPngDialog}>
             {intl.formatMessage({ id: 'exportPng' })}
           </MenuItem>
-          {/* <MenuItem>
+          <MenuItem onClick={this.handler.handleExportMarkdown}>
             {intl.formatMessage({ id: 'exportMd' })}
-          </MenuItem> */}
+          </MenuItem>
           <MenuItem onClick={this.handler.handleShowExportPdfDialog}>
             {intl.formatMessage({ id: 'exportPdf' })}
           </MenuItem>
@@ -299,11 +350,13 @@ Content.propTypes = {
   onCreateAccount: PropTypes.func.isRequired,
   onClickTag: PropTypes.func.isRequired,
   onRequestFullScreen: PropTypes.func.isRequired,
+  isShowDrawer: PropTypes.bool,
 };
 
 Content.defaultProps = {
   note: null,
   backgroundType: 'white',
+  isShowDrawer: false,
 };
 
 export default withTheme(withStyles(styles)(injectIntl(Content)));

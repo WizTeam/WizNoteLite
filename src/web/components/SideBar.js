@@ -349,7 +349,13 @@ class SideBar extends React.Component {
         style={drawerStyle}
         ref={(node) => { this._drawerRef = node; }}
       >
-        <CommonHeader showLogo liteLogo className={classes.header} />
+        <CommonHeader
+          showLogo
+          showUserType
+          liteLogo
+          className={classes.header}
+          onUpgradeVip={this.props.onUpgradeVip}
+        />
         <List disablePadding>
           {items.map((item) => (
             <ListItem
@@ -463,6 +469,7 @@ SideBar.propTypes = {
   selectedTag: PropTypes.object,
   open: PropTypes.bool,
   onClickLogin: PropTypes.func.isRequired,
+  onUpgradeVip: PropTypes.func.isRequired,
   // onClickSetting: PropTypes.func.isRequired,
 };
 

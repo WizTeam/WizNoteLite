@@ -28,3 +28,7 @@ div::-webkit-scrollbar {
 div::-webkit-scrollbar-thumb {
   background-color: transparent;
 }
+
+.snackbar-top-center {
+  /* top: -24px !important; */
+}

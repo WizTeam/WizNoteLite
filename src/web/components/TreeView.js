@@ -37,6 +37,7 @@ function TreeView(props) {
   const {
     data, textClassName, deep, selected,
     itemClassName, className, itemSelectedClassName,
+    openIcon, closeIcon,
   } = props;
   //
   const [newData, setNewData] = useState([]);
@@ -84,6 +85,9 @@ function TreeView(props) {
     const style = {
       marginLeft: deep * theme.spacing(2),
       marginRight: theme.spacing(1),
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
     };
     if (!node.children || !node.children.length) {
       return <div style={style} className={classes.block} />;
@@ -91,21 +95,29 @@ function TreeView(props) {
     //
     if (node.open) {
       return (
-        <Icons.ArrowBottomIcon
+        <div
+          aria-hidden
           style={style}
           onClick={(e) => toggleCollapse(e, node)}
           className={classes.icon}
-        />
+          role="button"
+        >
+          {openIcon ?? <Icons.ArrowBottomIcon />}
+        </div>
       );
     }
     //
     if (!node.open) {
       return (
-        <Icons.ArrowRightIcon
+        <div
+          aria-hidden
           style={style}
           onClick={(e) => toggleCollapse(e, node)}
           className={classes.icon}
-        />
+          role="button"
+        >
+          {closeIcon ?? <Icons.ArrowRightIcon />}
+        </div>
       );
     }
     return <></>;
@@ -115,24 +127,26 @@ function TreeView(props) {
     <div className={className}>
       {newData.map((item) => (
         <List key={item.key} disablePadding>
-          <ListItem
-            button
-            selected={_selected?.key === item.key}
-            onClick={() => handleOnClick(item)}
-            className={classNames(classes.listItem, itemClassName)}
-            classes={{
-              selected: itemSelectedClassName,
-            }}
-          >
-            {renderArrowIcon(item)}
-            <LiteText
-              disableTypography
-              title={item.title}
-              className={classNames(classes.text, classes.overflow, textClassName)}
+          {item.title && (
+            <ListItem
+              button
+              selected={_selected?.key === item.key}
+              onClick={() => handleOnClick(item)}
+              className={classNames(classes.listItem, itemClassName)}
+              classes={{
+                selected: itemSelectedClassName,
+              }}
             >
-              {item.title}
-            </LiteText>
-          </ListItem>
+              {renderArrowIcon(item)}
+              <LiteText
+                disableTypography
+                title={item.title}
+                className={classNames(classes.text, classes.overflow, textClassName)}
+              >
+                {item.title}
+              </LiteText>
+            </ListItem>
+          )}
           {item.children && item.children.length > 0 && (
             <Collapse in={!!item.open} timeout="auto" unmountOnExit>
               <TreeView
@@ -144,6 +158,8 @@ function TreeView(props) {
                 itemClassName={itemClassName}
                 itemSelectedClassName={itemSelectedClassName}
                 deep={deep + 1}
+                openIcon={openIcon}
+                closeIcon={closeIcon}
               />
             </Collapse>
           )}
@@ -163,6 +179,8 @@ TreeView.propTypes = {
   itemSelectedClassName: PropTypes.string,
   deep: PropTypes.number,
   selected: PropTypes.object,
+  openIcon: PropTypes.object,
+  closeIcon: PropTypes.object,
 };
 
 TreeView.defaultProps = {
@@ -175,6 +193,8 @@ TreeView.defaultProps = {
   itemSelectedClassName: '',
   deep: 0,
   selected: undefined,
+  openIcon: undefined,
+  closeIcon: undefined,
 };
 
 export default TreeView;

@@ -120,7 +120,12 @@ class HeadingMenu extends React.Component {
       //   onClick: this.handler.handleMenuClick('toggle'),
       // },
     ];
-    menuList.find((item) => item.label.toLowerCase() === tagName.toLowerCase()).active = true;
+    const selectMenuItem = menuList.find(
+      (item) => item.label.toLowerCase() === tagName.toLowerCase(),
+    );
+    if (selectMenuItem) {
+      selectMenuItem.active = true;
+    }
     return menuList;
   }
 

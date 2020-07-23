@@ -10,8 +10,8 @@ import IconButton from '@material-ui/core/IconButton';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 //
-import LiteText from './LiteText';
-import LiteSelect from './LiteSelect';
+import LiteText from '../components/LiteText';
+import LiteSelect from '../components/LiteSelect';
 import NoteViewer from '../pages/NoteViewer';
 import Icons from '../config/icons';
 

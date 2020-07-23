@@ -21,7 +21,7 @@
   "stopspeaking": "Stop Speaking",
   "viewMenu": "View",
   "reload": "Reload",
-  "forcereload": "Forcere Load",
+  "forcereload": "Force Reload",
   "resetzoom": "Reset Zoom",
   "zoomin": "Zoom In",
   "zoomout": "Zoom Out",
@@ -35,7 +35,14 @@
   "learnMore": "Learn More...",
   "menuMainWindow": "Main Window",
 
+  "errorNotAllowMakeInAppPurchase": "The user is not allowed to make in-app purchase.",
+  "errorReceiveProductionInfo": "Unable to retrieve the product information.",
+  "errorProductInNotValid": "The product is not valid.",
+  "errorDownloadReceipt": "Failed to download receipt: {{message}}",
+  "errorVerifyPurchase": "Failed to verify purchase: {{message}}",
+
   "fileFilterPNG": "PNG files (*.png)",
   "fileFilterPDF": "PDF files (*.pdf)",
+  "fileFilterMarkdown": "Markdown files (*.md)",
   "errorConnect": "Can't connect to server: {{host}}, please check your network."
 }

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 // import { useIntl } from 'react-intl';
 import { makeStyles } from '@material-ui/core/styles';
 //
-import LoginDialog from '../components/LoginDialog';
+import LoginDialog from '../dialogs/LoginDialog';
 
 const useStyles = makeStyles((theme) => ({
   root: {

@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    wordBreak: 'break-all',
+    wordBreak: 'normal',
     fontSize: 'inherit',
   },
   fullWidth: {
@@ -30,7 +30,7 @@ function LiteText(props) {
   const {
     highlightText, children, className, inheritColor,
     isDivContainer, title, style, fullWidth,
-    disableUserSelect,
+    disableUserSelect, variant,
   } = props;
 
   const headlineMapping = {
@@ -58,7 +58,7 @@ function LiteText(props) {
 
   return (
     <Typography
-      variant="body2"
+      variant={variant}
       variantMapping={headlineMapping}
       title={title}
       style={style}
@@ -88,6 +88,7 @@ LiteText.propTypes = {
   style: PropTypes.object,
   fullWidth: PropTypes.bool,
   disableUserSelect: PropTypes.bool,
+  variant: PropTypes.string,
 };
 
 LiteText.defaultProps = {
@@ -100,6 +101,7 @@ LiteText.defaultProps = {
   style: null,
   fullWidth: true,
   disableUserSelect: false,
+  variant: 'body2',
 };
 
 export default React.memo(LiteText);

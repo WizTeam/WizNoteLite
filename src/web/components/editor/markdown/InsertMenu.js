@@ -4,7 +4,9 @@ import { injectIntl } from 'react-intl';
 
 import LiteMenu from './LiteMenu';
 import Icons from '../../../config/icons';
-import { isCtrl, getCodeBlock, getTagSpan, getPositionForWin } from '../libs/dom_utils';
+import {
+  isCtrl, getCodeBlock, getTagSpan, getPositionForWin,
+} from '../libs/dom_utils';
 import { getRange } from '../libs/range_utils';
 
 class InsertMenu extends React.Component {
@@ -18,7 +20,10 @@ class InsertMenu extends React.Component {
         return;
       }
       const { open } = this.state;
-      const menuList = (getTagSpan(this.editor.vditor.element) || getCodeBlock(this.editor.vditor.element)) ? [] : this.filterMenuItems(e);
+      const isInTag = getTagSpan(this.editor.vditor.element);
+      const isInCode = getCodeBlock(this.editor.vditor.element);
+      const showInsertMenu = !isInTag && !isInCode;
+      const menuList = showInsertMenu ? this.filterMenuItems(e) : [];
       if ((menuList === null || menuList.length === 0) && open) {
         this.setState({ open: false });
       } else if (menuList && menuList.length > 0 && !open) {

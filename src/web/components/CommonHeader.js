@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import LiteText from './LiteText';
 import Icons from '../config/icons';
+import VipIndicator from './VipIndicator';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -52,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
     padding: 0,
     lineHeight: 1,
     textTransform: 'unset',
-    marginLeft: theme.spacing(2),
+    marginLeft: theme.spacing(1),
     fontSize: 14,
     '& .MuiButton-endIcon': {
       marginLeft: 0,
@@ -67,11 +68,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function CommonHeader(props) {
+const CommonHeader = React.forwardRef((props, ref) => {
   const classes = useStyles();
   const intl = useIntl();
   const wm = window.wizApi.windowManager;
-  const hasSystemButton = window.wizApi.isElectron && wm.platform !== 'darwin';
+  const hasSystemButton = window.wizApi.isElectron && !window.wizApi.platform.isMac;
   //
   const fullScreen = wm.isFullScreen();
   const maximized = fullScreen || wm.isMaximized();
@@ -128,12 +129,12 @@ export default function CommonHeader(props) {
   };
 
   const {
-    className, showLogo,
+    className, showLogo, showUserType,
     liteLogo, systemButton,
   } = props;
 
   return (
-    <div className={classNames(classes.root, className)} onDoubleClick={handleDoubleClickHeader}>
+    <div className={classNames(classes.root, className)} onDoubleClick={handleDoubleClickHeader} ref={ref}>
       {hasSystemButton && showLogo && (
         <>
           <Button
@@ -150,7 +151,14 @@ export default function CommonHeader(props) {
           </Button>
         </>
       )}
-      <div className={classes.dragLayer} />
+
+      {showUserType && (
+        <>
+          <div className={classes.dragLayer} />
+          <VipIndicator onClick={props.onUpgradeVip} />
+        </>
+      )}
+      {!showUserType && <div className={classes.dragLayer} />}
       {hasSystemButton && systemButton && (
         <div className={classes.systemButtonContainer}>
           <Button onClick={handleMinimizeWindow} classes={{ root: classes.systemButtonRoot }}>
@@ -170,20 +178,26 @@ export default function CommonHeader(props) {
       )}
     </div>
   );
-}
+});
 
 CommonHeader.propTypes = {
   className: PropTypes.string,
   showLogo: PropTypes.bool,
+  showUserType: PropTypes.bool,
   liteLogo: PropTypes.bool,
   systemButton: PropTypes.bool,
   onRequestFullScreen: PropTypes.func,
+  onUpgradeVip: PropTypes.func,
 };
 
 CommonHeader.defaultProps = {
   className: null,
   showLogo: false,
+  showUserType: false,
   liteLogo: false,
   systemButton: false,
   onRequestFullScreen: null,
+  onUpgradeVip: null,
 };
+
+export default CommonHeader;

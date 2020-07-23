@@ -1,4 +1,3 @@
-
 export function getSelection() {
   return window.document.getSelection();
 }
@@ -62,4 +61,15 @@ export function setRange(_start, _startOffset, _end, _endOffset) {
     // “由于出现错误 800a025e 而导致此项操作无法完成。”
     console.log(e);
   }
-};
+}
+
+export function setRangeByDomBeforeEnd(dom) {
+  if (dom) {
+    const selection = getSelection();
+    selection.removeAllRanges();
+    const range = document.createRange();
+    range.selectNodeContents(dom.firstChild ?? dom);
+    range.collapse(false);
+    selection.addRange(range);
+  }
+}

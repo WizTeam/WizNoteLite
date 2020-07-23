@@ -34,9 +34,16 @@
   "helpMenu": "幫助",
   "toggledevtools": "切換開發者工具",
   "learnMore": "了解更多...",
-  "menuMainWindow": "主窗口",
+  "menuMainWindow": "主窗口", 
+
+  "errorNotAllowMakeInAppPurchase": "當前 macOS 用戶無法使用內購功能.",
+  "errorReceiveProductionInfo": "無法獲取產品信息.",
+  "errorProductInNotValid": "產品無效.",
+  "errorDownloadReceipt": "無法下載購買憑證: {{message}}",
+  "errorVerifyPurchase": "無法認證購買憑證: {{message}}",
 
   "fileFilterPNG": "PNG files (*.png)",
   "fileFilterPDF": "PDF files (*.pdf)",
+  "fileFilterMarkdown": "Markdown files (*.md)",
   "errorConnect": "無法連接到服務器： {{host}}，請檢查您的網絡。"
 }

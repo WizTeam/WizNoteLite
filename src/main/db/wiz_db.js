@@ -85,7 +85,21 @@ class WizDb extends EventEmitter {
     await this.setMeta('userId', userId);
     await this.setMeta('password', enc.aes.encryptText(password, user.userGuid));
     await this.setMeta('server', server);
+    await this.updateUserInfo(user);
+  }
+
+  async updateUserInfo(user) {
     await this.setMeta('user', JSON.stringify(user));
+    this.emit('userInfoChanged', user);
+  }
+
+  async getUserInfo() {
+    const userText = await this.getMeta('user');
+    if (!userText) {
+      return null;
+    }
+    const user = JSON.parse(userText);
+    return user;
   }
 
   // account info
