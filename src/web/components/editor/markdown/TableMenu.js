@@ -1,5 +1,5 @@
 import React, {
-  useEffect, useState, useRef, useCallback,
+  useEffect, useState, useCallback,
 } from 'react';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -9,7 +9,9 @@ import { injectIntl } from 'react-intl';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import copy from 'copy-to-clipboard';
 import Icon from '../../../config/icons';
-import { filterParentElement, updateHotkeyTip, matchHotKey } from '../libs/dom_utils';
+import {
+  filterParentElement, updateHotkeyTip, matchHotKey, hasClass,
+} from '../libs/dom_utils';
 import { setRangeByDomBeforeEnd } from '../libs/range_utils';
 import LiteMenu from './LiteMenu';
 
@@ -99,6 +101,12 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
 
 let currentCellElement;
 let tableElement;
+// 修复md表头分割线 | - | - | - |   => | ----- | ----- | ----- |
+function fixTableMd(md) {
+  const textArr = md.split('\n');
+  textArr[1] = textArr[1].replace(/-/g, '-----');
+  return textArr.join('\n');
+}
 
 function TableMenu(props) {
   const classes = useStyles();
@@ -108,7 +116,6 @@ function TableMenu(props) {
   const [menuPosition, setMenuPosition] = useState(undefined);
   const [subMenuPos, setSubMenuPos] = useState(null);
   const [align, setAlign] = useState('left');
-  const menuRef = useRef();
 
   function deleteTable() {
     if (tableElement) {
@@ -173,6 +180,10 @@ function TableMenu(props) {
     }
   }, [props.editor]);
 
+  function getTableMd() {
+    return fixTableMd(props.editor.html2md(tableElement.outerHTML));
+  }
+
   function clickHandler(type, e) {
     setRangeByDomBeforeEnd(currentCellElement);
 
@@ -211,7 +222,7 @@ function TableMenu(props) {
         if (tableElement) {
           const copyHandler = (event) => {
             event.preventDefault();
-            event.clipboardData.setData('text/plain', props.editor.html2md(tableElement.outerHTML));
+            event.clipboardData.setData('text/plain', getTableMd());
             event.clipboardData.setData('text/html', tableElement.outerHTML);
           };
           document.addEventListener('copy', copyHandler);
@@ -221,7 +232,7 @@ function TableMenu(props) {
         break;
       case 'CpMd':
         if (props.editor && tableElement) {
-          copy(props.editor.html2md(tableElement.outerHTML));
+          copy(getTableMd());
         }
         break;
       default:
@@ -262,7 +273,11 @@ function TableMenu(props) {
             });
           }
           e.preventDefault();
-        } else if (!filterParentElement(e.target, document.body, (dom) => dom.getAttribute('data-type') === 'subMenu', true) && menuPosition) {
+        } else if (!filterParentElement(
+          e.target, document.body,
+          (dom) => hasClass(dom, classes.menuRoot),
+          true,
+        ) && menuPosition) {
           setMenuPosition(undefined);
         }
       }
@@ -299,9 +314,8 @@ function TableMenu(props) {
       classes={{
         list: classes.menuRoot,
       }}
-      ref={menuRef}
     >
-      {isHead || (
+      {isHead ? '' : (
         <MenuItem onClick={(e) => clickHandler('addRowAbove', e)}>
           <div className={classes.menuItem}>
             <div className={classes.menuName}>{intl.formatMessage({ id: 'tableMenuAddRowAbove' })}</div>
@@ -334,7 +348,7 @@ function TableMenu(props) {
         >
           <div className={classes.menuName}>{intl.formatMessage({ id: 'tableMenuAlign' })}</div>
           <ArrowForwardIosIcon className={classes.iconArrow} />
-          <LiteMenu position={subMenuPos ?? undefined} show={!!subMenuPos} positionName="none">
+          <LiteMenu position={subMenuPos ?? undefined} show={!!subMenuPos}>
             <div className={classes.subMenuContainer} data-type="subMenuContainer">
               <button type="button" className={classes.subMenuItem} onClick={(e) => clickHandler('alignLeft', e)}>
                 <div className={classes.menuItemIcon}>
@@ -359,7 +373,7 @@ function TableMenu(props) {
         </div>
       </MenuItem>
       <div className={classes.menuLine} />
-      {isHead || (
+      {isHead ? '' : (
         <MenuItem onClick={(e) => clickHandler('deleteRow', e)}>
           <div className={classes.menuItem}>
             <div className={classes.menuName}>{intl.formatMessage({ id: 'tableMenuDeleteRow' })}</div>

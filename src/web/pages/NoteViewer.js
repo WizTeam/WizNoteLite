@@ -15,10 +15,14 @@ const styles = (theme) => ({
     backgroundColor: theme.custom.background.content,
   },
   root_dark: {
+    minHeight: '100%',
+    boxSizing: 'border-box',
     backgroundColor: '#333333',
     color: '#f0f0f0',
   },
   root_lite: {
+    minHeight: '100%',
+    boxSizing: 'border-box',
     backgroundColor: 'white',
     color: '#333333',
   },

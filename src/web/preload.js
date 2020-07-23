@@ -305,6 +305,11 @@ class UserManager extends EventEmitter {
     return result;
   }
 
+  async restorePurchases() {
+    const result = await invokeApi('restorePurchases', this.userGuid);
+    return result;
+  }
+
   async showUpgradeVipDialog() {
     const result = await invokeApi('showUpgradeVipDialog', this.userGuid);
     return result;
@@ -378,6 +383,10 @@ ipcRenderer.on('linksChanged', (event, ...args) => {
 
 ipcRenderer.on('showAbout', (event, ...args) => {
   userManager.emit('showAbout', ...args);
+});
+
+ipcRenderer.on('userInfoChanged', (event, ...args) => {
+  userManager.emit('userInfoChanged', ...args);
 });
 
 platform.isMac = platform.os.family === 'OS X';

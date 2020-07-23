@@ -231,12 +231,28 @@ class Main extends React.Component {
           return;
         }
         //
-        console.error(result.error);
-        alert(result.error.message);
+        console.error(err);
+        //
+        const { intl, enqueueSnackbar } = this.props;
+        const message = intl.formatMessage({ id: 'errorSyncFailed' }, { message: err.message });
+        enqueueSnackbar(message, {
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'center',
+          },
+          variant: 'error',
+          key: 'WizErrorSync',
+        });
       }
     },
 
     handleUpgradeVip: () => {
+      const isLocalUser = window.wizApi.userManager.currentUser.isLocalUser;
+      if (isLocalUser) {
+        this.handler.handleShowLoginDialog();
+        return;
+      }
+      //
       this.props.closeSnackbar(SNACKBAR_KEY);
       this.setState({ showUpgradeToVipDialog: true });
     },
@@ -248,10 +264,6 @@ class Main extends React.Component {
     handleCloseUpgradeToVipDialog: () => {
       this.setState({ showUpgradeToVipDialog: false });
     },
-
-    handlerUserInfoChanged: () => {
-      this.setState({});
-    }
   }
 
   constructor(props) {
@@ -290,12 +302,10 @@ class Main extends React.Component {
       }
     }
     window.wizApi.userManager.on('syncFinish', this.handler.handleSyncFinish);
-    window.wizApi.userManager.on('userInfoChanged', this.handler.handlerUserInfoChanged);
   }
 
   componentWillUnmount() {
     window.wizApi.userManager.off('syncFinish', this.handler.handleSyncFinish);
-    window.wizApi.userManager.off('userInfoChanged', this.handler.handlerUserInfoChanged);
   }
 
   showUpgradeVipMessage(isVipExpired, syncOptions) {
@@ -410,6 +420,7 @@ class Main extends React.Component {
               note={currentNote}
               kbGuid={kbGuid}
               isSearch={showMatched}
+              isShowDrawer={showDrawer}
               backgroundType={backgroundType}
               onCreateAccount={this.handler.handleShowLoginDialog}
               onClickTag={this.handler.handleClickTag}

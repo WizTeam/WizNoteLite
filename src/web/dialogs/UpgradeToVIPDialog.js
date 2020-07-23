@@ -53,12 +53,12 @@ const styles = (theme) => ({
   },
 
   textMargin: {
-    margin: 4,
+    margin: '4px 16px',
   },
 
   header: {
     width: '100%',
-    padding: '48px 16px',
+    padding: '32px 16px',
     backgroundColor: theme.custom.background.noteList,
   },
   verticalFlex: {
@@ -70,15 +70,15 @@ const styles = (theme) => ({
     padding: '32px 16px',
   },
   actions: {
-    padding: '48px 16px',
+    padding: '32px 16px',
   },
 
   why: {
-    color: '#333333',
+    color: theme.custom.color.noteTitle,
   },
 
   vipMessage: {
-    color: '#333333',
+    color: theme.custom.color.noteTitle,
     fontSize: 12,
     marginTop: 16,
   },
@@ -121,11 +121,14 @@ class UpgradeToVIPDialog extends React.Component {
       if (!this.state.yearProduct) {
         if (window.wizApi.platform.isMac) {
           try {
+            this.setState({ loading: true });
             const products = await window.wizApi.userManager.queryProducts();
             const yearProduct = products.find((product) => product.productIdentifier === 'cn.wiz.note.lite.year');
-            this.setState({ yearProduct });
+            this.setState({ yearProduct, loading: false });
           } catch (err) {
             console.error(err);
+            alert(err.message);
+            this.setState({ yearProduct: null, loading: false });
           }
         }
       }
@@ -138,7 +141,11 @@ class UpgradeToVIPDialog extends React.Component {
           await window.wizApi.userManager.purchaseProduct(this.state.yearProduct);
         } catch (err) {
           this.setState({ purchasing: false });
-          console.error(err);
+          if (err.externCode === 'WizErrorNowAllowMakePayments') {
+            await window.wizApi.userManager.showUpgradeVipDialog();
+          } else {
+            alert(err.message);
+          }
         }
       } else {
         await window.wizApi.userManager.showUpgradeVipDialog();
@@ -186,19 +193,20 @@ class UpgradeToVIPDialog extends React.Component {
       this.setState({ purchaseState });
     },
 
-    // handleRestorePurchases: () => {
-    //   if (!window.wizApi.platform.isMac) {
-    //     return;
-    //   }
-    //   //
-    //   window.wizApi.userManager.restorePurchases();
-    // },
+    handleRestorePurchases: () => {
+      if (!window.wizApi.platform.isMac) {
+        return;
+      }
+      //
+      window.wizApi.userManager.restorePurchases();
+    },
   }
 
   constructor(props) {
     super(props);
     this.state = {
-      yearProduct: null,
+      yearProduct: undefined,
+      loading: true,
       purchasing: false,
       purchaseState: '',
       user: null,
@@ -216,19 +224,31 @@ class UpgradeToVIPDialog extends React.Component {
   }
 
   async refreshUserInfo() {
-    await window.wizApi.userManager.refreshUserInfo();
+    const user = await window.wizApi.userManager.refreshUserInfo();
+    this.setState({ user });
   }
 
   render() {
     const {
       classes, open, onClose, intl,
+      loading,
     } = this.props;
 
-    const { yearProduct, purchasing, purchaseState, user } = this.state;
+    const {
+      yearProduct, purchasing,
+      purchaseState, user,
+    } = this.state;
 
     const isMac = window.wizApi.platform.isMac;
 
     let buttonText = '';
+    //
+    if (user && (user.vip || user.vipDate)) {
+      buttonText = intl.formatMessage({ id: 'buttonRenewVIPWithPrice' });
+    } else {
+      buttonText = intl.formatMessage({ id: 'buttonUpgradeVIPWithPrice' });
+    }
+    //
     if (isMac) {
       if (purchasing) {
         if (purchaseState === 'verifying') {
@@ -236,22 +256,33 @@ class UpgradeToVIPDialog extends React.Component {
         } else {
           buttonText = intl.formatMessage({ id: 'buttonPurchasing' });
         }
+      } else if (yearProduct === null) {
+        // use default button text
+        // buttonText = intl.formatMessage({ id: 'buttonFailedToQueryProduct' });
+        //
       } else if (yearProduct) {
-        buttonText = intl.formatMessage({ id: 'buttonUpgradeVIP' }, { price: yearProduct.formattedPrice });
+        if (user && (user.vip || user.vipDate)) {
+          buttonText = intl.formatMessage({ id: 'buttonRenewVIPPrice' }, { price: yearProduct.formattedPrice });
+        } else {
+          buttonText = intl.formatMessage({ id: 'buttonUpgradeVIPPrice' }, { price: yearProduct.formattedPrice });
+        }
       } else {
         buttonText = intl.formatMessage({ id: 'buttonPurchaseLoading' });
       }
-    } else {
-      buttonText = intl.formatMessage({ id: 'buttonUpgradeVIPWithPrice' });
     }
 
     let userVipMessage = '';
-    if (user && user.vip) {
-      const date = new Date(user.vipDate).toLocaleDateString();
-      userVipMessage = intl.formatMessage({ id: 'messageVipServiceDate' }, { date });
+    if (user) {
+      if (user.vip) {
+        const date = new Date(user.vipDate).toLocaleDateString();
+        userVipMessage = intl.formatMessage({ id: 'messageVipServiceDate' }, { date });
+      } else if (user.vipDate) {
+        const date = new Date(user.vipDate).toLocaleDateString();
+        userVipMessage = intl.formatMessage({ id: 'messageVipServiceEndedDate' }, { date });
+      }
     }
 
-    const isLoading = (isMac && !yearProduct);
+    const isLoading = (isMac && loading);
     //
     return (
       <Dialog
@@ -263,7 +294,12 @@ class UpgradeToVIPDialog extends React.Component {
           <div className={classNames(classes.header, classes.verticalFlex)}>
             <LiteText className={classes.textMargin} variant="h1" fullWidth={false}><FormattedMessage id="labelUpgradeToVip" /></LiteText>
             <LiteText className={classNames(classes.textMargin, classes.why)} fullWidth={false}><FormattedMessage id="labelUpgradeToVipWhy" /></LiteText>
-            <LiteText className={classNames(classes.textMargin, classes.vipMessage)} fullWidth={false}>{userVipMessage}</LiteText>
+            <LiteText
+              className={classNames(classes.textMargin, classes.vipMessage)}
+              fullWidth={false}
+            >
+              {userVipMessage}
+            </LiteText>
           </div>
           <div className={classNames(classes.message, classes.verticalFlex)}>
             <Icons.UploadCloudIcon className={classes.uploadCloudIcon} />
@@ -279,14 +315,15 @@ class UpgradeToVIPDialog extends React.Component {
               <Icons.CrownIcon />
               {buttonText}
             </Button>
-            {/* {isMac && (
+            {isMac && (
               <Button
+                disabled={isLoading || purchasing}
                 className={classes.restorePurchase}
                 onClick={this.handler.handleRestorePurchases}
               >
                 <FormattedMessage id="buttonRestorePurchases" />
               </Button>
-            )} */}
+            )}
           </div>
           <div className={classes.close}>
             <IconButton color="inherit" onClick={onClose}>
