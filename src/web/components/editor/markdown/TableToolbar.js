@@ -152,7 +152,7 @@ function TableToolbar(props) {
               tableElement = ele;
               setMenuPos({
                 top: `${tableElement.offsetTop}px`,
-                left: `${tableElement.offsetLeft - 32}px`,
+                left: `${tableElement.offsetLeft - 28}px`,
               });
             }
             return;
@@ -225,7 +225,7 @@ function TableToolbar(props) {
       })}
       style={menuPos}
     >
-      <IconButton className={classes.iconButton} onMouseDown={menuBtnClickHandler}>
+      <IconButton disableRipple className={classes.iconButton} onMouseDown={menuBtnClickHandler}>
         <Icons.TableBarIcon className={classes.icon} />
       </IconButton>
       <Menu
