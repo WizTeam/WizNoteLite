@@ -25,7 +25,7 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
       display: 'block',
     },
   }),
-  fixed: ({ isWinClient }) => ({
+  fixed: () => ({
     position: 'fixed',
     top: 0,
     bottom: 0,
@@ -85,19 +85,19 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
 }));
 
 function EditorContents(props) {
-  const isWinClient = window.wizApi.isElectron && !window.wizApi.platform.isMac;
 
   const classes = useStyles({
-    contentsWidth: window.innerWidth / (props.isShowDrawer ? 5 : 4),
-    isWinClient,
+    contentsWidth: window.innerWidth / (props.isShowDrawer ? 5 : 4)
   });
 
   const [isFixed, setIsFixed] = useState(true);
 
+  const { onClose } = props;
+
   useEffect(() => {
     function clickHandler(e) {
       if (
-        props.onClose
+        onClose
         && props.open
         && isFixed
         && e.target
@@ -108,14 +108,14 @@ function EditorContents(props) {
           true,
         )
       ) {
-        props.onClose();
+        onClose();
       }
     }
     document.addEventListener('click', clickHandler, true);
     return () => {
       document.removeEventListener('click', clickHandler, true);
     };
-  }, [props.onClose, props.open, isFixed]);
+  }, [props.onClose, props.open, isFixed, classes.editorContents, onClose]);
 
   return (
     <div className={classNames(classes.editorContents, {
