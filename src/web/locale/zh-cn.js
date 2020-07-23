@@ -113,6 +113,7 @@ export default {
   messageVipServiceDate: 'VIP 到期时间 {date}.',
   messageVipServiceEndedDate: 'VIP 已经在 {date} 到期.',
   buttonFailedToQueryProduct: '无法获取产品信息',
+  errorSyncFailed: '同步失败: {message}',
 
   // export
   exportPng: '导出为图片',

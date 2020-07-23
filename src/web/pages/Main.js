@@ -231,8 +231,18 @@ class Main extends React.Component {
           return;
         }
         //
-        console.error(result.error);
-        alert(result.error.message);
+        console.error(err);
+        //
+        const { intl, enqueueSnackbar } = this.props;
+        const message = intl.formatMessage({ id: 'errorSyncFailed' }, { message: err.message });
+        enqueueSnackbar(message, {
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'center',
+          },
+          variant: 'error',
+          key: 'WizErrorSync',
+        });
       }
     },
 

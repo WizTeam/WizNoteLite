@@ -113,6 +113,7 @@ export default {
   messageVipServiceDate: 'Your WizNote VIP service will expire on {date}.',
   messageVipServiceEndedDate: 'Your WizNote VIP service has expired on {date}.',
   buttonFailedToQueryProduct: 'Failed to query product',
+  errorSyncFailed: 'Sync failed: {message}',
 
   // export
   exportPng: 'Export Image',
