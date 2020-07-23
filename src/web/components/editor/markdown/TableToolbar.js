@@ -81,7 +81,7 @@ let tableElement;
 function TableToolbar(props) {
   const classes = useStyles();
 
-  const [menuPos, setMenuPos] = useState(undefined);
+  const [buttonPos, setButtonPos] = useState(undefined);
 
   const [rowCount, setRowCount] = useState(0);
   const [colCount, setColCount] = useState(0);
@@ -150,9 +150,9 @@ function TableToolbar(props) {
           if (ele) {
             if (ele !== tableElement) {
               tableElement = ele;
-              setMenuPos({
+              setButtonPos({
                 top: `${tableElement.offsetTop}px`,
-                left: `${tableElement.offsetLeft - 32}px`,
+                left: `${tableElement.offsetLeft - 28}px`,
               });
             }
             return;
@@ -164,9 +164,9 @@ function TableToolbar(props) {
             return;
           }
         }
-        if (menuPos) {
+        if (buttonPos) {
           tableElement = undefined;
-          setMenuPos(undefined);
+          setButtonPos(undefined);
           closeMenuHandler();
         }
       }
@@ -209,7 +209,7 @@ function TableToolbar(props) {
       document.removeEventListener('mouseover', mouseoverHandler);
       document.removeEventListener('mousedown', mousedownHandler, true);
     };
-  }, [props.editor, menuPos, classes, anchorEl]);
+  }, [props.editor, buttonPos, classes, anchorEl]);
 
   useEffect(() => {
     if (anchorEl) {
@@ -221,17 +221,17 @@ function TableToolbar(props) {
   return (
     <div
       className={classNames(classes.menu, {
-        active: Boolean(menuPos),
+        active: Boolean(buttonPos),
       })}
-      style={menuPos}
+      style={buttonPos}
     >
-      <IconButton className={classes.iconButton} onMouseDown={menuBtnClickHandler}>
+      <IconButton disableRipple className={classes.iconButton} onMouseDown={menuBtnClickHandler}>
         <Icons.TableBarIcon className={classes.icon} />
       </IconButton>
       <Menu
         anchorEl={anchorEl}
         keepMounted
-        open={Boolean(menuPos) && Boolean(anchorEl)}
+        open={Boolean(buttonPos) && Boolean(anchorEl)}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'left',

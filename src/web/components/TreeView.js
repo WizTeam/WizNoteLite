@@ -127,24 +127,26 @@ function TreeView(props) {
     <div className={className}>
       {newData.map((item) => (
         <List key={item.key} disablePadding>
-          <ListItem
-            button
-            selected={_selected?.key === item.key}
-            onClick={() => handleOnClick(item)}
-            className={classNames(classes.listItem, itemClassName)}
-            classes={{
-              selected: itemSelectedClassName,
-            }}
-          >
-            {renderArrowIcon(item)}
-            <LiteText
-              disableTypography
-              title={item.title}
-              className={classNames(classes.text, classes.overflow, textClassName)}
+          {item.title && (
+            <ListItem
+              button
+              selected={_selected?.key === item.key}
+              onClick={() => handleOnClick(item)}
+              className={classNames(classes.listItem, itemClassName)}
+              classes={{
+                selected: itemSelectedClassName,
+              }}
             >
-              {item.title}
-            </LiteText>
-          </ListItem>
+              {renderArrowIcon(item)}
+              <LiteText
+                disableTypography
+                title={item.title}
+                className={classNames(classes.text, classes.overflow, textClassName)}
+              >
+                {item.title}
+              </LiteText>
+            </ListItem>
+          )}
           {item.children && item.children.length > 0 && (
             <Collapse in={!!item.open} timeout="auto" unmountOnExit>
               <TreeView
