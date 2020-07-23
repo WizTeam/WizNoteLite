@@ -301,7 +301,7 @@ function TableMenu(props) {
       window.removeEventListener('mouseover', showSubMenuHandler);
       window.removeEventListener('mousedown', mousedownHandler);
     };
-  }, [menuPosition, subMenuPos, props.editor, align, dispatchKey]);
+  }, [menuPosition, subMenuPos, props.editor, align, dispatchKey, classes.menuRoot]);
 
   const isHead = currentCellElement && currentCellElement.tagName.toLocaleLowerCase() === 'th';
 
