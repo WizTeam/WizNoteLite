@@ -27,10 +27,10 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
   }),
   fixed: ({ isWinClient }) => ({
     position: 'fixed',
-    top: isWinClient ? spacing(4) : 0,
+    top: 0,
     bottom: 0,
     right: 0,
-    zIndex: 9999,
+    zIndex: 99,
     backgroundColor: palette.type === 'dark' ? '#333333' : '#fafafa',
     boxShadow: '0px 1px 16px 0px rgba(0, 0, 0, 0.31)',
     opacity: 0.8,
