@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    wordBreak: 'break-all',
+    wordBreak: 'normal',
     fontSize: 'inherit',
   },
   fullWidth: {

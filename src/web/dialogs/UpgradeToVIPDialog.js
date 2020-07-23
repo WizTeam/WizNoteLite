@@ -121,13 +121,14 @@ class UpgradeToVIPDialog extends React.Component {
       if (!this.state.yearProduct) {
         if (window.wizApi.platform.isMac) {
           try {
+            this.setState({ loading: true });
             const products = await window.wizApi.userManager.queryProducts();
             const yearProduct = products.find((product) => product.productIdentifier === 'cn.wiz.note.lite.year');
-            this.setState({ yearProduct });
+            this.setState({ yearProduct, loading: false });
           } catch (err) {
             console.error(err);
             alert(err.message);
-            this.setState({ yearProduct: null });
+            this.setState({ yearProduct: null, loading: false });
           }
         }
       }
@@ -140,7 +141,11 @@ class UpgradeToVIPDialog extends React.Component {
           await window.wizApi.userManager.purchaseProduct(this.state.yearProduct);
         } catch (err) {
           this.setState({ purchasing: false });
-          console.error(err);
+          if (err.externCode === 'WizErrorNowAllowMakePayments') {
+            await window.wizApi.userManager.showUpgradeVipDialog();
+          } else {
+            alert(err.message);
+          }
         }
       } else {
         await window.wizApi.userManager.showUpgradeVipDialog();
@@ -201,6 +206,7 @@ class UpgradeToVIPDialog extends React.Component {
     super(props);
     this.state = {
       yearProduct: undefined,
+      loading: true,
       purchasing: false,
       purchaseState: '',
       user: null,
@@ -225,6 +231,7 @@ class UpgradeToVIPDialog extends React.Component {
   render() {
     const {
       classes, open, onClose, intl,
+      loading,
     } = this.props;
 
     const {
@@ -235,6 +242,13 @@ class UpgradeToVIPDialog extends React.Component {
     const isMac = window.wizApi.platform.isMac;
 
     let buttonText = '';
+    //
+    if (user && (user.vip || user.vipDate)) {
+      buttonText = intl.formatMessage({ id: 'buttonRenewVIPWithPrice' });
+    } else {
+      buttonText = intl.formatMessage({ id: 'buttonUpgradeVIPWithPrice' });
+    }
+    //
     if (isMac) {
       if (purchasing) {
         if (purchaseState === 'verifying') {
@@ -243,8 +257,8 @@ class UpgradeToVIPDialog extends React.Component {
           buttonText = intl.formatMessage({ id: 'buttonPurchasing' });
         }
       } else if (yearProduct === null) {
-        //
-        buttonText = intl.formatMessage({ id: 'buttonFailedToQueryProduct' });
+        // use default button text
+        // buttonText = intl.formatMessage({ id: 'buttonFailedToQueryProduct' });
         //
       } else if (yearProduct) {
         if (user && (user.vip || user.vipDate)) {
@@ -254,14 +268,6 @@ class UpgradeToVIPDialog extends React.Component {
         }
       } else {
         buttonText = intl.formatMessage({ id: 'buttonPurchaseLoading' });
-      }
-    } else {
-      //
-      // eslint-disable-next-line no-lonely-if
-      if (user && (user.vip || user.vipDate)) {
-        buttonText = intl.formatMessage({ id: 'buttonRenewVIPWithPrice' });
-      } else {
-        buttonText = intl.formatMessage({ id: 'buttonUpgradeVIPWithPrice' });
       }
     }
 
@@ -276,7 +282,7 @@ class UpgradeToVIPDialog extends React.Component {
       }
     }
 
-    const isLoading = (isMac && !yearProduct);
+    const isLoading = (isMac && loading);
     //
     return (
       <Dialog

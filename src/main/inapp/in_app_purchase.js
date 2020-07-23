@@ -1,11 +1,14 @@
 const {
   inAppPurchase, BrowserWindow, app, shell,
 } = require('electron');
+const path = require('path');
 const i18n = require('i18next');
 const fs = require('fs-extra');
 const { WizInternalError } = require('../../share/error');
 const request = require('../common/request');
 const users = require('../user/users');
+
+const isWindows = process.platform === 'win32';
 
 let currentUserGuid;
 
@@ -154,7 +157,7 @@ function initInAppPurchases() {
 
 async function queryProducts() {
   if (!inAppPurchase.canMakePayments()) {
-    throw new WizInternalError(i18n.t('errorNotAllowMakeInAppPurchase'));
+    throw new WizInternalError(i18n.t('errorNotAllowMakeInAppPurchase'), 'WizErrorNowAllowMakePayments');
   }
   //
   // 检索并显示产品描述.
@@ -176,7 +179,7 @@ async function queryProducts() {
 async function purchaseProduct(event, userGuid, selectedProduct) {
   currentUserGuid = userGuid;
   if (!inAppPurchase.canMakePayments()) {
-    throw new WizInternalError(i18n.t('errorNotAllowMakeInAppPurchase'));
+    throw new WizInternalError(i18n.t('errorNotAllowMakeInAppPurchase'), 'WizErrorNowAllowMakePayments');
   }
   const selectedQuantity = 1;
   const productIdentifier = selectedProduct.productIdentifier;
@@ -205,6 +208,10 @@ async function showUpgradeVipDialog(event, userGuid) {
     resizable: false,
     minimizable: false,
     show: false,
+    webPreferences: {
+      nodeIntegration: false,
+      preload: path.join(__dirname, '../../web/dialog_preload.js'),
+    },
   });
 
   //
@@ -213,9 +220,11 @@ async function showUpgradeVipDialog(event, userGuid) {
   upgradeVipDialog.on('closed', async () => {
     //
     try {
-      setTimeout(() => {
-        mainWindow.setAlwaysOnTop(false);
-      }, 300);
+      if (isWindows) {
+        setTimeout(() => {
+          mainWindow.setAlwaysOnTop(false);
+        }, 300);
+      }
       //
       const newUser = await users.refreshUserInfo(userGuid);
       if (newUser.vip && newUser.vipDate !== user.vipDate) {
@@ -227,7 +236,9 @@ async function showUpgradeVipDialog(event, userGuid) {
   });
 
   upgradeVipDialog.webContents.on('new-window', (e, linkUrl) => {
-    mainWindow.setAlwaysOnTop(true);
+    if (isWindows) {
+      mainWindow.setAlwaysOnTop(true);
+    }
     e.preventDefault();
     shell.openExternal(linkUrl);
   });
@@ -236,15 +247,17 @@ async function showUpgradeVipDialog(event, userGuid) {
   // aoid flicker
   // https://github.com/electron/electron/issues/10616
   //
-  mainWindow.setAlwaysOnTop(true);
-
-  upgradeVipDialog.on('focus', () => {
+  if (isWindows) {
     mainWindow.setAlwaysOnTop(true);
-  });
 
-  upgradeVipDialog.on('blur', () => {
-    mainWindow.setAlwaysOnTop(false);
-  });
+    upgradeVipDialog.on('focus', () => {
+      mainWindow.setAlwaysOnTop(true);
+    });
+
+    upgradeVipDialog.on('blur', () => {
+      mainWindow.setAlwaysOnTop(false);
+    });
+  }
 
   upgradeVipDialog.loadURL(url);
   upgradeVipDialog.removeMenu();

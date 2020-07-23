@@ -232,7 +232,11 @@ handleApi('captureScreen', async (event, userGuid, kbGuid, noteGuid, options = {
       const totalHeight = noteOptions.height;
       const windowWidth = window.getSize()[0];
       window.setSize(windowWidth, pageHeight);
-      await window.webContents.executeJavaScript('window.requestAnimationFrame;');
+      try {
+        await window.webContents.executeJavaScript('window.requestAnimationFrame;0;');
+      } catch (err) {
+        console.error(err);
+      }
       const pageCount = Math.floor((totalHeight + pageHeight - 1) / pageHeight);
       //
       const images = [];
@@ -254,7 +258,11 @@ handleApi('captureScreen', async (event, userGuid, kbGuid, noteGuid, options = {
         const top = await window.webContents.executeJavaScript(`document.getElementById('wiz-note-content-root').parentElement.scrollTop;`);
         //
         await wait(300); // wait scrollbar
-        await window.webContents.executeJavaScript('window.requestAnimationFrame;');
+        try {
+          await window.webContents.executeJavaScript('window.requestAnimationFrame;0;');
+        } catch (err) {
+          console.error(err);
+        }
         const image = await window.capturePage();
         const imageSize = image.getSize();
         if (i === 0) {

@@ -74,8 +74,8 @@ class WizNetworkError extends WizKnownError {
 }
 
 class WizInternalError extends WizKnownError {
-  constructor(message) {
-    super(message, 'WizErrorInternal');
+  constructor(message, externCode) {
+    super(message, 'WizErrorInternal', externCode);
   }
 }
 
