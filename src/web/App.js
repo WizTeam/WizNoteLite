@@ -85,6 +85,40 @@ class App extends React.Component {
   componentDidMount() {
     window.wizApi.userManager.on('logout', this.handler.handleLogout);
     window.wizApi.userManager.on('showAbout', this.handler.handleShowAboutDialog);
+    //
+    const syncData = async (user) => {
+      try {
+        const um = window.wizApi.userManager;
+        if (um.currentUser.isLocalUser) {
+          return;
+        }
+        //
+        await um.refreshUserInfo();
+        await um.syncKb(user.kbGuid, {
+          noWait: true,
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    //
+    if (this.shouldAutoLogging) {
+      this.shouldAutoLogging = false;
+      window.document.addEventListener('DOMContentLoaded', () => {
+        window.wizApi.userManager.localLogin().then((user) => {
+          if (user) {
+            syncData(user);
+            this.setState({
+              currentUser: user,
+              isAutoLogging: false,
+              mergeLocalAccount: !!user.isLocalUser,
+            });
+          } else {
+            this.setState({ isAutoLogging: false });
+          }
+        });
+      });
+    }
   }
 
   componentWillUnmount() {
@@ -103,26 +137,6 @@ class App extends React.Component {
     const loggedIn = currentUser;
     const kbGuid = currentUser?.kbGuid;
     //
-    if (this.shouldAutoLogging) {
-      this.shouldAutoLogging = false;
-      window.document.addEventListener('DOMContentLoaded', () => {
-        window.wizApi.userManager.localLogin().then((user) => {
-          if (user) {
-            window.wizApi.userManager.syncKb(user.kbGuid, {
-              noWait: true,
-            });
-            this.setState({
-              currentUser: user,
-              isAutoLogging: false,
-              mergeLocalAccount: !!user.isLocalUser,
-            });
-          } else {
-            this.setState({ isAutoLogging: false });
-          }
-        });
-      });
-    }
-
     if (!isAutoLogging) {
       window.document.body.className = window.document.body.className.replace('loading', '');
     }

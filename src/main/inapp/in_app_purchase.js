@@ -195,7 +195,7 @@ async function showUpgradeVipDialog(event, userGuid) {
   const userData = users.getUserData(userGuid);
   const apiServer = userData.accountServer.apiServer;
   const token = userData.token;
-  const url = `${apiServer}/?p=wiz&c=vip_lite&token=${token}&clientType=lite&clientVersion={${app.getVersion()}}`;
+  const url = `${apiServer}/?p=wiz&c=vip_lite&token=${token}&clientType=lite&clientVersion=${app.getVersion()}`;
 
   //
   const mainWindow = BrowserWindow.fromWebContents(event.sender);
