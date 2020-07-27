@@ -123,8 +123,18 @@ class AccountServer {
         token,
       },
     };
-    const user = await WizRequest.standardRequest(options);
-    return user;
+    try {
+      const user = await WizRequest.standardRequest(options);
+      return user;
+    } catch (err) {
+      if (err.code === 301) {
+        const user = await this.login(this._server, this._user.userId, this._password, {
+          noCheckExists: true,
+        });
+        return user;
+      }
+      throw err;
+    }
   }
 }
 
