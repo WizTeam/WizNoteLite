@@ -1,7 +1,7 @@
 const {
   ipcMain, BrowserWindow,
   dialog,
-  shell, app,
+  shell,
 } = require('electron');
 const fs = require('fs-extra');
 const URL = require('url');
@@ -50,12 +50,18 @@ handleApi('getLink', async (event, ...args) => {
 handleApi('signUp', async (event, ...args) => {
   const user = await users.signUp(...args);
   users.registerWindow(user.userGuid, event.sender);
+  // 因为registerWindow在login/signup之后，所以消息没有正常发出。在这里强制发送一下消息
+  users.emitEvent(user.userGuid, 'userInfoChanged', user);
+  //
   return user;
 });
 
 handleApi('onlineLogin', async (event, ...args) => {
   const user = await users.onlineLogin(...args);
   users.registerWindow(user.userGuid, event.sender);
+  // 因为registerWindow在login/signup之后，所以消息没有正常发出。在这里强制发送一下消息
+  users.emitEvent(user.userGuid, 'userInfoChanged', user);
+  //
   return user;
 });
 
@@ -64,6 +70,8 @@ handleApi('localLogin', async (event, ...args) => {
   const user = await users.localLogin(...args);
   if (user) {
     users.registerWindow(user.userGuid, event.sender);
+    // 因为registerWindow在login/signup之后，所以消息没有正常发出。在这里强制发送一下消息
+    users.emitEvent(user.userGuid, 'userInfoChanged', user);
   }
   return user;
 });

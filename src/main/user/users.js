@@ -33,12 +33,13 @@ class Users {
       //
       await dataStore.copyLocalAccount(localUser, user);
       const db = await dataStore.openPersonalDb(user.userGuid, user.kbGuid);
-      await db.updateAccount(userId, password, server, user);
       // //
       const userData = new UserData();
       await userData.setUser(user, db, accountServer);
       this._userMap.set(user.userGuid, userData);
       this.initEvents(user.userGuid, db);
+      //
+      await db.updateAccount(userId, password, server, user);
       //
       if (options && options.autoLogin) {
         globalSettings.setLastAccount(user.userGuid);

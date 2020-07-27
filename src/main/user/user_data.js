@@ -57,6 +57,9 @@ class UserData extends EventEmitter {
   }
 
   async refreshUserInfo() {
+    if (this._user.isLocalUser) {
+      throw new WizKnownError(i18next.t('messageNoAccount', 'No account'), 'WizErrorNoAccount');
+    }
     const db = this._personalDb;
     const newUser = await this._as.refreshUserInfo(this.token);
     this._user = newUser;
