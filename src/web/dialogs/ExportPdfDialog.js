@@ -98,6 +98,7 @@ class ExportPdfDialog extends React.Component {
         progressCallback: 'onPrintToPDFProgress',
         landscape: directionValue === 'landscape',
         pageSize: paperSizeValue,
+        printBackground: true,
       };
       //
       this.setState({ loading: true });
