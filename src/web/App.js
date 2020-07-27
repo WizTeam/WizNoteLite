@@ -89,6 +89,10 @@ class App extends React.Component {
     const syncData = async (user) => {
       try {
         const um = window.wizApi.userManager;
+        if (um.currentUser.isLocalUser) {
+          return;
+        }
+        //
         await um.refreshUserInfo();
         await um.syncKb(user.kbGuid, {
           noWait: true,
