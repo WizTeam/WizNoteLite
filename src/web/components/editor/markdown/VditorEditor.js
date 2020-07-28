@@ -14,7 +14,7 @@ import InsertTagMenu from './InsertTagMenu';
 import {
   isCtrl, filterParentElement, hasClass, getDomIndexForParent,
 } from '../libs/dom_utils';
-import { getRange, getSelection } from '../libs/range_utils';
+import { getRange, getSelection, resetRange } from '../libs/range_utils';
 import TableMenu from './TableMenu';
 import TableToolbar from './TableToolbar';
 
@@ -139,19 +139,7 @@ class VditorEditor extends React.Component {
         isFocus,
       }));
     },
-    handleMouseDown: (e) => {
-      const LinkElement = filterParentElement(e.target, this.editor.vditor.element, (dom) => dom.getAttribute('data-type') === 'a', true);
-      if (LinkElement) {
-        const afterStyle = window.getComputedStyle(LinkElement, ':after');
-        if (isCtrl(e) || (e.offsetX >= parseInt(afterStyle.getPropertyValue('left'), 10) && e.offsetY >= parseInt(afterStyle.getPropertyValue('top'), 10))) {
-          const urlElement = LinkElement.querySelector('.vditor-ir__marker--link');
-          if (urlElement.innerText) {
-            window.open(urlElement.innerText);
-            e.preventDefault();
-          }
-        }
-      }
-    },
+    handleMouseDown: (e) => this.fixLink(e) || this.fixImage(e),
   }
   // 统计词数
   // setWordsNumber = debounce(() => {
@@ -492,6 +480,35 @@ class VditorEditor extends React.Component {
 
     html = html.replace(/\{\{wiz-vditor-wbr\}\}/g, '<wbr>');
     return html;
+  }
+
+  fixLink(e) {
+    const LinkElement = filterParentElement(e.target, this.editor.vditor.element, (dom) => dom.getAttribute('data-type') === 'a', true);
+    if (LinkElement) {
+      const afterStyle = window.getComputedStyle(LinkElement, ':after');
+      if (isCtrl(e) || (e.offsetX >= parseInt(afterStyle.getPropertyValue('left'), 10) && e.offsetY >= parseInt(afterStyle.getPropertyValue('top'), 10))) {
+        const urlElement = LinkElement.querySelector('.vditor-ir__marker--link');
+        if (urlElement.innerText) {
+          window.open(urlElement.innerText);
+          e.preventDefault();
+        }
+      }
+      return true;
+    }
+    return false;
+  }
+
+  fixImage(e) {
+    if (e.target.tagName.toLowerCase() === 'img') {
+      const urlElement = filterParentElement(e.target, this.editor.vditor.element, (dom) => hasClass(dom, 'vditor-ir__node'))?.querySelector('.vditor-ir__marker--link');
+      if (urlElement) {
+        const range = document.createRange();
+        range.selectNodeContents(urlElement);
+        resetRange(range);
+      }
+      return true;
+    }
+    return false;
   }
 
   // 触发Vditor隐藏菜单点击事件

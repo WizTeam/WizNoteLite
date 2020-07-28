@@ -63,13 +63,16 @@ export function setRange(_start, _startOffset, _end, _endOffset) {
   }
 }
 
+export function resetRange(range) {
+  const selection = getSelection();
+  selection.removeAllRanges();
+  selection.addRange(range);
+}
 export function setRangeByDomBeforeEnd(dom) {
   if (dom) {
-    const selection = getSelection();
-    selection.removeAllRanges();
     const range = document.createRange();
     range.selectNodeContents(dom.firstChild ?? dom);
     range.collapse(false);
-    selection.addRange(range);
+    resetRange(range);
   }
 }
