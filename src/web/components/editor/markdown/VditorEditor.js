@@ -139,6 +139,19 @@ class VditorEditor extends React.Component {
         isFocus,
       }));
     },
+    handleMouseDown: (e) => {
+      const LinkElement = filterParentElement(e.target, this.editor.vditor.element, (dom) => dom.getAttribute('data-type') === 'a', true);
+      if (LinkElement) {
+        const afterStyle = window.getComputedStyle(LinkElement, ':after');
+        if (isCtrl(e) || (e.offsetX >= parseInt(afterStyle.getPropertyValue('left'), 10) && e.offsetY >= parseInt(afterStyle.getPropertyValue('top'), 10))) {
+          const urlElement = LinkElement.querySelector('.vditor-ir__marker--link');
+          if (urlElement.innerText) {
+            window.open(urlElement.innerText);
+            e.preventDefault();
+          }
+        }
+      }
+    },
   }
   // 统计词数
   // setWordsNumber = debounce(() => {
@@ -316,6 +329,9 @@ class VditorEditor extends React.Component {
           this.setEditorDisabled();
         }
         this.updateContentsList();
+        if (this.editor?.vditor?.element) {
+          this.editor.vditor.element.addEventListener('mousedown', this.handler.handleMouseDown);
+        }
         // this._removePanelNode();
       },
       input: (text, html) => {
