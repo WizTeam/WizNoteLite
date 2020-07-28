@@ -27,7 +27,7 @@ class UserData extends EventEmitter {
     this._user = user;
     this._personalDb = personalDb;
     this._as = accountServer;
-    this._delayedSyncKb = debounce(this._syncKbCore, 10 * 1000); // delay 10 seconds
+    this._delayedSyncKb = debounce(this._syncKbCore, 3 * 1000); // delay 3 seconds
     this._userSettings = new UserSettings(user.userGuid);
     //
     this._refreshToken = async () => {

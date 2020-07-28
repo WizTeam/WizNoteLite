@@ -46,8 +46,9 @@ export default {
   editorMenuInlineCode: 'Inline Code',
   editorMenuBlockCode: 'Block Code',
   // 编辑器footer
-  editorFooterLocal: 'Local save not synchronized',
-  editorFooterSyncTime: 'Synchronized',
+  editorFooterSynced: 'Synchronized',
+  editorFooterLocalChanged: 'Local save not synchronized: {modifiedTime}',
+  editorFooterLocalUser: 'Local save not synchronized',
   editorFooterWordsSize: 'Words Size',
   //
   inputUserIdNullError: 'Please input email',
