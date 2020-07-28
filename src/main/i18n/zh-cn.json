@@ -1,6 +1,6 @@
 {
   "messageNoAccount": "没有账号，请注册或登录",
-  "about": "关于 WizNote Lite",
+  "menuShowAbout": "关于 WizNote Lite",
   "services": "服务",
   "hide": "隐藏 WizNote Lite",
   "hideOther": "隐藏其他",
@@ -35,6 +35,10 @@
   "toggledevtools": "切换开发者工具",
   "learnMore": "了解更多...",
   "menuMainWindow": "主窗口",
+  "menuViewEditorOnly": "只显示编辑器",
+  "menuViewEditorAndNotes": "显示笔记和编辑器",
+  "menuViewEditorAndNotesAndTags": "显示标签，编辑和编辑器",
+
 
   "errorNotAllowMakeInAppPurchase": "当前 macOS 用户无法使用内购功能.",
   "errorReceiveProductionInfo": "无法获取产品信息.",

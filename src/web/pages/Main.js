@@ -213,6 +213,16 @@ class Main extends React.Component {
       });
     },
 
+    handleMenuItemClicked: (id) => {
+      if (id === 'menuViewEditorOnly') {
+        this.setState({ isFullScreen: true });
+      } else if (id === 'menuViewEditorAndNotes') {
+        this.setState({ isFullScreen: false, showDrawer: false });
+      } else if (id === 'menuViewEditorAndNotesAndTags') {
+        this.setState({ isFullScreen: false, showDrawer: true });
+      }
+    },
+
     handleSyncFinish: (kbGuid, result, syncOptions) => {
       if (kbGuid !== this.props.kbGuid) {
         return;
@@ -302,10 +312,12 @@ class Main extends React.Component {
       }
     }
     window.wizApi.userManager.on('syncFinish', this.handler.handleSyncFinish);
+    window.wizApi.userManager.on('menuItemClicked', this.handler.handleMenuItemClicked);
   }
 
   componentWillUnmount() {
     window.wizApi.userManager.off('syncFinish', this.handler.handleSyncFinish);
+    window.wizApi.userManager.off('menuItemClicked', this.handler.handleMenuItemClicked);
   }
 
   showUpgradeVipMessage(isVipExpired, syncOptions) {

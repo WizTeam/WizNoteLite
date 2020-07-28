@@ -1,6 +1,6 @@
 {
   "messageNoAccount": "沒有賬號，請註冊或登錄",
-  "about": "關於 WizNote Lite",
+  "menuShowAbout": "關於 WizNote Lite",
   "services": "服務",
   "hide": "隱藏 WizNote Lite",
   "hideOther": "隱藏其他",
@@ -35,7 +35,10 @@
   "toggledevtools": "切換開發者工具",
   "learnMore": "了解更多...",
   "menuMainWindow": "主窗口", 
-
+  "menuViewEditorOnly": "只顯示編輯器",
+  "menuViewEditorAndNotes": "顯示筆記和編輯器",
+  "menuViewEditorAndNotesAndTags": "顯示標籤，編輯和編輯器",
+  
   "errorNotAllowMakeInAppPurchase": "當前 macOS 用戶無法使用內購功能.",
   "errorReceiveProductionInfo": "無法獲取產品信息.",
   "errorProductInNotValid": "產品無效.",

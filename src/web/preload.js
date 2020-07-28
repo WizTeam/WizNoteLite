@@ -94,7 +94,7 @@ class WindowManager {
         {
           label: intl.formatMessage({ id: 'about' }),
           click() {
-            window.wizApi.userManager.emit('showAbout');
+            window.wizApi.userManager.emit('menuItemClicked', 'menuShowAbout');
           },
         },
       ];
@@ -381,8 +381,13 @@ ipcRenderer.on('linksChanged', (event, ...args) => {
   userManager.emit('linksChanged', ...args);
 });
 
-ipcRenderer.on('showAbout', (event, ...args) => {
-  userManager.emit('showAbout', ...args);
+ipcRenderer.on('menuItemClicked', (event, ...args) => {
+  const id = args[0];
+  switch (id) {
+    default: {
+      userManager.emit('menuItemClicked', ...args);
+    }
+  }
 });
 
 ipcRenderer.on('userInfoChanged', (event, ...args) => {
