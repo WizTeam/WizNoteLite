@@ -63,7 +63,10 @@ class App extends React.Component {
     handleCloseAboutDialog: () => {
       this.setState({ showAboutDialog: false });
     },
-    handleShowAboutDialog: () => {
+    handleShowAboutDialog: (id) => {
+      if (id !== 'menuShowAbout') {
+        return;
+      }
       this.setState({ showAboutDialog: true });
     },
   }
@@ -84,7 +87,7 @@ class App extends React.Component {
 
   componentDidMount() {
     window.wizApi.userManager.on('logout', this.handler.handleLogout);
-    window.wizApi.userManager.on('showAbout', this.handler.handleShowAboutDialog);
+    window.wizApi.userManager.on('menuItemClicked', this.handler.handleShowAboutDialog);
     //
     const syncData = async (user) => {
       try {
@@ -123,7 +126,7 @@ class App extends React.Component {
 
   componentWillUnmount() {
     window.wizApi.userManager.off('logout', this.handler.handleLogout);
-    window.wizApi.userManager.off('showAbout', this.handler.handleShowAboutDialog);
+    window.wizApi.userManager.off('menuItemClicked', this.handler.handleShowAboutDialog);
   }
 
   //

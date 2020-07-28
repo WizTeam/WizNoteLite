@@ -1,5 +1,6 @@
 {
-  "about": "About WizNote Lite",
+  "messageNoAccount": "No account, please sign up or login",
+  "menuShowAbout": "About WizNote Lite",
   "services": "Services",
   "hide": "Hide WizNote Lite",
   "hideOther": "Hide other",
@@ -34,6 +35,9 @@
   "toggledevtools": "Toggle Developer Tools",
   "learnMore": "Learn More...",
   "menuMainWindow": "Main Window",
+  "menuViewEditorOnly": "Show Editor Only",
+  "menuViewEditorAndNotes": "Show Notes and Editor",
+  "menuViewEditorAndNotesAndTags": "Show Tags, Notes and Editor",
 
   "errorNotAllowMakeInAppPurchase": "The user is not allowed to make in-app purchase.",
   "errorReceiveProductionInfo": "Unable to retrieve the product information.",
