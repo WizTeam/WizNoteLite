@@ -50,8 +50,9 @@ export default {
   inputPasswordNullError: '请输入密码',
   inputServerNullError: '请输入服务器地址',
   // 编辑器footer
-  editorFooterLocal: '本地保存未同步',
-  editorFooterSyncTime: '已同步',
+  editorFooterSynced: '已同步',
+  editorFooterLocalChanged: '本地保存未同步: {modifiedTime}',
+  editorFooterLocalUser: '本地使用，未同步',
   editorFooterWordsSize: '字数',
   // tableMenu
   tableMenuAddRowAbove: '上方增加行',

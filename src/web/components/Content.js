@@ -13,7 +13,7 @@ import ExportPngDialog from '../dialogs/ExportPngDialog';
 import ExportPdfDialog from '../dialogs/ExportPdfDialog';
 import Icons from '../config/icons';
 // import FocusBtn from './FocusBtn';
-import SyncBtn from './SyncBtn';
+import SyncButton from './SyncButton';
 import Scrollbar from './Scrollbar';
 import EditorContents from './editor/markdown/EditorContents';
 
@@ -263,7 +263,7 @@ class Content extends React.Component {
             <Icons.ExportIcon className={classes.icon} />
           </IconButton>
           <div className={classes.emptyBlock} />
-          <SyncBtn
+          <SyncButton
             className={classes.iconButton}
             iconClassName={classes.icon}
             onCreateAccount={this.props.onCreateAccount}
