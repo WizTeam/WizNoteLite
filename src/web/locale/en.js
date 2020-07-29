@@ -115,6 +115,8 @@ export default {
   messageVipServiceEndedDate: 'Your WizNote VIP service has expired on {date}.',
   buttonFailedToQueryProduct: 'Failed to query product',
   errorSyncFailed: 'Sync failed: {message}',
+  errorNoteSyncFailed: 'Upload notes failed: {message}',
+  buttonViewLog: 'View Log',
 
   // export
   exportPng: 'Export Image',

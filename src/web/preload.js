@@ -325,6 +325,11 @@ class UserManager extends EventEmitter {
     return result;
   }
 
+  async viewLogFile() {
+    const result = await invokeApi('viewLogFile', this.userGuid);
+    return result;
+  }
+
   async sendMessage(name, ...args) {
     ipcRenderer.send(name, this.userGuid, ...args);
   }

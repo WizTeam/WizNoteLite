@@ -114,6 +114,8 @@ export default {
   messageVipServiceEndedDate: 'VIP 已經在 {date} 到期。',
   buttonFailedToQueryProduct: '無法獲取產品信息',
   errorSyncFailed: '同步失敗: {message}',
+  errorNoteSyncFailed: '筆記上傳失敗: {message}',
+  buttonViewLog: '查看日誌',
 
   // export
   exportPng: '導出為圖片',
