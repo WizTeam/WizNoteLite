@@ -5,12 +5,15 @@ const {
 const path = require('path');
 const url = require('url');
 const windowStateKeeper = require('electron-window-state');
+const log = require('electron-log');
 
 const { unregisterWindow } = require('./main/api');
 const { registerWizProtocol } = require('./main/db/resource_loader');
 
 const { i18nInit, getCurrentLang } = require('./main/i18n');
 const { getMainMenuTemplate, getMacDockMenuTemplate } = require('./main/settings/menu_options');
+
+Object.assign(console, log.functions);
 
 const isMac = process.platform === 'darwin';
 const electronVersion = process.versions.electron;
