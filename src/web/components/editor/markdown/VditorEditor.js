@@ -17,6 +17,7 @@ import {
 import { getRange, getSelection, resetRange } from '../libs/range_utils';
 import TableMenu from './TableMenu';
 import TableToolbar from './TableToolbar';
+import ImageMenu from './ImageMenu';
 
 const styles = (/* theme */) => ({
   hideBlockType: {
@@ -335,7 +336,6 @@ class VditorEditor extends React.Component {
 
           const imgReg = /(<img\s+([^>]*\s+)?(data-src|src)=")index_files(\/[^"]*")/ig;
           let newHtml = html.replace(imgReg, (str, m1, m2, m3, m4) => m1 + this.resourceUrl + m4);
-          console.log(newHtml);
           // console.log('------------ transform after -----------');
           // console.log(newHtml);
           newHtml = this.highLightTag(newHtml);
@@ -688,6 +688,11 @@ class VditorEditor extends React.Component {
         <TableMenu
           editor={this.editor}
           onSaveNote={this.props.onSave}
+        />
+        <ImageMenu
+          editor={this.editor}
+          onSaveNote={this.props.onSave}
+          onInsertImage={this.props.onInsertImage}
         />
         <TableToolbar
           editor={this.editor}

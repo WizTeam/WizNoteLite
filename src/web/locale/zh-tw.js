@@ -67,6 +67,9 @@ export default {
   tableMenuDeleteTable: '刪除表格',
   tableMenuCpHtml: '復制表格 HTML',
   tableMenuCpMd: '復制表格 md 源碼',
+  // imageMenu
+  ImageMenuChange: '更換圖片',
+  ImageMenuDelete: '刪除',
   // error
   errorDisableRegister: '註冊已禁用',
   errorMaxTimesForIP: '您當前的 IP 註冊次數過多，請稍後再試...',
