@@ -96,7 +96,7 @@ class KnowledgeServer extends ServerBase {
     const data = await this.request({
       token: this._user.token,
       method: 'get',
-      url: `${this._serverUrl}/ks/object/download/${this._kbGuid}/${noteGuid}?objType=resource&objId=${resName}&force=1`,
+      url: `${this._serverUrl}/ks/object/download/${this._kbGuid}/${noteGuid}?objType=resource&objId=${resName}`,
       responseType: 'arraybuffer',
       returnFullResult: true,
     });
