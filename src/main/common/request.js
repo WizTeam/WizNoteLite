@@ -2,6 +2,7 @@ const axios = require('axios');
 const assert = require('assert');
 const i18next = require('i18next');
 // const URL = require('url');
+const { app } = require('electron');
 
 const { WizNetworkError, WizInternalError, WizKnownError } = require('../../share/error');
 
@@ -24,11 +25,12 @@ async function standardRequest(opt) {
   }
   //
   if (options.url) {
+    const version = app.getVersion();
     if (options.url.indexOf('clientType=') === -1) {
       if (options.url.indexOf('?') === -1) {
-        options.url += '?clientType=lite&clientVersion=1.0';
+        options.url += `?clientType=lite&clientVersion=${version}`;
       } else {
-        options.url += '&clientType=lite&clientVersion=1.0';
+        options.url += `&clientType=lite&clientVersion=${version}`;
       }
     }
   }

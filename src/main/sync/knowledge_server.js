@@ -10,7 +10,7 @@ class KnowledgeServer extends ServerBase {
     super();
     this._kbGuid = kbGuid;
     this._serverUrl = serverUrl;
-    this._serverUrl = 'http://192.168.1.14:4001';
+    // this._serverUrl = 'http://192.168.1.14:4001';
     this._user = user;
   }
 
