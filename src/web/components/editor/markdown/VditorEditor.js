@@ -139,7 +139,7 @@ class VditorEditor extends React.Component {
         isFocus,
       }));
     },
-    handleMouseDown: (e) => this.fixLink(e) || this.fixImage(e),
+    handleMouseDown: (e) => this.fixLink(e) || this.fixImage(e) || this.fixChangeImage(e),
   }
   // 统计词数
   // setWordsNumber = debounce(() => {
@@ -335,6 +335,7 @@ class VditorEditor extends React.Component {
 
           const imgReg = /(<img\s+([^>]*\s+)?(data-src|src)=")index_files(\/[^"]*")/ig;
           let newHtml = html.replace(imgReg, (str, m1, m2, m3, m4) => m1 + this.resourceUrl + m4);
+          console.log(newHtml);
           // console.log('------------ transform after -----------');
           // console.log(newHtml);
           newHtml = this.highLightTag(newHtml);
@@ -500,15 +501,33 @@ class VditorEditor extends React.Component {
 
   fixImage(e) {
     if (e.target.tagName.toLowerCase() === 'img') {
-      const urlElement = filterParentElement(e.target, this.editor.vditor.element, (dom) => hasClass(dom, 'vditor-ir__node'))?.querySelector('.vditor-ir__marker--link');
-      if (urlElement) {
-        const range = document.createRange();
-        range.selectNodeContents(urlElement);
-        resetRange(range);
+      const containerElement = filterParentElement(e.target, this.editor.vditor.element, (dom) => hasClass(dom, 'vditor-ir__node'));
+      if (containerElement) {
+        const urlElement = containerElement.querySelector('.vditor-ir__marker--link');
+        // 修复没有data type
+        if (!containerElement.getAttribute('data-type')) {
+          containerElement.setAttribute('data-type', 'img');
+        }
+
+        if (urlElement) {
+          const range = document.createRange();
+          range.selectNodeContents(urlElement);
+          resetRange(range);
+        }
+        return true;
       }
-      return true;
     }
     return false;
+  }
+
+  async fixChangeImage(e) {
+    if (e.target.parentElement && e.target.parentElement.getAttribute('data-type') === 'img' && e.target === e.target.parentElement.children[0]) {
+      e.preventDefault();
+      const range = document.createRange();
+      range.setStartAfter(e.target.parentElement);
+      resetRange(range);
+      await this.props.onInsertImage(() => e.target.parentElement.remove());
+    }
   }
 
   // 触发Vditor隐藏菜单点击事件
