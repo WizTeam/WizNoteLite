@@ -276,7 +276,7 @@ class Main extends React.Component {
           notes = notes.slice(0, 3);
         }
         const titles = notes.join(', ');
-        const message = intl.formatMessage({ id: 'errorNoteSyncFailed' }, { notes: titles });
+        const message = intl.formatMessage({ id: 'errorNoteSyncFailed' }, { message: titles });
         enqueueSnackbar(message, {
           anchorOrigin: {
             vertical: 'top',
