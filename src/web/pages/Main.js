@@ -261,7 +261,7 @@ class Main extends React.Component {
                 <FormattedMessage id="buttonViewLog" />
               </Button>
               <IconButton
-                onClick={this.handler.handleCloseSnackbar}
+                onClick={() => this.handler.handleCloseSnackbar('WizErrorSync')}
                 className={classes.snackbarButton}
               >
                 <Icons.CloseIcon />
@@ -293,7 +293,7 @@ class Main extends React.Component {
                 <FormattedMessage id="buttonViewLog" />
               </Button>
               <IconButton
-                onClick={this.handler.handleCloseSnackbar}
+                onClick={() => this.handler.handleCloseSnackbar('WizErrorSyncNotes')}
                 className={classes.snackbarButton}
               >
                 <Icons.CloseIcon />
@@ -316,8 +316,8 @@ class Main extends React.Component {
       this.setState({ showUpgradeToVipDialog: true });
     },
 
-    handleCloseSnackbar: () => {
-      this.props.closeSnackbar(SNACKBAR_KEY);
+    handleCloseSnackbar: (key) => {
+      this.props.closeSnackbar(key);
     },
 
     handleCloseUpgradeToVipDialog: () => {
@@ -404,7 +404,10 @@ class Main extends React.Component {
           >
             {buttonMessage}
           </Button>
-          <IconButton onClick={this.handler.handleCloseSnackbar} className={classes.snackbarButton}>
+          <IconButton
+            onClick={() => this.handler.handleCloseSnackbar(SNACKBAR_KEY)}
+            className={classes.snackbarButton}
+          >
             <Icons.CloseIcon />
           </IconButton>
         </>
