@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -22,9 +22,6 @@ const useStyles = makeStyles(({ palette }) => ({
   },
 }));
 
-let currentImageContainerElement;
-let scrollElement;
-
 function ImageMenu(props) {
   const classes = useStyles();
 
@@ -32,10 +29,13 @@ function ImageMenu(props) {
 
   const [menuPosition, setMenuPosition] = useState(undefined);
 
+  const currentImageContainerElementRef = useRef();
+  const scrollElementRef = useRef();
+
   useEffect(() => {
     function mousedownHandler(e) {
       if (e.button === 2 && e.target.tagName === 'IMG') {
-        currentImageContainerElement = filterParentElement(e.target, props.editor.vditor.element, (dom) => hasClass(dom, 'vditor-ir__node'));
+        currentImageContainerElementRef.current = filterParentElement(e.target, props.editor.vditor.element, (dom) => hasClass(dom, 'vditor-ir__node'));
         setMenuPosition({
           top: e.clientY,
           left: e.clientX,
@@ -46,14 +46,14 @@ function ImageMenu(props) {
         (dom) => hasClass(dom, classes.menuRoot),
         true,
       ) && menuPosition) {
-        const scrollTop = scrollElement.scrollTop;
+        const scrollTop = scrollElementRef.current.scrollTop;
         setMenuPosition(undefined);
-        scrollElement.scrollTo(0, scrollTop);
+        scrollElementRef.current.scrollTo(0, scrollTop);
       }
     }
 
     if (props.editor?.vditor.element) {
-      scrollElement = getScrollContainer(props.editor.vditor.element);
+      scrollElementRef.current = getScrollContainer(props.editor.vditor.element);
 
       window.addEventListener('mousedown', mousedownHandler);
     }
@@ -63,19 +63,21 @@ function ImageMenu(props) {
   }, [menuPosition, props.editor, classes.menuRoot]);
 
   function handleChangeImage(e) {
-    const scrollTop = scrollElement.scrollTop;
+    const scrollTop = scrollElementRef.current.scrollTop;
     const range = document.createRange();
-    range.setStartAfter(currentImageContainerElement);
+    range.setStartAfter(currentImageContainerElementRef.current);
     resetRange(range);
-    props.onInsertImage(() => currentImageContainerElement.remove());
-    scrollElement.scrollTo(0, scrollTop);
+    props.onInsertImage(() => currentImageContainerElementRef.current.remove());
+    scrollElementRef.current.scrollTo(0, scrollTop);
     e.preventDefault();
+    setMenuPosition(undefined);
   }
 
   function handleDeleteImage(e) {
-    currentImageContainerElement.remove();
+    currentImageContainerElementRef.current.remove();
     props.onSaveNote();
     e.preventDefault();
+    setMenuPosition(undefined);
   }
 
   return (
