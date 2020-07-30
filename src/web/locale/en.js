@@ -69,8 +69,8 @@ export default {
   tableMenuCpHtml: 'Copy Table HTML',
   tableMenuCpMd: 'Copy Table Markdown',
   // imageMenu
-  ImageMenuChange: 'Change',
-  ImageMenuDelete: 'Delete',
+  imageMenuChange: 'Change',
+  imageMenuDelete: 'Delete',
   // error
   errorDisableRegister: 'Disable register',
   errorMaxTimesForIP: 'Your IP sign up too much, please retry later...',

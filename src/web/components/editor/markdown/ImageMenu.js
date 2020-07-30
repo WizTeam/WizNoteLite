@@ -92,12 +92,12 @@ function ImageMenu(props) {
     >
       <MenuItem onClick={handleChangeImage}>
         <div className={classes.menuItem}>
-          <div className={classes.menuName}>{intl.formatMessage({ id: 'ImageMenuChange' })}</div>
+          <div className={classes.menuName}>{intl.formatMessage({ id: 'imageMenuChange' })}</div>
         </div>
       </MenuItem>
       <MenuItem onClick={handleDeleteImage}>
         <div className={classes.menuItem}>
-          <div className={classes.menuName}>{intl.formatMessage({ id: 'ImageMenuDelete' })}</div>
+          <div className={classes.menuName}>{intl.formatMessage({ id: 'imageMenuDelete' })}</div>
         </div>
       </MenuItem>
     </Menu>
