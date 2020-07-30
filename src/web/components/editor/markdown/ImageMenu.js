@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -11,7 +11,6 @@ import { resetRange } from '../libs/range_utils';
 
 const useStyles = makeStyles(({ palette }) => ({
   menuRoot: {
-    minWidth: '224px',
     color: palette.type === 'dark' ? '#fff' : '#333',
   },
   menuItem: {
@@ -23,9 +22,6 @@ const useStyles = makeStyles(({ palette }) => ({
   },
 }));
 
-let currentImageContainerElement;
-let scrollElement;
-
 function ImageMenu(props) {
   const classes = useStyles();
 
@@ -33,10 +29,13 @@ function ImageMenu(props) {
 
   const [menuPosition, setMenuPosition] = useState(undefined);
 
+  const currentImageContainerElementRef = useRef();
+  const scrollElementRef = useRef();
+
   useEffect(() => {
-    function mousedownHandler(e) {
+    function handleMouseDown(e) {
       if (e.button === 2 && e.target.tagName === 'IMG') {
-        currentImageContainerElement = filterParentElement(e.target, props.editor.vditor.element, (dom) => hasClass(dom, 'vditor-ir__node'));
+        currentImageContainerElementRef.current = filterParentElement(e.target, props.editor.vditor.element, (dom) => hasClass(dom, 'vditor-ir__node'));
         setMenuPosition({
           top: e.clientY,
           left: e.clientX,
@@ -47,39 +46,36 @@ function ImageMenu(props) {
         (dom) => hasClass(dom, classes.menuRoot),
         true,
       ) && menuPosition) {
+        const scrollTop = scrollElementRef.current.scrollTop;
         setMenuPosition(undefined);
+        scrollElementRef.current.scrollTo(0, scrollTop);
       }
     }
 
     if (props.editor?.vditor.element) {
-      scrollElement = getScrollContainer(props.editor.vditor.element);
+      scrollElementRef.current = getScrollContainer(props.editor.vditor.element);
 
-      window.addEventListener('mousedown', mousedownHandler);
+      window.addEventListener('mousedown', handleMouseDown);
     }
     return () => {
-      window.removeEventListener('mousedown', mousedownHandler);
+      window.removeEventListener('mousedown', handleMouseDown);
     };
   }, [menuPosition, props.editor, classes.menuRoot]);
 
-  function clickHandler(type, e) {
-    if (currentImageContainerElement) {
-      const range = document.createRange();
-      const scrollTop = scrollElement.scrollTop;
-      switch (type) {
-        case 'change':
-          range.setStartAfter(currentImageContainerElement);
-          resetRange(range);
-          props.onInsertImage(() => currentImageContainerElement.remove());
-          break;
-        case 'delete':
-          currentImageContainerElement.remove();
-          props.onSaveNote();
-          break;
-        default:
-          break;
-      }
-      scrollElement.scrollTo(0, scrollTop);
-    }
+  function handleChangeImage(e) {
+    const scrollTop = scrollElementRef.current.scrollTop;
+    const range = document.createRange();
+    range.setStartAfter(currentImageContainerElementRef.current);
+    resetRange(range);
+    props.onInsertImage(() => currentImageContainerElementRef.current.remove());
+    scrollElementRef.current.scrollTo(0, scrollTop);
+    e.preventDefault();
+    setMenuPosition(undefined);
+  }
+
+  function handleDeleteImage(e) {
+    currentImageContainerElementRef.current.remove();
+    props.onSaveNote();
     e.preventDefault();
     setMenuPosition(undefined);
   }
@@ -94,12 +90,12 @@ function ImageMenu(props) {
         list: classes.menuRoot,
       }}
     >
-      <MenuItem onClick={(e) => clickHandler('change', e)}>
+      <MenuItem onClick={handleChangeImage}>
         <div className={classes.menuItem}>
           <div className={classes.menuName}>{intl.formatMessage({ id: 'ImageMenuChange' })}</div>
         </div>
       </MenuItem>
-      <MenuItem onClick={(e) => clickHandler('delete', e)}>
+      <MenuItem onClick={handleDeleteImage}>
         <div className={classes.menuItem}>
           <div className={classes.menuName}>{intl.formatMessage({ id: 'ImageMenuDelete' })}</div>
         </div>

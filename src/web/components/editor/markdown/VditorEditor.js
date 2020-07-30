@@ -344,7 +344,6 @@ class VditorEditor extends React.Component {
         },
         transform: (html) => {
           // console.log('------------ transform before -----------' + this.resourceUrl);
-          // console.log(html);
 
           const imgReg = /(<img\s+([^>]*\s+)?(data-src|src)=")index_files(\/[^"]*")/ig;
           let newHtml = html.replace(imgReg, (str, m1, m2, m3, m4) => m1 + this.resourceUrl + m4);
@@ -499,7 +498,7 @@ class VditorEditor extends React.Component {
     const LinkElement = filterParentElement(e.target, this.editor.vditor.element, (dom) => dom.getAttribute('data-type') === 'a', true);
     if (LinkElement) {
       const afterStyle = window.getComputedStyle(LinkElement, ':after');
-      if (isCtrl(e) || (e.offsetX >= parseInt(afterStyle.getPropertyValue('left'), 10) && e.offsetY >= parseInt(afterStyle.getPropertyValue('top'), 10))) {
+      if (isCtrl(e) || (e.target === LinkElement && e.offsetX >= parseInt(afterStyle.getPropertyValue('left'), 10) && e.offsetY >= parseInt(afterStyle.getPropertyValue('top'), 10))) {
         const urlElement = LinkElement.querySelector('.vditor-ir__marker--link');
         if (urlElement.innerText) {
           window.open(urlElement.innerText);
