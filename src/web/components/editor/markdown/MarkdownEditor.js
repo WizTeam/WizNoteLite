@@ -28,12 +28,15 @@ class MarkdownEditor extends React.Component {
     handleNoteModified: () => {
       this.saveNote();
     },
-    handleInsertImages: async () => {
+    handleInsertImages: async (successCb) => {
       if (!this.editor) {
         return;
       }
       const { kbGuid, note } = this.props;
       const files = await this.props.onSelectImages(kbGuid, note.guid);
+      if (successCb) {
+        successCb();
+      }
       files.forEach((src) => {
         this.editor.insertValue(`![image](${src})`);
       });

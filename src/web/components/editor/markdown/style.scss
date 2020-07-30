@@ -106,6 +106,22 @@
         color: #aaaaaa;
         @include hStyle;
       }
+      span[data-type='img'] span:first-child {
+        padding-left: 23px;
+        position: relative;
+        &::before {
+          display: block;
+          content: '';
+          width: 25px;
+          height: 25px;
+          background: url(./file.svg) no-repeat center center;
+          background-size: 20px 20px;
+          position: absolute;
+          left:02px;
+          top: 0;
+          cursor: pointer;
+        }
+      }
       span[data-type='a'] {
         padding-right: 23px;
         position: relative;

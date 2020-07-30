@@ -68,6 +68,9 @@ export default {
   tableMenuDeleteTable: '删除表格',
   tableMenuCpHtml: '复制表格 HTML',
   tableMenuCpMd: '复制表格 md 源码',
+  // imageMenu
+  ImageMenuChange: '更换图片',
+  ImageMenuDelete: '删除',
   // error
   errorDisableRegister: '注册已禁用',
   errorMaxTimesForIP: '您当前的 IP 注册次数过多，请稍后再试...',
@@ -115,6 +118,8 @@ export default {
   messageVipServiceEndedDate: 'VIP 已经在 {date} 到期.',
   buttonFailedToQueryProduct: '无法获取产品信息',
   errorSyncFailed: '同步失败: {message}',
+  errorNoteSyncFailed: '笔记上传失败: {message}',
+  buttonViewLog: '查看日志',
 
   // export
   exportPng: '导出为图片',

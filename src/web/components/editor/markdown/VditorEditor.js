@@ -17,6 +17,7 @@ import {
 import { getRange, getSelection, resetRange } from '../libs/range_utils';
 import TableMenu from './TableMenu';
 import TableToolbar from './TableToolbar';
+import ImageMenu from './ImageMenu';
 
 const styles = (/* theme */) => ({
   hideBlockType: {
@@ -139,7 +140,7 @@ class VditorEditor extends React.Component {
         isFocus,
       }));
     },
-    handleMouseDown: (e) => this.fixLink(e) || this.fixImage(e),
+    handleMouseDown: (e) => this.fixLink(e) || this.fixImage(e) || this.fixChangeImage(e),
   }
   // 统计词数
   // setWordsNumber = debounce(() => {
@@ -500,15 +501,33 @@ class VditorEditor extends React.Component {
 
   fixImage(e) {
     if (e.target.tagName.toLowerCase() === 'img') {
-      const urlElement = filterParentElement(e.target, this.editor.vditor.element, (dom) => hasClass(dom, 'vditor-ir__node'))?.querySelector('.vditor-ir__marker--link');
-      if (urlElement) {
-        const range = document.createRange();
-        range.selectNodeContents(urlElement);
-        resetRange(range);
+      const containerElement = filterParentElement(e.target, this.editor.vditor.element, (dom) => hasClass(dom, 'vditor-ir__node'));
+      if (containerElement) {
+        const urlElement = containerElement.querySelector('.vditor-ir__marker--link');
+        // 修复没有data type
+        if (!containerElement.getAttribute('data-type')) {
+          containerElement.setAttribute('data-type', 'img');
+        }
+
+        if (urlElement) {
+          const range = document.createRange();
+          range.selectNodeContents(urlElement);
+          resetRange(range);
+        }
+        return true;
       }
-      return true;
     }
     return false;
+  }
+
+  async fixChangeImage(e) {
+    if (e.target.parentElement && e.target.parentElement.getAttribute('data-type') === 'img' && e.target === e.target.parentElement.children[0]) {
+      e.preventDefault();
+      const range = document.createRange();
+      range.setStartAfter(e.target.parentElement);
+      resetRange(range);
+      await this.props.onInsertImage(() => e.target.parentElement.remove());
+    }
   }
 
   // 触发Vditor隐藏菜单点击事件
@@ -669,6 +688,11 @@ class VditorEditor extends React.Component {
         <TableMenu
           editor={this.editor}
           onSaveNote={this.props.onSave}
+        />
+        <ImageMenu
+          editor={this.editor}
+          onSaveNote={this.props.onSave}
+          onInsertImage={this.props.onInsertImage}
         />
         <TableToolbar
           editor={this.editor}

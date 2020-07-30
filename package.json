@@ -8,6 +8,7 @@
   "main": "src/start.js",
   "dependencies": {
     "axios": "^0.19.2",
+    "electron-log": "^4.2.2",
     "electron-store": "^5.1.1",
     "electron-window-state": "^5.0.3",
     "form-data": "^3.0.0",

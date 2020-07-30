@@ -8,6 +8,7 @@ const URL = require('url');
 const path = require('path');
 const PImage = require('pureimage');
 const i18next = require('i18next');
+const log = require('electron-log');
 
 const users = require('./user/users');
 const globalSettings = require('./settings/global_settings');
@@ -525,6 +526,11 @@ handleApi('getUserInfo', async (event, userGuid) => {
 handleApi('refreshUserInfo', async (event, userGuid) => {
   const user = await users.refreshUserInfo(userGuid);
   return user;
+});
+
+handleApi('viewLogFile', async () => {
+  const logPath = log.transports.file.file;
+  shell.openPath(logPath);
 });
 
 
