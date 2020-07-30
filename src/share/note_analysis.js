@@ -5,6 +5,10 @@ const REGEXP_TAG = /(^|[\t\f\v ])#(?!#|\s)(([^#\r\n]{0,25}[^#\s]#)|([^#\s]{0,25}
 // 规则: [[xxxx]] 提取出xxxx
 const REGEXP_LINK = /(?<!\[)\[\[[^[\]]*]](?!\])/g;
 
+const REGEXP_LINK_ELEMENT = /<span data-type="a" class="vditor-ir__node[^"]*"><span class="vditor-ir__marker vditor-ir__marker--bracket">\[<\/span><span class="vditor-ir__link">((?!<\/span>).*?)<\/span><span class="vditor-ir__marker vditor-ir__marker--bracket">]<\/span><span class="vditor-ir__marker vditor-ir__marker--paren">\(<\/span><span class="vditor-ir__marker vditor-ir__marker--link">((?!<\/span>).*?)<\/span><span class="vditor-ir__marker vditor-ir__marker--paren">\)<\/span><\/span>/g;
+
+const REGEXP_URL = /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_\+.~#?&\/\/=]*)$/;
+
 function clearCodeFromMarkdown(markdown) {
   const codeReg = /```[^`]*```/g;
   return markdown.replace(codeReg, '');
@@ -71,6 +75,18 @@ function getMarkdownFromHtml(html) {
   return result;
 }
 
+function parseEditorLinkHtml(html) {
+  return html.replace(REGEXP_LINK_ELEMENT, (text, ...arg) => {
+    let className = arg.length === 5 ? arg[0] : '';
+    const linkName = arg.length === 5 ? arg[1] : arg[0];
+    const linkUrl = arg.length === 5 ? arg[2] : arg[1];
+    if (REGEXP_URL.test(linkUrl.replace('<wbr>', ''))) {
+      className += ' isLink';
+    }
+    return `<span data-type="a" class="vditor-ir__node${className}"><span class="vditor-ir__marker vditor-ir__marker--bracket">[</span><span class="vditor-ir__link">${linkName}</span><span class="vditor-ir__marker vditor-ir__marker--bracket">]</span><span class="vditor-ir__marker vditor-ir__marker--paren">(</span><span class="vditor-ir__marker vditor-ir__marker--link">${linkUrl}</span><span class="vditor-ir__marker vditor-ir__marker--paren">)</span></span>`;
+  });
+}
+
 function parseIncludeResourcesForMarkdown(markdown) {
   const map = {};
   const result = [];
@@ -103,9 +119,11 @@ function getResourcesFromHtml(html) {
 }
 
 module.exports = {
+  REGEXP_URL,
   REGEXP_TAG,
   extractTagsFromMarkdown,
   extractLinksFromMarkdown,
   getMarkdownFromHtml,
   getResourcesFromHtml,
+  parseEditorLinkHtml,
 };

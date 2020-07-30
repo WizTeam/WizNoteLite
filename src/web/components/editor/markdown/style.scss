@@ -122,7 +122,7 @@
           cursor: pointer;
         }
       }
-      span[data-type='a']:not(.vditor-ir__node--expand) {
+      span.isLink[data-type='a']:not(.vditor-ir__node--expand) {
         padding-right: 25px;
         position: relative;
         &::after {

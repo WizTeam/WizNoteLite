@@ -9,7 +9,7 @@ import InsertMenu from './InsertMenu';
 import HeadingMenu from './HeadingMenu';
 import 'wiz-vditor/dist/index.css';
 import './style.scss';
-import { REGEXP_TAG } from '../../../../share/note_analysis';
+import { REGEXP_TAG, parseEditorLinkHtml, REGEXP_URL } from '../../../../share/note_analysis';
 import InsertTagMenu from './InsertTagMenu';
 import {
   isCtrl, filterParentElement, hasClass, getDomIndexForParent,
@@ -351,6 +351,8 @@ class VditorEditor extends React.Component {
           // console.log(newHtml);
           newHtml = this.highLightTag(newHtml);
 
+          newHtml = parseEditorLinkHtml(newHtml);
+
           return newHtml;
         },
         hljs: {
@@ -500,7 +502,7 @@ class VditorEditor extends React.Component {
       const afterStyle = window.getComputedStyle(LinkElement, ':after');
       if (isCtrl(e) || (e.target === LinkElement && e.offsetX >= parseInt(afterStyle.getPropertyValue('left'), 10) && e.offsetY >= parseInt(afterStyle.getPropertyValue('top'), 10))) {
         const urlElement = LinkElement.querySelector('.vditor-ir__marker--link');
-        if (urlElement.innerText) {
+        if (urlElement.innerText && REGEXP_URL.test(urlElement.innerText)) {
           window.open(urlElement.innerText);
           e.preventDefault();
         }
