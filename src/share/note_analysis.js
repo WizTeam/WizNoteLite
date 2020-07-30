@@ -96,7 +96,9 @@ function parseIncludeResourcesForMarkdown(markdown) {
 }
 
 function getResourcesFromHtml(html) {
-  const markdown = getMarkdownFromHtml(html);
+  let markdown = getMarkdownFromHtml(html);
+  markdown = clearCodeFromMarkdown(markdown);
+  markdown = clearCodeInLineFromMarkdown(markdown);
   return parseIncludeResourcesForMarkdown(markdown);
 }
 

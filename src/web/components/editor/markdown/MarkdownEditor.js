@@ -134,6 +134,12 @@ class MarkdownEditor extends React.Component {
     }
     const { kbGuid } = this.props;
     //
+    const contentId = this.editor.contentId;
+    if (contentId !== note.guid) {
+      // 校验 editor 为当前笔记时，才能保存
+      return;
+    }
+
     let markdown = this.editor.getValue();
     const wizPathReg = new RegExp(this.resourceUrl, 'ig');
     markdown = markdown.replace(wizPathReg, 'index_files');
