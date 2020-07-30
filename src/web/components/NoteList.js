@@ -416,7 +416,6 @@ class NoteList extends React.Component {
         this.setState({
           notes: currentNotes,
         });
-        this.props.onSelectNote(note);
       }
     },
 
@@ -533,6 +532,7 @@ class NoteList extends React.Component {
     window.wizApi.userManager.on('newNote', this.handler.handleNewNote);
     window.wizApi.userManager.on('downloadNotes', this.handler.handleDownloadNotes);
     window.wizApi.userManager.on('modifyNote', this.handler.handleModifyNote);
+    window.wizApi.userManager.on('uploadNote', this.handler.handleModifyNote);
     window.wizApi.userManager.on('putBackNotes', this.handler.handlePutBackNotes);
     window.wizApi.userManager.on('deleteNotes', this.handler.handleDeleteNotes);
   }
@@ -542,6 +542,7 @@ class NoteList extends React.Component {
     window.wizApi.userManager.off('newNote', this.handler.handleNewNote);
     window.wizApi.userManager.off('downloadNotes', this.handler.handleDownloadNotes);
     window.wizApi.userManager.off('modifyNote', this.handler.handleModifyNote);
+    window.wizApi.userManager.off('uploadNote', this.handler.handleModifyNote);
     window.wizApi.userManager.off('putBackNotes', this.handler.handlePutBackNotes);
     window.wizApi.userManager.off('deleteNotes', this.handler.handleDeleteNotes);
   }

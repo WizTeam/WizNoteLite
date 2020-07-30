@@ -102,6 +102,7 @@ class SyncKbTask extends EventEmitter {
       }
       note.author = flags;
       note.keywords = note.tags;
+      note.protected = note.encrypted ? 1 : 0;
       delete note.tags;
       //
       note.title = note.title?.trim();
@@ -120,8 +121,8 @@ class SyncKbTask extends EventEmitter {
         const version = await this._ks.uploadNote(note);
         note.version = version;
         note.lastSynced = new Date().valueOf();
-        await this._db.setNoteVersion(note.guid, version);
-        this.emit('uploadNote', this, note);
+        const resultNote = await this._db.setNoteVersion(note.guid, version);
+        this.emit('uploadNote', this, resultNote);
       } catch (err) {
         console.error(err);
         failedNotes.push(note.title);
@@ -195,6 +196,7 @@ class SyncKbTask extends EventEmitter {
         note.guid = note.docGuid;
         note.abstract = note.abstractText;
         note.modified = note.dataModified;
+        note.encrypted = note.protected ? 1 : 0;
         //
         note.tags = note.keywords;
         const flags = note.author;

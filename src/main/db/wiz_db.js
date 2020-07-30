@@ -366,12 +366,14 @@ class WizDb extends EventEmitter {
       const now = new Date().valueOf();
       const values = [version, now, noteGuid];
       await this._sqlite.run(sql, values);
-      return;
+    } else {
+      const sql = `update wiz_note set version=? where guid=?`;
+      const values = [version, noteGuid];
+      await this._sqlite.run(sql, values);
     }
     //
-    const sql = `update wiz_note set version=? where guid=?`;
-    const values = [version, noteGuid];
-    await this._sqlite.run(sql, values);
+    const result = await this.getNote(noteGuid);
+    return result;
   }
 
   async setNoteLocalStatus(noteGuid, status) {
@@ -406,7 +408,7 @@ class WizDb extends EventEmitter {
       const values = [note.guid, note.title, note.category || '/Lite/',
         note.name, note.seo, note.url,
         note.tags, note.owner, note.type, note.fileType,
-        note.created, note.dataModified, note.protected, note.attachmentCount,
+        note.created, note.dataModified, note.encrypted, note.attachmentCount,
         note.dataMd5, note.version, 0, note.abstract,
         note.starred, note.archived, note.onTop, note.trash];
       //
@@ -437,7 +439,7 @@ class WizDb extends EventEmitter {
     const values = [note.title, note.category, note.name, note.seo,
       note.url,
       note.tags, note.owner, note.type, note.fileType,
-      note.created, note.modified, note.protected, note.attachmentCount,
+      note.created, note.modified, note.encrypted, note.attachmentCount,
       note.dataMd5, note.version, localStatus, note.abstract,
       note.starred, note.archived, note.onTop, note.trash,
       note.guid];
