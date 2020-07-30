@@ -29,9 +29,13 @@ const styles = (/* theme */) => ({
 class VditorEditor extends React.Component {
   resourceUrl = '';
 
-  waitSetValue = null;
+  waitNoteData = null;
 
   isShowTagMenu = false;
+
+  curContentId = null;
+
+  resetValueTimer = null;
 
   timeStamp = new Date().getTime();
 
@@ -247,7 +251,12 @@ class VditorEditor extends React.Component {
       // content changed
       // console.log('setValue: ' + nextProps.value);
       this.resourceUrl = nextProps.resourceUrl;
-      this.resetValue(nextProps.value);
+      // 编辑器 focus 操作，会导致 react 报错 'unstable_flushDiscreteUpdates: Cannot flush updates when React is already rendering.'
+      // 使用 setTimeout 可以规避此问题
+      window.clearTimeout(this.resetValueTimer);
+      this.resetValueTimer = setTimeout(() => {
+        this.resetValue(nextProps.contentId, nextProps.value);
+      }, 0);
     }
     if (nextState.isInitedEditor && !this.state.isInitedEditor) {
       updated = true;
@@ -309,9 +318,9 @@ class VditorEditor extends React.Component {
         const { onInit, disabled } = this.props;
         if (onInit) {
           onInit(this.editor);
-          if (this.waitSetValue) {
-            this.resetValue(this.waitSetValue);
-            this.waitSetValue = null;
+          if (this.waitNoteData) {
+            this.resetValue(this.waitNoteData.contentId, this.waitNoteData.value);
+            this.waitNoteData = null;
           }
         }
         if (disabled) {
@@ -330,6 +339,9 @@ class VditorEditor extends React.Component {
         this.updateContentsList();
       },
       preview: {
+        theme: {
+          path: `${cdn}/dist/css/content-theme`,
+        },
         transform: (html) => {
           // console.log('------------ transform before -----------' + this.resourceUrl);
           // console.log(html);
@@ -563,11 +575,12 @@ class VditorEditor extends React.Component {
     }
   }
 
-  resetValue(value) {
+  resetValue(contentId, value) {
     if (!this.isEditorReady()) {
-      this.waitSetValue = value;
+      this.waitNoteData = { contentId, value };
       return;
     }
+    this.editor.contentId = contentId;
     this.editor.setValue(value, true);
     this.updateContentsList();
     setTimeout(() => {
