@@ -11,7 +11,6 @@ import { resetRange } from '../libs/range_utils';
 
 const useStyles = makeStyles(({ palette }) => ({
   menuRoot: {
-    minWidth: '224px',
     color: palette.type === 'dark' ? '#fff' : '#333',
   },
   menuItem: {
