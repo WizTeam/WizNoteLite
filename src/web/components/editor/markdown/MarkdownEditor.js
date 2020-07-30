@@ -34,7 +34,7 @@ class MarkdownEditor extends React.Component {
       }
       const { kbGuid, note } = this.props;
       const files = await this.props.onSelectImages(kbGuid, note.guid);
-      if (successCb) {
+      if (files.length && successCb) {
         successCb();
       }
       files.forEach((src) => {
