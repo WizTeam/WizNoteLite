@@ -107,33 +107,33 @@
         @include hStyle;
       }
       span[data-type='img'] span:first-child {
-        padding-left: 23px;
+        padding-left: 25px;
         position: relative;
         &::before {
           display: block;
           content: '';
-          width: 25px;
-          height: 25px;
+          width: 20px;
+          height: 20px;
           background: url(./file.svg) no-repeat center center;
           background-size: 20px 20px;
           position: absolute;
-          left:02px;
+          left:3px;
           top: 0;
           cursor: pointer;
         }
       }
-      span[data-type='a'] {
-        padding-right: 23px;
+      span[data-type='a']:not(.vditor-ir__node--expand) {
+        padding-right: 25px;
         position: relative;
         &::after {
           display: block;
           content: '';
-          width: 25px;
-          height: 25px;
+          width: 20px;
+          height: 20px;
           background: url(./link.svg) no-repeat center center;
           background-size: 20px 20px;
           position: absolute;
-          right: 2px;
+          right: 3px;
           bottom: 0;
           cursor: pointer;
         }
