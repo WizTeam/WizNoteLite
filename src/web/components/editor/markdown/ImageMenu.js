@@ -61,7 +61,7 @@ function ImageMenu(props) {
     };
   }, [menuPosition, props.editor, classes.menuRoot]);
 
-  async function clickHandler(type, e) {
+  function clickHandler(type, e) {
     if (currentImageContainerElement) {
       const range = document.createRange();
       const scrollTop = scrollElement.scrollTop;
@@ -69,7 +69,7 @@ function ImageMenu(props) {
         case 'change':
           range.setStartAfter(currentImageContainerElement);
           resetRange(range);
-          await props.onInsertImage(() => currentImageContainerElement.remove());
+          props.onInsertImage(() => currentImageContainerElement.remove());
           break;
         case 'delete':
           currentImageContainerElement.remove();

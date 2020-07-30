@@ -532,13 +532,15 @@ class VditorEditor extends React.Component {
     return false;
   }
 
-  async fixChangeImage(e) {
+  fixChangeImage(e) {
     if (e.target.parentElement && e.target.parentElement.getAttribute('data-type') === 'img' && e.target === e.target.parentElement.children[0]) {
       e.preventDefault();
       const range = document.createRange();
-      range.setStartAfter(e.target.parentElement);
+      const imgContainer = e.target.parentElement;
+      range.setStartAfter(imgContainer);
       resetRange(range);
-      await this.props.onInsertImage(() => e.target.parentElement.remove());
+
+      this.props.onInsertImage(() => imgContainer.remove());
     }
   }
 

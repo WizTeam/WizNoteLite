@@ -23,7 +23,7 @@ import Tags from './Tags';
 import Icons from '../config/icons';
 
 const SIDEBAR_WIDTH = '15%';
-const SIDEBAR_MIN_WIDTH = 120;
+const SIDEBAR_MIN_WIDTH = 192;
 const SIDEBAR_MAX_WIDTH = 320;
 
 const styles = (theme) => ({
