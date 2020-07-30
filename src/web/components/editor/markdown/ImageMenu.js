@@ -33,7 +33,7 @@ function ImageMenu(props) {
   const scrollElementRef = useRef();
 
   useEffect(() => {
-    function mousedownHandler(e) {
+    function handleMouseDown(e) {
       if (e.button === 2 && e.target.tagName === 'IMG') {
         currentImageContainerElementRef.current = filterParentElement(e.target, props.editor.vditor.element, (dom) => hasClass(dom, 'vditor-ir__node'));
         setMenuPosition({
@@ -55,10 +55,10 @@ function ImageMenu(props) {
     if (props.editor?.vditor.element) {
       scrollElementRef.current = getScrollContainer(props.editor.vditor.element);
 
-      window.addEventListener('mousedown', mousedownHandler);
+      window.addEventListener('mousedown', handleMouseDown);
     }
     return () => {
-      window.removeEventListener('mousedown', mousedownHandler);
+      window.removeEventListener('mousedown', handleMouseDown);
     };
   }, [menuPosition, props.editor, classes.menuRoot]);
 
