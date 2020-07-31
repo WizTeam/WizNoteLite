@@ -7,7 +7,7 @@ const REGEXP_LINK = /(?<!\[)\[\[[^[\]]*]](?!\])/g;
 
 const REGEXP_LINK_ELEMENT = /<span data-type="a" class="vditor-ir__node([^"]*)"><span class="vditor-ir__marker vditor-ir__marker--bracket">\[<\/span><span class="vditor-ir__link">((?!<\/span>).*?)<\/span><span class="vditor-ir__marker vditor-ir__marker--bracket">]<\/span><span class="vditor-ir__marker vditor-ir__marker--paren">\(<\/span><span class="vditor-ir__marker vditor-ir__marker--link">((?!<\/span>).*?)<\/span><span class="vditor-ir__marker vditor-ir__marker--paren">\)<\/span><\/span>/g;
 
-const REGEXP_URL = /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_\+.~#?&\/\/=]*)$/;
+const REGEXP_URL = /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_+.~#?&//=]*)$/;
 
 function clearCodeFromMarkdown(markdown) {
   const codeReg = /```[^`]*```/g;
