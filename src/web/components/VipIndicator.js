@@ -43,7 +43,7 @@ class VipIndicator extends React.Component {
       }
     },
     handleUserInfoChanged: (user) => {
-      console.log('user info changed');
+      // console.log('user info changed');
       this.setState({ user });
     },
   };

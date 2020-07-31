@@ -351,8 +351,6 @@ class VditorEditor extends React.Component {
           // console.log(newHtml);
           newHtml = this.highLightTag(newHtml);
 
-          // newHtml = parseEditorLinkHtml(newHtml);
-
           return newHtml;
         },
         hljs: {
@@ -506,7 +504,7 @@ class VditorEditor extends React.Component {
           try {
             window.open(urlElement.innerText);
           } catch (err) {
-            console.log(err);
+            console.error(err);
           }
           e.preventDefault();
         }
