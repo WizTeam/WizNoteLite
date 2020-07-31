@@ -351,7 +351,7 @@ class VditorEditor extends React.Component {
           // console.log(newHtml);
           newHtml = this.highLightTag(newHtml);
 
-          newHtml = parseEditorLinkHtml(newHtml);
+          // newHtml = parseEditorLinkHtml(newHtml);
 
           return newHtml;
         },
@@ -502,8 +502,12 @@ class VditorEditor extends React.Component {
       const afterStyle = window.getComputedStyle(LinkElement, ':after');
       if (isCtrl(e) || (e.target === LinkElement && e.offsetX >= parseInt(afterStyle.getPropertyValue('left'), 10) && e.offsetY >= parseInt(afterStyle.getPropertyValue('top'), 10))) {
         const urlElement = LinkElement.querySelector('.vditor-ir__marker--link');
-        if (urlElement.innerText && REGEXP_URL.test(urlElement.innerText)) {
-          window.open(urlElement.innerText);
+        if (urlElement.innerText) {
+          try {
+            window.open(urlElement.innerText);
+          } catch (err) {
+            console.log(err);
+          }
           e.preventDefault();
         }
       }
