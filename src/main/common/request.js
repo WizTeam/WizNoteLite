@@ -6,6 +6,17 @@ const { app } = require('electron');
 
 const { WizNetworkError, WizInternalError, WizKnownError } = require('../../share/error');
 
+
+function getContentLengthFromHeaders(headers) {
+  for (const key of Object.keys(headers)) {
+    const lowerCaseKey = key.toLowerCase();
+    if (lowerCaseKey === 'content-length') {
+      return Number.parseInt(headers[key], 10);
+    }
+  }
+  return -1;
+}
+
 //
 async function standardRequest(opt) {
   //
@@ -50,6 +61,13 @@ async function standardRequest(opt) {
       if (data.returnCode !== 200) {
         throw new WizKnownError(data.returnMessage, data.returnCode, data.externCode);
       }
+    } else {
+      const headerContentLength = getContentLengthFromHeaders(result.headers);
+      if (headerContentLength !== -1) {
+        if (data.length !== headerContentLength) {
+          throw new WizNetworkError(`Failed to download data, invalid content length: ${data.length}, ${result.contentLength}`);
+        }
+      }
     }
     //
     if (opt.returnFullResult) {
@@ -58,21 +76,6 @@ async function standardRequest(opt) {
     return data.result;
   } catch (err) {
     if (err.code === 'ENOTFOUND') {
-      //
-      // // 尝试解决苹果审核无法解析as.wiz.cn域名的问题
-      // if (err.hostname === 'as.wiz.cn') {
-      //   const url = URL.parse(options.url);
-      //   options.headers = options.headers || {};
-      //   options.headers.Host = url.hostname; // put original hostname in Host header
-      //   url.hostname = '120.55.138.92';
-      //   delete url.host; // clear hostname cache
-      //   options.url = URL.format(url);
-      //   //
-      //   const ret = await standardRequest(options);
-      //   return ret;
-      // }
-      // //
-      //
       throw new WizNetworkError(i18next.t('errorConnect', {
         host: err.hostname,
       }));
