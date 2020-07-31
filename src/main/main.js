@@ -52,7 +52,7 @@ function createWindow() {
     width: mainWindowState.width,
     height: mainWindowState.height,
     resizable: true,
-    show: isMac,
+    show: true,
     backgroundColor: nativeTheme.shouldUseDarkColors ? '#101115' : '#fff',
     webPreferences: {
       nodeIntegration: false,
@@ -86,11 +86,12 @@ function createWindow() {
 
   // mainWindow.webContents.openDevTools();
 
-  if (!isMac) {
-    mainWindow.once('ready-to-show', () => {
-      mainWindow.show();
-    });
-  }
+  // Windows 10 延迟显示会导致 输入法窗口位置异常
+  // if (!isMac) {
+  //   mainWindow.once('ready-to-show', () => {
+  //     mainWindow.show();
+  //   });
+  // }
   //
   mainWindow.on('close', (event) => {
     if (!forceQuit) {
