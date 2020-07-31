@@ -5,6 +5,7 @@ import { makeStyles, withStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 import Icon from '../../../config/icons';
 import { getScrollContainer } from '../libs/dom_utils';
 
@@ -224,8 +225,7 @@ export default function LiteMenu(props) {
         break;
       default:
         node = (
-          <button
-            type="button"
+          <MenuItem
             className={classNames(classes.menuItem, {
               hover: item.hoverIndex === hoverIndex,
             })}
@@ -239,7 +239,7 @@ export default function LiteMenu(props) {
               }
             </div>
             <div>{item.label}</div>
-          </button>
+          </MenuItem>
         );
         break;
     }
@@ -284,7 +284,7 @@ export default function LiteMenu(props) {
   );
 }
 
-const MenuItem = PropTypes.shape({
+const MenuItemType = PropTypes.shape({
   onClick: PropTypes.func,
   active: PropTypes.bool,
   label: PropTypes.string,
@@ -299,7 +299,7 @@ const PropTypesPosition = PropTypes.shape({
 
 LiteMenu.propTypes = {
   positionName: PropTypes.oneOf(['top', 'bottom', 'left']),
-  menuList: PropTypes.arrayOf(MenuItem),
+  menuList: PropTypes.arrayOf(MenuItemType),
   type: PropTypes.oneOf(['icon', 'label', 'checkbox']),
   editorRoot: PropTypes.object,
   show: PropTypes.bool,
