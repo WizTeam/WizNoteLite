@@ -9,7 +9,7 @@ import InsertMenu from './InsertMenu';
 import HeadingMenu from './HeadingMenu';
 import 'wiz-vditor/dist/index.css';
 import './style.scss';
-import { REGEXP_TAG, parseEditorLinkHtml, REGEXP_URL } from '../../../../share/note_analysis';
+import { REGEXP_TAG } from '../../../../share/note_analysis';
 import InsertTagMenu from './InsertTagMenu';
 import {
   isCtrl, filterParentElement, hasClass, getDomIndexForParent,
