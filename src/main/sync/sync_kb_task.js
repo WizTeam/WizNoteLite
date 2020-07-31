@@ -124,6 +124,13 @@ class SyncKbTask extends EventEmitter {
         const resultNote = await this._db.setNoteVersion(note.guid, version);
         this.emit('uploadNote', this, resultNote);
       } catch (err) {
+        //
+        if (err.code === 'WizErrorInvalidPassword'
+        || err.externCode === 'WizErrorPayedPersonalExpired'
+        || err.externCode === 'WizErrorFreePersonalExpired') {
+          throw err;
+        }
+        //
         console.error(err);
         failedNotes.push(note.title);
       }
