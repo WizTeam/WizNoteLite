@@ -82,24 +82,24 @@ class WindowManager {
     if (!this._systemMenu) {
       const options = [
         {
-          label: intl.formatMessage({ id: 'sendFeedback' }),
+          label: intl.formatMessage({ id: 'menuSendFeedback' }),
           click() {
             window.open('https://support.qq.com/products/174045');
           },
         },
         {
-          label: intl.formatMessage({ id: 'devTool' }),
+          label: intl.formatMessage({ id: 'menuDevTool' }),
           role: 'toggledevtools',
         },
         {
-          label: intl.formatMessage({ id: 'about' }),
+          label: intl.formatMessage({ id: 'menuAbout' }),
           click() {
             window.wizApi.userManager.emit('menuItemClicked', 'menuShowAbout');
           },
         },
         { type: 'separator' },
         {
-          label: intl.formatMessage({ id: 'quit' }),
+          label: intl.formatMessage({ id: 'menuQuit' }),
           click() {
             remote.app.quit();
           },
