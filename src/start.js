@@ -61,7 +61,7 @@ function createWindow() {
     icon: nativeImage.createFromPath(path.join(__dirname, '/icons/wiznote.icns')),
   };
   //
-  if (process.platform === 'darwin') {
+  if (isMac) {
     // mac
     options.titleBarStyle = 'hidden';
   } else {
@@ -93,7 +93,7 @@ function createWindow() {
   }
   //
   mainWindow.on('close', (event) => {
-    if (process.platform === 'darwin' && !forceQuit) {
+    if (!forceQuit) {
       event.preventDefault(); // This will cancel the close
       mainWindow.hide();
     } else {
@@ -118,7 +118,7 @@ app.on('before-quit', () => {
 });
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
+  if (!isMac) {
     app.quit();
   }
 });
@@ -126,9 +126,27 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
   if (mainWindow === null) {
     createWindow();
-  } else if (process.platform === 'darwin') {
-    if (mainWindow) {
-      mainWindow.show();
-    }
+  } else if (mainWindow) {
+    mainWindow.show();
   }
 });
+
+if (!isMac) {
+  const gotTheLock = app.requestSingleInstanceLock();
+  if (!gotTheLock) {
+    app.quit();
+  } else {
+    app.on('second-instance', () => {
+      // Someone tried to run a second instance, we should focus our window.
+      if (mainWindow) {
+        if (!mainWindow.isVisible()) {
+          mainWindow.show();
+        }
+        if (mainWindow.isMinimized()) {
+          mainWindow.restore();
+        }
+        mainWindow.focus();
+      }
+    });
+  }
+}

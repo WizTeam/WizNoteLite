@@ -97,6 +97,13 @@ class WindowManager {
             window.wizApi.userManager.emit('menuItemClicked', 'menuShowAbout');
           },
         },
+        { type: 'separator' },
+        {
+          label: intl.formatMessage({ id: 'quit' }),
+          click() {
+            remote.app.quit();
+          },
+        },
       ];
       //
       const menu = new Menu();
