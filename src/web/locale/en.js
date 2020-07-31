@@ -144,9 +144,10 @@ export default {
   exportButton: 'Export Image',
   exportPdfButton: 'Export PDF',
   // system menu
-  sendFeedback: 'Send Feedback',
-  devTool: 'Developer Tools',
-  about: 'About WizNote Lite',
+  menuSendFeedback: 'Send Feedback',
+  menuDevTool: 'Developer Tools',
+  menuAbout: 'About WizNote Lite',
+  menuQuit: 'Quit',
 
   editorContents: 'Contents',
 };
