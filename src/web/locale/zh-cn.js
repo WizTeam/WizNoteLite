@@ -144,9 +144,10 @@ export default {
   exportButton: '导出为图片',
   exportPdfButton: '导出为 PDF',
   // system menu
-  sendFeedback: '意见反馈',
-  devTool: '开发者工具',
-  about: '关于 WizNote Lite',
+  menuSendFeedback: '意见反馈',
+  menuDevTool: '开发者工具',
+  menuAbout: '关于 WizNote Lite',
+  menuQuit: '退出',
 
   editorContents: '目录',
 };
