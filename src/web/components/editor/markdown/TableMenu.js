@@ -348,7 +348,7 @@ function TableMenu(props) {
         >
           <div className={classes.menuName}>{intl.formatMessage({ id: 'tableMenuAlign' })}</div>
           <ArrowForwardIosIcon className={classes.iconArrow} />
-          <LiteMenu position={subMenuPos ?? undefined} show={!!subMenuPos}>
+          <LiteMenu position={subMenuPos ?? undefined} show={!!subMenuPos} uncoverWindows>
             <div className={classes.subMenuContainer} data-type="subMenuContainer">
               <button type="button" className={classes.subMenuItem} onClick={(e) => clickHandler('alignLeft', e)}>
                 <div className={classes.menuItemIcon}>

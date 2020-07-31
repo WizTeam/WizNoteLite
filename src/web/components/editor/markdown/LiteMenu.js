@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
 import Button from '@material-ui/core/Button';
+import Menu from '@material-ui/core/Menu';
 import Icon from '../../../config/icons';
 import { getScrollContainer } from '../libs/dom_utils';
 
@@ -259,7 +260,7 @@ export default function LiteMenu(props) {
     );
   }
 
-  return createPortal((
+  return props.uncoverWindows ? createPortal((
     <div
       className={classNames(classes.menu, {
         [classes.menuActive]: props.show,
@@ -269,7 +270,18 @@ export default function LiteMenu(props) {
     >
       {props.children ? props.children : menuList.map((item, index) => (props.type === 'icon' ? renderIconMenuItem(item, index.toString()) : renderTextMenuItem(item, index.toString(), props.type === 'checkbox')))}
     </div>
-  ), window.document.body);
+  ), window.document.body) : (
+    <Menu
+      keepMounted
+      open={props.show}
+      anchorReference="anchorPosition"
+      anchorPosition={pos}
+    >
+      <div ref={menuRef}>
+        {props.children ? props.children : menuList.map((item, index) => (props.type === 'icon' ? renderIconMenuItem(item, index.toString()) : renderTextMenuItem(item, index.toString(), props.type === 'checkbox')))}
+      </div>
+    </Menu>
+  );
 }
 
 const MenuItem = PropTypes.shape({
@@ -294,6 +306,7 @@ LiteMenu.propTypes = {
   keyControl: PropTypes.bool,
   position: PropTypesPosition,
   children: PropTypes.object,
+  uncoverWindows: PropTypes.bool,
 };
 
 LiteMenu.defaultProps = {
@@ -308,4 +321,5 @@ LiteMenu.defaultProps = {
     left: 0,
     top: 0,
   },
+  uncoverWindows: true,
 };
