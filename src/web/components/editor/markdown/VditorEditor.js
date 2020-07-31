@@ -9,14 +9,15 @@ import InsertMenu from './InsertMenu';
 import HeadingMenu from './HeadingMenu';
 import 'wiz-vditor/dist/index.css';
 import './style.scss';
-import { REGEXP_TAG } from '../../../../share/note_analysis';
+import { REGEXP_TAG, parseEditorLinkHtml, REGEXP_URL } from '../../../../share/note_analysis';
 import InsertTagMenu from './InsertTagMenu';
 import {
   isCtrl, filterParentElement, hasClass, getDomIndexForParent,
 } from '../libs/dom_utils';
-import { getRange, getSelection } from '../libs/range_utils';
+import { getRange, getSelection, resetRange } from '../libs/range_utils';
 import TableMenu from './TableMenu';
 import TableToolbar from './TableToolbar';
+import ImageMenu from './ImageMenu';
 
 const styles = (/* theme */) => ({
   hideBlockType: {
@@ -28,9 +29,13 @@ const styles = (/* theme */) => ({
 class VditorEditor extends React.Component {
   resourceUrl = '';
 
-  waitSetValue = null;
+  waitNoteData = null;
 
   isShowTagMenu = false;
+
+  curContentId = null;
+
+  resetValueTimer = null;
 
   timeStamp = new Date().getTime();
 
@@ -139,6 +144,7 @@ class VditorEditor extends React.Component {
         isFocus,
       }));
     },
+    handleMouseDown: (e) => this.fixLink(e) || this.fixImage(e) || this.fixChangeImage(e),
   }
   // 统计词数
   // setWordsNumber = debounce(() => {
@@ -245,7 +251,12 @@ class VditorEditor extends React.Component {
       // content changed
       // console.log('setValue: ' + nextProps.value);
       this.resourceUrl = nextProps.resourceUrl;
-      this.resetValue(nextProps.value);
+      // 编辑器 focus 操作，会导致 react 报错 'unstable_flushDiscreteUpdates: Cannot flush updates when React is already rendering.'
+      // 使用 setTimeout 可以规避此问题
+      window.clearTimeout(this.resetValueTimer);
+      this.resetValueTimer = setTimeout(() => {
+        this.resetValue(nextProps.contentId, nextProps.value);
+      }, 0);
     }
     if (nextState.isInitedEditor && !this.state.isInitedEditor) {
       updated = true;
@@ -307,15 +318,18 @@ class VditorEditor extends React.Component {
         const { onInit, disabled } = this.props;
         if (onInit) {
           onInit(this.editor);
-          if (this.waitSetValue) {
-            this.resetValue(this.waitSetValue);
-            this.waitSetValue = null;
+          if (this.waitNoteData) {
+            this.resetValue(this.waitNoteData.contentId, this.waitNoteData.value);
+            this.waitNoteData = null;
           }
         }
         if (disabled) {
           this.setEditorDisabled();
         }
         this.updateContentsList();
+        if (this.editor?.vditor?.element) {
+          this.editor.vditor.element.addEventListener('mousedown', this.handler.handleMouseDown);
+        }
         // this._removePanelNode();
       },
       input: (text, html) => {
@@ -325,15 +339,19 @@ class VditorEditor extends React.Component {
         this.updateContentsList();
       },
       preview: {
+        theme: {
+          path: `${cdn}/dist/css/content-theme`,
+        },
         transform: (html) => {
           // console.log('------------ transform before -----------' + this.resourceUrl);
-          // console.log(html);
 
           const imgReg = /(<img\s+([^>]*\s+)?(data-src|src)=")index_files(\/[^"]*")/ig;
           let newHtml = html.replace(imgReg, (str, m1, m2, m3, m4) => m1 + this.resourceUrl + m4);
           // console.log('------------ transform after -----------');
           // console.log(newHtml);
           newHtml = this.highLightTag(newHtml);
+
+          newHtml = parseEditorLinkHtml(newHtml);
 
           return newHtml;
         },
@@ -478,6 +496,55 @@ class VditorEditor extends React.Component {
     return html;
   }
 
+  fixLink(e) {
+    const LinkElement = filterParentElement(e.target, this.editor.vditor.element, (dom) => dom.getAttribute('data-type') === 'a', true);
+    if (LinkElement) {
+      const afterStyle = window.getComputedStyle(LinkElement, ':after');
+      if (isCtrl(e) || (e.target === LinkElement && e.offsetX >= parseInt(afterStyle.getPropertyValue('left'), 10) && e.offsetY >= parseInt(afterStyle.getPropertyValue('top'), 10))) {
+        const urlElement = LinkElement.querySelector('.vditor-ir__marker--link');
+        if (urlElement.innerText && REGEXP_URL.test(urlElement.innerText)) {
+          window.open(urlElement.innerText);
+          e.preventDefault();
+        }
+      }
+      return true;
+    }
+    return false;
+  }
+
+  fixImage(e) {
+    if (e.target.tagName.toLowerCase() === 'img') {
+      const containerElement = filterParentElement(e.target, this.editor.vditor.element, (dom) => hasClass(dom, 'vditor-ir__node'));
+      if (containerElement) {
+        const urlElement = containerElement.querySelector('.vditor-ir__marker--link');
+        // 修复没有data type
+        if (!containerElement.getAttribute('data-type')) {
+          containerElement.setAttribute('data-type', 'img');
+        }
+
+        if (urlElement) {
+          const range = document.createRange();
+          range.selectNodeContents(urlElement);
+          resetRange(range);
+        }
+        return true;
+      }
+    }
+    return false;
+  }
+
+  fixChangeImage(e) {
+    if (e.target.parentElement && e.target.parentElement.getAttribute('data-type') === 'img' && e.target === e.target.parentElement.children[0]) {
+      e.preventDefault();
+      const range = document.createRange();
+      const imgContainer = e.target.parentElement;
+      range.setStartAfter(imgContainer);
+      resetRange(range);
+
+      this.props.onInsertImage(() => imgContainer.remove());
+    }
+  }
+
   // 触发Vditor隐藏菜单点击事件
   emitVditorTooltipEvent(type) {
     if (this.editor?.vditor.element) {
@@ -511,11 +578,12 @@ class VditorEditor extends React.Component {
     }
   }
 
-  resetValue(value) {
+  resetValue(contentId, value) {
     if (!this.isEditorReady()) {
-      this.waitSetValue = value;
+      this.waitNoteData = { contentId, value };
       return;
     }
+    this.editor.contentId = contentId;
     this.editor.setValue(value, true);
     this.updateContentsList();
     setTimeout(() => {
@@ -636,6 +704,11 @@ class VditorEditor extends React.Component {
         <TableMenu
           editor={this.editor}
           onSaveNote={this.props.onSave}
+        />
+        <ImageMenu
+          editor={this.editor}
+          onSaveNote={this.props.onSave}
+          onInsertImage={this.props.onInsertImage}
         />
         <TableToolbar
           editor={this.editor}

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>转到链接</title>
+    <g id="转到链接" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M12,5 C15.8659932,5 19,8.13400675 19,12 C19,15.8659932 15.8659932,19 12,19 C8.13400675,19 5,15.8659932 5,12 C5,8.13400675 8.13400675,5 12,5 Z M11,8.75735931 L10.1514719,9.60588745 L12.5441702,12 L10.1514719,14.3941125 L11,15.2426407 L14.2426407,12 L11,8.75735931 Z" id="形状结合" fill="#448AFF"></path>
+    </g>
+</svg>

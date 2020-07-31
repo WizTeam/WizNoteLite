@@ -3,6 +3,7 @@ const fs = require('fs');
 const FormData = require('form-data');
 const ServerBase = require('./server_base');
 const paths = require('../common/paths');
+const { WizNotExistsError } = require('../../share/error');
 
 class KnowledgeServer extends ServerBase {
   constructor(user, kbGuid, serverUrl) {
@@ -30,6 +31,9 @@ class KnowledgeServer extends ServerBase {
     const uploadNoteResource = async (key, resName, isLast) => {
       //
       const resPath = path.join(resourcePath, resName);
+      if (!fs.existsSync(resPath)) {
+        throw new WizNotExistsError(`resource ${resName} does not exists`);
+      }
       //
       const formData = new FormData();
       formData.append('kbGuid', kbGuid);

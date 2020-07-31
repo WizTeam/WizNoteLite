@@ -106,6 +106,38 @@
         color: #aaaaaa;
         @include hStyle;
       }
+      span[data-type='img'] span:first-child {
+        padding-left: 25px;
+        position: relative;
+        &::before {
+          display: block;
+          content: '';
+          width: 20px;
+          height: 20px;
+          background: url(./file.svg) no-repeat center center;
+          background-size: 20px 20px;
+          position: absolute;
+          left:3px;
+          top: 0;
+          cursor: pointer;
+        }
+      }
+      span.isLink[data-type='a']:not(.vditor-ir__node--expand) {
+        padding-right: 25px;
+        position: relative;
+        &::after {
+          display: block;
+          content: '';
+          width: 20px;
+          height: 20px;
+          background: url(./link.svg) no-repeat center center;
+          background-size: 20px 20px;
+          position: absolute;
+          right: 3px;
+          bottom: 0;
+          cursor: pointer;
+        }
+      }
       blockquote {
         border-color: var(--blockquote-border-color);
         background: var(--blockquote-background);

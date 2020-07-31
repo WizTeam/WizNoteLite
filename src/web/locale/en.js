@@ -68,6 +68,9 @@ export default {
   tableMenuDeleteTable: 'Delete Table',
   tableMenuCpHtml: 'Copy Table HTML',
   tableMenuCpMd: 'Copy Table Markdown',
+  // imageMenu
+  imageMenuChange: 'Change',
+  imageMenuDelete: 'Delete',
   // error
   errorDisableRegister: 'Disable register',
   errorMaxTimesForIP: 'Your IP sign up too much, please retry later...',
@@ -115,6 +118,8 @@ export default {
   messageVipServiceEndedDate: 'Your WizNote VIP service has expired on {date}.',
   buttonFailedToQueryProduct: 'Failed to query product',
   errorSyncFailed: 'Sync failed: {message}',
+  errorNoteSyncFailed: 'Upload notes failed: {message}',
+  buttonViewLog: 'View Log',
 
   // export
   exportPng: 'Export Image',
@@ -139,9 +144,10 @@ export default {
   exportButton: 'Export Image',
   exportPdfButton: 'Export PDF',
   // system menu
-  sendFeedback: 'Send Feedback',
-  devTool: 'Developer Tools',
-  about: 'About WizNote Lite',
+  menuSendFeedback: 'Send Feedback',
+  menuDevTool: 'Developer Tools',
+  menuAbout: 'About WizNote Lite',
+  menuQuit: 'Quit',
 
   editorContents: 'Contents',
 };

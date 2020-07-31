@@ -54,16 +54,16 @@ async function resourceProtocolHandler(request, callback) {
 }
 
 function registerWizProtocol() {
-  protocol.registerStreamProtocol('wiz', async (request, callback) => {
-    //
-    const result = await resourceProtocolHandler(request, callback);
-    return result;
-    //
-  }, (error) => {
-    if (error) {
-      console.error(`Failed to register protocol: ${error.message}`);
-    }
-  });
+  try {
+    protocol.registerStreamProtocol('wiz', async (request, callback) => {
+      //
+      const result = await resourceProtocolHandler(request, callback);
+      return result;
+      //
+    });
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 module.exports = {
