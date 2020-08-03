@@ -67,6 +67,9 @@ export default {
   tableMenuDeleteTable: '刪除表格',
   tableMenuCpHtml: '復制表格 HTML',
   tableMenuCpMd: '復制表格 md 源碼',
+  // imageMenu
+  imageMenuChange: '更換圖片',
+  imageMenuDelete: '刪除',
   // error
   errorDisableRegister: '註冊已禁用',
   errorMaxTimesForIP: '您當前的 IP 註冊次數過多，請稍後再試...',
@@ -114,6 +117,8 @@ export default {
   messageVipServiceEndedDate: 'VIP 已經在 {date} 到期。',
   buttonFailedToQueryProduct: '無法獲取產品信息',
   errorSyncFailed: '同步失敗: {message}',
+  errorNoteSyncFailed: '筆記上傳失敗: {message}',
+  buttonViewLog: '查看日誌',
 
   // export
   exportPng: '導出為圖片',
@@ -138,9 +143,10 @@ export default {
   exportButton: '導出為圖片',
   exportPdfButton: '導出為 PDF',
   // system menu
-  sendFeedback: '意見反饋',
-  devTool: '開發者工具',
-  about: '關於 WizNote Lite',
+  menuSendFeedback: '意見反饋',
+  menuDevTool: '開發者工具',
+  menuAbout: '關於 WizNote Lite',
+  menuQuit: '退出',
 
   editorContents: '目錄',
 };

@@ -1,13 +1,14 @@
 {
   "name": "wiznotelite",
   "description": "WizNote Lite - An instant rendering markdown note tool.",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "private": true,
   "homepage": ".",
   "productName": "WizNote Lite",
   "main": "src/start.js",
   "dependencies": {
     "axios": "^0.19.2",
+    "electron-log": "^4.2.2",
     "electron-store": "^5.1.1",
     "electron-window-state": "^5.0.3",
     "form-data": "^3.0.0",
@@ -34,9 +35,9 @@
     "postinstall": "run-script-os",
     "postinstall:win32": "post-install.cmd",
     "postinstall:default": "bash ./post-install.sh",
-    "pack32": ".\\node_modules\\.bin\\electron ./tools/build_sqlite3 --ia32 && npm run build && electron-builder --ia32 && ren out\\WizNoteLite-%npm_package_version%.exe WizNoteLite-x86-%npm_package_version%.exe",
+    "pack32": ".\\node_modules\\.bin\\electron ./tools/build_sqlite3 --ia32 && npm run build && electron-builder --ia32 &&  del out\\WizNoteLite-x86-%npm_package_version%.exe && ren out\\WizNoteLite-%npm_package_version%.exe WizNoteLite-x86-%npm_package_version%.exe",
     "pack": "run-script-os",
-    "pack:win32": ".\\node_modules\\.bin\\electron ./tools/build_sqlite3  && npm run build && electron-builder && ren out\\WizNoteLite-%npm_package_version%.exe WizNoteLite-x64-%npm_package_version%.exe",
+    "pack:win32": ".\\node_modules\\.bin\\electron ./tools/build_sqlite3  && npm run build && electron-builder && del out\\WizNoteLite-x64-%npm_package_version%.exe && ren out\\WizNoteLite-%npm_package_version%.exe WizNoteLite-x64-%npm_package_version%.exe",
     "pack:default": "npm run build && electron-builder"
   },
   "build": {
@@ -194,7 +195,7 @@
     "react-scripts": "3.4.1",
     "run-script-os": "^1.0.7",
     "timer.js": "^1.0.4",
-    "wiz-vditor": "^1.0.9"
+    "wiz-vditor": "^1.0.10"
   },
   "__npminstall_done": false
 }

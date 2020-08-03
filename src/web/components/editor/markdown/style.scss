@@ -36,7 +36,8 @@
     // 引用字体颜色
     --blockquote-font-color: #aaa;
     // 超链接字体颜色
-    --link-font-color: #006eff;
+    --link-font-color: #448aff;
+    --ir-bracket-color: #448aff;
     // 粗体字体
     --bold-font-family: 'Open Sans', 'Noto Sans SC', Menlo, "Ubuntu Mono", Consolas, "Courier New", "Microsoft Yahei", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif;
 
@@ -105,6 +106,38 @@
         line-height: 28px;
         color: #aaaaaa;
         @include hStyle;
+      }
+      span[data-type='img'] span:first-child {
+        padding-left: 25px;
+        position: relative;
+        &::before {
+          display: block;
+          content: '';
+          width: 20px;
+          height: 20px;
+          background: url(./file.svg) no-repeat center center;
+          background-size: 20px 20px;
+          position: absolute;
+          left:3px;
+          top: 0;
+          cursor: pointer;
+        }
+      }
+      span[data-type='a']:not(.vditor-ir__node--expand) {
+        padding-right: 25px;
+        position: relative;
+        &::after {
+          display: block;
+          content: '';
+          width: 20px;
+          height: 20px;
+          background: url(./link.svg) no-repeat center center;
+          background-size: 20px 20px;
+          position: absolute;
+          right: 3px;
+          bottom: 0;
+          cursor: pointer;
+        }
       }
       blockquote {
         border-color: var(--blockquote-border-color);

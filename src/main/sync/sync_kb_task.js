@@ -37,12 +37,15 @@ class SyncKbTask extends EventEmitter {
 
       let downloadedCount = 0;
       let uploadedCount = 0;
+      let failedNotes = [];
       //
       if (downloadFirst) {
         // first login, download remote data first
         downloadedCount = await this.downloadNotes();
         await this.uploadDeletedNotes();
-        uploadedCount = await this.uploadNotes();
+        const uploadRet = await this.uploadNotes();
+        failedNotes = uploadRet.failedNotes;
+        uploadedCount = uploadRet.uploadedCount;
         //
       } else {
         //
@@ -51,7 +54,9 @@ class SyncKbTask extends EventEmitter {
           await this.downloadDeletedObjects();
         }
         //
-        uploadedCount = await this.uploadNotes();
+        const uploadRet = await this.uploadNotes();
+        failedNotes = uploadRet.failedNotes;
+        uploadedCount = uploadRet.uploadedCount;
         if (downloadObjects) {
           downloadedCount = await this.downloadNotes();
         }
@@ -66,6 +71,7 @@ class SyncKbTask extends EventEmitter {
       this.emit('finish', this, {
         uploadedCount,
         downloadedCount,
+        failedNotes,
       }, this._options);
     } catch (err) {
       this._isRunning = false;
@@ -77,6 +83,8 @@ class SyncKbTask extends EventEmitter {
   async uploadNotes() {
     //
     const notes = await this._db.getModifiedNotes();
+    //
+    const failedNotes = [];
     for (const note of notes) {
       //
       let flags = '';
@@ -94,6 +102,7 @@ class SyncKbTask extends EventEmitter {
       }
       note.author = flags;
       note.keywords = note.tags;
+      note.protected = note.encrypted ? 1 : 0;
       delete note.tags;
       //
       note.title = note.title?.trim();
@@ -107,14 +116,31 @@ class SyncKbTask extends EventEmitter {
         note.html = await noteData.readNoteHtml(this._user.userGuid, kbGuid, note.guid);
         note.resources = noteData.getResourcesFromHtml(note.html);
       }
-      const version = await this._ks.uploadNote(note);
-      note.version = version;
-      note.lastSynced = new Date().valueOf();
-      await this._db.setNoteVersion(note.guid, version);
-      this.emit('uploadNote', this, note);
+      //
+      try {
+        const version = await this._ks.uploadNote(note);
+        note.version = version;
+        note.lastSynced = new Date().valueOf();
+        const resultNote = await this._db.setNoteVersion(note.guid, version);
+        this.emit('uploadNote', this, resultNote);
+      } catch (err) {
+        //
+        if (err.code === 'WizErrorInvalidPassword'
+        || err.externCode === 'WizErrorPayedPersonalExpired'
+        || err.externCode === 'WizErrorFreePersonalExpired') {
+          throw err;
+        }
+        //
+        console.error(err);
+        failedNotes.push(note.title);
+      }
     }
     //
-    return notes.length;
+    const uploadedCount = notes.length - failedNotes.length;
+    return {
+      uploadedCount,
+      failedNotes,
+    };
   }
 
   async downloadNoteData(noteGuid) {
@@ -177,6 +203,7 @@ class SyncKbTask extends EventEmitter {
         note.guid = note.docGuid;
         note.abstract = note.abstractText;
         note.modified = note.dataModified;
+        note.encrypted = note.protected ? 1 : 0;
         //
         note.tags = note.keywords;
         const flags = note.author;

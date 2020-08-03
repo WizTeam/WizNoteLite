@@ -27,7 +27,7 @@ async function i18nInit() {
   //
   await i18next.init({
     lng: currentLang,
-    debug: true,
+    debug: false,
     resources,
   });
 }

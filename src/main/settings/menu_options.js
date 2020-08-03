@@ -11,6 +11,22 @@ function showMainWindow() {
   }
 }
 
+function handleMenuClick(menuItem, browserWindow) {
+  if (browserWindow && browserWindow.webContents) {
+    browserWindow.webContents.send('menuItemClicked', menuItem.id);
+  }
+}
+
+function toMenuItem(id, accelerator) {
+  return {
+    id,
+    accelerator,
+    label: i18next.t(id),
+    click: handleMenuClick,
+  };
+}
+
+
 function getMainMenuTemplate() {
   //
   const template = [];
@@ -20,14 +36,7 @@ function getMainMenuTemplate() {
     template.push({
       label: app.name,
       submenu: [
-        {
-          click(menuItem, browserWindow) {
-            if (browserWindow && browserWindow.webContents) {
-              browserWindow.webContents.send('showAbout');
-            }
-          },
-          label: i18next.t('about'),
-        },
+        toMenuItem('menuShowAbout'),
         { type: 'separator' },
         { role: 'services', label: i18next.t('services') },
         { type: 'separator' },
@@ -83,6 +92,9 @@ function getMainMenuTemplate() {
       { role: 'zoomout', label: i18next.t('zoomout') },
       { type: 'separator' },
       { role: 'togglefullscreen', label: i18next.t('togglefullscreen') },
+      toMenuItem('menuViewEditorOnly', 'Ctrl+1'),
+      toMenuItem('menuViewEditorAndNotes', 'Ctrl+2'),
+      toMenuItem('menuViewEditorAndNotesAndTags', 'Ctrl+3'),
     ],
   });
   // window menu
@@ -124,14 +136,7 @@ function getMainMenuTemplate() {
       label: i18next.t('helpMenu'),
       role: 'help',
       submenu: [
-        {
-          click(menuItem, browserWindow) {
-            if (browserWindow && browserWindow.webContents) {
-              browserWindow.webContents.send('showAbout');
-            }
-          },
-          label: i18next.t('about'),
-        },
+        toMenuItem('menuShowAbout'),
         {
           label: i18next.t('learnMore'),
           click: async () => {

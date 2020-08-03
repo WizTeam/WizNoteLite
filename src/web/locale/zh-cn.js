@@ -50,8 +50,9 @@ export default {
   inputPasswordNullError: '请输入密码',
   inputServerNullError: '请输入服务器地址',
   // 编辑器footer
-  editorFooterLocal: '本地保存未同步',
-  editorFooterSyncTime: '已同步',
+  editorFooterSynced: '已同步',
+  editorFooterLocalChanged: '本地保存未同步: {modifiedTime}',
+  editorFooterLocalUser: '本地使用，未同步',
   editorFooterWordsSize: '字数',
   // tableMenu
   tableMenuAddRowAbove: '上方增加行',
@@ -67,6 +68,9 @@ export default {
   tableMenuDeleteTable: '删除表格',
   tableMenuCpHtml: '复制表格 HTML',
   tableMenuCpMd: '复制表格 md 源码',
+  // imageMenu
+  imageMenuChange: '更换图片',
+  imageMenuDelete: '删除',
   // error
   errorDisableRegister: '注册已禁用',
   errorMaxTimesForIP: '您当前的 IP 注册次数过多，请稍后再试...',
@@ -114,6 +118,8 @@ export default {
   messageVipServiceEndedDate: 'VIP 已经在 {date} 到期.',
   buttonFailedToQueryProduct: '无法获取产品信息',
   errorSyncFailed: '同步失败: {message}',
+  errorNoteSyncFailed: '笔记上传失败: {message}',
+  buttonViewLog: '查看日志',
 
   // export
   exportPng: '导出为图片',
@@ -138,9 +144,10 @@ export default {
   exportButton: '导出为图片',
   exportPdfButton: '导出为 PDF',
   // system menu
-  sendFeedback: '意见反馈',
-  devTool: '开发者工具',
-  about: '关于 WizNote Lite',
+  menuSendFeedback: '意见反馈',
+  menuDevTool: '开发者工具',
+  menuAbout: '关于 WizNote Lite',
+  menuQuit: '退出',
 
   editorContents: '目录',
 };

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { injectIntl } from 'react-intl';
+import { injectIntl, FormattedMessage } from 'react-intl';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
@@ -213,10 +213,21 @@ class Main extends React.Component {
       });
     },
 
+    handleMenuItemClicked: (id) => {
+      if (id === 'menuViewEditorOnly') {
+        this.setState({ isFullScreen: true });
+      } else if (id === 'menuViewEditorAndNotes') {
+        this.setState({ isFullScreen: false, showDrawer: false });
+      } else if (id === 'menuViewEditorAndNotesAndTags') {
+        this.setState({ isFullScreen: false, showDrawer: true });
+      }
+    },
+
     handleSyncFinish: (kbGuid, result, syncOptions) => {
       if (kbGuid !== this.props.kbGuid) {
         return;
       }
+      const { intl, enqueueSnackbar, classes } = this.props;
       if (result.error) {
         const err = result.error;
         if (err.code === 'WizErrorInvalidPassword') {
@@ -233,7 +244,6 @@ class Main extends React.Component {
         //
         console.error(err);
         //
-        const { intl, enqueueSnackbar } = this.props;
         const message = intl.formatMessage({ id: 'errorSyncFailed' }, { message: err.message });
         enqueueSnackbar(message, {
           anchorOrigin: {
@@ -242,7 +252,56 @@ class Main extends React.Component {
           },
           variant: 'error',
           key: 'WizErrorSync',
+          action: (() => (
+            <>
+              <Button
+                onClick={this.handler.handleViewLog}
+                className={classNames(classes.snackbarButton, classes.snackbarButtonUpgrade)}
+              >
+                <FormattedMessage id="buttonViewLog" />
+              </Button>
+              <IconButton
+                onClick={() => this.handler.handleCloseSnackbar('WizErrorSync')}
+                className={classes.snackbarButton}
+              >
+                <Icons.CloseIcon />
+              </IconButton>
+            </>
+          )),
         });
+      } else if (result.failedNotes && result.failedNotes.length > 0) {
+        //
+        let notes = result.failedNotes;
+        if (notes.length > 3) {
+          notes = notes.slice(0, 3);
+        }
+        const titles = notes.join(', ');
+        const message = intl.formatMessage({ id: 'errorNoteSyncFailed' }, { message: titles });
+        enqueueSnackbar(message, {
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'center',
+          },
+          variant: 'error',
+          key: 'WizErrorSyncNotes',
+          action: (() => (
+            <>
+              <Button
+                onClick={this.handler.handleViewLog}
+                className={classNames(classes.snackbarButton, classes.snackbarButtonUpgrade)}
+              >
+                <FormattedMessage id="buttonViewLog" />
+              </Button>
+              <IconButton
+                onClick={() => this.handler.handleCloseSnackbar('WizErrorSyncNotes')}
+                className={classes.snackbarButton}
+              >
+                <Icons.CloseIcon />
+              </IconButton>
+            </>
+          )),
+        });
+        //
       }
     },
 
@@ -257,12 +316,16 @@ class Main extends React.Component {
       this.setState({ showUpgradeToVipDialog: true });
     },
 
-    handleCloseSnackbar: () => {
-      this.props.closeSnackbar(SNACKBAR_KEY);
+    handleCloseSnackbar: (key) => {
+      this.props.closeSnackbar(key);
     },
 
     handleCloseUpgradeToVipDialog: () => {
       this.setState({ showUpgradeToVipDialog: false });
+    },
+
+    handleViewLog: () => {
+      window.wizApi.userManager.viewLogFile();
     },
   }
 
@@ -302,10 +365,12 @@ class Main extends React.Component {
       }
     }
     window.wizApi.userManager.on('syncFinish', this.handler.handleSyncFinish);
+    window.wizApi.userManager.on('menuItemClicked', this.handler.handleMenuItemClicked);
   }
 
   componentWillUnmount() {
     window.wizApi.userManager.off('syncFinish', this.handler.handleSyncFinish);
+    window.wizApi.userManager.off('menuItemClicked', this.handler.handleMenuItemClicked);
   }
 
   showUpgradeVipMessage(isVipExpired, syncOptions) {
@@ -339,7 +404,10 @@ class Main extends React.Component {
           >
             {buttonMessage}
           </Button>
-          <IconButton onClick={this.handler.handleCloseSnackbar} className={classes.snackbarButton}>
+          <IconButton
+            onClick={() => this.handler.handleCloseSnackbar(SNACKBAR_KEY)}
+            className={classes.snackbarButton}
+          >
             <Icons.CloseIcon />
           </IconButton>
         </>

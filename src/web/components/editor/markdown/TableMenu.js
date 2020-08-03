@@ -243,7 +243,7 @@ function TableMenu(props) {
   }
 
   useEffect(() => {
-    function showSubMenuHandler(e) {
+    function handleShowSubMenu(e) {
       const ele = filterParentElement(e.target, document.body, (dom) => dom.getAttribute('data-type') === 'subMenu', true);
       if (ele && !subMenuPos) {
         const eleRect = ele.getBoundingClientRect();
@@ -256,7 +256,7 @@ function TableMenu(props) {
       }
     }
 
-    function mousedownHandler(e) {
+    function handleMouseDown(e) {
       if (props.editor) {
         const ele = filterParentElement(e.target, props.editor.vditor.element, (dom) => dom.tagName.toLocaleLowerCase() === 'table');
         if (e.button === 2 && ele) {
@@ -283,7 +283,7 @@ function TableMenu(props) {
       }
     }
 
-    function keydownHandler(e) {
+    function handleKeyDown(e) {
       if (matchHotKey('⌘-Enter', e)) {
         dispatchKey('⌘-=');
         e.preventDefault();
@@ -293,13 +293,13 @@ function TableMenu(props) {
       }
     }
 
-    window.addEventListener('keydown', keydownHandler);
-    window.addEventListener('mouseover', showSubMenuHandler);
-    window.addEventListener('mousedown', mousedownHandler);
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('mouseover', handleShowSubMenu);
+    window.addEventListener('mousedown', handleMouseDown);
     return () => {
-      window.removeEventListener('keydown', keydownHandler);
-      window.removeEventListener('mouseover', showSubMenuHandler);
-      window.removeEventListener('mousedown', mousedownHandler);
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('mouseover', handleShowSubMenu);
+      window.removeEventListener('mousedown', handleMouseDown);
     };
   }, [menuPosition, subMenuPos, props.editor, align, dispatchKey, classes.menuRoot]);
 

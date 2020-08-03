@@ -127,22 +127,22 @@ function TableToolbar(props) {
     props.onSaveNote();
   }
 
-  function menuBtnClickHandler(e) {
+  function handleMenuBtnClick(e) {
     setAnchorEl(e.currentTarget);
     e.preventDefault();
   }
 
-  function closeMenuHandler() {
+  function handleCloseMenu() {
     setAnchorEl(null);
   }
 
-  function boxClickHandler(row, col) {
+  function handleBoxClick(row, col) {
     updatedTable(row, col);
-    closeMenuHandler();
+    handleCloseMenu();
   }
 
   useEffect(() => {
-    function selectionChangeHandler() {
+    function handleSelectionChange() {
       if (!anchorEl) {
         const range = getRange();
         if (range) {
@@ -167,12 +167,12 @@ function TableToolbar(props) {
         if (buttonPos) {
           tableElement = undefined;
           setButtonPos(undefined);
-          closeMenuHandler();
+          handleCloseMenu();
         }
       }
     }
 
-    function mouseoverHandler(e) {
+    function handleMouseOver(e) {
       const ele = filterParentElement(
         e.target,
         document.body,
@@ -194,20 +194,20 @@ function TableToolbar(props) {
       }
     }
 
-    function mousedownHandler(e) {
+    function handleMouseDown(e) {
       if (anchorEl && (!filterParentElement(e.target, document, (dom) => hasClass(dom, 'table-toolbar-menu'), true))) {
-        closeMenuHandler();
+        handleCloseMenu();
         e.preventDefault();
       }
     }
 
-    document.addEventListener('selectionchange', selectionChangeHandler);
-    document.addEventListener('mouseover', mouseoverHandler);
-    document.addEventListener('mousedown', mousedownHandler, true);
+    document.addEventListener('selectionchange', handleSelectionChange);
+    document.addEventListener('mouseover', handleMouseOver);
+    document.addEventListener('mousedown', handleMouseDown, true);
     return () => {
-      document.removeEventListener('selectionchange', selectionChangeHandler);
-      document.removeEventListener('mouseover', mouseoverHandler);
-      document.removeEventListener('mousedown', mousedownHandler, true);
+      document.removeEventListener('selectionchange', handleSelectionChange);
+      document.removeEventListener('mouseover', handleMouseOver);
+      document.removeEventListener('mousedown', handleMouseDown, true);
     };
   }, [props.editor, buttonPos, classes, anchorEl]);
 
@@ -225,7 +225,7 @@ function TableToolbar(props) {
       })}
       style={buttonPos}
     >
-      <IconButton disableRipple className={classes.iconButton} onMouseDown={menuBtnClickHandler}>
+      <IconButton disableRipple className={classes.iconButton} onMouseDown={handleMenuBtnClick}>
         <Icons.TableBarIcon className={classes.icon} />
       </IconButton>
       <Menu
@@ -259,7 +259,7 @@ function TableToolbar(props) {
                     })}
                     key={`${y.toString()}-${x.toString()}`}
                     data-coordinate={`${y}-${x}`}
-                    onClick={() => boxClickHandler(y + 1, x + 1)}
+                    onClick={() => handleBoxClick(y + 1, x + 1)}
                   />
                 ))}
               </div>

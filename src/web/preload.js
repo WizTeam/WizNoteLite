@@ -82,19 +82,26 @@ class WindowManager {
     if (!this._systemMenu) {
       const options = [
         {
-          label: intl.formatMessage({ id: 'sendFeedback' }),
+          label: intl.formatMessage({ id: 'menuSendFeedback' }),
           click() {
             window.open('https://support.qq.com/products/174045');
           },
         },
         {
-          label: intl.formatMessage({ id: 'devTool' }),
+          label: intl.formatMessage({ id: 'menuDevTool' }),
           role: 'toggledevtools',
         },
         {
-          label: intl.formatMessage({ id: 'about' }),
+          label: intl.formatMessage({ id: 'menuAbout' }),
           click() {
-            window.wizApi.userManager.emit('showAbout');
+            window.wizApi.userManager.emit('menuItemClicked', 'menuShowAbout');
+          },
+        },
+        { type: 'separator' },
+        {
+          label: intl.formatMessage({ id: 'menuQuit' }),
+          click() {
+            remote.app.quit();
           },
         },
       ];
@@ -325,6 +332,11 @@ class UserManager extends EventEmitter {
     return result;
   }
 
+  async viewLogFile() {
+    const result = await invokeApi('viewLogFile', this.userGuid);
+    return result;
+  }
+
   async sendMessage(name, ...args) {
     ipcRenderer.send(name, this.userGuid, ...args);
   }
@@ -381,8 +393,13 @@ ipcRenderer.on('linksChanged', (event, ...args) => {
   userManager.emit('linksChanged', ...args);
 });
 
-ipcRenderer.on('showAbout', (event, ...args) => {
-  userManager.emit('showAbout', ...args);
+ipcRenderer.on('menuItemClicked', (event, ...args) => {
+  const id = args[0];
+  switch (id) {
+    default: {
+      userManager.emit('menuItemClicked', ...args);
+    }
+  }
 });
 
 ipcRenderer.on('userInfoChanged', (event, ...args) => {
