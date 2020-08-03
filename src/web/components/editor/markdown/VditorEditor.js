@@ -14,7 +14,7 @@ import InsertTagMenu from './InsertTagMenu';
 import {
   isCtrl, filterParentElement, hasClass, getDomIndexForParent,
 } from '../libs/dom_utils';
-import { getRange, getSelection, resetRange } from '../libs/range_utils';
+import { getRange, getSelection, resetRange, setRange } from '../libs/range_utils';
 import TableMenu from './TableMenu';
 import TableToolbar from './TableToolbar';
 import ImageMenu from './ImageMenu';
@@ -590,7 +590,7 @@ class VditorEditor extends React.Component {
     this.updateContentsList();
     setTimeout(() => {
       // this.setWordsNumber();
-      this.focusEnd();
+      this.focusStart();
     }, 100);
   }
 
@@ -611,20 +611,34 @@ class VditorEditor extends React.Component {
       && range.startOffset === 0;
   }
 
-  focusEnd() {
+  focusStart() {
     if (this.editor?.vditor.element) {
       const dom = this.editor.vditor.element.querySelector('.vditor-ir .vditor-reset');
       dom.focus();
       const selection = getSelection();
-      if (dom.childElementCount > 0 && dom.children[0].tagName.toLowerCase() === 'h1' && this.props.autoSelectTitle) {
+      const first = dom.firstChild;
+      if (!first) {
+        setRange(dom, 0);
+        return;
+      }
+
+      if (/^h1$/i.test(first.tagName) && this.props.autoSelectTitle) {
         const range = window.document.createRange();
-        range.selectNodeContents(dom.children[0].lastChild);
+        range.selectNodeContents(first.lastChild);
         selection.removeAllRanges();
         selection.addRange(range);
-      } else {
-        selection.selectAllChildren(dom);
-        selection.collapseToEnd();
+        this.editor.vditor.ir.expandMarker(selection.getRangeAt(0), this.editor.vditor);
+        return;
       }
+
+      const isHeading = /^h[1-6]$/i.test(first.tagName);
+      const headingFirst = first.firstChild;
+      if (isHeading && headingFirst && /^span$/i.test(headingFirst.tagName)) {
+        setRange(headingFirst.nextSibling, 0);
+        this.editor.vditor.ir.expandMarker(selection.getRangeAt(0), this.editor.vditor);
+        return;
+      }
+      setRange(headingFirst, 0);
     }
   }
 
