@@ -13,8 +13,12 @@ import { REGEXP_TAG } from '../../../../share/note_analysis';
 import InsertTagMenu from './InsertTagMenu';
 import {
   isCtrl, filterParentElement, hasClass, getDomIndexForParent,
+  fixRangeScrollTop,
 } from '../libs/dom_utils';
-import { getRange, getSelection, resetRange, setRange } from '../libs/range_utils';
+import {
+  getRange, getRangeRect, getSelection, resetRange, setRange,
+} from '../libs/range_utils';
+import PageScrollAni from '../libs/PageScrollAni';
 import TableMenu from './TableMenu';
 import TableToolbar from './TableToolbar';
 import ImageMenu from './ImageMenu';
@@ -36,6 +40,8 @@ class VditorEditor extends React.Component {
   curContentId = null;
 
   resetValueTimer = null;
+
+  pageScrollAni = null;
 
   timeStamp = new Date().getTime();
 
@@ -68,9 +74,11 @@ class VditorEditor extends React.Component {
         this.editor.vditor.irUndo.redo(this.editor.vditor);
       }
       if (e.keyCode === 13) {
+        const rectLast = getRangeRect();
         // Enter
-        // Vditor 在行首 输入回车时，不会重新渲染 改行，导致 如果行首为 Tag ，会遗留 Tag 标签样式
+        // Vditor 在行首 输入回车时，不会重新渲染 该行，导致 如果行首为 Tag ，会遗留 Tag 标签样式
         setTimeout(() => {
+          fixRangeScrollTop(this.editor.vditor.element, this.pageScrollAni, rectLast);
           const range = getRange();
           const block = filterParentElement(range.startContainer,
             this.editor.vditor.element,
@@ -112,6 +120,9 @@ class VditorEditor extends React.Component {
 
       if (e.keyCode === 40 && !e.shiftKey) {
         this.patchDownKeyForChrome(e);
+        fixRangeScrollTop(this.editor.vditor.element, this.pageScrollAni);
+      } else if (e.keyCode === 38 && !e.shiftKey) {
+        fixRangeScrollTop(this.editor.vditor.element, this.pageScrollAni);
       }
     },
     handleSelectionChange: () => {
@@ -251,7 +262,8 @@ class VditorEditor extends React.Component {
       // content changed
       // console.log('setValue: ' + nextProps.value);
       this.resourceUrl = nextProps.resourceUrl;
-      // 编辑器 focus 操作，会导致 react 报错 'unstable_flushDiscreteUpdates: Cannot flush updates when React is already rendering.'
+      // 编辑器 focus 操作，会导致 react 报错:
+      // 'unstable_flushDiscreteUpdates: Cannot flush updates when React is already rendering.'
       // 使用 setTimeout 可以规避此问题
       window.clearTimeout(this.resetValueTimer);
       this.resetValueTimer = setTimeout(() => {
@@ -316,6 +328,7 @@ class VditorEditor extends React.Component {
       cdn,
       after: () => {
         const { onInit, disabled } = this.props;
+        this.pageScrollAni = new PageScrollAni(this.editor.vditor.element);
         if (onInit) {
           onInit(this.editor);
           if (this.waitNoteData) {
@@ -627,7 +640,7 @@ class VditorEditor extends React.Component {
         range.selectNodeContents(first.lastChild);
         selection.removeAllRanges();
         selection.addRange(range);
-        this.editor.vditor.ir.expandMarker(selection.getRangeAt(0), this.editor.vditor);
+        this.editor.vditor.ir.expandMarker(getRange(), this.editor.vditor);
         return;
       }
 
@@ -635,7 +648,7 @@ class VditorEditor extends React.Component {
       const headingFirst = first.firstChild;
       if (isHeading && headingFirst && /^span$/i.test(headingFirst.tagName)) {
         setRange(headingFirst.nextSibling, 0);
-        this.editor.vditor.ir.expandMarker(selection.getRangeAt(0), this.editor.vditor);
+        this.editor.vditor.ir.expandMarker(getRange(), this.editor.vditor);
         return;
       }
       setRange(headingFirst, 0);
@@ -651,7 +664,7 @@ class VditorEditor extends React.Component {
     }
     try {
       sel.modify('move', 'forward', 'line');
-      const rangeNew = getRange;
+      const rangeNew = getRange();
       if (range.startContainer === rangeNew.startContainer
         && range.startOffset === rangeNew.startOffset) {
         let target = rangeNew.startContainer;

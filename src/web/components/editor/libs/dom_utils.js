@@ -1,9 +1,31 @@
-import { getRange } from './range_utils';
+import { getRange, getRangeRect } from './range_utils';
 
 // eslint-disable-next-line import/prefer-default-export
 export function getFontBtnStatus(editor, type) {
   const dom = editor.querySelector(`.vditor-toolbar .vditor-tooltipped[data-type=${type}]`);
   return dom && Array.prototype.includes.call(dom.classList, 'vditor-menu--current');
+}
+
+export function getScrollContainer(dom) {
+  let p = dom;
+  const body = window.document.body;
+  if (!dom) {
+    return body;
+  }
+  if (dom === body) {
+    return dom;
+  }
+  while (p && p.nodeType === 1) {
+    const s = window.getComputedStyle(p);
+    if (/auto|scroll/i.test(s.overflowY)) {
+      return p;
+    }
+    if (p === body) {
+      break;
+    }
+    p = p.parentNode;
+  }
+  return body;
 }
 
 export function isCtrl(event) {
@@ -15,6 +37,20 @@ export function isCtrl(event) {
   }
   if (!event.metaKey && event.ctrlKey) {
     return true;
+  }
+  return false;
+}
+
+export function isParent(dom, parent) {
+  if (!dom || !parent) {
+    return false;
+  }
+  let target = dom;
+  while (target) {
+    if (target === parent) {
+      return true;
+    }
+    target = target.parentNode;
   }
   return false;
 }
@@ -33,6 +69,37 @@ export function filterParentElement(dom, root, filterFn, self = false) {
     }
   }
   return null;
+}
+
+export function fixRangeScrollTop(root, pageScrollAni, rectLast) {
+  const space = 40;
+  const range = getRange();
+  if (!isParent(range.startContainer, root)) {
+    return;
+  }
+  const rect = getRangeRect();
+  if (rect.x !== 0) {
+    const scrollContainer = getScrollContainer(root);
+    const curScrollTop = scrollContainer.scrollTop;
+    let scrollTop = curScrollTop;
+    const containerHeight = scrollContainer.clientHeight;
+    if (rect.y < space) {
+      scrollTop = scrollContainer.scrollTop + rect.y - space;
+    } else if (rect.y > containerHeight - space) {
+      const y = scrollContainer.scrollTop + rect.y;
+      scrollTop = y - containerHeight + space;
+    } else if (rectLast && rectLast.y > containerHeight * 0.6) {
+      const y = scrollContainer.scrollTop + rect.y;
+      scrollTop = y - containerHeight * 0.6;
+    }
+    if (scrollTop !== curScrollTop) {
+      if (pageScrollAni) {
+        pageScrollAni.setScrollTop(scrollTop);
+      } else {
+        scrollContainer.scrollTop = scrollTop;
+      }
+    }
+  }
 }
 
 export function hasClass(dom, className) {
@@ -72,28 +139,6 @@ export function getPositionForWin(dom) {
     node = node.offsetParent;
   }
   return position;
-}
-
-export function getScrollContainer(dom) {
-  let p = dom;
-  const body = window.document.body;
-  if (!dom) {
-    return body;
-  }
-  if (dom === body) {
-    return dom;
-  }
-  while (p && p.nodeType === 1) {
-    const s = window.getComputedStyle(p);
-    if (/auto|scroll/i.test(s.overflowY)) {
-      return p;
-    }
-    if (p === body) {
-      break;
-    }
-    p = p.parentNode;
-  }
-  return body;
 }
 
 export function updateHotkeyTip(hotkeyStr) {
