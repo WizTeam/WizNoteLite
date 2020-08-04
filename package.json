@@ -195,7 +195,7 @@
     "react-scripts": "3.4.1",
     "run-script-os": "^1.0.7",
     "timer.js": "^1.0.4",
-    "wiz-vditor": "^1.0.10"
+    "wiz-vditor": "^1.0.12"
   },
   "__npminstall_done": false
 }
