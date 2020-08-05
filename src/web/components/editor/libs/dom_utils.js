@@ -106,14 +106,15 @@ export function hasClass(dom, className) {
   return dom && ` ${dom.className}`.indexOf(` ${className}`) !== -1;
 }
 
-export function getCodeBlock(root) {
+export function getCodeFromRange(root) {
   const range = getRange();
   const container = range.startContainer;
   return filterParentElement(container, root,
-    (dom) => dom.nodeType === 1 && dom.tagName.toLowerCase() === 'code',
+    (dom) => dom.nodeType === 1 && /^code$/i.test(dom.tagName),
     true);
 }
-export function getTagSpan(root, target = null) {
+
+export function getTagSpanFromRange(root, target = null) {
   let tagDom = target;
   if (!target) {
     const range = getRange();
@@ -121,6 +122,14 @@ export function getTagSpan(root, target = null) {
   }
   return filterParentElement(tagDom, root,
     (dom) => hasClass(dom, 'tag-span'), true);
+}
+
+export function getTableFromRange(root) {
+  const range = getRange();
+  const container = range.startContainer;
+  return filterParentElement(container, root,
+    (dom) => dom.nodeType === 1 && /^table$/i.test(dom.tagName),
+    true);
 }
 
 export function getDomIndexForParent(dom) {

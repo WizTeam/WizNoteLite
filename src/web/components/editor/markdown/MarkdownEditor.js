@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { withStyles, withTheme } from '@material-ui/core/styles';
 import VditorEditor from './VditorEditor';
-import { getTagSpan } from '../libs/dom_utils';
+import { getTagSpanFromRange } from '../libs/dom_utils';
 
 const styles = (/* theme */) => ({
   root: {
@@ -20,7 +20,7 @@ class MarkdownEditor extends React.Component {
   handler = {
     handleClickEditor: (e) => {
       const target = e.target;
-      const tagSpan = getTagSpan(this.editor.vditor.element, target);
+      const tagSpan = getTagSpanFromRange(this.editor.vditor.element, target);
       if (tagSpan) {
         this.props.onClickTag(tagSpan.textContent);
       }

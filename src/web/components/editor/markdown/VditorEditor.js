@@ -12,8 +12,8 @@ import './style.scss';
 import { REGEXP_TAG } from '../../../../share/note_analysis';
 import InsertTagMenu from './InsertTagMenu';
 import {
-  isCtrl, filterParentElement, hasClass, getDomIndexForParent,
-  fixRangeScrollTop,
+  isCtrl, filterParentElement, fixRangeScrollTop,
+  getCodeFromRange, getDomIndexForParent, getTableFromRange, hasClass,
 } from '../libs/dom_utils';
 import {
   getRange, getRangeRect, getSelection, resetRange, setRange,
@@ -659,7 +659,13 @@ class VditorEditor extends React.Component {
     // Down (Chrome Patch: 文字 后面跟着 img，img 被自动换行，这时候从该行前面的问题使用 下方向键，无法将光标移动到后面的段落)
     const sel = getSelection();
     let range = getRange();
-    if (filterParentElement(range.startContainer, this.editor.vditor.element, (dom) => dom.tagName.toLowerCase() === 'table')) {
+    if (event.nativeEvent.defaultPrevented || !range || !range.collapsed) {
+      // defaultPrevented = true 说明 Vditor 编辑器已经处理了键盘操作
+      return;
+    }
+    const isInCode = !!getCodeFromRange(this.editor.vditor.element);
+    const isInTable = !isInCode && !!getTableFromRange(this.editor.vditor.element);
+    if (isInCode || isInTable) {
       return;
     }
     try {
