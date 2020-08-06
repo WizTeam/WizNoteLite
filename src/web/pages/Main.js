@@ -7,6 +7,8 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import trim from 'lodash/trim';
 import { withSnackbar } from 'notistack';
+import SplitPane from 'react-split-pane';
+import Pane from 'react-split-pane/lib/Pane';
 //
 import NoteList from '../components/NoteList';
 import Content from '../components/Content';
@@ -17,6 +19,7 @@ import LoginDialog from '../dialogs/LoginDialog';
 import UpgradeToVIPDialog from '../dialogs/UpgradeToVIPDialog';
 // import SettingDialog from '../components/SettingDialog';
 import Icons from '../config/icons';
+
 
 const noteListWidth = '25%';
 
@@ -434,68 +437,74 @@ class Main extends React.Component {
     } = this.state;
     return (
       <div className={classes.app}>
-        <SideBar
-          kbGuid={kbGuid}
-          type={type}
-          user={user}
-          open={showDrawer && !isFullScreen}
-          onChangeType={this.handler.handleChangeType}
-          onTagSelected={this.handler.handleTagSelected}
-          onClickLogin={this.handler.handleShowLoginDialog}
-          onClickSetting={this.handler.handleShowSettingDialog}
-          selectedTag={tag}
-          onUpgradeVip={this.handler.handleUpgradeVip}
-        />
-        <div className={classNames(
-          classes.noteListContainer,
-          showDrawer && classes.smallNoteListContainer,
-          isFullScreen && classes.noteListContainer_fullScreen,
-        )}
-        >
-          <CommonHeader
-            showLogo={!showDrawer}
-            showUserType={!showDrawer}
-            className={classes.header}
-            onUpgradeVip={this.handler.handleUpgradeVip}
-          />
-          <NoteList
-            className={classes.noteList}
-            selectedNoteGuid={currentNote?.guid}
-            onCreateNote={this.handler.handleCreateNote}
-            onSelectNote={this.handler.handleSelectNote}
-            onRequestChangeType={this.handler.handleChangeType}
-            onSync={this.handler.handleSync}
-            onInvalidPassword={onInvalidPassword}
-            onChangeType={this.handler.handleChangeType}
-            onChangeNotes={this.handler.handleChangeNotes}
-            onToggleDrawer={this.handler.handleToggleDrawer}
-            kbGuid={kbGuid}
-            type={type}
-            tag={tag}
-            backgroundType={backgroundType}
-          />
-          {showMatched && (
-            <div className={classes.footerBar}>
-              <LiteText className={classes.matchedNotes}>
-                {intl.formatMessage({ id: 'matchedNotes' }, { num: matchedNotesCount })}
-              </LiteText>
-            </div>
-          )}
-        </div>
-        <div className={classes.contentContainer}>
-          <div className={classes.contentMainContainer}>
-            <Content
-              note={currentNote}
+        <SplitPane split="vertical">
+          <Pane initialSize="200px">
+            <SideBar
               kbGuid={kbGuid}
-              isSearch={showMatched}
-              isShowDrawer={showDrawer}
-              backgroundType={backgroundType}
-              onCreateAccount={this.handler.handleShowLoginDialog}
-              onClickTag={this.handler.handleClickTag}
-              onRequestFullScreen={this.handler.handleFullScreen}
+              type={type}
+              user={user}
+              open={showDrawer && !isFullScreen}
+              onChangeType={this.handler.handleChangeType}
+              onTagSelected={this.handler.handleTagSelected}
+              onClickLogin={this.handler.handleShowLoginDialog}
+              onClickSetting={this.handler.handleShowSettingDialog}
+              selectedTag={tag}
+              onUpgradeVip={this.handler.handleUpgradeVip}
             />
+          </Pane>
+          <Pane initialSize="25%" minSize="10%" maxSize="500px">
+            <div className={classNames(
+              classes.noteListContainer,
+              showDrawer && classes.smallNoteListContainer,
+              isFullScreen && classes.noteListContainer_fullScreen,
+            )}
+            >
+              <CommonHeader
+                showLogo={!showDrawer}
+                showUserType={!showDrawer}
+                className={classes.header}
+                onUpgradeVip={this.handler.handleUpgradeVip}
+              />
+              <NoteList
+                className={classes.noteList}
+                selectedNoteGuid={currentNote?.guid}
+                onCreateNote={this.handler.handleCreateNote}
+                onSelectNote={this.handler.handleSelectNote}
+                onRequestChangeType={this.handler.handleChangeType}
+                onSync={this.handler.handleSync}
+                onInvalidPassword={onInvalidPassword}
+                onChangeType={this.handler.handleChangeType}
+                onChangeNotes={this.handler.handleChangeNotes}
+                onToggleDrawer={this.handler.handleToggleDrawer}
+                kbGuid={kbGuid}
+                type={type}
+                tag={tag}
+                backgroundType={backgroundType}
+              />
+              {showMatched && (
+                <div className={classes.footerBar}>
+                  <LiteText className={classes.matchedNotes}>
+                    {intl.formatMessage({ id: 'matchedNotes' }, { num: matchedNotesCount })}
+                  </LiteText>
+                </div>
+              )}
+            </div>
+          </Pane>
+          <div className={classes.contentContainer}>
+            <div className={classes.contentMainContainer}>
+              <Content
+                note={currentNote}
+                kbGuid={kbGuid}
+                isSearch={showMatched}
+                isShowDrawer={showDrawer}
+                backgroundType={backgroundType}
+                onCreateAccount={this.handler.handleShowLoginDialog}
+                onClickTag={this.handler.handleClickTag}
+                onRequestFullScreen={this.handler.handleFullScreen}
+              />
+            </div>
           </div>
-        </div>
+        </SplitPane>
 
         <LoginDialog
           open={showLoginDialog}
