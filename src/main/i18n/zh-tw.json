@@ -1,5 +1,4 @@
 {
-  "messageNoAccount": "沒有賬號，請註冊或登錄",
   "menuShowAbout": "關於 WizNote Lite",
   "services": "服務",
   "hide": "隱藏 WizNote Lite",
@@ -47,6 +46,5 @@
 
   "fileFilterPNG": "PNG files (*.png)",
   "fileFilterPDF": "PDF files (*.pdf)",
-  "fileFilterMarkdown": "Markdown files (*.md)",
-  "errorConnect": "無法連接到服務器： {{host}}，請檢查您的網絡。"
+  "fileFilterMarkdown": "Markdown files (*.md)"
 }

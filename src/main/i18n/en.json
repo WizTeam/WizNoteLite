@@ -1,5 +1,4 @@
 {
-  "messageNoAccount": "No account, please sign up or login",
   "menuShowAbout": "About WizNote Lite",
   "services": "Services",
   "hide": "Hide WizNote Lite",
@@ -47,6 +46,5 @@
 
   "fileFilterPNG": "PNG files (*.png)",
   "fileFilterPDF": "PDF files (*.pdf)",
-  "fileFilterMarkdown": "Markdown files (*.md)",
-  "errorConnect": "Can't connect to server: {{host}}, please check your network."
+  "fileFilterMarkdown": "Markdown files (*.md)"
 }
