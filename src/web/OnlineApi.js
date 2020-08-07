@@ -8,7 +8,7 @@ import isEqual from 'lodash/isEqual';
 import trim from 'lodash/trim';
 import removeMd from 'remove-markdown';
 import platform from 'platform';
-import sdkShare from 'wiznote-sdk-js-share';
+import { error, noteAnalysis } from 'wiznote-sdk-js-share';
 
 const {
   WizInvalidUserError,
@@ -17,8 +17,8 @@ const {
   WizNetworkError,
   WizInternalError,
   WizKnownError,
-} = sdkShare.error;
-const { getResourcesFromHtml, extractTagsFromMarkdown } = sdkShare.noteAnalysis;
+} = error;
+const { getResourcesFromHtml, extractTagsFromMarkdown } = noteAnalysis;
 
 function getAsUrl() {
   if (window.location.host === 'localhost:3000') {
