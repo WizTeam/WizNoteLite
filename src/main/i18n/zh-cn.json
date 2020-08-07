@@ -1,5 +1,4 @@
 {
-  "messageNoAccount": "没有账号，请注册或登录",
   "menuShowAbout": "关于 WizNote Lite",
   "services": "服务",
   "hide": "隐藏 WizNote Lite",
@@ -48,6 +47,5 @@
 
   "fileFilterPNG": "PNG 文件 (*.png)",
   "fileFilterPDF": "PDF 文件 (*.pdf)",
-  "fileFilterMarkdown": "Markdown 文件 (*.md)",
-  "errorConnect": "无法连接到服务器： {{host}}，请检查您的网络。"
+  "fileFilterMarkdown": "Markdown 文件 (*.md)"
 }

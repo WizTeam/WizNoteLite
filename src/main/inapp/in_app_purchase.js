@@ -2,11 +2,12 @@ const {
   inAppPurchase, BrowserWindow, app, shell,
 } = require('electron');
 const path = require('path');
-const i18n = require('i18next');
 const fs = require('fs-extra');
-const { WizInternalError } = require('../../share/error');
-const request = require('../common/request');
-const users = require('../user/users');
+const sdk = require('wiznote-sdk-js');
+const { WizInternalError } = require('wiznote-sdk-js-share').error;
+
+const request = sdk.core.request;
+const i18next = sdk.core.i18next;
 
 const isWindows = process.platform === 'win32';
 
@@ -17,7 +18,7 @@ function getCurrentUserGuid() {
     return currentUserGuid;
   }
   //
-  return users.getUsers()[0].userGuid;
+  return sdk.getAllUsers()[0].userGuid;
 }
 
 async function verifyPurchase(transaction, receiptURL) {
@@ -33,14 +34,14 @@ async function verifyPurchase(transaction, receiptURL) {
       });
     }
   } catch (err) {
-    const errorMessage = i18n.t('errorDownloadReceipt', {
+    const errorMessage = i18next.t('errorDownloadReceipt', {
       message: err.message,
     });
     throw new WizInternalError(errorMessage);
   }
 
   const userGuid = getCurrentUserGuid();
-  const userData = users.getUserData(userGuid);
+  const userData = sdk.getUserData(userGuid);
   const user = userData.user;
   //
   const server = userData.accountServer.server;
@@ -61,11 +62,11 @@ async function verifyPurchase(transaction, receiptURL) {
       method: 'POST',
     });
     //
-    await users.refreshUserInfo(userGuid);
+    await sdk.refreshUserInfo(userGuid);
     //
     return true;
   } catch (err) {
-    const errorMessage = i18n.t('errorVerifyPurchase', {
+    const errorMessage = i18next.t('errorVerifyPurchase', {
       message: err.message,
     });
     throw new WizInternalError(errorMessage);
@@ -157,7 +158,7 @@ function initInAppPurchases() {
 
 async function queryProducts() {
   if (!inAppPurchase.canMakePayments()) {
-    throw new WizInternalError(i18n.t('errorNotAllowMakeInAppPurchase'), 'WizErrorNowAllowMakePayments');
+    throw new WizInternalError(i18next.t('errorNotAllowMakeInAppPurchase'), 'WizErrorNowAllowMakePayments');
   }
   //
   // 检索并显示产品描述.
@@ -165,7 +166,7 @@ async function queryProducts() {
   const products = await inAppPurchase.getProducts(PRODUCT_IDS);
   // 检查参数.
   if (!Array.isArray(products) || products.length <= 0) {
-    throw new WizInternalError(i18n.t('errorReceiveProductionInfo'));
+    throw new WizInternalError(i18next.t('errorReceiveProductionInfo'));
   }
 
   // 显示每个产品的名称和价格.
@@ -179,20 +180,20 @@ async function queryProducts() {
 async function purchaseProduct(event, userGuid, selectedProduct) {
   currentUserGuid = userGuid;
   if (!inAppPurchase.canMakePayments()) {
-    throw new WizInternalError(i18n.t('errorNotAllowMakeInAppPurchase'), 'WizErrorNowAllowMakePayments');
+    throw new WizInternalError(i18next.t('errorNotAllowMakeInAppPurchase'), 'WizErrorNowAllowMakePayments');
   }
   const selectedQuantity = 1;
   const productIdentifier = selectedProduct.productIdentifier;
   const isProductValid = await inAppPurchase.purchaseProduct(productIdentifier, selectedQuantity);
   if (!isProductValid) {
-    throw new WizInternalError(i18n.t('errorProductInNotValid'));
+    throw new WizInternalError(i18next.t('errorProductInNotValid'));
   }
   console.log('The payment has been added to the payment queue.');
   return true;
 }
 
 async function showUpgradeVipDialog(event, userGuid) {
-  const userData = users.getUserData(userGuid);
+  const userData = sdk.getUserData(userGuid);
   const apiServer = userData.accountServer.apiServer;
   const token = userData.token;
   const url = `${apiServer}/?p=wiz&c=vip_lite&token=${token}&clientType=lite&clientVersion=${app.getVersion()}`;
@@ -215,7 +216,7 @@ async function showUpgradeVipDialog(event, userGuid) {
   });
 
   //
-  const user = users.getUserInfo(userGuid);
+  const user = sdk.getUserInfo(userGuid);
 
   upgradeVipDialog.on('closed', async () => {
     //
@@ -226,7 +227,7 @@ async function showUpgradeVipDialog(event, userGuid) {
         }, 300);
       }
       //
-      const newUser = await users.refreshUserInfo(userGuid);
+      const newUser = await sdk.refreshUserInfo(userGuid);
       if (newUser.vip && newUser.vipDate !== user.vipDate) {
         await sendTransactionsEvents('purchased', '', userGuid);
       }

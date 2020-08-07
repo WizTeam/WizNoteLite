@@ -5,11 +5,12 @@ import WizVditor from 'wiz-vditor';
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import debounce from 'lodash/debounce';
+import { noteAnalysis } from 'wiznote-sdk-js-share';
+
 import InsertMenu from './InsertMenu';
 import HeadingMenu from './HeadingMenu';
 import 'wiz-vditor/dist/index.css';
 import './style.scss';
-import { REGEXP_TAG } from '../../../../share/note_analysis';
 import InsertTagMenu from './InsertTagMenu';
 import {
   isCtrl, filterParentElement, fixRangeScrollTop,
@@ -22,6 +23,8 @@ import PageScrollAni from '../libs/PageScrollAni';
 import TableMenu from './TableMenu';
 import TableToolbar from './TableToolbar';
 import ImageMenu from './ImageMenu';
+
+const { REGEXP_TAG } = noteAnalysis;
 
 const styles = (/* theme */) => ({
   hideBlockType: {
