@@ -3,9 +3,11 @@ const fs = require('fs-extra');
 const url = require('url');
 const path = require('path');
 const mime = require('mime');
-const paths = require('../common/paths');
-const users = require('../user/users');
-const lockers = require('../common/lockers');
+const sdk = require('wiznote-sdk-js');
+
+const lockers = sdk.core.lockers;
+const paths = sdk.core.paths;
+
 
 async function resourceProtocolHandler(request, callback) {
   //
@@ -21,7 +23,7 @@ async function resourceProtocolHandler(request, callback) {
   //
   const userGuid = u.host;
   //
-  const userData = users.getUserData(userGuid);
+  const userData = sdk.getUserData(userGuid);
   if (!userData) {
     return callback(Error('invalid url, user has not logged in'));
   }
@@ -34,7 +36,7 @@ async function resourceProtocolHandler(request, callback) {
     const resourcePath = path.join(resourceBasePath, resName);
     if (!await fs.exists(resourcePath)) {
       try {
-        await users.downloadNoteResource(userGuid, kbGuid, noteGuid, resName);
+        await sdk.downloadNoteResource(userGuid, kbGuid, noteGuid, resName);
       } catch (err) {
         console.error(err);
         return callback(err);

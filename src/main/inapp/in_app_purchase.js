@@ -4,9 +4,10 @@ const {
 const path = require('path');
 const i18n = require('i18next');
 const fs = require('fs-extra');
-const { WizInternalError } = require('../../share/error');
-const request = require('../common/request');
-const users = require('../user/users');
+const sdk = require('wiznote-sdk-js');
+const { WizInternalError } = require('wiznote-sdk-js-share').error;
+
+const request = sdk.core.request;
 
 const isWindows = process.platform === 'win32';
 
@@ -17,7 +18,7 @@ function getCurrentUserGuid() {
     return currentUserGuid;
   }
   //
-  return users.getUsers()[0].userGuid;
+  return sdk.getAllUsers()[0].userGuid;
 }
 
 async function verifyPurchase(transaction, receiptURL) {
@@ -40,7 +41,7 @@ async function verifyPurchase(transaction, receiptURL) {
   }
 
   const userGuid = getCurrentUserGuid();
-  const userData = users.getUserData(userGuid);
+  const userData = sdk.getUserData(userGuid);
   const user = userData.user;
   //
   const server = userData.accountServer.server;
@@ -61,7 +62,7 @@ async function verifyPurchase(transaction, receiptURL) {
       method: 'POST',
     });
     //
-    await users.refreshUserInfo(userGuid);
+    await sdk.refreshUserInfo(userGuid);
     //
     return true;
   } catch (err) {
@@ -192,7 +193,7 @@ async function purchaseProduct(event, userGuid, selectedProduct) {
 }
 
 async function showUpgradeVipDialog(event, userGuid) {
-  const userData = users.getUserData(userGuid);
+  const userData = sdk.getUserData(userGuid);
   const apiServer = userData.accountServer.apiServer;
   const token = userData.token;
   const url = `${apiServer}/?p=wiz&c=vip_lite&token=${token}&clientType=lite&clientVersion=${app.getVersion()}`;
@@ -215,7 +216,7 @@ async function showUpgradeVipDialog(event, userGuid) {
   });
 
   //
-  const user = users.getUserInfo(userGuid);
+  const user = sdk.getUserInfo(userGuid);
 
   upgradeVipDialog.on('closed', async () => {
     //
@@ -226,7 +227,7 @@ async function showUpgradeVipDialog(event, userGuid) {
         }, 300);
       }
       //
-      const newUser = await users.refreshUserInfo(userGuid);
+      const newUser = await sdk.refreshUserInfo(userGuid);
       if (newUser.vip && newUser.vipDate !== user.vipDate) {
         await sendTransactionsEvents('purchased', '', userGuid);
       }

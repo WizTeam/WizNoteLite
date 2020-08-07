@@ -1,3 +1,4 @@
+require('./wrapper');
 const {
   ipcMain, BrowserWindow,
   dialog,
@@ -11,9 +12,10 @@ const i18next = require('i18next');
 const log = require('electron-log');
 const sdk = require('wiznote-sdk-js');
 
-const wait = require('./utils/wait');
-const paths = require('./common/paths');
 const inAppPurchase = require('./inapp/in_app_purchase');
+
+const paths = sdk.core.paths;
+const wait = sdk.core.utils.wait;
 
 const isDebug = false;
 
@@ -120,10 +122,30 @@ handleApi('syncKb', async (event, ...args) => {
   return result;
 });
 
-handleApi('addImagesFromLocal', async (event, ...args) => {
+handleApi('addImagesFromLocal', async (event, userGuid, kbGuid, noteGuid) => {
   const webContents = event.sender;
   const browserWindow = BrowserWindow.fromWebContents(webContents);
-  const result = await sdk.addImagesFromLocal(browserWindow, ...args);
+  // const result = await sdk.addImagesFromLocal(browserWindow, ...args);
+  // return result;
+
+  const dialogResult = await dialog.showOpenDialog(browserWindow, {
+    properties: ['openFile', 'multiSelections'],
+    filters: [{
+      name: 'Images (*.png, *.jpg, *.jpeg, *,bmp, *.gif)',
+      extensions: [
+        'png', 'jpg', 'jpeg', 'bmp', 'gif',
+      ],
+    }],
+  });
+  if (dialogResult.canceled) {
+    return [];
+  }
+  const result = [];
+  for (const file of dialogResult.filePaths) {
+    const data = await fs.readFile(file);
+    const resName = await sdk.addImageFromData(userGuid, kbGuid, noteGuid, data);
+    result.push(resName);
+  }
   return result;
 });
 
@@ -147,7 +169,7 @@ handleApi('getUserSettings', async (event, userGuid, key, defaultValue) => sdk.g
 handleApi('setUserSettings', async (event, userGuid, key, value) => sdk.setUserSettings(userGuid, key, value));
 
 ipcMain.on('getUserSettingsSync', (event, userGuid, key, defaultValue) => {
-  const result = sdk.getSettings(userGuid, key, defaultValue);
+  const result = sdk.getUserSettings(userGuid, key, defaultValue);
   // eslint-disable-next-line no-param-reassign
   event.returnValue = result;
 });
@@ -252,6 +274,7 @@ handleApi('captureScreen', async (event, userGuid, kbGuid, noteGuid, options = {
       let scaleY;
       //
       const tempPath = paths.getTempPath();
+      await fs.ensureDir(tempPath);
       //
       for (let i = 0; i < pageCount; i++) {
         //

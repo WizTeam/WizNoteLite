@@ -23,6 +23,7 @@
     "remove-markdown": "^0.3.0",
     "uuid": "^8.0.0",
     "wiznote-sdk-js": "git+https://github.com/WizTeam/wiznote-sdk-js.git",
+    "wiznote-sdk-js-share": "git+https://github.com/WizTeam/wiznote-sdk-js-share.git",
     "xregexp": "^4.3.0"
   },
   "scripts": {
