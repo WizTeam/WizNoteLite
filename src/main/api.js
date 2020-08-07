@@ -1,4 +1,3 @@
-require('./wrapper');
 const {
   ipcMain, BrowserWindow,
   dialog,
@@ -8,7 +7,6 @@ const fs = require('fs-extra');
 const URL = require('url');
 const path = require('path');
 const PImage = require('pureimage');
-const i18next = require('i18next');
 const log = require('electron-log');
 const sdk = require('wiznote-sdk-js');
 
@@ -16,6 +14,7 @@ const inAppPurchase = require('./inapp/in_app_purchase');
 
 const paths = sdk.core.paths;
 const wait = sdk.core.utils.wait;
+const i18next = sdk.core.i18next;
 
 const isDebug = false;
 
