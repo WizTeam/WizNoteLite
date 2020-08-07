@@ -193,7 +193,7 @@
     "react-infinite-scroller": "^1.2.4",
     "react-intl": "^4.5.12",
     "react-scripts": "3.4.1",
-    "react-split-pane": "^2.0.3",
+    "react-split-pane": "^0.1.91",
     "run-script-os": "^1.0.7",
     "timer.js": "^1.0.4",
     "wiz-vditor": "^1.0.13"
