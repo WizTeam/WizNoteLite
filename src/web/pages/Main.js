@@ -7,7 +7,7 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import trim from 'lodash/trim';
 import { withSnackbar } from 'notistack';
-import SplitPane from 'react-split-pane';
+import SplitPane from '../thirdparty/react-split-pane';
 //
 import NoteList from '../components/NoteList';
 import Content from '../components/Content';
