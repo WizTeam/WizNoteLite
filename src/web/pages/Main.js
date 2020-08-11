@@ -97,11 +97,6 @@ const styles = (theme) => ({
     marginRight: 8,
   },
   splitPane: {
-    // transition: theme.transitions.create('width', {
-    //   easing: theme.transitions.easing.sharp,
-    //   duration: theme.transitions.duration.enteringScreen,
-    //   delay: 0,
-    // }),
   },
 });
 

@@ -16,8 +16,13 @@ class Resizer extends React.Component {
       resizerClassName,
       split,
       style,
+      active,
     } = this.props;
     const classes = [resizerClassName, split, className];
+
+    if (active) {
+      classes.push('active');
+    }
 
     return (
       <span
@@ -60,6 +65,7 @@ Resizer.propTypes = {
   split: PropTypes.oneOf(['vertical', 'horizontal']),
   style: stylePropType,
   resizerClassName: PropTypes.string.isRequired,
+  active: PropTypes.bool,
 };
 
 Resizer.defaultProps = {

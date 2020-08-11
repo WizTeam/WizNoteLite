@@ -94,6 +94,8 @@ class SplitPane extends React.Component {
   onTouchStart(event) {
     const { allowResize, onDragStarted, split } = this.props;
     if (allowResize) {
+      document.body.style.cursor = 'col-resize';
+      //
       unFocus(document, window);
       const position =
         split === 'vertical'
@@ -201,6 +203,8 @@ class SplitPane extends React.Component {
     const { allowResize, onDragFinished } = this.props;
     const { active, draggedSize } = this.state;
     if (allowResize && active) {
+      document.body.style.cursor = '';
+      //
       if (typeof onDragFinished === 'function') {
         onDragFinished(draggedSize);
       }
@@ -254,13 +258,15 @@ class SplitPane extends React.Component {
       paneStyle,
       pane1Style: pane1StyleProps,
       pane2Style: pane2StyleProps,
+      pane1EndStep,
+      pane2EndStep,
       resizerClassName,
       resizerStyle,
       split,
       style: styleProps,
     } = this.props;
 
-    const { pane1Size, pane2Size } = this.state;
+    const { pane1Size, pane2Size, active } = this.state;
 
     const disabledClass = allowResize ? '' : 'disabled';
     const resizerClassNamesIncludingDefault = resizerClassName
@@ -324,6 +330,7 @@ class SplitPane extends React.Component {
           size={pane1Size}
           split={split}
           style={pane1Style}
+          endStep={pane1EndStep}
         >
           {notNullChildren[0]}
         </Pane>
@@ -335,6 +342,7 @@ class SplitPane extends React.Component {
           onTouchStart={this.onTouchStart}
           onTouchEnd={this.onMouseUp}
           key="resizer"
+          active={active}
           resizerClassName={resizerClassNamesIncludingDefault}
           split={split}
           style={resizerStyle || {}}
@@ -348,6 +356,7 @@ class SplitPane extends React.Component {
           size={pane2Size}
           split={split}
           style={pane2Style}
+          endStep={pane2EndStep}
         >
           {notNullChildren[1]}
         </Pane>
@@ -380,6 +389,8 @@ SplitPane.propTypes = {
   paneStyle: stylePropType,
   pane1Style: stylePropType,
   pane2Style: stylePropType,
+  pane1EndStep: PropTypes.number,
+  pane2EndStep: PropTypes.number,
   resizerClassName: PropTypes.string,
   step: PropTypes.number,
 };

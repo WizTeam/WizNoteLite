@@ -2,8 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import stylePropType from 'react-style-proptype';
 
-const endStep = 100;
-
 class Pane extends React.PureComponent {
   _ref = React.createRef();
   _currentSize = 0;
@@ -44,6 +42,7 @@ class Pane extends React.PureComponent {
 
   requestAnimate() {
     const [start, end, step, prop] = this._args;
+    const { endStep } = this.props;
     //
     if (this._requestAnimationFrame) {
       window.cancelAnimationFrame(this._requestAnimationFrame);
@@ -111,8 +110,11 @@ Pane.propTypes = {
   split: PropTypes.oneOf(['vertical', 'horizontal']),
   style: stylePropType,
   eleRef: PropTypes.func,
+  endStep: PropTypes.number,
 };
 
-Pane.defaultProps = {};
+Pane.defaultProps = {
+  endStep: 30,
+};
 
 export default Pane;
