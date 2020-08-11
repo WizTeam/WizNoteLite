@@ -435,7 +435,7 @@ class Main extends React.Component {
 
     return (
       <div className={classes.app}>
-        <SplitPane split="vertical" paneClassName={classes.splitPane} initialSize="15%" minSize={openSidebar ? 192 : 0} maxSize={openSidebar ? 320 : 0}>
+        <SplitPane split="vertical" paneClassName={classes.splitPane} initialSize="15%" minSize={openSidebar ? 192 : 0} maxSize={openSidebar ? 320 : 0} paneEndStep={30}>
           <SideBar
             kbGuid={kbGuid}
             type={type}

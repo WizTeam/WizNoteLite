@@ -258,8 +258,7 @@ class SplitPane extends React.Component {
       paneStyle,
       pane1Style: pane1StyleProps,
       pane2Style: pane2StyleProps,
-      pane1EndStep,
-      pane2EndStep,
+      paneEndStep,
       resizerClassName,
       resizerStyle,
       split,
@@ -330,7 +329,7 @@ class SplitPane extends React.Component {
           size={pane1Size}
           split={split}
           style={pane1Style}
-          endStep={pane1EndStep}
+          endStep={paneEndStep}
         >
           {notNullChildren[0]}
         </Pane>
@@ -356,7 +355,7 @@ class SplitPane extends React.Component {
           size={pane2Size}
           split={split}
           style={pane2Style}
-          endStep={pane2EndStep}
+          endStep={paneEndStep}
         >
           {notNullChildren[1]}
         </Pane>
@@ -389,8 +388,7 @@ SplitPane.propTypes = {
   paneStyle: stylePropType,
   pane1Style: stylePropType,
   pane2Style: stylePropType,
-  pane1EndStep: PropTypes.number,
-  pane2EndStep: PropTypes.number,
+  paneEndStep: PropTypes.number,
   resizerClassName: PropTypes.string,
   step: PropTypes.number,
 };
