@@ -423,7 +423,6 @@ class SideBar extends React.Component {
   }
 }
 
-
 SideBar.propTypes = {
   classes: PropTypes.object.isRequired,
   onChangeType: PropTypes.func.isRequired,
@@ -441,6 +440,5 @@ SideBar.propTypes = {
 SideBar.defaultProps = {
   selectedTag: null,
 };
-
 
 export default withStyles(styles)(injectIntl(SideBar));
