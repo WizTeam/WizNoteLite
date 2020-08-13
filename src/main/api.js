@@ -2,6 +2,7 @@ const {
   ipcMain, BrowserWindow,
   dialog,
   shell,
+  app,
 } = require('electron');
 const fs = require('fs-extra');
 const URL = require('url');
@@ -11,6 +12,7 @@ const log = require('electron-log');
 const sdk = require('wiznote-sdk-js');
 
 const inAppPurchase = require('./inapp/in_app_purchase');
+const { WizKnownError } = require('wiznote-sdk-js-share/lib/error');
 
 const paths = sdk.core.paths;
 const wait = sdk.core.utils.wait;
@@ -499,7 +501,7 @@ handleApi('writeToMarkdown', async (event, userGuid, kbGuid, noteGuid) => {
   //
   const dialogResult = await dialog.showSaveDialog(browserWindow, {
     properties: ['saveFile'],
-    defaultPath: `${fileName}.md`,
+    defaultPath: path.join(app.getPath('downloads'), `${fileName}.md`),
     filters: [{
       name: i18next.t('fileFilterMarkdown'),
       extensions: [
@@ -518,13 +520,23 @@ handleApi('writeToMarkdown', async (event, userGuid, kbGuid, noteGuid) => {
   const files = await fs.readdir(resourcePath);
   //
   if (!fs.existsSync(targetFilesDirname) && files.length) {
-    await fs.mkdir(targetFilesDirname);
+    try {
+      await fs.mkdir(targetFilesDirname);
+    } catch (err) {
+      console.error(err);
+      throw new WizKnownError(i18next.t('errorCreateDir', { message: err.message }));
+    }
   }
   //
   for (const file of files) {
     const oldFilePath = path.join(resourcePath, file);
     const newFilePath = path.join(targetFilesDirname, file);
-    await fs.copyFile(oldFilePath, newFilePath);
+    try {
+      await fs.copyFile(oldFilePath, newFilePath);
+    } catch (err) {
+      console.error(err);
+      throw new WizKnownError(i18next.t('errorCopyFile', { message: err.message }));
+    }
   }
   //
   const data = await sdk.getNoteMarkdown(userGuid, kbGuid, noteGuid);

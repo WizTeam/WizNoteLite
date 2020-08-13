@@ -45,6 +45,9 @@
   "errorDownloadReceipt": "无法下载购买凭证: {{message}}",
   "errorVerifyPurchase": "无法认证购买凭证: {{message}}",
 
+  "errorCreateDir": "无法创建文件夹: {{message}}。如果您正在使用mac版本，请选择保存到下载文件夹。",
+  "errorCopyFile": "无法复制文件: {{message}}",
+
   "fileFilterPNG": "PNG 文件 (*.png)",
   "fileFilterPDF": "PDF 文件 (*.pdf)",
   "fileFilterMarkdown": "Markdown 文件 (*.md)"

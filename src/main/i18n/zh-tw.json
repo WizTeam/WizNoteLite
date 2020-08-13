@@ -44,6 +44,9 @@
   "errorDownloadReceipt": "無法下載購買憑證: {{message}}",
   "errorVerifyPurchase": "無法認證購買憑證: {{message}}",
 
+  "errorCreateDir": "無法創建文件夾: {{message}}。如果您正在使用mac版本，請選擇保存到下載文件夾。",
+  "errorCopyFile": "無法複製文件: {{message}}",
+  
   "fileFilterPNG": "PNG files (*.png)",
   "fileFilterPDF": "PDF files (*.pdf)",
   "fileFilterMarkdown": "Markdown files (*.md)"

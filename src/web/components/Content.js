@@ -178,14 +178,18 @@ class Content extends React.Component {
         this.scrollContentRef.current.scrollTop(top);
       }
     },
-    handleExportMarkdown: () => {
+    handleExportMarkdown: async () => {
       const { kbGuid, note } = this.props;
       //
       if (!note.guid) return;
       //
       this.handler.handleCloseExportMenu();
       //
-      window.wizApi.userManager.writeToMarkdown(kbGuid, note.guid, {});
+      try {
+        await window.wizApi.userManager.writeToMarkdown(kbGuid, note.guid, {});
+      } catch (err) {
+        alert(err.message);
+      }
     },
   };
 
