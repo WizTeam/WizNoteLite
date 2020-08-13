@@ -456,7 +456,14 @@ class Main extends React.Component {
             selectedTag={tag}
             onUpgradeVip={this.handler.handleUpgradeVip}
           />
-          <SplitPane split="vertical" paneClassName={classes.splitPane} initialSize={openSidebar ? '25%' : '20%'} minSize={isFullScreen ? 0 : 300} maxSize={isFullScreen ? 0 : 480}>
+          <SplitPane
+            split="vertical"
+            paneClassName={classes.splitPane}
+            initialSize={openSidebar ? '25%' : '20%'}
+            minSize={isFullScreen ? 0 : 300}
+            maxSize={isFullScreen ? 0 : 480}
+            allowResize={!isFullScreen}
+          >
             <div className={classNames(
               classes.noteListContainer,
             )}
