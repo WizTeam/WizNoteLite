@@ -1,41 +1,3 @@
-body {
-  margin: 0;
-  font-family: 'Open Sans', 'Noto Sans SC', Menlo, "Ubuntu Mono", Consolas, "Courier New", "Microsoft Yahei", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
-
-body {
-  background-color: #101115;
-  color: white;
-}
-@media screen and (prefers-color-scheme: light) {
-  body {
-    background-color: white;
-    color: #333333;
-  }
-}
-
-div::-webkit-scrollbar {
-  background-color: transparent;
-}
-
-div::-webkit-scrollbar-thumb {
-  background-color: transparent;
-}
-
-.snackbar-top-center {
-  /* top: -24px !important; */
-}
-
-
-/* react-split-pane */
-
 .Resizer {
   background: #000;
   opacity: 0.2;
@@ -62,7 +24,7 @@ div::-webkit-scrollbar-thumb {
   width: 100%;
 }
 
-.Resizer.horizontal:hover {
+.Resizer.horizontal:hover, .Resizer.horizontal.active {
   border-top: 5px solid rgba(0, 0, 0, 0.5);
   border-bottom: 5px solid rgba(0, 0, 0, 0.5);
 }
@@ -75,7 +37,7 @@ div::-webkit-scrollbar-thumb {
   cursor: col-resize;
 }
 
-.Resizer.vertical:hover {
+.Resizer.vertical:hover, .Resizer.vertical.active {
   border-left: 5px solid rgba(0, 0, 0, 0.5);
   border-right: 5px solid rgba(0, 0, 0, 0.5);
 }

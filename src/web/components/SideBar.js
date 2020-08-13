@@ -22,20 +22,16 @@ import CommonHeader from './CommonHeader';
 import Tags from './Tags';
 import Icons from '../config/icons';
 
-const SIDEBAR_WIDTH = '15%';
-const SIDEBAR_MIN_WIDTH = 192;
-const SIDEBAR_MAX_WIDTH = 320;
-
 const styles = (theme) => ({
   drawer: {
-    width: SIDEBAR_WIDTH,
-    flexShrink: 0,
+    width: '100%',
+    // flexShrink: 0,
     overflow: 'hidden',
-    transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-      delay: 0,
-    }),
+    // transition: theme.transitions.create('width', {
+    //   easing: theme.transitions.easing.sharp,
+    //   duration: theme.transitions.duration.enteringScreen,
+    //   delay: 0,
+    // }),
   },
   drawerPaper: {
     width: '100%',
@@ -203,14 +199,6 @@ class SideBar extends React.Component {
       }, this.delayClose);
     },
 
-    handleWindowResize: () => {
-      if (!this._drawerRef) {
-        return;
-      }
-      //
-      const sideBarWidth = this.calWidth();
-      this._drawerRef.style.width = `${sideBarWidth}px`;
-    },
   }
 
   constructor(props) {
@@ -232,7 +220,6 @@ class SideBar extends React.Component {
     window.wizApi.userManager.on('tagRenamed', this.handler.handleTagRenamed);
     window.wizApi.userManager.on('syncStart', this.handler.handleSyncStart);
     window.wizApi.userManager.on('syncFinish', this.handler.handleSyncFinish);
-    window.addEventListener('resize', this.handler.handleWindowResize);
   }
 
   componentWillUnmount() {
@@ -240,7 +227,6 @@ class SideBar extends React.Component {
     window.wizApi.userManager.off('tagRenamed', this.handler.handleTagRenamed);
     window.wizApi.userManager.off('syncStart', this.handler.handleSyncStart);
     window.wizApi.userManager.off('syncFinish', this.handler.handleSyncFinish);
-    window.removeEventListener('resize', this.handler.handleWindowResize);
   }
 
   async resetAllTags() {
@@ -253,20 +239,6 @@ class SideBar extends React.Component {
     this.setState({
       showTrash: hasNotesInTrash,
     });
-  }
-
-  calWidth() {
-    if (!this.props.open) {
-      return 0;
-    }
-    //
-    let sideBarWidth = Math.floor(window.innerWidth * 0.15);
-    if (sideBarWidth > SIDEBAR_MAX_WIDTH) {
-      sideBarWidth = SIDEBAR_MAX_WIDTH;
-    } else if (sideBarWidth < SIDEBAR_MIN_WIDTH) {
-      sideBarWidth = SIDEBAR_MIN_WIDTH;
-    }
-    return sideBarWidth;
   }
 
   delayClose() {
@@ -312,7 +284,7 @@ class SideBar extends React.Component {
   //
   render() {
     const {
-      classes, onChangeType, type, open, onTagSelected,
+      classes, onChangeType, type, onTagSelected,
       intl, user, selectedTag, onClickLogin,
       // onClickSetting,
     } = this.props;
@@ -322,11 +294,6 @@ class SideBar extends React.Component {
       syncSuccess,
     } = this.state;
     //
-    const sideBarWidth = this.calWidth();
-    const drawerStyle = {
-      width: open ? sideBarWidth : 0,
-      // 不能直接设置minWidth，否则显示的时候动画有问题
-    };
     const isLogin = user && !user.isLocalUser;
     const items = [
       { type: 'notes', text: intl.formatMessage({ id: 'allNoteTitle' }) },
@@ -346,7 +313,6 @@ class SideBar extends React.Component {
         classes={{
           paper: classes.drawerPaper,
         }}
-        style={drawerStyle}
         ref={(node) => { this._drawerRef = node; }}
       >
         <CommonHeader
@@ -467,14 +433,12 @@ SideBar.propTypes = {
   intl: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
   selectedTag: PropTypes.object,
-  open: PropTypes.bool,
   onClickLogin: PropTypes.func.isRequired,
   onUpgradeVip: PropTypes.func.isRequired,
   // onClickSetting: PropTypes.func.isRequired,
 };
 
 SideBar.defaultProps = {
-  open: false,
   selectedTag: null,
 };
 
