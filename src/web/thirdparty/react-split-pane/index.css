@@ -35,7 +35,7 @@
   box-shadow: -5px 0px 5px 0px rgba(0, 0, 0, 0.31);
 }
 .Resizer.disabled {
-  cursor: not-allowed;
+  cursor: unset;
 }
 .Resizer.disabled:hover {
   border-color: transparent;

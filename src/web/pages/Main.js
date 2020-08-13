@@ -452,6 +452,7 @@ class Main extends React.Component {
           onChange={(size) => {
             this.handler.handleSizeChange('sideBar', size);
           }}
+          allowResize={openSidebar}
         >
           <SideBar
             kbGuid={kbGuid}
@@ -474,6 +475,7 @@ class Main extends React.Component {
             onChange={(size) => {
               this.handler.handleSizeChange('noteList', size);
             }}
+            allowResize={!isFullScreen}
           >
             <div className={classNames(
               classes.noteListContainer,
