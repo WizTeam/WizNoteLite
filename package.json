@@ -13,7 +13,6 @@
     "electron-window-state": "^5.0.3",
     "form-data": "^3.0.0",
     "fs-extra": "^9.0.0",
-    "i18next": "^19.4.4",
     "image-type": "^4.1.0",
     "lodash": "^4.17.15",
     "md5": "^2.2.1",
@@ -22,6 +21,8 @@
     "pureimage": "^0.2.1",
     "remove-markdown": "^0.3.0",
     "uuid": "^8.0.0",
+    "wiznote-sdk-js": "^1.0.5",
+    "wiznote-sdk-js-share": "^1.0.2",
     "xregexp": "^4.3.0"
   },
   "scripts": {

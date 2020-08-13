@@ -1,5 +1,7 @@
 const { app, shell, BrowserWindow } = require('electron');
-const i18next = require('i18next');
+const sdk = require('wiznote-sdk-js');
+
+const i18next = sdk.core.i18next;
 
 const isMac = process.platform === 'darwin';
 

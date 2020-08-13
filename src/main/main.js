@@ -1,3 +1,4 @@
+require('./wrapper');
 const {
   app, BrowserWindow, nativeTheme,
   shell, Menu, nativeImage,
@@ -6,11 +7,11 @@ const path = require('path');
 const url = require('url');
 const windowStateKeeper = require('electron-window-state');
 const log = require('electron-log');
+const sdk = require('wiznote-sdk-js');
 
+const i18nResources = require('./i18n');
 const { unregisterWindow } = require('./api');
 const { registerWizProtocol } = require('./db/resource_loader');
-
-const { i18nInit, getCurrentLang } = require('./i18n');
 const { getMainMenuTemplate, getMacDockMenuTemplate } = require('./settings/menu_options');
 
 Object.assign(console, log.functions);
@@ -21,7 +22,7 @@ console.log(`electron version: ${electronVersion}`);
 const isMac = process.platform === 'darwin';
 
 app.on('ready', async () => {
-  await i18nInit();
+  sdk.i18nInit(i18nResources);
   const menu = Menu.buildFromTemplate(getMainMenuTemplate());
   Menu.setApplicationMenu(menu);
   //
@@ -81,7 +82,7 @@ function createWindow() {
       slashes: true,
     });
 
-  const lang = getCurrentLang();
+  const lang = sdk.getCurrentLang();
   mainWindow.loadURL(`${mainUrl}?lang=${lang}`);
 
   // mainWindow.webContents.openDevTools();
