@@ -42,7 +42,7 @@
   border-right: 5px solid rgba(0, 0, 0, 0.5);
 }
 .Resizer.disabled {
-  cursor: not-allowed;
+  cursor: unset;
 }
 .Resizer.disabled:hover {
   border-color: transparent;
