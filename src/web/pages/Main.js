@@ -19,7 +19,6 @@ import UpgradeToVIPDialog from '../dialogs/UpgradeToVIPDialog';
 // import SettingDialog from '../components/SettingDialog';
 import Icons from '../config/icons';
 
-
 const styles = (theme) => ({
   app: {
   },
