@@ -310,7 +310,7 @@ class SplitPane extends React.Component {
     const pane1Classes = ['Pane1', paneClassName, pane1ClassName].join(' ');
     const pane2Classes = ['Pane2', paneClassName, pane2ClassName].join(' ');
 
-    const computeResizerStyle = { ...resizerStyle || {}, ...(split === 'vertical' ? { left: this.pane1?.style.width ?? 0 } : { top: this.pane1?.style.height ?? 0 }) };
+    const computeResizerStyle = { ...resizerStyle };
     return (
       <div
         className={classes.join(' ')}

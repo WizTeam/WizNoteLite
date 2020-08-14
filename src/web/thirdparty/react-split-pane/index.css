@@ -1,6 +1,6 @@
 .Resizer {
   background: #000;
-  opacity: 0.2;
+  /* opacity: 0.2; */
   z-index: 1;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -28,11 +28,9 @@
   height: 100%;
   background: transparent;
   cursor: col-resize;
-  position: absolute;
-  /* transform: translateX(-50%); */
 }
 .Resizer.vertical:hover, .Resizer.vertical.active {
-  box-shadow: -5px 0px 5px 0px rgba(0, 0, 0, 0.31);
+  box-shadow: -5px 0px 5px 0px rgba(0, 0, 0, 0.11);
 }
 .Resizer.disabled {
   cursor: unset;

@@ -98,6 +98,12 @@ const styles = (theme) => ({
   },
   splitPane: {
   },
+  sidebarResizer: {
+    margin: '0 -5px',
+  },
+  notelistResizer: {
+    backgroundColor: `${theme.custom.background.content} !important`,
+  },
 });
 
 const SNACKBAR_KEY = 'WizErrorPayedPersonalExpired';
@@ -326,13 +332,13 @@ class Main extends React.Component {
       window.wizApi.userManager.viewLogFile();
     },
     handleSizeChange: debounce((type, size) => {
-      window.wizApi.userManager.setUserSettings(`${type === 'sideBar' ? 'sideBar' : 'noteList'}Size`, size);
+      window.wizApi.userManager.setUserSettings(`${type}Size`, size);
     }, 500),
   }
 
   sideBarSize = window.wizApi.userManager.getUserSettingsSync('sideBarSize', undefined);
 
-  noteListSize = window.wizApi.userManager.getUserSettingsSync('sideBarSize', undefined);
+  noteListSize = window.wizApi.userManager.getUserSettingsSync('noteListSize', undefined);
 
   constructor(props) {
     super(props);
@@ -445,10 +451,11 @@ class Main extends React.Component {
         <SplitPane
           split="vertical"
           paneClassName={classes.splitPane}
+          resizerClassName={classes.sidebarResizer}
           minSize={openSidebar ? 192 : 0}
           maxSize={openSidebar ? 320 : 0}
           paneEndStep={30}
-          size={this.sideBarSize}
+          defaultSize={openSidebar ? this.sideBarSize : 0}
           onChange={(size) => {
             this.handler.handleSizeChange('sideBar', size);
           }}
@@ -469,9 +476,10 @@ class Main extends React.Component {
           <SplitPane
             split="vertical"
             paneClassName={classes.splitPane}
+            resizerClassName={classes.notelistResizer}
             minSize={isFullScreen ? 0 : 300}
             maxSize={isFullScreen ? 0 : 480}
-            size={this.noteListSize}
+            defaultSize={isFullScreen ? 0 : this.noteListSize}
             onChange={(size) => {
               this.handler.handleSizeChange('noteList', size);
             }}
