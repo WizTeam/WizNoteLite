@@ -10,6 +10,10 @@
   background-clip: padding-box;
 }
 
+.Resizer:hover {
+  transition: all .3s;
+}
+
 .Resizer.horizontal {
   height: 11px;
   margin: -5px 0;
