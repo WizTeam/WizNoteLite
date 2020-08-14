@@ -40,7 +40,7 @@ class Pane extends React.PureComponent {
   }
 
   sineEaseOut(t, b, c, d) {
-    return c * Math.sin(t / d * (Math.PI / 2)) + b;
+    return c * Math.sin((t / d) * (Math.PI / 2)) + b;
   }
 
   requestAnimate() {
@@ -117,6 +117,10 @@ Pane.propTypes = {
 };
 
 Pane.defaultProps = {
+  size: undefined,
+  split: undefined,
+  style: {},
+  eleRef: null,
   endStep: 30,
 };
 
