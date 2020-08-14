@@ -6,6 +6,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import trim from 'lodash/trim';
+import debounce from 'lodash/debounce';
 import { withSnackbar } from 'notistack';
 import SplitPane from '../thirdparty/react-split-pane';
 //
@@ -18,7 +19,6 @@ import LoginDialog from '../dialogs/LoginDialog';
 import UpgradeToVIPDialog from '../dialogs/UpgradeToVIPDialog';
 // import SettingDialog from '../components/SettingDialog';
 import Icons from '../config/icons';
-
 
 const styles = (theme) => ({
   app: {
@@ -97,6 +97,12 @@ const styles = (theme) => ({
     marginRight: 8,
   },
   splitPane: {
+  },
+  sidebarResizer: {
+    margin: '0 -5px',
+  },
+  notelistResizer: {
+    backgroundColor: `${theme.custom.background.content} !important`,
   },
 });
 
@@ -325,7 +331,14 @@ class Main extends React.Component {
     handleViewLog: () => {
       window.wizApi.userManager.viewLogFile();
     },
+    handleSizeChange: debounce((type, size) => {
+      window.wizApi.userManager.setUserSettings(`${type}Size`, size);
+    }, 500),
   }
+
+  sideBarSize = window.wizApi.userManager.getUserSettingsSync('sideBarSize', undefined);
+
+  noteListSize = window.wizApi.userManager.getUserSettingsSync('noteListSize', undefined);
 
   constructor(props) {
     super(props);
@@ -435,7 +448,19 @@ class Main extends React.Component {
 
     return (
       <div className={classes.app}>
-        <SplitPane split="vertical" paneClassName={classes.splitPane} initialSize="15%" minSize={openSidebar ? 192 : 0} maxSize={openSidebar ? 320 : 0} paneEndStep={30}>
+        <SplitPane
+          split="vertical"
+          paneClassName={classes.splitPane}
+          resizerClassName={classes.sidebarResizer}
+          minSize={openSidebar ? 192 : 0}
+          maxSize={openSidebar ? 320 : 0}
+          paneEndStep={30}
+          defaultSize={openSidebar ? this.sideBarSize : 0}
+          onChange={(size) => {
+            this.handler.handleSizeChange('sideBar', size);
+          }}
+          allowResize={openSidebar}
+        >
           <SideBar
             kbGuid={kbGuid}
             type={type}
@@ -448,7 +473,18 @@ class Main extends React.Component {
             selectedTag={tag}
             onUpgradeVip={this.handler.handleUpgradeVip}
           />
-          <SplitPane split="vertical" paneClassName={classes.splitPane} initialSize={openSidebar ? '25%' : '20%'} minSize={isFullScreen ? 0 : 300} maxSize={isFullScreen ? 0 : 480}>
+          <SplitPane
+            split="vertical"
+            paneClassName={classes.splitPane}
+            resizerClassName={classes.notelistResizer}
+            minSize={isFullScreen ? 0 : 300}
+            maxSize={isFullScreen ? 0 : 480}
+            defaultSize={isFullScreen ? 0 : this.noteListSize}
+            onChange={(size) => {
+              this.handler.handleSizeChange('noteList', size);
+            }}
+            allowResize={!isFullScreen}
+          >
             <div className={classNames(
               classes.noteListContainer,
             )}

@@ -4,9 +4,13 @@ import stylePropType from 'react-style-proptype';
 
 class Pane extends React.PureComponent {
   _ref = React.createRef();
+
   _currentSize = 0;
+
   _args = [];
+
   _requestAnimationFrame = null;
+
   _isMount = false;
 
   componentDidMount() {
@@ -29,15 +33,14 @@ class Pane extends React.PureComponent {
         this.requestAnimate();
       } else {
         this._isMount = true;
-        this._ref.current.style[prop] = size + 'px';
+        this._ref.current.style[prop] = `${size}px`;
         this._currentSize = size;
       }
-      
     }
   }
 
-  sineEaseOut(t,b,c,d){
-    return c * Math.sin(t / d * ( Math.PI / 2 )) + b;
+  sineEaseOut(t, b, c, d) {
+    return c * Math.sin((t / d) * (Math.PI / 2)) + b;
   }
 
   requestAnimate() {
@@ -54,12 +57,12 @@ class Pane extends React.PureComponent {
       const next = this.sineEaseOut(step, start, diff, endStep);
 
       if (step < endStep && Math.abs(diff) > 1) {
-        this._ref.current.style[prop] = next + 'px';
+        this._ref.current.style[prop] = `${next}px`;
         this._currentSize = next;
         this._args = [next, end, step + 1, prop];
         this.requestAnimate();
       } else {
-        this._ref.current.style[prop] = end + 'px';
+        this._ref.current.style[prop] = `${end}px`;
         this._currentSize = end;
         this._args[2] = 0;
       }
@@ -114,6 +117,10 @@ Pane.propTypes = {
 };
 
 Pane.defaultProps = {
+  size: undefined,
+  split: undefined,
+  style: {},
+  eleRef: null,
   endStep: 30,
 };
 

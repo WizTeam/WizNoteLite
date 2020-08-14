@@ -4,7 +4,7 @@ import stylePropType from 'react-style-proptype';
 
 export const RESIZER_DEFAULT_CLASSNAME = 'Resizer';
 
-class Resizer extends React.Component {
+class Resizer extends React.PureComponent {
   render() {
     const {
       className,
@@ -29,22 +29,22 @@ class Resizer extends React.Component {
         role="presentation"
         className={classes.join(' ')}
         style={style}
-        onMouseDown={event => onMouseDown(event)}
-        onTouchStart={event => {
+        onMouseDown={(event) => onMouseDown(event)}
+        onTouchStart={(event) => {
           event.preventDefault();
           onTouchStart(event);
         }}
-        onTouchEnd={event => {
+        onTouchEnd={(event) => {
           event.preventDefault();
           onTouchEnd(event);
         }}
-        onClick={event => {
+        onClick={(event) => {
           if (onClick) {
             event.preventDefault();
             onClick(event);
           }
         }}
-        onDoubleClick={event => {
+        onDoubleClick={(event) => {
           if (onDoubleClick) {
             event.preventDefault();
             onDoubleClick(event);
@@ -64,12 +64,17 @@ Resizer.propTypes = {
   onTouchEnd: PropTypes.func.isRequired,
   split: PropTypes.oneOf(['vertical', 'horizontal']),
   style: stylePropType,
-  resizerClassName: PropTypes.string.isRequired,
+  resizerClassName: PropTypes.string,
   active: PropTypes.bool,
 };
 
 Resizer.defaultProps = {
+  onClick: null,
+  onDoubleClick: null,
+  split: undefined,
+  style: {},
   resizerClassName: RESIZER_DEFAULT_CLASSNAME,
+  active: false,
 };
 
 export default Resizer;
