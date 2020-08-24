@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { withStyles, withTheme } from '@material-ui/core/styles';
-import VditorEditor from './VditorEditor';
+import WizReactMarkdownEditor from 'wiz-react-markdown-editor';
+// import VditorEditor from './VditorEditor';
 import { getTagSpanFromRange } from '../libs/dom_utils';
 
 const styles = (/* theme */) => ({
@@ -25,8 +26,8 @@ class MarkdownEditor extends React.Component {
         this.props.onClickTag(tagSpan.textContent);
       }
     },
-    handleNoteModified: () => {
-      this.saveNote();
+    handleNoteModified: ({ contentId, markdown }) => {
+      this.saveNote(contentId, markdown);
     },
     handleInsertImages: async (successCb) => {
       if (!this.editor) {
@@ -75,7 +76,6 @@ class MarkdownEditor extends React.Component {
       note: null,
       tagList: {},
     };
-    this.editor = null;
     this.oldMarkdown = '';
   }
 
@@ -122,33 +122,19 @@ class MarkdownEditor extends React.Component {
     this.setState({ tagList });
   }
 
-  initEditor = (editor) => {
-    this.editor = editor;
-    this.editor.vditor.element.addEventListener('click', this.handler.handleClickEditor);
-  }
-
-  async saveNote() {
+  async saveNote(contentId, markdown) {
     const { note } = this.state;
     if (!this.editor || !note) {
       return;
     }
     const { kbGuid } = this.props;
     //
-    const contentId = this.editor.contentId;
-    if (contentId !== note.guid) {
-      // 校验 editor 为当前笔记时，才能保存
-      return;
-    }
-
-    let markdown = this.editor.getValue();
     const wizPathReg = new RegExp(this.resourceUrl, 'ig');
+    // eslint-disable-next-line no-param-reassign
     markdown = markdown.replace(wizPathReg, 'index_files');
     if (markdown !== this.oldMarkdown) {
       this.oldMarkdown = markdown;
-      // console.log(`saveNode -----------------${note.title}`);
-      // console.log(markdown);
       await this.props.onSaveNote(kbGuid, note.guid, markdown);
-      // await window.wizApi.userManager.setNoteMarkdown(kbGuid, note.guid, markdown);
     }
   }
 
@@ -192,15 +178,13 @@ class MarkdownEditor extends React.Component {
     //
     return (
       <div className={classNames(classes.root, !note && classes.invisible)}>
-        <VditorEditor
+        <WizReactMarkdownEditor
           disabled={!note}
-          value={this.oldMarkdown}
+          markdown={this.oldMarkdown}
           isMac={window.wizApi.platform.isMac}
           contentId={note ? note.guid : 'empty'}
-          onInit={this.initEditor}
-          onInput={this.handler.handleNoteModified}
           resourceUrl={this.resourceUrl}
-          darkMode={theme.palette.type === 'dark'}
+          theme={theme.palette.type}
           onSave={this.handler.handleNoteModified}
           onInsertImage={this.handler.handleInsertImages}
           onInsertImageFromData={this.handler.handleInsertImagesFromData}

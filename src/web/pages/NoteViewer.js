@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { withStyles, withTheme } from '@material-ui/core/styles';
 import { injectIntl } from 'react-intl';
-import VditorEditor from '../components/editor/markdown/VditorEditor';
+// import VditorEditor from '../components/editor/markdown/VditorEditor';
 import Scrollbar from '../components/Scrollbar';
 import Icons from '../config/icons';
 //
@@ -142,7 +142,8 @@ class NoteViewer extends React.Component {
         style={style}
         className={classNames(resetBackground && backgroundClass)}
       >
-        <VditorEditor
+        {/* // TODO: change editor */}
+        {/* <VditorEditor
           value={markdown}
           disabled
           isMac={window.wizApi.platform.isMac}
@@ -157,7 +158,7 @@ class NoteViewer extends React.Component {
           tagList={{}}
           autoSelectTitle={false}
           hideBlockType
-        />
+        /> */}
         {params.showFooter === '1' && (
           <div className={classNames(classes.footer, footerClass)}>
             <Icons.LiteMarkerIcon />
