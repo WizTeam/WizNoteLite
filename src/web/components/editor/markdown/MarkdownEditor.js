@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { withStyles, withTheme } from '@material-ui/core/styles';
+import 'wiz-react-markdown-editor/lib/index.min.css';
 import WizReactMarkdownEditor from 'wiz-react-markdown-editor';
 // import VditorEditor from './VditorEditor';
 import { getTagSpanFromRange } from '../libs/dom_utils';
@@ -178,7 +179,7 @@ class MarkdownEditor extends React.Component {
     //
     return (
       <div className={classNames(classes.root, !note && classes.invisible)}>
-        <WizReactMarkdownEditor
+        {/* <WizReactMarkdownEditor
           disabled={!note}
           markdown={this.oldMarkdown}
           isMac={window.wizApi.platform.isMac}
@@ -191,6 +192,13 @@ class MarkdownEditor extends React.Component {
           tagList={tagList}
           autoSelectTitle={note && new Date().getTime() - note.created <= 10 * 1000}
           onUpdateContentsList={this.props.onUpdateContentsList}
+        /> */}
+        <WizReactMarkdownEditor
+          theme={theme}
+          onSelectImages={this.handler.handleInsertImages}
+          markdown={this.oldMarkdown}
+          resourceUrl={this.resourceUrl}
+          contentId={note ? note.guid : 'empty'}
         />
       </div>
     );
