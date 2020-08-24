@@ -17,7 +17,7 @@ async function resourceProtocolHandler(request, callback) {
     p = p.substr(1);
   }
   const parts = p.split('/');
-  if (parts.length !== 3) {
+  if (parts.length !== 4) {
     return callback(Error('invalid url, parts !== 4'));
   }
   //
@@ -28,7 +28,7 @@ async function resourceProtocolHandler(request, callback) {
     return callback(Error('invalid url, user has not logged in'));
   }
   //
-  const [kbGuid, noteGuid, resName] = parts;
+  const [kbGuid, noteGuid, , resName] = parts;
   const key = `${userGuid}/${kbGuid}/${noteGuid}/${resName}`;
   try {
     await lockers.lock(key);
