@@ -1,7 +1,7 @@
 {
   "name": "wiznotelite",
   "description": "WizNote Lite - An instant rendering markdown note tool.",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "private": true,
   "homepage": ".",
   "productName": "WizNote Lite",
@@ -21,7 +21,7 @@
     "pureimage": "^0.2.1",
     "remove-markdown": "^0.3.0",
     "uuid": "^8.0.0",
-    "wiznote-sdk-js": "^1.0.8",
+    "wiznote-sdk-js": "^1.2.6",
     "wiznote-sdk-js-share": "^1.0.2",
     "xregexp": "^4.3.0"
   },

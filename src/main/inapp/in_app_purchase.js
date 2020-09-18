@@ -26,14 +26,17 @@ async function verifyPurchase(transaction, receiptURL) {
   let receiptData = null;
   try {
     if (receiptURL.startsWith('/')) {
+      console.log(`read receipt data from file: ${receiptURL}`);
       receiptData = await fs.readFile(receiptURL);
     } else {
+      console.log(`download receipt data from url: ${receiptURL}`);
       receiptData = await request.downloadToData({
         url: receiptURL,
         method: 'GET',
       });
     }
   } catch (err) {
+    console.log(`failed to get receipt data from url: ${receiptURL}, ${err.message}`);
     const errorMessage = i18next.t('errorDownloadReceipt', {
       message: err.message,
     });
@@ -56,16 +59,22 @@ async function verifyPurchase(transaction, receiptURL) {
   };
   //
   try {
-    await request.standardRequest({
+    console.log('request to verify purchase');
+    const result = await request.standardRequest({
       url: `${server}/as/pay2/ios`,
       data,
       method: 'POST',
     });
     //
-    await sdk.refreshUserInfo(userGuid);
+    console.log(`request finished: ${result}`);
+    //
+    console.log('refresh user info');
+    const newUser = await sdk.refreshUserInfo(userGuid);
+    console.log(`user vip expire date: ${(new Date(newUser.vipDate).toLocaleDateString())}`);
     //
     return true;
   } catch (err) {
+    console.log(`verify failed: ${err.message}`);
     const errorMessage = i18next.t('errorVerifyPurchase', {
       message: err.message,
     });
@@ -113,6 +122,7 @@ function initInAppPurchases() {
             await sendTransactionsEvents('verifying', payment.productIdentifier);
             const receiptURL = inAppPurchase.getReceiptURL();
             try {
+              console.log('verify purchase');
               const userGuid = await verifyPurchase(transaction, receiptURL);
               await sendTransactionsEvents('purchased', payment.productIdentifier, userGuid);
               inAppPurchase.finishTransactionByDate(transaction.transactionDate);
