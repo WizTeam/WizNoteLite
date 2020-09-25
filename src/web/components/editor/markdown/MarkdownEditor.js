@@ -51,17 +51,22 @@ class MarkdownEditorComponent extends React.Component {
         this.editor.insertValue(`![image](${src})`);
       });
     },
-    handleInsertImagesFromData: async (fileList) => {
+    handleInsertImagesFromData: async (file) => {
       if (!this.editor) {
-        return;
+        return null;
       }
       const { kbGuid, note } = this.props;
-      fileList.forEach(async (file) => {
-        const fileUrl = await window.wizApi.userManager.addImageFromData(kbGuid,
-          note.guid, file);
-        // console.log(fileUrl);
-        this.editor.insertValue(`![image](${fileUrl})`);
-      });
+      const f = file;
+      // fileList.forEach(async (file) => {
+      //   const fileUrl = await window.wizApi.userManager.addImageFromData(kbGuid,
+      //     note.guid, file);
+      //   this.editor.insertValue(`![image](${fileUrl})`);
+      // });
+      const fileUrl = await window.wizApi.userManager.addImageFromData(kbGuid, note.guid, f);
+      return {
+        path: fileUrl,
+        name: file.name,
+      };
     },
     handleTagsChanged: async (kbGuid) => {
       if (kbGuid !== this.props.kbGuid) {
@@ -184,7 +189,7 @@ class MarkdownEditorComponent extends React.Component {
   render() {
     //
     const { note, tagList } = this.state;
-    const { classes, theme } = this.props;
+    const { classes } = this.props;
     //
     return (
       <div className={classNames(classes.root, !note && classes.invisible)}>
@@ -205,6 +210,7 @@ class MarkdownEditorComponent extends React.Component {
         <MarkdownEditor
           ref={this.editor}
           onSelectImages={this.handler.handleSelectImages}
+          onInsertImageFromData={this.handler.handleInsertImagesFromData}
           onSave={this.handler.handleNoteModified}
           markdown={this.oldMarkdown}
           resourceUrl={this.resourceUrl}
@@ -219,7 +225,7 @@ MarkdownEditorComponent.propTypes = {
   classes: PropTypes.object.isRequired,
   note: PropTypes.object,
   kbGuid: PropTypes.string,
-  theme: PropTypes.object.isRequired,
+  // theme: PropTypes.object.isRequired,
   onLoadNote: PropTypes.func.isRequired,
   onSaveNote: PropTypes.func.isRequired,
   onSelectImages: PropTypes.func.isRequired,
