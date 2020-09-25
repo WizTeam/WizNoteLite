@@ -29,6 +29,15 @@ class MarkdownEditorComponent extends React.Component {
     handleNoteModified: ({ contentId, markdown }) => {
       this.saveNote(contentId, markdown);
     },
+    handleSelectImages: async () => {
+      if (!this.editor.current) {
+        return null;
+      }
+      const { kbGuid, note } = this.props;
+      const files = await this.props.onSelectImages(kbGuid, note.guid);
+      //
+      return files.pop();
+    },
     handleInsertImages: async (successCb) => {
       if (!this.editor) {
         return;
@@ -195,6 +204,7 @@ class MarkdownEditorComponent extends React.Component {
         /> */}
         <MarkdownEditor
           ref={this.editor}
+          onSelectImages={this.handler.handleSelectImages}
           onSave={this.handler.handleNoteModified}
           markdown={this.oldMarkdown}
           resourceUrl={this.resourceUrl}
