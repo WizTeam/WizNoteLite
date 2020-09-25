@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { withStyles, withTheme } from '@material-ui/core/styles';
 import { MarkdownEditor } from 'wiz-react-markdown-editor';
+import debounce from 'lodash/debounce';
 // import VditorEditor from './VditorEditor';
 import { getTagSpanFromRange } from '../libs/dom_utils';
 
@@ -82,6 +83,33 @@ class MarkdownEditorComponent extends React.Component {
       //
       this.getAllTags();
     },
+    handleOnChange: debounce(({ toc }) => {
+      const list = toc.map((item) => ({
+        ...item,
+        title: item.content,
+        key: item.slug,
+        children: [],
+      }));
+
+      const result = [];
+      const parent = new Map();
+      let last = null;
+
+      parent.set(last, { lvl: 0, children: result });
+
+      list.forEach((item) => {
+        while (!last || item.lvl <= last.lvl) {
+          last = parent.get(last);
+        }
+        last.children.push(item);
+        parent.set(item, last);
+        last = item;
+      });
+
+      if (this.props.onUpdateContentsList) {
+        this.props.onUpdateContentsList(result);
+      }
+    }, 300),
   }
 
   constructor(props) {
@@ -139,7 +167,7 @@ class MarkdownEditorComponent extends React.Component {
 
   async saveNote(contentId, markdown) {
     const { note } = this.state;
-    if (!this.editor || !note) {
+    if (!this.editor.current || !note || contentId !== note.guid) {
       return;
     }
     const { kbGuid } = this.props;
@@ -209,6 +237,7 @@ class MarkdownEditorComponent extends React.Component {
         /> */}
         <MarkdownEditor
           ref={this.editor}
+          onChange={this.handler.handleOnChange}
           onSelectImages={this.handler.handleSelectImages}
           onInsertImageFromData={this.handler.handleInsertImagesFromData}
           onSave={this.handler.handleNoteModified}
@@ -230,13 +259,13 @@ MarkdownEditorComponent.propTypes = {
   onSaveNote: PropTypes.func.isRequired,
   onSelectImages: PropTypes.func.isRequired,
   onClickTag: PropTypes.func.isRequired,
-  // onUpdateContentsList: PropTypes.func,
+  onUpdateContentsList: PropTypes.func,
 };
 
 MarkdownEditorComponent.defaultProps = {
   note: null,
   kbGuid: null,
-  // onUpdateContentsList: null,
+  onUpdateContentsList: null,
 };
 
 export default withTheme(withStyles(styles)(MarkdownEditorComponent));
