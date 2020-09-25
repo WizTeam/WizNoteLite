@@ -170,13 +170,8 @@ class Content extends React.Component {
       });
     },
     handleContentsNodeClick: (item) => {
-      if (this.scrollContentRef?.current && item.element) {
-        const rect = item.element.getBoundingClientRect();
-        const top = this.scrollContentRef?.current.getScrollTop()
-          + rect.top
-          - this.headerRef.current?.offsetHeight ?? 0;
-        this.scrollContentRef.current.scrollTop(top);
-      }
+      const element = document.querySelector(`#${item.key}`);
+      element.scrollIntoView();
     },
     handleExportMarkdown: async () => {
       const { kbGuid, note } = this.props;
