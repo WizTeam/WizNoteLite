@@ -2,8 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { withStyles, withTheme } from '@material-ui/core/styles';
-import 'wiz-react-markdown-editor/lib/index.min.css';
-import WizReactMarkdownEditor from 'wiz-react-markdown-editor';
+import { MarkdownEditor } from 'wiz-react-markdown-editor';
 // import VditorEditor from './VditorEditor';
 import { getTagSpanFromRange } from '../libs/dom_utils';
 
@@ -18,7 +17,7 @@ const styles = (/* theme */) => ({
   },
 });
 
-class MarkdownEditor extends React.Component {
+class MarkdownEditorComponent extends React.Component {
   handler = {
     handleClickEditor: (e) => {
       const target = e.target;
@@ -78,6 +77,7 @@ class MarkdownEditor extends React.Component {
       tagList: {},
     };
     this.oldMarkdown = '';
+    this.editor = React.createRef();
   }
 
   //
@@ -193,9 +193,9 @@ class MarkdownEditor extends React.Component {
           autoSelectTitle={note && new Date().getTime() - note.created <= 10 * 1000}
           onUpdateContentsList={this.props.onUpdateContentsList}
         /> */}
-        <WizReactMarkdownEditor
-          theme={theme}
-          onSelectImages={this.handler.handleInsertImages}
+        <MarkdownEditor
+          ref={this.editor}
+          onSave={this.handler.handleNoteModified}
           markdown={this.oldMarkdown}
           resourceUrl={this.resourceUrl}
           contentId={note ? note.guid : 'empty'}
@@ -205,7 +205,7 @@ class MarkdownEditor extends React.Component {
   }
 }
 
-MarkdownEditor.propTypes = {
+MarkdownEditorComponent.propTypes = {
   classes: PropTypes.object.isRequired,
   note: PropTypes.object,
   kbGuid: PropTypes.string,
@@ -214,13 +214,13 @@ MarkdownEditor.propTypes = {
   onSaveNote: PropTypes.func.isRequired,
   onSelectImages: PropTypes.func.isRequired,
   onClickTag: PropTypes.func.isRequired,
-  onUpdateContentsList: PropTypes.func,
+  // onUpdateContentsList: PropTypes.func,
 };
 
-MarkdownEditor.defaultProps = {
+MarkdownEditorComponent.defaultProps = {
   note: null,
   kbGuid: null,
-  onUpdateContentsList: null,
+  // onUpdateContentsList: null,
 };
 
-export default withTheme(withStyles(styles)(MarkdownEditor));
+export default withTheme(withStyles(styles)(MarkdownEditorComponent));
