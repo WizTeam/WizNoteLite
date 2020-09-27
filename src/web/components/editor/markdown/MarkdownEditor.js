@@ -18,7 +18,7 @@ const styles = (/* theme */) => ({
   },
 });
 
-class MarkdownEditorComponent extends React.Component {
+class MarkdownEditorComponent extends React.PureComponent {
   handler = {
     handleClickEditor: (e) => {
       const target = e.target;
@@ -89,6 +89,7 @@ class MarkdownEditorComponent extends React.Component {
         title: item.content,
         key: item.slug,
         children: [],
+        open: true,
       }));
 
       const result = [];
@@ -116,7 +117,7 @@ class MarkdownEditorComponent extends React.Component {
     super(props);
     this.state = {
       note: null,
-      tagList: {},
+      // tagList: {},
     };
     this.oldMarkdown = '';
     this.editor = React.createRef();
@@ -159,10 +160,10 @@ class MarkdownEditorComponent extends React.Component {
   }
 
   async getAllTags() {
-    const { kbGuid } = this.props;
-    const tagList = await window.wizApi.userManager.getAllTags(kbGuid);
+    // const { kbGuid } = this.props;
+    // const tagList = await window.wizApi.userManager.getAllTags(kbGuid);
     // console.log(tagList);
-    this.setState({ tagList });
+    // this.setState({ tagList });
   }
 
   async saveNote(contentId, markdown) {
@@ -216,7 +217,10 @@ class MarkdownEditorComponent extends React.Component {
 
   render() {
     //
-    const { note, tagList } = this.state;
+    const {
+      note,
+      // tagList,
+    } = this.state;
     const { classes } = this.props;
     //
     return (
