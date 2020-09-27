@@ -137,7 +137,11 @@ class ExportPngDialog extends React.Component {
         }
       };
       //
-      const { widthValue, previewTheme } = this.state;
+      const {
+        widthValue,
+        // previewTheme,
+      } = this.state;
+      const { theme } = this.props;
       const width = widthValue;
       let padding = 16;
       if (widthValue === MOBILE_PLUS_WIDTH) {
@@ -148,7 +152,7 @@ class ExportPngDialog extends React.Component {
       //
       const options = {
         progressCallback: 'onCaptureScreenProgress',
-        theme: previewTheme,
+        theme: theme.palette.type,
         width,
         padding,
       };
@@ -229,14 +233,14 @@ class ExportPngDialog extends React.Component {
               widthValue === PC_WIDTH && classes.pc,
               widthValue === MOBILE_PLUS_WIDTH && classes.mobilePlus,
               widthValue === MOBILE_WIDTH && classes.mobile,
-              previewTheme === 'dark' && classes.darkBorderColor,
-              previewTheme === 'light' && classes.lightBorderColor,
+              // previewTheme === 'dark' && classes.darkBorderColor,
+              // previewTheme === 'light' && classes.lightBorderColor,
             )}
             >
               <NoteViewer
                 kbGuid={kbGuid}
                 noteGuid={noteGuid}
-                darkMode={previewTheme === 'dark'}
+                // darkMode={previewTheme === 'dark'}
                 params={{
                   padding: `${padding}`,
                 }}
@@ -252,14 +256,14 @@ class ExportPngDialog extends React.Component {
             </div>
           </div>
           <div className={classes.list}>
-            <LiteText className={classes.title}>
+            {/* <LiteText className={classes.title}>
               {intl.formatMessage({ id: 'themeTitle' })}
             </LiteText>
             <LiteSelect
               options={themeOptions}
               value={previewTheme}
               onChange={this.handler.handleChangePreviewTheme}
-            />
+            /> */}
             <LiteText className={classes.title}>
               {intl.formatMessage({ id: 'widthTitle' })}
             </LiteText>

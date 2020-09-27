@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import { withStyles, withTheme } from '@material-ui/core/styles';
 import { injectIntl } from 'react-intl';
 // import VditorEditor from '../components/editor/markdown/VditorEditor';
+import { MarkdownEditor } from 'wiz-react-markdown-editor';
 import Scrollbar from '../components/Scrollbar';
 import Icons from '../config/icons';
 //
@@ -159,6 +160,12 @@ class NoteViewer extends React.Component {
           autoSelectTitle={false}
           hideBlockType
         /> */}
+        <MarkdownEditor
+          readOnly
+          markdown={markdown}
+          contentId={loading ? 'empty' : noteGuid}
+          resourceUrl={resourceUrl}
+        />
         {params.showFooter === '1' && (
           <div className={classNames(classes.footer, footerClass)}>
             <Icons.LiteMarkerIcon />
