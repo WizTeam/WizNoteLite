@@ -221,7 +221,8 @@ class MarkdownEditorComponent extends React.PureComponent {
       note,
       // tagList,
     } = this.state;
-    const { classes } = this.props;
+    const { classes, scrollbar } = this.props;
+    const scrollingElement = scrollbar?.container?.children[0];
     //
     return (
       <div className={classNames(classes.root, !note && classes.invisible)}>
@@ -247,6 +248,7 @@ class MarkdownEditorComponent extends React.PureComponent {
           onSave={this.handler.handleNoteModified}
           markdown={this.oldMarkdown}
           resourceUrl={this.resourceUrl}
+          scrollingElement={scrollingElement}
           contentId={note ? note.guid : 'empty'}
         />
       </div>
@@ -264,12 +266,14 @@ MarkdownEditorComponent.propTypes = {
   onSelectImages: PropTypes.func.isRequired,
   onClickTag: PropTypes.func.isRequired,
   onUpdateContentsList: PropTypes.func,
+  scrollbar: PropTypes.object,
 };
 
 MarkdownEditorComponent.defaultProps = {
   note: null,
   kbGuid: null,
   onUpdateContentsList: null,
+  scrollbar: null,
 };
 
 export default withTheme(withStyles(styles)(MarkdownEditorComponent));

@@ -57,6 +57,7 @@ class NoteEditor extends React.Component {
     const {
       classes, theme,
       note, kbGuid, onClickTag,
+      scrollbar,
     } = this.props;
     //
     const type = note?.type;
@@ -78,6 +79,7 @@ class NoteEditor extends React.Component {
             note={note}
             kbGuid={kbGuid}
             onClickTag={onClickTag}
+            scrollbar={scrollbar}
             onUpdateContentsList={this.props.onUpdateContentsList}
           />
         </TabPanel>
@@ -101,12 +103,14 @@ NoteEditor.propTypes = {
   theme: PropTypes.object.isRequired,
   onClickTag: PropTypes.func.isRequired,
   onUpdateContentsList: PropTypes.func,
+  scrollbar: PropTypes.object,
 };
 
 NoteEditor.defaultProps = {
   note: null,
   kbGuid: null,
   onUpdateContentsList: null,
+  scrollbar: null,
   // isLogin: true,
 };
 

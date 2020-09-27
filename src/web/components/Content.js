@@ -279,6 +279,7 @@ class Content extends React.Component {
               note={note}
               kbGuid={kbGuid}
               onClickTag={onClickTag}
+              scrollbar={this.scrollContentRef.current ?? null}
               onUpdateContentsList={this.handler.handleChangeEditorContents}
             />
           </Scrollbar>
