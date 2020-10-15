@@ -6,6 +6,7 @@ import { MarkdownEditor } from 'wiz-react-markdown-editor';
 import debounce from 'lodash/debounce';
 // import VditorEditor from './VditorEditor';
 import { getTagSpanFromRange } from '../libs/dom_utils';
+import './lite.scss';
 
 const styles = (/* theme */) => ({
   root: {

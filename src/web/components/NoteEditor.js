@@ -16,8 +16,8 @@ const styles = (/* theme */) => ({
     flexDirection: 'column',
     paddingTop: 8,
     paddingBottom: 16,
-    paddingRight: 'max(52px, (100% - 600px) / 2)',
-    paddingLeft: 'max(84px, (100% - 600px) / 2)',
+    paddingRight: 'max(12px, (100% - 600px) / 2 - 40px)',
+    paddingLeft: 'max(44px, (100% - 600px) / 2 - 40px)',
   },
   invisible: {
     display: 'none',

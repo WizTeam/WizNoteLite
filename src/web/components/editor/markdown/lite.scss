@@ -1,0 +1,106 @@
+div[id^='ag-editor-id'] {
+  // 正文行高
+  --text-line-height: 28px;
+  // 正文字号
+  --text-font-size: 16px;
+  // 正文字体颜色
+  --text-font-color: #333333;
+  // 正文字体
+  --text-font-family: 'Open Sans', 'Noto Sans SC', Menlo, "Ubuntu Mono", Consolas, "Courier New", "Microsoft Yahei", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif;
+  // 段落下边距
+  --p-margin-bottom: 16px;
+  // 引用背景
+  --blockquote-background: inherit;
+  // 引用边框颜色
+  --blockquote-border-color: #d8d8d8;
+  // 引用字体颜色
+  --blockquote-font-color: #aaa;
+  // 超链接字体颜色
+  --link-font-color: #448aff;
+  --ir-bracket-color: #448aff;
+  // 粗体字体
+  --bold-font-family: 'Open Sans', 'Noto Sans SC', Menlo, "Ubuntu Mono", Consolas, "Courier New", "Microsoft Yahei", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif;
+
+  @mixin hStyle {
+    margin: 32px 0 20px;
+    font-weight: normal;
+    letter-spacing: 1px;
+    font-family: var(--bold-font-family);
+    &::before {
+      cursor: pointer;
+    }
+  }
+
+  padding: 0 40px 0;
+  --panel-background-color: transparent;
+  line-height: var(--text-line-height);
+  font-size: var(--text-font-size);
+  color: var(--text-font-color);
+  font-family: var(--text-font-family);
+
+  & > h1 {
+    font-size: 32px;
+    line-height: 44px;
+    border: none;
+    @include hStyle;
+  }
+  & > h2 {
+    font-size: 28px;
+    line-height: 40px;
+    border: none;
+    @include hStyle;
+  }
+  & > h3 {
+    font-size: 24px;
+    line-height: 36px;
+    @include hStyle;
+  }
+  & > h4 {
+    font-size: 20px;
+    line-height: 32px;
+    @include hStyle;
+  }
+  & > h5 {
+    font-size: 16px;
+    line-height: 28px;
+    @include hStyle;
+  }
+  & > h6 {
+    font-size: 16px;
+    line-height: 28px;
+    color: #aaaaaa;
+    @include hStyle;
+  }
+
+  a {
+    color: var(--link-font-color);
+    line-height: 24px;
+  }
+  blockquote {
+    padding: 0 1em;
+    line-height: 24px;
+
+    &::before {
+      width: .25em;
+      left: 0;
+      background: var(--blockquote-border-color);
+    }
+  }
+
+  span:not(.ag-active) a[target='_blank'] {
+    padding-right: 25px;
+    position: relative;
+    &::after {
+      display: block;
+      content: '';
+      width: 20px;
+      height: 20px;
+      background: url(./link.svg) no-repeat center center;
+      background-size: 20px 20px;
+      position: absolute;
+      right: 3px;
+      bottom: 0;
+      cursor: pointer;
+    }
+  }
+}
