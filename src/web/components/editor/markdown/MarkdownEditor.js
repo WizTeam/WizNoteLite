@@ -5,6 +5,7 @@ import { withStyles, withTheme } from '@material-ui/core/styles';
 import { MarkdownEditor } from 'wiz-react-markdown-editor';
 import debounce from 'lodash/debounce';
 // import VditorEditor from './VditorEditor';
+import TableMenu from './TableMenu';
 import { getTagSpanFromRange } from '../libs/dom_utils';
 import './lite.scss';
 
@@ -273,6 +274,10 @@ class MarkdownEditorComponent extends React.PureComponent {
           onSave={this.handler.handleNoteModified}
           onSelectImages={this.handler.handleSelectImages}
           onInsertImageFromData={this.handler.handleInsertImagesFromData}
+        />
+        <TableMenu
+          editor={this.editor}
+          onSaveNote={() => {}}
         />
       </div>
     );

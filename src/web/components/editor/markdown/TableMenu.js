@@ -117,43 +117,43 @@ function TableMenu(props) {
   const [subMenuPos, setSubMenuPos] = useState(null);
   const [align, setAlign] = useState('left');
 
-  function deleteTable() {
-    if (tableElement) {
-      tableElement.outerHTML = '';
-      props.onSaveNote();
-    }
-  }
+  // function deleteTable() {
+  //   if (tableElement) {
+  //     tableElement.outerHTML = '';
+  //     props.onSaveNote();
+  //   }
+  // }
 
-  function addRowAbove() {
-    if (currentCellElement) {
-      let rowHTML = '';
-      for (let i = 0; i < currentCellElement.parentElement.childElementCount; i++) {
-        rowHTML += '<td> </td>';
-      }
-      currentCellElement.parentElement.insertAdjacentHTML('beforebegin', `<tr>${rowHTML}</tr>`);
-      setRangeByDomBeforeEnd(currentCellElement.parentElement.previousElementSibling.children[0]);
-      props.onSaveNote();
-    }
-  }
+  // function addRowAbove() {
+  //   if (currentCellElement) {
+  //     let rowHTML = '';
+  //     for (let i = 0; i < currentCellElement.parentElement.childElementCount; i++) {
+  //       rowHTML += '<td> </td>';
+  //     }
+  //     currentCellElement.parentElement.insertAdjacentHTML('beforebegin', `<tr>${rowHTML}</tr>`);
+  //     setRangeByDomBeforeEnd(currentCellElement.parentElement.previousElementSibling.children[0]);
+  //     props.onSaveNote();
+  //   }
+  // }
 
-  function addColBefore() {
-    if (currentCellElement && tableElement) {
-      let index = 0;
-      let previousElement = currentCellElement.previousElementSibling;
-      while (previousElement) {
-        index++;
-        previousElement = previousElement.previousElementSibling;
-      }
-      for (let i = 0; i < tableElement.rows.length; i++) {
-        if (i === 0) {
-          tableElement.rows[i].cells[index].insertAdjacentHTML('beforebegin', '<th> </th>');
-        } else {
-          tableElement.rows[i].cells[index].insertAdjacentHTML('beforebegin', '<td> </td>');
-        }
-      }
-      props.onSaveNote();
-    }
-  }
+  // function addColBefore() {
+  //   if (currentCellElement && tableElement) {
+  //     let index = 0;
+  //     let previousElement = currentCellElement.previousElementSibling;
+  //     while (previousElement) {
+  //       index++;
+  //       previousElement = previousElement.previousElementSibling;
+  //     }
+  //     for (let i = 0; i < tableElement.rows.length; i++) {
+  //       if (i === 0) {
+  //         tableElement.rows[i].cells[index].insertAdjacentHTML('beforebegin', '<th> </th>');
+  //       } else {
+  //         tableElement.rows[i].cells[index].insertAdjacentHTML('beforebegin', '<td> </td>');
+  //       }
+  //     }
+  //     props.onSaveNote();
+  //   }
+  // }
 
   // 通过触发editor.vditor快捷键实现表格操作功能
   const dispatchKey = useCallback((hotKey) => {
@@ -181,42 +181,52 @@ function TableMenu(props) {
   }, [props.editor]);
 
   function getTableMd() {
-    return fixTableMd(props.editor.html2md(tableElement.outerHTML));
+    // return fixTableMd(props.editor.html2md(tableElement.outerHTML));
+    return '';
   }
 
   function clickHandler(type, e) {
+    if (!props.editor) return;
+    //
     setRangeByDomBeforeEnd(currentCellElement);
 
     switch (type) {
       case 'addRowAbove':
-        addRowAbove();
+        props.editor.current.insertRowAbove();
         break;
       case 'addRowBelow':
-        dispatchKey('⌘-=');
+        // dispatchKey('⌘-=');
+        props.editor.current.insertRowBelow();
         break;
       case 'addColBefore':
-        addColBefore();
+        props.editor.current.insertColLeft();
         break;
       case 'addColAfter':
-        dispatchKey('⌘-⇧-=');
+        // dispatchKey('⌘-⇧-=');
+        props.editor.current.insertColRight();
         break;
       case 'alignLeft':
-        dispatchKey('⌘-⇧-L');
+        // dispatchKey('⌘-⇧-L');
+        props.editor.current.tableColAlignLeft();
         break;
       case 'alignCenter':
-        dispatchKey('⌘-⇧-C');
+        // dispatchKey('⌘-⇧-C');
+        props.editor.current.tableColAlignCenter();
         break;
       case 'alignRight':
-        dispatchKey('⌘-⇧-R');
+        // dispatchKey('⌘-⇧-R');
+        props.editor.current.tableColAlignRight();
         break;
       case 'deleteRow':
-        dispatchKey('⌘--');
+        // dispatchKey('⌘--');
+        props.editor.current.removeTableRow();
         break;
       case 'deleteCol':
-        dispatchKey('⌘-⇧--');
+        // dispatchKey('⌘-⇧--');
+        props.editor.current.removeTableCol();
         break;
       case 'deleteTable':
-        deleteTable();
+        props.editor.current.removeTable();
         break;
       case 'CpHtml':
         if (tableElement) {
@@ -258,12 +268,13 @@ function TableMenu(props) {
 
     function handleMouseDown(e) {
       if (props.editor) {
-        const ele = filterParentElement(e.target, props.editor.vditor.element, (dom) => dom.tagName.toLocaleLowerCase() === 'table');
+        const ele = filterParentElement(e.target, props.editor.current.editor, (dom) => dom.tagName.toLocaleLowerCase() === 'table');
         if (e.button === 2 && ele) {
           tableElement = ele;
-          currentCellElement = filterParentElement(e.target, props.editor.vditor.element, (dom) => ['th', 'td'].includes(dom.tagName?.toLocaleLowerCase()), true);
+          currentCellElement = filterParentElement(e.target, props.editor.current.editor, (dom) => ['th', 'td'].includes(dom.tagName?.toLocaleLowerCase()), true);
           if (currentCellElement) {
-            const currentCellElementAlign = currentCellElement.getAttribute('align') ?? 'left';
+            // const currentCellElementAlign = currentCellElement.getAttribute('align') ?? 'left';
+            const currentCellElementAlign = getComputedStyle(currentCellElement, null).textAlign ?? 'left';
             if (currentCellElementAlign !== align) {
               setAlign(currentCellElementAlign);
             }
@@ -283,21 +294,21 @@ function TableMenu(props) {
       }
     }
 
-    function handleKeyDown(e) {
-      if (matchHotKey('⌘-Enter', e)) {
-        dispatchKey('⌘-=');
-        e.preventDefault();
-      } else if (matchHotKey('⌘-⌥-Enter', e)) {
-        dispatchKey('⌘-⇧-=');
-        e.preventDefault();
-      }
-    }
+    // function handleKeyDown(e) {
+    //   if (matchHotKey('⌘-Enter', e)) {
+    //     dispatchKey('⌘-=');
+    //     e.preventDefault();
+    //   } else if (matchHotKey('⌘-⌥-Enter', e)) {
+    //     dispatchKey('⌘-⇧-=');
+    //     e.preventDefault();
+    //   }
+    // }
 
-    window.addEventListener('keydown', handleKeyDown);
+    // window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('mouseover', handleShowSubMenu);
     window.addEventListener('mousedown', handleMouseDown);
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      // window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('mouseover', handleShowSubMenu);
       window.removeEventListener('mousedown', handleMouseDown);
     };

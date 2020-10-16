@@ -111,4 +111,19 @@ div[id^='ag-editor-id'] {
       cursor: pointer;
     }
   }
+
+  // 屏蔽table工具栏
+  figure.ag-active .ag-tool-table.ag-tool-bar,
+  table.ag-active tr .ag-drag-handler.left,
+  table.ag-active tr .ag-drag-handler.bottom {
+    display: none;
+  }
+  .ag-table-scroll {
+    padding-left: 0;
+    /* padding-bottom: 0; */
+  }
+}
+
+div.ag-show-quick-insert-hint p.ag-paragraph.ag-active > span.ag-paragraph-content:first-of-type:empty::after {
+  content: '+ to inster';
 }
