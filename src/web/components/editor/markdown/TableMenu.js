@@ -181,8 +181,7 @@ function TableMenu(props) {
   }, [props.editor]);
 
   function getTableMd() {
-    // return fixTableMd(props.editor.html2md(tableElement.outerHTML));
-    return '';
+    return props.editor.current.getTableMarkdown();
   }
 
   function clickHandler(type, e) {
