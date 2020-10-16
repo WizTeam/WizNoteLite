@@ -40,21 +40,21 @@ class MarkdownEditorComponent extends React.PureComponent {
       //
       return files.pop();
     },
-    handleInsertImages: async (successCb) => {
-      if (!this.editor) {
-        return;
-      }
-      const { kbGuid, note } = this.props;
-      const files = await this.props.onSelectImages(kbGuid, note.guid);
-      if (files.length && successCb) {
-        successCb();
-      }
-      files.forEach((src) => {
-        this.editor.insertValue(`![image](${src})`);
-      });
-    },
+    // handleInsertImages: async (successCb) => {
+    //   if (!this.editor) {
+    //     return;
+    //   }
+    //   const { kbGuid, note } = this.props;
+    //   const files = await this.props.onSelectImages(kbGuid, note.guid);
+    //   if (files.length && successCb) {
+    //     successCb();
+    //   }
+    //   files.forEach((src) => {
+    //     this.editor.insertValue(`![image](${src})`);
+    //   });
+    // },
     handleInsertImagesFromData: async (file) => {
-      if (!this.editor) {
+      if (!this.editor.current) {
         return null;
       }
       const { kbGuid, note } = this.props;
@@ -118,7 +118,7 @@ class MarkdownEditorComponent extends React.PureComponent {
     super(props);
     this.state = {
       note: null,
-      // tagList: {},
+      tagList: {},
     };
     this.oldMarkdown = '';
     this.editor = React.createRef();
@@ -144,9 +144,9 @@ class MarkdownEditorComponent extends React.PureComponent {
   componentWillUnmount() {
     window.wizApi.userManager.off('tagsChanged', this.handler.handleTagsChanged);
     window.wizApi.userManager.off('tagRenamed', this.handler.handleTagRenamed);
-    if (this.editor) {
-      this.editor.vditor.element.removeEventListener('click', this.handler.handleClickEditor);
-    }
+    // if (this.editor) {
+    //   this.editor.vditor.element.removeEventListener('click', this.handler.handleClickEditor);
+    // }
   }
 
   get resourceUrl() {
@@ -161,10 +161,10 @@ class MarkdownEditorComponent extends React.PureComponent {
   }
 
   async getAllTags() {
-    // const { kbGuid } = this.props;
-    // const tagList = await window.wizApi.userManager.getAllTags(kbGuid);
+    const { kbGuid } = this.props;
+    const tagList = await window.wizApi.userManager.getAllTags(kbGuid);
     // console.log(tagList);
-    // this.setState({ tagList });
+    this.setState({ tagList });
   }
 
   async saveNote(contentId, markdown) {
@@ -220,7 +220,7 @@ class MarkdownEditorComponent extends React.PureComponent {
     //
     const {
       note,
-      // tagList,
+      tagList,
     } = this.state;
     const { classes, scrollbar } = this.props;
     const scrollingElement = scrollbar?.container?.children[0];
@@ -243,14 +243,15 @@ class MarkdownEditorComponent extends React.PureComponent {
         /> */}
         <MarkdownEditor
           ref={this.editor}
-          onChange={this.handler.handleOnChange}
-          onSelectImages={this.handler.handleSelectImages}
-          onInsertImageFromData={this.handler.handleInsertImagesFromData}
-          onSave={this.handler.handleNoteModified}
+          tagList={tagList}
           markdown={this.oldMarkdown}
           resourceUrl={this.resourceUrl}
           scrollingElement={scrollingElement}
           contentId={note ? note.guid : 'empty'}
+          onChange={this.handler.handleOnChange}
+          onSave={this.handler.handleNoteModified}
+          onSelectImages={this.handler.handleSelectImages}
+          onInsertImageFromData={this.handler.handleInsertImagesFromData}
         />
       </div>
     );
