@@ -181,7 +181,7 @@ function TableMenu(props) {
   }, [props.editor]);
 
   function getTableMd() {
-    return props.editor.current.getTableMarkdown();
+    return props.editor.current.htmlToMarkdown(tableElement.outerHTML);
   }
 
   function clickHandler(type, e) {
@@ -435,7 +435,7 @@ function TableMenu(props) {
 TableMenu.propTypes = {
   intl: PropTypes.object.isRequired,
   editor: PropTypes.object,
-  onSaveNote: PropTypes.func.isRequired,
+  // onSaveNote: PropTypes.func.isRequired,
 };
 
 TableMenu.defaultProps = {
