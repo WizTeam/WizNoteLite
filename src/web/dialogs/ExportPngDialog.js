@@ -190,17 +190,18 @@ class ExportPngDialog extends React.Component {
 
   render() {
     const {
-      loading, previewTheme, widthValue,
+      loading, widthValue,
+      // previewTheme
     } = this.state;
     const {
       classes, open, onClose,
       kbGuid, noteGuid, intl,
     } = this.props;
 
-    const themeOptions = [
-      { value: 'light', title: intl.formatMessage({ id: 'lightOption' }) },
-      { value: 'dark', title: intl.formatMessage({ id: 'darkOption' }) },
-    ];
+    // const themeOptions = [
+    //   { value: 'light', title: intl.formatMessage({ id: 'lightOption' }) },
+    //   { value: 'dark', title: intl.formatMessage({ id: 'darkOption' }) },
+    // ];
 
     const widthOptions = [
       { value: PC_WIDTH, title: intl.formatMessage({ id: 'pcOption' }) },
