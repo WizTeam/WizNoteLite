@@ -23,7 +23,7 @@ class MarkdownEditorComponent extends React.PureComponent {
   handler = {
     handleClickEditor: (e) => {
       const target = e.target;
-      const tagSpan = getTagSpanFromRange(this.editor.vditor.element, target);
+      const tagSpan = getTagSpanFromRange(this.editor.current.editor, target);
       if (tagSpan) {
         this.props.onClickTag(tagSpan.textContent);
       }
@@ -118,7 +118,7 @@ class MarkdownEditorComponent extends React.PureComponent {
     super(props);
     this.state = {
       note: null,
-      tagList: {},
+      wordList: [],
     };
     this.oldMarkdown = '';
     this.editor = React.createRef();
@@ -130,6 +130,10 @@ class MarkdownEditorComponent extends React.PureComponent {
     window.wizApi.userManager.on('tagRenamed', this.handler.handleTagRenamed);
     this.getAllTags();
     await this.loadNote();
+    if (this.editor.current) {
+      const editor = this.editor.current.editor;
+      editor.addEventListener('click', this.handler.handleClickEditor);
+    }
   }
 
   componentDidUpdate() {
@@ -144,9 +148,10 @@ class MarkdownEditorComponent extends React.PureComponent {
   componentWillUnmount() {
     window.wizApi.userManager.off('tagsChanged', this.handler.handleTagsChanged);
     window.wizApi.userManager.off('tagRenamed', this.handler.handleTagRenamed);
-    // if (this.editor) {
-    //   this.editor.vditor.element.removeEventListener('click', this.handler.handleClickEditor);
-    // }
+    if (this.editor.current) {
+      const editor = this.editor.current.editor;
+      editor.removeEventListener('click', this.handler.handleClickEditor);
+    }
   }
 
   get resourceUrl() {
@@ -163,8 +168,24 @@ class MarkdownEditorComponent extends React.PureComponent {
   async getAllTags() {
     const { kbGuid } = this.props;
     const tagList = await window.wizApi.userManager.getAllTags(kbGuid);
-    // console.log(tagList);
-    this.setState({ tagList });
+    const wordList = [];
+    this.convertToTreeData(wordList, tagList);
+    this.setState({ wordList });
+  }
+
+  convertToTreeData(list, data, path) {
+    try {
+      for (const tag in data) {
+        if (tag === 'wizName' || tag === 'wizFull') continue;
+        if (data[tag]) {
+          const name = path ? `${path}/${data[tag].wizName}` : data[tag].wizName;
+          list.push(name);
+          this.convertToTreeData(list, data[tag], name);
+        }
+      }
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   async saveNote(contentId, markdown) {
@@ -220,7 +241,7 @@ class MarkdownEditorComponent extends React.PureComponent {
     //
     const {
       note,
-      tagList,
+      wordList,
     } = this.state;
     const { classes, scrollbar } = this.props;
     const scrollingElement = scrollbar?.container?.children[0];
@@ -243,7 +264,7 @@ class MarkdownEditorComponent extends React.PureComponent {
         /> */}
         <MarkdownEditor
           ref={this.editor}
-          tagList={tagList}
+          wordList={wordList}
           markdown={this.oldMarkdown}
           resourceUrl={this.resourceUrl}
           scrollingElement={scrollingElement}

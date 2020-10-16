@@ -121,7 +121,7 @@ export function getTagSpanFromRange(root, target = null) {
     tagDom = range.startContainer;
   }
   return filterParentElement(tagDom, root,
-    (dom) => hasClass(dom, 'tag-span'), true);
+    (dom) => hasClass(dom, 'ag-tag'), true);
 }
 
 export function getTableFromRange(root) {
