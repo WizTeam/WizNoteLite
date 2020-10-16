@@ -267,12 +267,29 @@ function TableMenu(props) {
 
     function handleMouseDown(e) {
       if (props.editor) {
-        const ele = filterParentElement(e.target, props.editor.current.editor, (dom) => dom.tagName.toLocaleLowerCase() === 'table');
+        const ele = filterParentElement(
+          e.target, props.editor.current.editor,
+          (dom) => dom.tagName.toLocaleLowerCase() === 'table',
+        );
         if (e.button === 2 && ele) {
+          // 更新cursor
+          props.editor.current.updateCursor({
+            start: {
+              key: e.target.id,
+            },
+            end: {
+              key: e.target.id,
+            },
+          });
+          //
           tableElement = ele;
-          currentCellElement = filterParentElement(e.target, props.editor.current.editor, (dom) => ['th', 'td'].includes(dom.tagName?.toLocaleLowerCase()), true);
+          currentCellElement = filterParentElement(
+            e.target,
+            props.editor.current.editor,
+            (dom) => ['th', 'td'].includes(dom.tagName?.toLocaleLowerCase()),
+            true,
+          );
           if (currentCellElement) {
-            // const currentCellElementAlign = currentCellElement.getAttribute('align') ?? 'left';
             const currentCellElementAlign = getComputedStyle(currentCellElement, null).textAlign ?? 'left';
             if (currentCellElementAlign !== align) {
               setAlign(currentCellElementAlign);
