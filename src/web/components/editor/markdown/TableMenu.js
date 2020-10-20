@@ -273,14 +273,16 @@ function TableMenu(props) {
           (dom) => dom.tagName.toLocaleLowerCase() === 'table',
         );
         if (e.button === 2 && ele) {
-          let updateKey = e.target.id;
+          const updateKey = filterParentElement(
+            e.target,
+            props.editor.current.editor,
+            (dom) => dom.id,
+            true,
+          )?.id;
           //
           if (!updateKey) {
-            updateKey = filterParentElement(
-              e.target,
-              props.editor.current.editor,
-              (dom) => dom.id,
-            ).id;
+            console.warn('Cursor is not find.');
+            return;
           }
           // 更新cursor
           props.editor.current.updateCursor({
@@ -374,7 +376,7 @@ function TableMenu(props) {
       <MenuItem onClick={(e) => clickHandler('addColAfter', e)}>
         <div className={classes.menuItem}>
           <div className={classes.menuName}>{intl.formatMessage({ id: 'tableMenuAddColAfter' })}</div>
-          <div className={classes.shortcut}>{updateHotkeyTip('⌘+⌥+Enter')}</div>
+          {/* <div className={classes.shortcut}>{updateHotkeyTip('⌘+⌥+Enter')}</div> */}
         </div>
       </MenuItem>
       <div className={classes.menuLine} />
