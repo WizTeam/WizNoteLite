@@ -213,7 +213,7 @@ class Content extends React.Component {
   render() {
     const {
       note, kbGuid, classes,
-      isSearch, theme, backgroundType, onClickTag,
+      theme, backgroundType, onClickTag,
       intl,
     } = this.props;
     const {
@@ -238,7 +238,7 @@ class Content extends React.Component {
           onRequestFullScreen={this.props.onRequestFullScreen}
           ref={this.headerRef}
         />
-        {!this.state.showEditorContents && note && !isSearch && (
+        {!this.state.showEditorContents && note && (
         <div className={classNames(classes.toolBar, isMac && classes.toolBar_mac)}>
           {/* <IconButton className={classes.iconButton}>
             <Icons.MoreHorizIcon className={classes.icon} />
@@ -344,7 +344,7 @@ Content.propTypes = {
   classes: PropTypes.object.isRequired,
   intl: PropTypes.object.isRequired,
   kbGuid: PropTypes.string.isRequired,
-  isSearch: PropTypes.bool.isRequired,
+  // isSearch: PropTypes.bool.isRequired,
   note: PropTypes.object,
   backgroundType: PropTypes.string,
   onCreateAccount: PropTypes.func.isRequired,

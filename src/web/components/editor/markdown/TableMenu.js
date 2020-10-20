@@ -10,7 +10,8 @@ import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import copy from 'copy-to-clipboard';
 import Icon from '../../../config/icons';
 import {
-  filterParentElement, updateHotkeyTip, matchHotKey, hasClass,
+  filterParentElement, updateHotkeyTip, hasClass,
+  // matchHotKey
 } from '../libs/dom_utils';
 import { setRangeByDomBeforeEnd } from '../libs/range_utils';
 import LiteMenu from './LiteMenu';
@@ -101,10 +102,10 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
 
 let currentCellElement;
 let tableElement;
-// 修复md表头分割线 | - | - | - |   => | ----- | ----- | ----- |
+// 修复md表头分割线 | --- | --- | --- |   => | ----- | ----- | ----- |
 function fixTableMd(md) {
   const textArr = md.split('\n');
-  textArr[1] = textArr[1].replace(/-/g, '-----');
+  textArr[1] = textArr[1].replace(/---/g, '-----');
   return textArr.join('\n');
 }
 
@@ -181,7 +182,7 @@ function TableMenu(props) {
   }, [props.editor]);
 
   function getTableMd() {
-    return props.editor.current.htmlToMarkdown(tableElement.outerHTML);
+    return fixTableMd(props.editor.current.htmlToMarkdown(tableElement.outerHTML));
   }
 
   function clickHandler(type, e) {
