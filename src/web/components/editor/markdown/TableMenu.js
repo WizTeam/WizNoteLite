@@ -272,13 +272,22 @@ function TableMenu(props) {
           (dom) => dom.tagName.toLocaleLowerCase() === 'table',
         );
         if (e.button === 2 && ele) {
+          let updateKey = e.target.id;
+          //
+          if (!updateKey) {
+            updateKey = filterParentElement(
+              e.target,
+              props.editor.current.editor,
+              (dom) => dom.id,
+            ).id;
+          }
           // 更新cursor
           props.editor.current.updateCursor({
             start: {
-              key: e.target.id,
+              key: updateKey,
             },
             end: {
-              key: e.target.id,
+              key: updateKey,
             },
           });
           //
