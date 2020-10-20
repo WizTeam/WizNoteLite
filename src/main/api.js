@@ -517,7 +517,10 @@ handleApi('writeToMarkdown', async (event, userGuid, kbGuid, noteGuid) => {
   const targetFilesDirname = path.join(targetDirname, 'index_files');
   //
   const resourcePath = await paths.getNoteResources(userGuid, kbGuid, noteGuid);
-  const files = await fs.readdir(resourcePath);
+  let files = [];
+  if (fs.existsSync(resourcePath)) {
+    files = await fs.readdir(resourcePath);
+  }
   //
   if (!fs.existsSync(targetFilesDirname) && files.length) {
     try {

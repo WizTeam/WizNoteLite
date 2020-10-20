@@ -249,6 +249,7 @@ function TableMenu(props) {
     }
     e.preventDefault();
     setMenuPosition(undefined);
+    setSubMenuPos(null);
   }
 
   useEffect(() => {
