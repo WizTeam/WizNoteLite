@@ -266,7 +266,7 @@ function TableMenu(props) {
     }
 
     function handleMouseDown(e) {
-      if (props.editor) {
+      if (props.editor.current) {
         const ele = filterParentElement(
           e.target, props.editor.current.editor,
           (dom) => dom.tagName.toLocaleLowerCase() === 'table',
