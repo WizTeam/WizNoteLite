@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { withStyles, withTheme } from '@material-ui/core/styles';
-import { MarkdownEditor } from 'wiz-react-markdown-editor';
+import { MarkdownEditor } from 'wiz-react-markdown-editor/dist';
 import debounce from 'lodash/debounce';
 // import VditorEditor from './VditorEditor';
 import TableMenu from './TableMenu';
@@ -123,6 +123,7 @@ class MarkdownEditorComponent extends React.PureComponent {
     };
     this.oldMarkdown = '';
     this.editor = React.createRef();
+    this._onThemeChange = null;
   }
 
   //
@@ -137,12 +138,19 @@ class MarkdownEditorComponent extends React.PureComponent {
     }
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     const { note: currentNote } = this.state;
     const { note: propsNote } = this.props;
     if (propsNote?.guid !== currentNote?.guid) {
       // note changed
       this.saveAndLoadNote();
+    }
+    if (prevProps.theme.palette.type !== this.props.theme.palette.type) {
+      if (this._onThemeChange) {
+        this._onThemeChange({
+          matches: this.props.theme.palette.type === 'dark',
+        });
+      }
     }
   }
 
@@ -273,6 +281,9 @@ class MarkdownEditorComponent extends React.PureComponent {
           onChange={this.handler.handleOnChange}
           onSave={this.handler.handleNoteModified}
           onSelectImages={this.handler.handleSelectImages}
+          onThemeChange={(fn) => {
+            this._onThemeChange = fn;
+          }}
           onInsertImageFromData={this.handler.handleInsertImagesFromData}
         />
         <TableMenu
@@ -295,6 +306,7 @@ MarkdownEditorComponent.propTypes = {
   onClickTag: PropTypes.func.isRequired,
   onUpdateContentsList: PropTypes.func,
   scrollbar: PropTypes.object,
+  theme: PropTypes.object.isRequired,
 };
 
 MarkdownEditorComponent.defaultProps = {
