@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { withStyles, withTheme } from '@material-ui/core/styles';
 import { injectIntl } from 'react-intl';
-// import VditorEditor from '../components/editor/markdown/VditorEditor';
-import { MarkdownEditor } from 'wiz-react-markdown-editor';
+import { MarkdownEditor } from 'wiz-react-markdown-editor/dist';
 import Scrollbar from '../components/Scrollbar';
+import { injectionCssFormId } from '../utils/utils';
 import Icons from '../config/icons';
 //
 
@@ -48,9 +48,6 @@ const styles = (theme) => ({
 
 class NoteViewer extends React.Component {
   handler = {
-    handleInitEditor: (editor) => {
-      this._editor = editor;
-    },
   }
 
   constructor(props) {
@@ -71,6 +68,7 @@ class NoteViewer extends React.Component {
     const userGuid = window.wizApi?.userManager?.userGuid || '';
     const resourceUrl = `wiz://${userGuid}/${kbGuid}/${noteGuid}`;
 
+    await this.checkTheme();
     const markdown = await window.wizApi.userManager.getNoteMarkdown(kbGuid, noteGuid);
     this.setState({
       markdown,
@@ -109,6 +107,16 @@ class NoteViewer extends React.Component {
     });
   }
 
+  async checkTheme() {
+    const { params } = this.props;
+    //
+    if (params.theme) {
+      const id = 'wiz-note-content-root';
+      const css = await window.wizApi.userManager.getThemeCssString(params.theme);
+      injectionCssFormId(id, css);
+    }
+  }
+
   render() {
     const {
       classes, theme,
@@ -143,23 +151,6 @@ class NoteViewer extends React.Component {
         style={style}
         className={classNames(resetBackground && backgroundClass)}
       >
-        {/* // TODO: change editor */}
-        {/* <VditorEditor
-          value={markdown}
-          disabled
-          isMac={window.wizApi.platform.isMac}
-          contentId={loading ? '' : noteGuid}
-          onInit={this.handler.handleInitEditor}
-          onInput={() => {}}
-          resourceUrl={resourceUrl}
-          darkMode={darkMode}
-          onSave={() => {}}
-          onInsertImage={() => {}}
-          onInsertImageFromData={() => {}}
-          tagList={{}}
-          autoSelectTitle={false}
-          hideBlockType
-        /> */}
         <MarkdownEditor
           readOnly
           markdown={markdown}

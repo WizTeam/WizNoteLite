@@ -285,6 +285,11 @@ class UserManager extends EventEmitter {
     return result;
   }
 
+  async getThemeCssString(theme) {
+    const result = await invokeApi('getThemeCssString', theme);
+    return result;
+  }
+
   async buildBindSnsUrl(server, type, postMessage, origin, extraParams) {
     const path = '/as/thirdparty/go/auth';
     const query = {

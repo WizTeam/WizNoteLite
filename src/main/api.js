@@ -548,6 +548,18 @@ handleApi('writeToMarkdown', async (event, userGuid, kbGuid, noteGuid) => {
   shell.showItemInFolder(filePath);
 });
 
+handleApi('getThemeCssString', async (event, theme = '') => {
+  if (!theme) return '';
+  //
+  const cssPath = path.join(__dirname, './resources/editor_theme', `${theme}.css`);
+  //
+  if (fs.existsSync(cssPath)) {
+    const css = await fs.readFile(cssPath, 'utf8');
+    return css;
+  }
+  return '';
+});
+
 handleApi('queryProducts', inAppPurchase.queryProducts);
 handleApi('purchaseProduct', inAppPurchase.purchaseProduct);
 handleApi('restorePurchases', inAppPurchase.restorePurchases);
