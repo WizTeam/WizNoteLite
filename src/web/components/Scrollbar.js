@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { Scrollbars } from 'react-custom-scrollbars';
-import { getScrollbarHeight } from '../utils/utils';
+import { getScrollbarWidthHorizontal } from '../utils/utils';
 
 const Scrollbar = React.forwardRef((props, ref) => {
   const {
@@ -50,7 +50,7 @@ const Scrollbar = React.forwardRef((props, ref) => {
     if (ref && ref.current) {
       const container = ref.current.container;
       const inner = container.firstChild;
-      inner.style['margin-bottom'] = `-${getScrollbarHeight()}px`;
+      inner.style['margin-bottom'] = `-${getScrollbarWidthHorizontal()}px`;
     }
   }, []);
   //

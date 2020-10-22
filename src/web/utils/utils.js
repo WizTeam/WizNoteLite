@@ -4,9 +4,9 @@ export function injectionCssFormId(id, css = '') {
   const element = document.querySelector(`#${id}`);
   const parentElement = element.parentElement;
   if (element && parentElement) {
-    let style = Array.from(parentElement.childNodes).find((node) => {
-      return node.tagName.toLowerCase() === 'style';
-    });
+    let style = Array
+      .from(parentElement.childNodes)
+      .find((node) => node.tagName.toLowerCase() === 'style');
     //
     if (!style) {
       style = document.createElement('style');
@@ -17,7 +17,7 @@ export function injectionCssFormId(id, css = '') {
   }
 }
 
-export function getScrollbarHeight() {
+export function getScrollbarWidthHorizontal() {
   let scrollbarWidth = 0;
   //
   const div = document.createElement('div');
