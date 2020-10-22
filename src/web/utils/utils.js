@@ -17,4 +17,24 @@ export function injectionCssFormId(id, css = '') {
   }
 }
 
+export function getScrollbarHeight() {
+  let scrollbarWidth = 0;
+  //
+  const div = document.createElement('div');
+  div.style = `
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    top: -9999px;
+    overflow: scroll;
+    -ms-overflow-style: scrollbar;
+  `;
+  //
+  document.body.appendChild(div);
+  scrollbarWidth = (div.offsetHeight - div.clientHeight);
+  document.body.removeChild(div);
+  //
+  return scrollbarWidth;
+}
+
 export default {};

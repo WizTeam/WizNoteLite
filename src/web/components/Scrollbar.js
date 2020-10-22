@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { Scrollbars } from 'react-custom-scrollbars';
+import { getScrollbarHeight } from '../utils/utils';
 
 const Scrollbar = React.forwardRef((props, ref) => {
   const {
@@ -43,6 +44,15 @@ const Scrollbar = React.forwardRef((props, ref) => {
   };
   //
   const thumbRenderer = (isDark || hideThumb) ? renderThumbVertical : undefined;
+  //
+  React.useEffect(() => {
+    // fix: Scrollbars 两条轨道的宽度有可能不一样
+    if (ref && ref.current) {
+      const container = ref.current.container;
+      const inner = container.firstChild;
+      inner.style['margin-bottom'] = `-${getScrollbarHeight()}px`;
+    }
+  }, []);
   //
   return (
     <Scrollbars

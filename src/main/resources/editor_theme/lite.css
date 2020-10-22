@@ -1,5 +1,12 @@
 /* Common CSS use by both light and dark themes */
 #wiz-note-content-root {
+  min-height: 100%;
+  box-sizing: border-box;
+  background-color: white;
+  color: #333333;
+}
+
+#wiz-note-content-root {
   --titleBarHeight: 32px;
   --editorAreaWidth: 750px;
 

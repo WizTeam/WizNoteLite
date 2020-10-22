@@ -139,9 +139,8 @@ class ExportPngDialog extends React.Component {
       //
       const {
         widthValue,
-        // previewTheme,
+        previewTheme,
       } = this.state;
-      const { theme } = this.props;
       const width = widthValue;
       let padding = 16;
       if (widthValue === MOBILE_PLUS_WIDTH) {
@@ -152,7 +151,7 @@ class ExportPngDialog extends React.Component {
       //
       const options = {
         progressCallback: 'onCaptureScreenProgress',
-        theme: theme.palette.type,
+        theme: previewTheme,
         width,
         padding,
       };
@@ -162,7 +161,7 @@ class ExportPngDialog extends React.Component {
       window.wizApi.userManager.captureScreen(kbGuid, noteGuid, options);
     },
     handleChangePreviewTheme: async (item, value) => {
-      await window.wizApi.userManager.setUserSettings('exportPngTheme', value);
+      await window.wizApi.userManager.setUserSettings('exportPngTheme2', value);
       this.setState({ previewTheme: value });
     },
     handleChangeWidth: async (item, value) => {
@@ -176,7 +175,7 @@ class ExportPngDialog extends React.Component {
     const um = window.wizApi.userManager;
     this.state = {
       loading: false,
-      previewTheme: um.getUserSettingsSync('exportPngTheme', props.theme.palette.type),
+      previewTheme: um.getUserSettingsSync('exportPngTheme2', props.theme.palette.type === 'dark' ? 'dark' : 'lite'),
       widthValue: um.getUserSettingsSync('exportPngWidth', MOBILE_WIDTH),
     };
   }
@@ -191,17 +190,17 @@ class ExportPngDialog extends React.Component {
   render() {
     const {
       loading, widthValue,
-      // previewTheme
+      previewTheme,
     } = this.state;
     const {
       classes, open, onClose,
       kbGuid, noteGuid, intl,
     } = this.props;
 
-    // const themeOptions = [
-    //   { value: 'light', title: intl.formatMessage({ id: 'lightOption' }) },
-    //   { value: 'dark', title: intl.formatMessage({ id: 'darkOption' }) },
-    // ];
+    const themeOptions = [
+      { value: 'lite', title: intl.formatMessage({ id: 'lightOption' }) },
+      { value: 'dark', title: intl.formatMessage({ id: 'darkOption' }) },
+    ];
 
     const widthOptions = [
       { value: PC_WIDTH, title: intl.formatMessage({ id: 'pcOption' }) },
@@ -234,14 +233,14 @@ class ExportPngDialog extends React.Component {
               widthValue === PC_WIDTH && classes.pc,
               widthValue === MOBILE_PLUS_WIDTH && classes.mobilePlus,
               widthValue === MOBILE_WIDTH && classes.mobile,
-              // previewTheme === 'dark' && classes.darkBorderColor,
-              // previewTheme === 'light' && classes.lightBorderColor,
+              previewTheme === 'dark' && classes.darkBorderColor,
+              previewTheme === 'lite' && classes.lightBorderColor,
             )}
             >
               <NoteViewer
                 kbGuid={kbGuid}
                 noteGuid={noteGuid}
-                // darkMode={previewTheme === 'dark'}
+                darkMode={previewTheme === 'dark'}
                 params={{
                   padding: `${padding}`,
                 }}
@@ -257,14 +256,14 @@ class ExportPngDialog extends React.Component {
             </div>
           </div>
           <div className={classes.list}>
-            {/* <LiteText className={classes.title}>
+            <LiteText className={classes.title}>
               {intl.formatMessage({ id: 'themeTitle' })}
             </LiteText>
             <LiteSelect
               options={themeOptions}
               value={previewTheme}
               onChange={this.handler.handleChangePreviewTheme}
-            /> */}
+            />
             <LiteText className={classes.title}>
               {intl.formatMessage({ id: 'widthTitle' })}
             </LiteText>

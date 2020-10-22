@@ -57,6 +57,7 @@ class NoteViewer extends React.Component {
       resourceUrl: '',
       loading: true,
     };
+    this._scrollBarRef = React.createRef();
   }
 
   async componentDidMount() {
@@ -79,6 +80,12 @@ class NoteViewer extends React.Component {
     this._loadTimer = setInterval(() => {
       this.waitForLoad();
     }, 1000 * 3);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.darkMode !== this.props.darkMode) {
+      this.checkTheme();
+    }
   }
 
   componentWillUnmount() {
@@ -115,6 +122,13 @@ class NoteViewer extends React.Component {
       const css = await window.wizApi.userManager.getThemeCssString(params.theme);
       injectionCssFormId(id, css);
     }
+
+    if (this.props.darkMode !== undefined) {
+      const id = 'wiz-note-content-root';
+      const theme = this.props.darkMode ? 'dark' : 'lite';
+      const css = await window.wizApi.userManager.getThemeCssString(theme);
+      injectionCssFormId(id, css);
+    }
   }
 
   render() {
@@ -129,8 +143,8 @@ class NoteViewer extends React.Component {
       darkMode = theme.palette.type === 'dark';
     }
     //
-    const resetBackground = darkMode !== undefined;
-    const backgroundClass = darkMode ? classes.root_dark : classes.root_lite;
+    // const resetBackground = darkMode !== undefined;
+    // const backgroundClass = darkMode ? classes.root_dark : classes.root_lite;
     const footerClass = darkMode ? classes.footer_dark : classes.footer_lite;
 
     const { loading, markdown, resourceUrl } = this.state;
@@ -149,7 +163,7 @@ class NoteViewer extends React.Component {
           this._rootElem = node;
         }}
         style={style}
-        className={classNames(resetBackground && backgroundClass)}
+        // className={classNames(resetBackground && backgroundClass)}
       >
         <MarkdownEditor
           readOnly
@@ -166,7 +180,11 @@ class NoteViewer extends React.Component {
     );
 
     const contentEditorWithScrollBar = (
-      <Scrollbar hideThumb={params.hideThumb === '1'} theme={theme}>
+      <Scrollbar
+        ref={this._scrollBarRef}
+        hideThumb={params.hideThumb === '1'}
+        theme={theme}
+      >
         {contentEditor}
       </Scrollbar>
     );
