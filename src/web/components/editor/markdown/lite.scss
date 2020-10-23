@@ -95,23 +95,6 @@ div[id^='ag-editor-id'] {
     }
   }
 
-  span:not(.ag-active) a[target='_blank'] {
-    padding-right: 25px;
-    position: relative;
-    &::after {
-      display: block;
-      content: '';
-      width: 20px;
-      height: 20px;
-      background: url(./link.svg) no-repeat center center;
-      background-size: 20px 20px;
-      position: absolute;
-      right: 3px;
-      bottom: 0;
-      cursor: pointer;
-    }
-  }
-
   // 屏蔽table工具栏
   figure.ag-active .ag-tool-table.ag-tool-bar,
   table.ag-active tr .ag-drag-handler.left,

@@ -71,6 +71,21 @@ export function filterParentElement(dom, root, filterFn, self = false) {
   return null;
 }
 
+export function filterChildrenElement(dom, deep = Number.MAX_VALUE, filterFn, self = false) {
+  if (!dom || deep === 0) return null;
+  //
+  if (self && filterFn(dom)) return dom;
+
+  const list = Array.from(dom.children);
+
+  for (let i = 0; i < list.length; i += 1) {
+    const result = filterChildrenElement(list[i], deep - 1, filterFn, true);
+    if (result !== null) return result;
+  }
+
+  return null;
+}
+
 export function fixRangeScrollTop(root, pageScrollAni, rectLast) {
   const space = 40;
   const range = getRange();

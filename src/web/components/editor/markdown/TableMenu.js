@@ -11,6 +11,7 @@ import copy from 'copy-to-clipboard';
 import Icon from '../../../config/icons';
 import {
   filterParentElement, updateHotkeyTip, hasClass,
+  filterChildrenElement,
   // matchHotKey
 } from '../libs/dom_utils';
 import { setRangeByDomBeforeEnd } from '../libs/range_utils';
@@ -274,12 +275,21 @@ function TableMenu(props) {
           (dom) => dom.tagName.toLocaleLowerCase() === 'table',
         );
         if (e.button === 2 && ele) {
-          const updateKey = filterParentElement(
+          const parentId = filterParentElement(
             e.target,
             props.editor.current.editor,
-            (dom) => dom.id,
+            (dom) => dom.id && dom.className.includes('ag-cell-content'),
             true,
           )?.id;
+          //
+          const childrenId = filterChildrenElement(
+            e.target,
+            99,
+            (dom) => dom.id && dom.className.includes('ag-cell-content'),
+            true,
+          )?.id;
+
+          const updateKey = parentId || childrenId || null;
           //
           if (!updateKey) {
             console.warn('Cursor is not find.');
