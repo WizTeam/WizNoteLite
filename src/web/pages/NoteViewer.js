@@ -46,7 +46,7 @@ const styles = (theme) => ({
   },
 });
 
-const HideScrollbar = React.lazy(() => import('../components/HideScrollbar'));
+const OverwriteTableStyle = React.lazy(() => import('../components/OverwriteTableStyle'));
 
 class NoteViewer extends React.Component {
   handler = {
@@ -136,7 +136,7 @@ class NoteViewer extends React.Component {
   render() {
     const {
       classes, theme,
-      noteGuid, hideScrollbar,
+      noteGuid, showTableInline,
       params,
     } = this.props;
     //
@@ -203,7 +203,7 @@ class NoteViewer extends React.Component {
       >
         {contentMain}
         <Suspense fallback={<></>}>
-          {hideScrollbar && <HideScrollbar />}
+          {showTableInline && <OverwriteTableStyle />}
         </Suspense>
       </div>
     );
@@ -217,13 +217,13 @@ NoteViewer.propTypes = {
   noteGuid: PropTypes.string.isRequired,
   params: PropTypes.object,
   darkMode: PropTypes.bool,
-  hideScrollbar: PropTypes.bool,
+  showTableInline: PropTypes.bool,
 };
 
 NoteViewer.defaultProps = {
   params: {},
   darkMode: undefined,
-  hideScrollbar: false,
+  showTableInline: false,
 };
 
 export default withTheme(withStyles(styles)(injectIntl(NoteViewer)));

@@ -174,7 +174,7 @@ class App extends React.Component {
                       kbGuid={this._params.kbGuid}
                       noteGuid={this._params.noteGuid}
                       params={this._params}
-                      hideScrollbar
+                      showTableInline
                     />
                   )
                   : (
