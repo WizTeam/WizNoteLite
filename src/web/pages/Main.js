@@ -99,7 +99,7 @@ const styles = (theme) => ({
   splitPane: {
   },
   sidebarResizer: {
-    margin: '0 -5px',
+    margin: '0 -6px',
   },
   notelistResizer: {
     backgroundColor: `${theme.custom.background.content} !important`,
