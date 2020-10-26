@@ -20,6 +20,8 @@ const Scrollbar = React.forwardRef((props, ref) => {
 
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
 
+  const _ref = React.useRef();
+
   let isDark;
   if (themeType === 'auto') {
     isDark = prefersDarkMode;
@@ -47,8 +49,9 @@ const Scrollbar = React.forwardRef((props, ref) => {
   //
   React.useEffect(() => {
     // fix: Scrollbars 两条轨道的宽度有可能不一样
-    if (ref && ref.current) {
-      const container = ref.current.container;
+    const getRef = ref || _ref;
+    if (getRef && getRef.current) {
+      const container = getRef.current.container;
       const inner = container.firstChild;
       inner.style['margin-bottom'] = `-${getScrollbarWidthHorizontal()}px`;
     }
@@ -62,7 +65,7 @@ const Scrollbar = React.forwardRef((props, ref) => {
       renderThumbVertical={thumbRenderer}
       renderThumbHorizontal={renderThumbVertical}
       {...others}
-      ref={ref}
+      ref={ref || _ref}
     >
       {children}
     </Scrollbars>
