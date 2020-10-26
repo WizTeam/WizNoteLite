@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { withStyles, withTheme } from '@material-ui/core/styles';
@@ -45,6 +45,8 @@ const styles = (theme) => ({
     color: '#969696',
   },
 });
+
+const HideScrollbar = React.lazy(() => import('../components/HideScrollbar'));
 
 class NoteViewer extends React.Component {
   handler = {
@@ -134,7 +136,7 @@ class NoteViewer extends React.Component {
   render() {
     const {
       classes, theme,
-      noteGuid,
+      noteGuid, hideScrollbar,
       params,
     } = this.props;
     //
@@ -200,6 +202,9 @@ class NoteViewer extends React.Component {
         )}
       >
         {contentMain}
+        <Suspense fallback={<></>}>
+          {hideScrollbar && <HideScrollbar />}
+        </Suspense>
       </div>
     );
   }
@@ -212,11 +217,13 @@ NoteViewer.propTypes = {
   noteGuid: PropTypes.string.isRequired,
   params: PropTypes.object,
   darkMode: PropTypes.bool,
+  hideScrollbar: PropTypes.bool,
 };
 
 NoteViewer.defaultProps = {
   params: {},
   darkMode: undefined,
+  hideScrollbar: false,
 };
 
 export default withTheme(withStyles(styles)(injectIntl(NoteViewer)));
