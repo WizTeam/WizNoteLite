@@ -116,3 +116,13 @@
 #wiz-note-content-root code[class*="language-"], pre.ag-paragraph {
   color: black;
 }
+
+#wiz-note-content-root div[id^='ag-editor-id'] table td,
+#wiz-note-content-root div[id^='ag-editor-id'] table th {
+  border: 1px solid var(--tableBorderColor);
+}
+
+#wiz-note-content-root div[id^='ag-editor-id'] table td::before,
+#wiz-note-content-root div[id^='ag-editor-id'] table th::before {
+  display: none;
+}
