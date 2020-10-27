@@ -119,6 +119,11 @@ export default {
   errorSyncFailed: '同步失敗: {message}',
   errorNoteSyncFailed: '筆記上傳失敗: {message}',
   buttonViewLog: '查看日誌',
+  labelWordsCounter: 'Words counter',
+  labelWordsCount: 'Words: {value}',
+  labelAsianCount: 'CJK Words: {value}',
+  labelCharsCount: 'Chars: {value}',
+  labelCharsWithSpaceCount: 'Characters with space: {value}',
 
   // export
   exportPng: '導出為圖片',

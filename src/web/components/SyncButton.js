@@ -28,7 +28,7 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
   },
 }));
 
-function SyncBtn(props) {
+function SyncButton(props) {
   const classes = useStyles();
 
   const [isSyncing, setSyncing] = useState(false);
@@ -165,7 +165,7 @@ function SyncBtn(props) {
   );
 }
 
-SyncBtn.propTypes = {
+SyncButton.propTypes = {
   className: PropTypes.string,
   iconClassName: PropTypes.string,
   kbGuid: PropTypes.string,
@@ -174,7 +174,7 @@ SyncBtn.propTypes = {
   onCreateAccount: PropTypes.func,
 };
 
-SyncBtn.defaultProps = {
+SyncButton.defaultProps = {
   className: '',
   iconClassName: '',
   kbGuid: '',
@@ -182,4 +182,4 @@ SyncBtn.defaultProps = {
   onCreateAccount: null,
 };
 
-export default injectIntl(SyncBtn);
+export default injectIntl(SyncButton);

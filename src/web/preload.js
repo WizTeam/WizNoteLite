@@ -4,6 +4,24 @@ const platform = require('platform');
 
 const { Menu, MenuItem } = remote;
 
+const wordCounterWorker = new Worker('./worker/word_counter.js');
+console.log('start worker');
+wordCounterWorker.onmessage = (event) => {
+  const data = event.data;
+  try {
+    const result = JSON.parse(data);
+    console.log(result);
+    window.wizApi.userManager.emit('wordCounter', result);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+function wordCounter(dataObject) {
+  const data = JSON.stringify(dataObject);
+  wordCounterWorker.postMessage(data);
+}
+
 async function invokeApi(name, ...args) {
   const ret = await ipcRenderer.invoke(name, ...args);
   if (!ret) {
@@ -173,11 +191,17 @@ class UserManager extends EventEmitter {
 
   async getNoteMarkdown(kbGuid, noteGuid) {
     const markdown = await invokeApi('getNoteMarkdown', this.userGuid, kbGuid, noteGuid);
+    wordCounter({
+      kbGuid, noteGuid, markdown,
+    });
     return markdown;
   }
 
   async setNoteMarkdown(kbGuid, noteGuid, markdown) {
     const result = await invokeApi('setNoteMarkdown', this.userGuid, kbGuid, noteGuid, markdown);
+    wordCounter({
+      kbGuid, noteGuid, markdown,
+    });
     return result;
   }
 

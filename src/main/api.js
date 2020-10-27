@@ -10,9 +10,9 @@ const path = require('path');
 const PImage = require('pureimage');
 const log = require('electron-log');
 const sdk = require('wiznote-sdk-js');
+const { WizKnownError } = require('wiznote-sdk-js-share/lib/error');
 
 const inAppPurchase = require('./inapp/in_app_purchase');
-const { WizKnownError } = require('wiznote-sdk-js-share/lib/error');
 
 const paths = sdk.core.paths;
 const wait = sdk.core.utils.wait;
