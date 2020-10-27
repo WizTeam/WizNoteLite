@@ -19,10 +19,12 @@ const useStyles = makeStyles((theme) => ({
     '-webkit-app-region': 'drag',
   },
   systemButtonContainer: {
+    display: 'flex',
     '& .MuiButton-root': {
       color: theme.custom.color.windowBarTool,
       padding: '0',
       minWidth: 48,
+      height: 24,
       borderRadius: 0,
     },
   },
@@ -134,7 +136,11 @@ const CommonHeader = React.forwardRef((props, ref) => {
   } = props;
 
   return (
-    <div className={classNames(classes.root, className)} onDoubleClick={handleDoubleClickHeader} ref={ref}>
+    <div
+      className={classNames(classes.root, className)}
+      onDoubleClick={handleDoubleClickHeader}
+      ref={ref}
+    >
       {hasSystemButton && showLogo && (
         <>
           <Button
