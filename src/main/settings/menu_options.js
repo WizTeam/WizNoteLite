@@ -28,7 +28,6 @@ function toMenuItem(id, accelerator) {
   };
 }
 
-
 function getMainMenuTemplate() {
   //
   const template = [];
@@ -94,9 +93,9 @@ function getMainMenuTemplate() {
       { role: 'zoomout', label: i18next.t('zoomout') },
       { type: 'separator' },
       { role: 'togglefullscreen', label: i18next.t('togglefullscreen') },
-      toMenuItem('menuViewEditorOnly', 'Ctrl+1'),
-      toMenuItem('menuViewEditorAndNotes', 'Ctrl+2'),
-      toMenuItem('menuViewEditorAndNotesAndTags', 'Ctrl+3'),
+      toMenuItem('menuViewEditorOnly', isMac ? 'Ctrl+1' : 'Ctrl+Alt+1'),
+      toMenuItem('menuViewEditorAndNotes', isMac ? 'Ctrl+2' : 'Ctrl+Alt+2'),
+      toMenuItem('menuViewEditorAndNotesAndTags', isMac ? 'Ctrl+3' : 'Ctrl+Alt+3'),
     ],
   });
   // window menu
