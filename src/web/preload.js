@@ -307,6 +307,11 @@ class UserManager extends EventEmitter {
     return url;
   }
 
+  async screenCaptureManual() {
+    const result = await invokeApi('screenCaptureManual');
+    return result;
+  }
+
   async queryProducts() {
     const result = await invokeApi('queryProducts', this.userGuid);
     return result;
