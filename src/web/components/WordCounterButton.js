@@ -58,7 +58,9 @@ function WordCounterButton(props) {
     };
   }, []);
 
-  const words = result.nWords === undefined ? '-' : `${result.nWords}`;
+  //
+  const number = result.nAsianChars ? result.nWordsWithPunctuation : result.nWords;
+  const words = result.nWords === undefined ? '-' : `${number}`;
 
   return (
     <>
@@ -67,6 +69,7 @@ function WordCounterButton(props) {
           <div className={classes.tooltip}>
             <Typography variant="subtitle2" color="inherit"><FormattedMessage id="labelWordsCounter" /></Typography>
             <Typography variant="caption" color="inherit"><FormattedMessage id="labelWordsCount" values={{ value: result.nWords }} /></Typography>
+            <Typography variant="caption" color="inherit"><FormattedMessage id="labelWordsWithPunctuationCount" values={{ value: result.nWordsWithPunctuation }} /></Typography>
             <Typography variant="caption" color="inherit"><FormattedMessage id="labelAsianCount" values={{ value: result.nAsianChars }} /></Typography>
             <Typography variant="caption" color="inherit"><FormattedMessage id="labelCharsCount" values={{ value: result.nChars }} /></Typography>
             <Typography variant="caption" color="inherit"><FormattedMessage id="labelCharsWithSpaceCount" values={{ value: result.nCharsWithSpace }} /></Typography>

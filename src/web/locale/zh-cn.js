@@ -122,6 +122,7 @@ export default {
   buttonViewLog: '查看日志',
   labelWordsCounter: '字数统计',
   labelWordsCount: '字数: {value}',
+  labelWordsWithPunctuationCount: '字数（包含标点）: {value}',
   labelAsianCount: '中日韩字数: {value}',
   labelCharsCount: '字符: {value}',
   labelCharsWithSpaceCount: '字符（包含空白）: {value}',

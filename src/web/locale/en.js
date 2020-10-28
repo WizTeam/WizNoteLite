@@ -122,6 +122,7 @@ export default {
   buttonViewLog: 'View Log',
   labelWordsCounter: 'Words counter',
   labelWordsCount: 'Words: {value}',
+  labelWordsWithPunctuationCount: 'Words with punctuation: {value}',
   labelAsianCount: 'CJK Words: {value}',
   labelCharsCount: 'Chars: {value}',
   labelCharsWithSpaceCount: 'Characters with space: {value}',

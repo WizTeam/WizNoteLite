@@ -1,10 +1,14 @@
 const EventEmitter = require('events');
 const { remote, ipcRenderer } = require('electron');
 const platform = require('platform');
+const path = require('path');
+const URL = require('url');
 
 const { Menu, MenuItem } = remote;
 
-const wordCounterWorker = new Worker('./worker/word_counter.js');
+const wordCounterWorkerScriptPath = path.resolve(__dirname, 'worker/word_counter.worker.js');
+console.log('word counter worker path: ', wordCounterWorkerScriptPath);
+const wordCounterWorker = new Worker(URL.pathToFileURL(wordCounterWorkerScriptPath));
 console.log('start worker');
 wordCounterWorker.onmessage = (event) => {
   const data = event.data;
@@ -315,7 +319,7 @@ class UserManager extends EventEmitter {
   }
 
   async buildBindSnsUrl(server, type, postMessage, origin, extraParams) {
-    const path = '/as/thirdparty/go/auth';
+    const urlPath = '/as/thirdparty/go/auth';
     const query = {
       type,
       state: '',
@@ -326,7 +330,7 @@ class UserManager extends EventEmitter {
     };
 
     const params = Object.keys(query).map((key) => `${key}=${query[key]}`).join('&');
-    const url = `${server}${path}?${params}`;
+    const url = `${server}${urlPath}?${params}`;
 
     return url;
   }

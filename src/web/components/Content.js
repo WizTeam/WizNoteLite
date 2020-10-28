@@ -70,6 +70,7 @@ const styles = (theme) => ({
       color: theme.custom.color.contentToolIconHover,
     },
     pointerEvents: 'all',
+    marginBottom: 8,
   },
   emptyBlock: {
     flex: 1,
