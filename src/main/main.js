@@ -1,7 +1,7 @@
 require('./wrapper');
 const {
   app, BrowserWindow, nativeTheme,
-  shell, Menu, nativeImage,
+  shell, Menu, nativeImage, protocol,
 } = require('electron');
 const path = require('path');
 const url = require('url');
@@ -20,6 +20,7 @@ const electronVersion = process.versions.electron;
 console.log(`electron version: ${electronVersion}`);
 
 const isMac = process.platform === 'darwin';
+const isDevelopment = !!process.env.ELECTRON_START_URL;
 
 app.on('ready', async () => {
   sdk.i18nInit(i18nResources);
@@ -35,6 +36,14 @@ app.on('ready', async () => {
     registerWizProtocol();
   } catch (err) {
     console.error(err);
+  }
+  //
+  if (isDevelopment) {
+    // for web worker
+    protocol.registerFileProtocol('file', (request, callback) => {
+      const pathname = decodeURI(request.url.replace('file://', ''));
+      callback(pathname);
+    });
   }
 });
 
@@ -57,7 +66,9 @@ function createWindow() {
     backgroundColor: nativeTheme.shouldUseDarkColors ? '#101115' : '#fff',
     webPreferences: {
       nodeIntegration: false,
+      nodeIntegrationInWorker: true,
       preload: path.join(__dirname, '../web/preload.js'),
+      webSecurity: !isDevelopment,
     },
     icon: nativeImage.createFromPath(path.join(__dirname, '../icons/wiznote.icns')),
   };

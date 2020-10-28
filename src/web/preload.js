@@ -1,8 +1,30 @@
 const EventEmitter = require('events');
 const { remote, ipcRenderer } = require('electron');
 const platform = require('platform');
+const path = require('path');
+const URL = require('url');
 
 const { Menu, MenuItem } = remote;
+
+const wordCounterWorkerScriptPath = path.resolve(__dirname, 'worker/word_counter.worker.js');
+console.log('word counter worker path: ', wordCounterWorkerScriptPath);
+const wordCounterWorker = new Worker(URL.pathToFileURL(wordCounterWorkerScriptPath));
+console.log('start worker');
+wordCounterWorker.onmessage = (event) => {
+  const data = event.data;
+  try {
+    const result = JSON.parse(data);
+    console.log(result);
+    window.wizApi.userManager.emit('wordCounter', result);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+function wordCounter(dataObject) {
+  const data = JSON.stringify(dataObject);
+  wordCounterWorker.postMessage(data);
+}
 
 async function invokeApi(name, ...args) {
   const ret = await ipcRenderer.invoke(name, ...args);
@@ -173,11 +195,17 @@ class UserManager extends EventEmitter {
 
   async getNoteMarkdown(kbGuid, noteGuid) {
     const markdown = await invokeApi('getNoteMarkdown', this.userGuid, kbGuid, noteGuid);
+    wordCounter({
+      kbGuid, noteGuid, markdown,
+    });
     return markdown;
   }
 
   async setNoteMarkdown(kbGuid, noteGuid, markdown) {
     const result = await invokeApi('setNoteMarkdown', this.userGuid, kbGuid, noteGuid, markdown);
+    wordCounter({
+      kbGuid, noteGuid, markdown,
+    });
     return result;
   }
 
@@ -291,7 +319,7 @@ class UserManager extends EventEmitter {
   }
 
   async buildBindSnsUrl(server, type, postMessage, origin, extraParams) {
-    const path = '/as/thirdparty/go/auth';
+    const urlPath = '/as/thirdparty/go/auth';
     const query = {
       type,
       state: '',
@@ -302,7 +330,7 @@ class UserManager extends EventEmitter {
     };
 
     const params = Object.keys(query).map((key) => `${key}=${query[key]}`).join('&');
-    const url = `${server}${path}?${params}`;
+    const url = `${server}${urlPath}?${params}`;
 
     return url;
   }

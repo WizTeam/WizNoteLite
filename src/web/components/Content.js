@@ -15,6 +15,7 @@ import Icons from '../config/icons';
 // import FocusBtn from './FocusBtn';
 import SyncButton from './SyncButton';
 import Scrollbar from './Scrollbar';
+import WordCounterButton from './WordCounterButton';
 import EditorContents from './editor/markdown/EditorContents';
 
 const styles = (theme) => ({
@@ -69,6 +70,7 @@ const styles = (theme) => ({
       color: theme.custom.color.contentToolIconHover,
     },
     pointerEvents: 'all',
+    marginBottom: 8,
   },
   emptyBlock: {
     flex: 1,
@@ -262,6 +264,13 @@ class Content extends React.Component {
             <Icons.ExportIcon className={classes.icon} />
           </IconButton>
           <div className={classes.emptyBlock} />
+          <WordCounterButton
+            className={classes.iconButton}
+            iconClassName={classes.icon}
+            onCreateAccount={this.props.onCreateAccount}
+            kbGuid={kbGuid}
+            note={note}
+          />
           <SyncButton
             className={classes.iconButton}
             iconClassName={classes.icon}
