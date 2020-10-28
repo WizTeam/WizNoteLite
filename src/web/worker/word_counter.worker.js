@@ -112,11 +112,9 @@ function wordCounter(dataObject) {
 
 onmessage = (event) => {
   try {
-    console.log('onmessage');
     const result = wordCounter(JSON.parse(event.data));
     postMessage(JSON.stringify(result));
   } catch (err) {
-    console.log(event.data);
     postMessage(JSON.stringify({
       error: {
         code: err.code,

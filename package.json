@@ -78,6 +78,7 @@
       "!Procfile",
       "!README.md",
       "!src/web/*",
+      "src/web/worker/*",
       "src/web/preload.js"
     ],
     "win": {

@@ -14,7 +14,6 @@ wordCounterWorker.onmessage = (event) => {
   const data = event.data;
   try {
     const result = JSON.parse(data);
-    console.log(result);
     window.wizApi.userManager.emit('wordCounter', result);
   } catch (err) {
     console.error(err);
