@@ -42,11 +42,16 @@ const HtmlTooltip = withStyles((theme) => ({
   },
 }))(Tooltip);
 
+//
+// 显示大纲的时候会，WordCounterButton会被unmount，导致下次显示的时候状态丢失。
+let oldResult = {};
+
 function WordCounterButton(props) {
   const classes = useStyles();
-  const [result, setResult] = useState({});
+  const [countResult, setResult] = useState(null);
 
   function handleWordCounterResult(wordCounterResult) {
+    oldResult = wordCounterResult;
     setResult(wordCounterResult);
   }
 
@@ -59,6 +64,7 @@ function WordCounterButton(props) {
   }, []);
 
   //
+  const result = countResult || oldResult;
   const number = result.nAsianChars ? result.nWordsWithPunctuation : result.nWords;
   const words = result.nWords === undefined ? '-' : `${number}`;
 
