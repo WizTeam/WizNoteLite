@@ -1,5 +1,6 @@
 const {
   ipcMain, BrowserWindow,
+  // clipboard,
   dialog,
   shell,
   app,
@@ -11,6 +12,7 @@ const PImage = require('pureimage');
 const log = require('electron-log');
 const sdk = require('wiznote-sdk-js');
 const { WizKnownError } = require('wiznote-sdk-js-share/lib/error');
+const { exec } = require('child_process');
 
 const inAppPurchase = require('./inapp/in_app_purchase');
 
@@ -67,7 +69,6 @@ handleApi('onlineLogin', async (event, ...args) => {
   //
   return user;
 });
-
 
 handleApi('localLogin', async (event, ...args) => {
   const user = await sdk.localLogin(...args);
@@ -155,7 +156,6 @@ handleApi('addImageFromData', async (event, ...args) => {
   return result;
 });
 
-
 handleApi('addImageFromUrl', async (event, ...args) => {
   const result = await sdk.addImageFromUrl(...args);
   return result;
@@ -174,7 +174,6 @@ ipcMain.on('getUserSettingsSync', (event, userGuid, key, defaultValue) => {
   // eslint-disable-next-line no-param-reassign
   event.returnValue = result;
 });
-
 
 handleApi('getAllTags', async (event, ...args) => {
   const result = await sdk.getAllTags(...args);
@@ -368,7 +367,6 @@ handleApi('captureScreen', async (event, userGuid, kbGuid, noteGuid, options = {
   });
 });
 
-
 handleApi('printToPDF', async (event, userGuid, kbGuid, noteGuid, options = {}) => {
   //
   const senderWebContents = event.sender;
@@ -558,6 +556,25 @@ handleApi('getThemeCssString', async (event, theme = '') => {
     return css;
   }
   return '';
+});
+
+handleApi('screenCaptureManual', async (event) => {
+  if (process.platform === 'darwin') {
+    // Use macOs `screencapture` command line when in macOs system.
+    exec('screencapture -i -c', async (err) => {
+      if (err) {
+        log.error(err);
+        // return;
+      }
+      // do nothing...
+      // try {
+      //   const image = clipboard.readImage();
+      //   const bufferImage = image.toPNG();
+      // } catch (err) {
+      //   log.error(err);
+      // }
+    });
+  }
 });
 
 handleApi('queryProducts', inAppPurchase.queryProducts);

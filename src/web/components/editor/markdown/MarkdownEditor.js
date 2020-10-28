@@ -85,6 +85,9 @@ class MarkdownEditorComponent extends React.PureComponent {
       //
       this.getAllTags();
     },
+    handleScreenCaptureManual: () => {
+      window.wizApi.userManager.screenCaptureManual();
+    },
     handleOnChange: debounce(({ toc }) => {
       const list = toc.map((item) => ({
         ...item,
@@ -284,6 +287,7 @@ class MarkdownEditorComponent extends React.PureComponent {
           onThemeChange={(fn) => {
             this._onThemeChange = fn;
           }}
+          onScreenCaptureManual={this.handler.handleScreenCaptureManual}
           onInsertImageFromData={this.handler.handleInsertImagesFromData}
         />
         <TableMenu
