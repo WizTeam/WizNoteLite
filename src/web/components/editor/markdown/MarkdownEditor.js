@@ -4,7 +4,6 @@ import classNames from 'classnames';
 import { withStyles, withTheme } from '@material-ui/core/styles';
 import { MarkdownEditor } from 'wiz-react-markdown-editor/dist';
 import debounce from 'lodash/debounce';
-// import VditorEditor from './VditorEditor';
 import TableMenu from './TableMenu';
 import { getTagSpanFromRange } from '../libs/dom_utils';
 import './lite.scss';
@@ -60,11 +59,6 @@ class MarkdownEditorComponent extends React.PureComponent {
       }
       const { kbGuid, note } = this.props;
       const f = file;
-      // fileList.forEach(async (file) => {
-      //   const fileUrl = await window.wizApi.userManager.addImageFromData(kbGuid,
-      //     note.guid, file);
-      //   this.editor.insertValue(`![image](${fileUrl})`);
-      // });
       const fileUrl = await window.wizApi.userManager.addImageFromData(kbGuid, note.guid, f);
       return {
         path: fileUrl,
@@ -87,6 +81,13 @@ class MarkdownEditorComponent extends React.PureComponent {
     },
     handleScreenCaptureManual: () => {
       window.wizApi.userManager.screenCaptureManual();
+    },
+    handleImageAction: async (path) => {
+      if (typeof path !== 'string') {
+        const result = await this.handler.handleInsertImagesFromData(path);
+        return result.path;
+      }
+      return path;
     },
     handleOnChange: debounce(({ toc }) => {
       const list = toc.map((item) => ({
@@ -260,20 +261,6 @@ class MarkdownEditorComponent extends React.PureComponent {
     //
     return (
       <div className={classNames(classes.root, !note && classes.invisible)}>
-        {/* <WizReactMarkdownEditor
-          disabled={!note}
-          markdown={this.oldMarkdown}
-          isMac={window.wizApi.platform.isMac}
-          contentId={note ? note.guid : 'empty'}
-          resourceUrl={this.resourceUrl}
-          theme={theme.palette.type}
-          onSave={this.handler.handleNoteModified}
-          onInsertImage={this.handler.handleInsertImages}
-          onInsertImageFromData={this.handler.handleInsertImagesFromData}
-          tagList={tagList}
-          autoSelectTitle={note && new Date().getTime() - note.created <= 10 * 1000}
-          onUpdateContentsList={this.props.onUpdateContentsList}
-        /> */}
         <MarkdownEditor
           ref={this.editor}
           wordList={wordList}
@@ -288,7 +275,7 @@ class MarkdownEditorComponent extends React.PureComponent {
             this._onThemeChange = fn;
           }}
           onScreenCaptureManual={this.handler.handleScreenCaptureManual}
-          onInsertImageFromData={this.handler.handleInsertImagesFromData}
+          onImageAction={this.handler.handleImageAction}
         />
         <TableMenu
           editor={this.editor}
