@@ -108,5 +108,5 @@ div[id^='ag-editor-id'] {
 }
 
 div.ag-show-quick-insert-hint p.ag-paragraph.ag-active > span.ag-paragraph-content:first-of-type:empty::after {
-  content: '+ to inster';
+  content: 'input + to insert';
 }
