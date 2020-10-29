@@ -6,23 +6,30 @@ const URL = require('url');
 
 const { Menu, MenuItem } = remote;
 
-const wordCounterWorkerScriptPath = path.resolve(__dirname, 'worker/word_counter.worker.js');
-console.log('word counter worker path: ', wordCounterWorkerScriptPath);
-const wordCounterWorker = new Worker(URL.pathToFileURL(wordCounterWorkerScriptPath));
-console.log('start worker');
-wordCounterWorker.onmessage = (event) => {
-  const data = event.data;
-  try {
-    const result = JSON.parse(data);
-    window.wizApi.userManager.emit('wordCounter', result);
-  } catch (err) {
-    console.error(err);
-  }
-};
+const isMainWindow = remote.getCurrentWindow().isMainWindow;
+console.log('isMainWindow: ', isMainWindow);
 
-function wordCounter(dataObject) {
-  const data = JSON.stringify(dataObject);
-  wordCounterWorker.postMessage(data);
+let wordCounter = () => {};
+
+if (isMainWindow) {
+  const wordCounterWorkerScriptPath = path.resolve(__dirname, 'worker/word_counter.worker.js');
+  console.log('word counter worker path: ', wordCounterWorkerScriptPath);
+  const wordCounterWorker = new Worker(URL.pathToFileURL(wordCounterWorkerScriptPath));
+  console.log('start worker');
+  wordCounterWorker.onmessage = (event) => {
+    const data = event.data;
+    try {
+      const result = JSON.parse(data);
+      window.wizApi.userManager.emit('wordCounter', result);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  wordCounter = (dataObject) => {
+    const data = JSON.stringify(dataObject);
+    wordCounterWorker.postMessage(data);
+  };
 }
 
 async function invokeApi(name, ...args) {
