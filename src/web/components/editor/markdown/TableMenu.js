@@ -300,9 +300,11 @@ function TableMenu(props) {
           props.editor.current.updateCursor({
             start: {
               key: updateKey,
+              offset: 0,
             },
             end: {
               key: updateKey,
+              offset: 0,
             },
           });
           //
