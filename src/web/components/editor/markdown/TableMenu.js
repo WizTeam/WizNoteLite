@@ -231,14 +231,10 @@ function TableMenu(props) {
         props.editor.current.removeTable();
         break;
       case 'CpHtml':
-        const ele = filterParentElement(
-          e.target, props.editor.current.editor,
-          (dom) => dom.tagName.toLocaleLowerCase() === 'table',
-        );
         if (tableElement) {
           const copyHandler = (event) => {
             event.preventDefault();
-            event.clipboardData.setData('text/plain', getTableMd());
+            event.clipboardData.setData('text/plain', tableElement.outerHTML);
             event.clipboardData.setData('text/html', tableElement.outerHTML);
           };
           document.addEventListener('copy', copyHandler);
