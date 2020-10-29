@@ -173,7 +173,9 @@ class Content extends React.Component {
     },
     handleContentsNodeClick: (item) => {
       const element = document.querySelector(`#${item.key}`);
-      element.scrollIntoView();
+      element.scrollIntoView({
+        behavior: 'smooth',
+      });
     },
     handleExportMarkdown: async () => {
       const { kbGuid, note } = this.props;
