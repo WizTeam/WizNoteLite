@@ -190,6 +190,7 @@ function TableMenu(props) {
     if (!props.editor) return;
     //
     setRangeByDomBeforeEnd(currentCellElement);
+    props.editor.current.resetCursor();
 
     switch (type) {
       case 'addRowAbove':
@@ -230,6 +231,10 @@ function TableMenu(props) {
         props.editor.current.removeTable();
         break;
       case 'CpHtml':
+        const ele = filterParentElement(
+          e.target, props.editor.current.editor,
+          (dom) => dom.tagName.toLocaleLowerCase() === 'table',
+        );
         if (tableElement) {
           const copyHandler = (event) => {
             event.preventDefault();
@@ -317,6 +322,7 @@ function TableMenu(props) {
             if (currentCellElementAlign !== align) {
               setAlign(currentCellElementAlign);
             }
+            props.editor.current.saveCursor();
             setMenuPosition({
               top: e.clientY,
               left: e.clientX,
