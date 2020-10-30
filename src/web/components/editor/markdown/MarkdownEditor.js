@@ -124,6 +124,7 @@ class MarkdownEditorComponent extends React.PureComponent {
     this.state = {
       note: null,
       wordList: [],
+      markdown: '',
     };
     this.oldMarkdown = '';
     this.editor = React.createRef();
@@ -229,7 +230,7 @@ class MarkdownEditorComponent extends React.PureComponent {
 
           // console.log(`loadNode ---------------${note.title}`);
           // console.log(markdown);
-          this.setState({ note });
+          this.setState({ note, markdown: this.oldMarkdown });
         } else {
           // console.log('note changed');
         }
@@ -255,6 +256,7 @@ class MarkdownEditorComponent extends React.PureComponent {
     const {
       note,
       wordList,
+      markdown,
     } = this.state;
     const { classes, scrollbar } = this.props;
     const scrollingElement = scrollbar?.container?.children[0];
@@ -264,7 +266,7 @@ class MarkdownEditorComponent extends React.PureComponent {
         <MarkdownEditor
           ref={this.editor}
           wordList={wordList}
-          markdown={this.oldMarkdown}
+          markdown={markdown}
           resourceUrl={this.resourceUrl}
           scrollingElement={scrollingElement}
           contentId={note ? note.guid : 'empty'}
