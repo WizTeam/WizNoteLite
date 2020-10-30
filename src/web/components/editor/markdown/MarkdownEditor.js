@@ -9,6 +9,8 @@ import { getTagSpanFromRange } from '../libs/dom_utils';
 import { getLocale } from '../../../utils/lang';
 import './lite.scss';
 
+const lang = getLocale().toLowerCase();
+
 const styles = (/* theme */) => ({
   root: {
     display: 'flex',
@@ -281,7 +283,7 @@ class MarkdownEditorComponent extends React.PureComponent {
           }}
           onScreenCaptureManual={this.handler.handleScreenCaptureManual}
           onImageAction={this.handler.handleImageAction}
-          lang={locale}
+          lang={lang}
         />
         <TableMenu
           editor={this.editor}
