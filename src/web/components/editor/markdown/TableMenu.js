@@ -256,7 +256,7 @@ function TableMenu(props) {
           break;
       }
       clickTimer = null;
-    }, 300);
+    }, 500);
     e.preventDefault();
     setMenuPosition(undefined);
     setSubMenuPos(null);
