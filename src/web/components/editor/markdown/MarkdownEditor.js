@@ -6,6 +6,7 @@ import { MarkdownEditor } from 'wiz-react-markdown-editor/dist';
 import debounce from 'lodash/debounce';
 import TableMenu from './TableMenu';
 import { getTagSpanFromRange } from '../libs/dom_utils';
+import { getLocale } from '../../../utils/lang';
 import './lite.scss';
 
 const styles = (/* theme */) => ({
@@ -18,6 +19,8 @@ const styles = (/* theme */) => ({
     display: 'none',
   },
 });
+
+const locale = getLocale().toLowerCase();
 
 class MarkdownEditorComponent extends React.PureComponent {
   handler = {
@@ -278,6 +281,7 @@ class MarkdownEditorComponent extends React.PureComponent {
           }}
           onScreenCaptureManual={this.handler.handleScreenCaptureManual}
           onImageAction={this.handler.handleImageAction}
+          lang={locale}
         />
         <TableMenu
           editor={this.editor}
