@@ -96,7 +96,7 @@ function createWindow() {
   const lang = sdk.getCurrentLang();
   mainWindow.loadURL(`${mainUrl}?lang=${lang}`);
 
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
 
   // Windows 10 延迟显示会导致 输入法窗口位置异常
   // if (!isMac) {
