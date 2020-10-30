@@ -103,6 +103,7 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
 
 let currentCellElement;
 let tableElement;
+let clickTimer;
 // 修复md表头分割线 | --- | --- | --- |   => | ----- | ----- | ----- |
 function fixTableMd(md) {
   const textArr = md.split('\n');
@@ -188,68 +189,74 @@ function TableMenu(props) {
 
   function clickHandler(type, e) {
     if (!props.editor) return;
-    //
-    setRangeByDomBeforeEnd(currentCellElement);
-    props.editor.current.resetCursor();
-
-    switch (type) {
-      case 'addRowAbove':
-        props.editor.current.insertRowAbove();
-        break;
-      case 'addRowBelow':
-        // dispatchKey('⌘-=');
-        props.editor.current.insertRowBelow();
-        break;
-      case 'addColBefore':
-        props.editor.current.insertColLeft();
-        break;
-      case 'addColAfter':
-        // dispatchKey('⌘-⇧-=');
-        props.editor.current.insertColRight();
-        break;
-      case 'alignLeft':
-        // dispatchKey('⌘-⇧-L');
-        props.editor.current.tableColAlignLeft();
-        break;
-      case 'alignCenter':
-        // dispatchKey('⌘-⇧-C');
-        props.editor.current.tableColAlignCenter();
-        break;
-      case 'alignRight':
-        // dispatchKey('⌘-⇧-R');
-        props.editor.current.tableColAlignRight();
-        break;
-      case 'deleteRow':
-        // dispatchKey('⌘--');
-        props.editor.current.removeTableRow();
-        break;
-      case 'deleteCol':
-        // dispatchKey('⌘-⇧--');
-        props.editor.current.removeTableCol();
-        break;
-      case 'deleteTable':
-        props.editor.current.removeTable();
-        break;
-      case 'CpHtml':
-        if (tableElement) {
-          const copyHandler = (event) => {
-            event.preventDefault();
-            event.clipboardData.setData('text/plain', tableElement.outerHTML);
-            event.clipboardData.setData('text/html', tableElement.outerHTML);
-          };
-          document.addEventListener('copy', copyHandler);
-          copy();
-          document.removeEventListener('copy', copyHandler);
-        }
-        break;
-      case 'CpMd':
-        if (props.editor && tableElement) {
-          copy(getTableMd());
-        }
-        break;
-      default:
-        break;
+    if (clickTimer) {
+      clearTimeout(clickTimer);
     }
+    clickTimer = setTimeout(() => {
+      //
+      setRangeByDomBeforeEnd(currentCellElement);
+      props.editor.current.resetCursor();
+
+      switch (type) {
+        case 'addRowAbove':
+          props.editor.current.insertRowAbove();
+          break;
+        case 'addRowBelow':
+          // dispatchKey('⌘-=');
+          props.editor.current.insertRowBelow();
+          break;
+        case 'addColBefore':
+          props.editor.current.insertColLeft();
+          break;
+        case 'addColAfter':
+          // dispatchKey('⌘-⇧-=');
+          props.editor.current.insertColRight();
+          break;
+        case 'alignLeft':
+          // dispatchKey('⌘-⇧-L');
+          props.editor.current.tableColAlignLeft();
+          break;
+        case 'alignCenter':
+          // dispatchKey('⌘-⇧-C');
+          props.editor.current.tableColAlignCenter();
+          break;
+        case 'alignRight':
+          // dispatchKey('⌘-⇧-R');
+          props.editor.current.tableColAlignRight();
+          break;
+        case 'deleteRow':
+          // dispatchKey('⌘--');
+          props.editor.current.removeTableRow();
+          break;
+        case 'deleteCol':
+          // dispatchKey('⌘-⇧--');
+          props.editor.current.removeTableCol();
+          break;
+        case 'deleteTable':
+          props.editor.current.removeTable();
+          break;
+        case 'CpHtml':
+          if (tableElement) {
+            const copyHandler = (event) => {
+              event.preventDefault();
+              event.clipboardData.setData('text/plain', tableElement.outerHTML);
+              event.clipboardData.setData('text/html', tableElement.outerHTML);
+            };
+            document.addEventListener('copy', copyHandler);
+            copy();
+            document.removeEventListener('copy', copyHandler);
+          }
+          break;
+        case 'CpMd':
+          if (props.editor && tableElement) {
+            copy(getTableMd());
+          }
+          break;
+        default:
+          break;
+      }
+      clickTimer = null;
+    }, 300);
     e.preventDefault();
     setMenuPosition(undefined);
     setSubMenuPos(null);
