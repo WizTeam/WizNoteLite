@@ -43,6 +43,7 @@ const styles = (theme) => ({
     display: 'none',
   },
   fixedItemToolBar: {
+    display: 'flex',
   },
   listItem: {
     minHeight: 82,

@@ -427,6 +427,14 @@ class NoteList extends React.Component {
         this.handler.handleDeleteNotes(kbGuid, notesGuid);
       }
     },
+
+    handleListenKeydown: (event) => {
+      const { isShowSearch } = this.state;
+      // ESC
+      if (event.keyCode === 27 && isShowSearch) {
+        this.handler.handleClearSearch();
+      }
+    },
   };
 
   constructor(props) {
@@ -449,6 +457,7 @@ class NoteList extends React.Component {
 
   componentDidMount() {
     this.initEvents();
+    window.addEventListener('keydown', this.handler.handleListenKeydown);
   }
 
 
@@ -465,6 +474,7 @@ class NoteList extends React.Component {
 
   componentWillUnmount() {
     this.removeEvents();
+    window.removeEventListener('keypress', this.handler.handleListenKeydown);
   }
 
   accept(note) {

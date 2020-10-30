@@ -6,7 +6,6 @@ import Tooltip from '@material-ui/core/Tooltip';
 //
 import Icons from '../config/icons';
 
-
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',

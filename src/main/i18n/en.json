@@ -1,5 +1,4 @@
 {
-  "messageNoAccount": "No account, please sign up or login",
   "menuShowAbout": "About WizNote Lite",
   "services": "Services",
   "hide": "Hide WizNote Lite",
@@ -45,8 +44,10 @@
   "errorDownloadReceipt": "Failed to download receipt: {{message}}",
   "errorVerifyPurchase": "Failed to verify purchase: {{message}}",
 
+  "errorCreateDir": "Failed to create directory: {{message}}. In you are using WizNote Lite on mac, please select Downloads folder.",
+  "errorCopyFile": "Failed to copy file: {{message}}",
+
   "fileFilterPNG": "PNG files (*.png)",
   "fileFilterPDF": "PDF files (*.pdf)",
-  "fileFilterMarkdown": "Markdown files (*.md)",
-  "errorConnect": "Can't connect to server: {{host}}, please check your network."
+  "fileFilterMarkdown": "Markdown files (*.md)"
 }

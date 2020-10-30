@@ -5,19 +5,26 @@ import WizVditor from 'wiz-vditor';
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import debounce from 'lodash/debounce';
+import { noteAnalysis } from 'wiznote-sdk-js-share';
+
 import InsertMenu from './InsertMenu';
 import HeadingMenu from './HeadingMenu';
 import 'wiz-vditor/dist/index.css';
 import './style.scss';
-import { REGEXP_TAG } from '../../../../share/note_analysis';
 import InsertTagMenu from './InsertTagMenu';
 import {
-  isCtrl, filterParentElement, hasClass, getDomIndexForParent,
+  isCtrl, filterParentElement, fixRangeScrollTop,
+  getCodeFromRange, getDomIndexForParent, getTableFromRange, hasClass,
 } from '../libs/dom_utils';
-import { getRange, getSelection, resetRange } from '../libs/range_utils';
+import {
+  getRange, getRangeRect, getSelection, resetRange, setRange,
+} from '../libs/range_utils';
+import PageScrollAni from '../libs/PageScrollAni';
 import TableMenu from './TableMenu';
 import TableToolbar from './TableToolbar';
 import ImageMenu from './ImageMenu';
+
+const { REGEXP_TAG } = noteAnalysis;
 
 const styles = (/* theme */) => ({
   hideBlockType: {
@@ -36,6 +43,8 @@ class VditorEditor extends React.Component {
   curContentId = null;
 
   resetValueTimer = null;
+
+  pageScrollAni = null;
 
   timeStamp = new Date().getTime();
 
@@ -68,9 +77,11 @@ class VditorEditor extends React.Component {
         this.editor.vditor.irUndo.redo(this.editor.vditor);
       }
       if (e.keyCode === 13) {
+        const rectLast = getRangeRect();
         // Enter
-        // Vditor 在行首 输入回车时，不会重新渲染 改行，导致 如果行首为 Tag ，会遗留 Tag 标签样式
+        // Vditor 在行首 输入回车时，不会重新渲染 该行，导致 如果行首为 Tag ，会遗留 Tag 标签样式
         setTimeout(() => {
+          fixRangeScrollTop(this.editor.vditor.element, this.pageScrollAni, rectLast);
           const range = getRange();
           const block = filterParentElement(range.startContainer,
             this.editor.vditor.element,
@@ -112,6 +123,9 @@ class VditorEditor extends React.Component {
 
       if (e.keyCode === 40 && !e.shiftKey) {
         this.patchDownKeyForChrome(e);
+        fixRangeScrollTop(this.editor.vditor.element, this.pageScrollAni);
+      } else if (e.keyCode === 38 && !e.shiftKey) {
+        fixRangeScrollTop(this.editor.vditor.element, this.pageScrollAni);
       }
     },
     handleSelectionChange: () => {
@@ -251,7 +265,8 @@ class VditorEditor extends React.Component {
       // content changed
       // console.log('setValue: ' + nextProps.value);
       this.resourceUrl = nextProps.resourceUrl;
-      // 编辑器 focus 操作，会导致 react 报错 'unstable_flushDiscreteUpdates: Cannot flush updates when React is already rendering.'
+      // 编辑器 focus 操作，会导致 react 报错:
+      // 'unstable_flushDiscreteUpdates: Cannot flush updates when React is already rendering.'
       // 使用 setTimeout 可以规避此问题
       window.clearTimeout(this.resetValueTimer);
       this.resetValueTimer = setTimeout(() => {
@@ -316,6 +331,7 @@ class VditorEditor extends React.Component {
       cdn,
       after: () => {
         const { onInit, disabled } = this.props;
+        this.pageScrollAni = new PageScrollAni(this.editor.vditor.element);
         if (onInit) {
           onInit(this.editor);
           if (this.waitNoteData) {
@@ -590,7 +606,7 @@ class VditorEditor extends React.Component {
     this.updateContentsList();
     setTimeout(() => {
       // this.setWordsNumber();
-      this.focusEnd();
+      this.focusStart();
     }, 100);
   }
 
@@ -611,20 +627,34 @@ class VditorEditor extends React.Component {
       && range.startOffset === 0;
   }
 
-  focusEnd() {
+  focusStart() {
     if (this.editor?.vditor.element) {
       const dom = this.editor.vditor.element.querySelector('.vditor-ir .vditor-reset');
       dom.focus();
       const selection = getSelection();
-      if (dom.childElementCount > 0 && dom.children[0].tagName.toLowerCase() === 'h1' && this.props.autoSelectTitle) {
+      const first = dom.firstChild;
+      if (!first) {
+        setRange(dom, 0);
+        return;
+      }
+
+      if (/^h1$/i.test(first.tagName) && this.props.autoSelectTitle) {
         const range = window.document.createRange();
-        range.selectNodeContents(dom.children[0].lastChild);
+        range.selectNodeContents(first.lastChild);
         selection.removeAllRanges();
         selection.addRange(range);
-      } else {
-        selection.selectAllChildren(dom);
-        selection.collapseToEnd();
+        this.editor.vditor.ir.expandMarker(getRange(), this.editor.vditor);
+        return;
       }
+
+      const isHeading = /^h[1-6]$/i.test(first.tagName);
+      const headingFirst = first.firstChild;
+      if (isHeading && headingFirst && /^span$/i.test(headingFirst.tagName)) {
+        setRange(headingFirst.nextSibling, 0);
+        this.editor.vditor.ir.expandMarker(getRange(), this.editor.vditor);
+        return;
+      }
+      setRange(headingFirst, 0);
     }
   }
 
@@ -632,12 +662,18 @@ class VditorEditor extends React.Component {
     // Down (Chrome Patch: 文字 后面跟着 img，img 被自动换行，这时候从该行前面的问题使用 下方向键，无法将光标移动到后面的段落)
     const sel = getSelection();
     let range = getRange();
-    if (filterParentElement(range.startContainer, this.editor.vditor.element, (dom) => dom.tagName.toLowerCase() === 'table')) {
+    if (event.nativeEvent.defaultPrevented || !range || !range.collapsed) {
+      // defaultPrevented = true 说明 Vditor 编辑器已经处理了键盘操作
+      return;
+    }
+    const isInCode = !!getCodeFromRange(this.editor.vditor.element);
+    const isInTable = !isInCode && !!getTableFromRange(this.editor.vditor.element);
+    if (isInCode || isInTable) {
       return;
     }
     try {
       sel.modify('move', 'forward', 'line');
-      const rangeNew = getRange;
+      const rangeNew = getRange();
       if (range.startContainer === rangeNew.startContainer
         && range.startOffset === rangeNew.startOffset) {
         let target = rangeNew.startContainer;

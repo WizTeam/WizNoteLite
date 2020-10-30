@@ -10,6 +10,19 @@ export function getRange() {
   return sel.getRangeAt(0);
 }
 
+export function getRangeRect() {
+  const range = getRange();
+  let rect = range.getBoundingClientRect();
+  if (rect.y === 0 && rect.x === 0) {
+    let target = range.startContainer;
+    if (target.noteType === 3) {
+      target = target.parentNode;
+    }
+    rect = target.getBoundingClientRect();
+  }
+  return rect;
+}
+
 export function getEndOffset(dom) {
   if (!dom) {
     return 0;

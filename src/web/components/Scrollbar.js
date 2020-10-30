@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { Scrollbars } from 'react-custom-scrollbars';
+import { getScrollbarWidthHorizontal } from '../utils/utils';
 
 const Scrollbar = React.forwardRef((props, ref) => {
   const {
@@ -18,6 +19,8 @@ const Scrollbar = React.forwardRef((props, ref) => {
   } = props;
 
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+
+  const _ref = React.useRef();
 
   let isDark;
   if (themeType === 'auto') {
@@ -44,6 +47,16 @@ const Scrollbar = React.forwardRef((props, ref) => {
   //
   const thumbRenderer = (isDark || hideThumb) ? renderThumbVertical : undefined;
   //
+  React.useEffect(() => {
+    // fix: Scrollbars 两条轨道的宽度有可能不一样
+    const getRef = ref || _ref;
+    if (getRef && getRef.current) {
+      const container = getRef.current.container;
+      const inner = container.firstChild;
+      inner.style['margin-bottom'] = `-${getScrollbarWidthHorizontal()}px`;
+    }
+  }, []);
+  //
   return (
     <Scrollbars
       hideTracksWhenNotNeeded={hideTracksWhenNotNeeded}
@@ -52,7 +65,7 @@ const Scrollbar = React.forwardRef((props, ref) => {
       renderThumbVertical={thumbRenderer}
       renderThumbHorizontal={renderThumbVertical}
       {...others}
-      ref={ref}
+      ref={ref || _ref}
     >
       {children}
     </Scrollbars>

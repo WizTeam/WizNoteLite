@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { withStyles, withTheme } from '@material-ui/core/styles';
 import { injectIntl } from 'react-intl';
-import VditorEditor from '../components/editor/markdown/VditorEditor';
+import { MarkdownEditor } from 'wiz-react-markdown-editor/dist';
 import Scrollbar from '../components/Scrollbar';
+import { injectionCssFormId } from '../utils/utils';
 import Icons from '../config/icons';
 //
 
@@ -45,11 +46,10 @@ const styles = (theme) => ({
   },
 });
 
+const OverwriteTableStyle = React.lazy(() => import('../components/OverwriteTableStyle'));
+
 class NoteViewer extends React.Component {
   handler = {
-    handleInitEditor: (editor) => {
-      this._editor = editor;
-    },
   }
 
   constructor(props) {
@@ -59,6 +59,7 @@ class NoteViewer extends React.Component {
       resourceUrl: '',
       loading: true,
     };
+    this._scrollBarRef = React.createRef();
   }
 
   async componentDidMount() {
@@ -70,6 +71,7 @@ class NoteViewer extends React.Component {
     const userGuid = window.wizApi?.userManager?.userGuid || '';
     const resourceUrl = `wiz://${userGuid}/${kbGuid}/${noteGuid}`;
 
+    await this.checkTheme();
     const markdown = await window.wizApi.userManager.getNoteMarkdown(kbGuid, noteGuid);
     this.setState({
       markdown,
@@ -80,6 +82,12 @@ class NoteViewer extends React.Component {
     this._loadTimer = setInterval(() => {
       this.waitForLoad();
     }, 1000 * 3);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.darkMode !== this.props.darkMode) {
+      this.checkTheme();
+    }
   }
 
   componentWillUnmount() {
@@ -108,10 +116,27 @@ class NoteViewer extends React.Component {
     });
   }
 
+  async checkTheme() {
+    const { params } = this.props;
+    //
+    if (params.theme) {
+      const id = 'wiz-note-content-root';
+      const css = await window.wizApi.userManager.getThemeCssString(params.theme);
+      injectionCssFormId(id, css);
+    }
+
+    if (this.props.darkMode !== undefined) {
+      const id = 'wiz-note-content-root';
+      const theme = this.props.darkMode ? 'dark' : 'lite';
+      const css = await window.wizApi.userManager.getThemeCssString(theme);
+      injectionCssFormId(id, css);
+    }
+  }
+
   render() {
     const {
       classes, theme,
-      noteGuid,
+      noteGuid, showTableInline,
       params,
     } = this.props;
     //
@@ -120,8 +145,8 @@ class NoteViewer extends React.Component {
       darkMode = theme.palette.type === 'dark';
     }
     //
-    const resetBackground = darkMode !== undefined;
-    const backgroundClass = darkMode ? classes.root_dark : classes.root_lite;
+    // const resetBackground = darkMode !== undefined;
+    // const backgroundClass = darkMode ? classes.root_dark : classes.root_lite;
     const footerClass = darkMode ? classes.footer_dark : classes.footer_lite;
 
     const { loading, markdown, resourceUrl } = this.state;
@@ -140,23 +165,13 @@ class NoteViewer extends React.Component {
           this._rootElem = node;
         }}
         style={style}
-        className={classNames(resetBackground && backgroundClass)}
+        // className={classNames(resetBackground && backgroundClass)}
       >
-        <VditorEditor
-          value={markdown}
-          disabled
-          isMac={window.wizApi.platform.isMac}
-          contentId={loading ? '' : noteGuid}
-          onInit={this.handler.handleInitEditor}
-          onInput={() => {}}
+        <MarkdownEditor
+          readOnly
+          markdown={markdown}
+          contentId={loading ? 'empty' : noteGuid}
           resourceUrl={resourceUrl}
-          darkMode={darkMode}
-          onSave={() => {}}
-          onInsertImage={() => {}}
-          onInsertImageFromData={() => {}}
-          tagList={{}}
-          autoSelectTitle={false}
-          hideBlockType
         />
         {params.showFooter === '1' && (
           <div className={classNames(classes.footer, footerClass)}>
@@ -167,7 +182,11 @@ class NoteViewer extends React.Component {
     );
 
     const contentEditorWithScrollBar = (
-      <Scrollbar hideThumb={params.hideThumb === '1'} theme={theme}>
+      <Scrollbar
+        ref={this._scrollBarRef}
+        hideThumb={params.hideThumb === '1'}
+        theme={theme}
+      >
         {contentEditor}
       </Scrollbar>
     );
@@ -183,6 +202,9 @@ class NoteViewer extends React.Component {
         )}
       >
         {contentMain}
+        <Suspense fallback={<></>}>
+          {showTableInline && <OverwriteTableStyle />}
+        </Suspense>
       </div>
     );
   }
@@ -195,11 +217,13 @@ NoteViewer.propTypes = {
   noteGuid: PropTypes.string.isRequired,
   params: PropTypes.object,
   darkMode: PropTypes.bool,
+  showTableInline: PropTypes.bool,
 };
 
 NoteViewer.defaultProps = {
   params: {},
   darkMode: undefined,
+  showTableInline: false,
 };
 
 export default withTheme(withStyles(styles)(injectIntl(NoteViewer)));

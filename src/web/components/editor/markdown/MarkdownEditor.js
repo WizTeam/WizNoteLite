@@ -2,8 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { withStyles, withTheme } from '@material-ui/core/styles';
-import VditorEditor from './VditorEditor';
-import { getTagSpan } from '../libs/dom_utils';
+import { MarkdownEditor } from 'wiz-react-markdown-editor/dist';
+import debounce from 'lodash/debounce';
+import TableMenu from './TableMenu';
+import { getTagSpanFromRange } from '../libs/dom_utils';
+import './lite.scss';
 
 const styles = (/* theme */) => ({
   root: {
@@ -16,42 +19,51 @@ const styles = (/* theme */) => ({
   },
 });
 
-class MarkdownEditor extends React.Component {
+class MarkdownEditorComponent extends React.PureComponent {
   handler = {
     handleClickEditor: (e) => {
       const target = e.target;
-      const tagSpan = getTagSpan(this.editor.vditor.element, target);
+      const tagSpan = getTagSpanFromRange(this.editor.current.editor, target);
       if (tagSpan) {
         this.props.onClickTag(tagSpan.textContent);
       }
     },
-    handleNoteModified: () => {
-      this.saveNote();
+    handleNoteModified: ({ contentId, markdown }) => {
+      this.saveNote(contentId, markdown);
     },
-    handleInsertImages: async (successCb) => {
-      if (!this.editor) {
-        return;
+    handleSelectImages: async () => {
+      if (!this.editor.current) {
+        return null;
       }
       const { kbGuid, note } = this.props;
       const files = await this.props.onSelectImages(kbGuid, note.guid);
-      if (files.length && successCb) {
-        successCb();
-      }
-      files.forEach((src) => {
-        this.editor.insertValue(`![image](${src})`);
-      });
+      //
+      return files.pop();
     },
-    handleInsertImagesFromData: async (fileList) => {
-      if (!this.editor) {
-        return;
+    // handleInsertImages: async (successCb) => {
+    //   if (!this.editor) {
+    //     return;
+    //   }
+    //   const { kbGuid, note } = this.props;
+    //   const files = await this.props.onSelectImages(kbGuid, note.guid);
+    //   if (files.length && successCb) {
+    //     successCb();
+    //   }
+    //   files.forEach((src) => {
+    //     this.editor.insertValue(`![image](${src})`);
+    //   });
+    // },
+    handleInsertImagesFromData: async (file) => {
+      if (!this.editor.current) {
+        return null;
       }
       const { kbGuid, note } = this.props;
-      fileList.forEach(async (file) => {
-        const fileUrl = await window.wizApi.userManager.addImageFromData(kbGuid,
-          note.guid, file);
-        // console.log(fileUrl);
-        this.editor.insertValue(`![image](${fileUrl})`);
-      });
+      const f = file;
+      const fileUrl = await window.wizApi.userManager.addImageFromData(kbGuid, note.guid, f);
+      return {
+        path: fileUrl,
+        name: file.name,
+      };
     },
     handleTagsChanged: async (kbGuid) => {
       if (kbGuid !== this.props.kbGuid) {
@@ -67,16 +79,56 @@ class MarkdownEditor extends React.Component {
       //
       this.getAllTags();
     },
+    handleScreenCaptureManual: () => {
+      window.wizApi.userManager.screenCaptureManual();
+    },
+    handleImageAction: async (path) => {
+      if (typeof path !== 'string') {
+        const result = await this.handler.handleInsertImagesFromData(path);
+        return result.path;
+      }
+      return path;
+    },
+    handleOnChange: debounce(({ toc }) => {
+      const list = toc.map((item) => ({
+        ...item,
+        title: item.content,
+        key: item.slug,
+        children: [],
+        open: true,
+      }));
+
+      const result = [];
+      const parent = new Map();
+      let last = null;
+
+      parent.set(last, { lvl: 0, children: result });
+
+      list.forEach((item) => {
+        while (!last || item.lvl <= last.lvl) {
+          last = parent.get(last);
+        }
+        last.children.push(item);
+        parent.set(item, last);
+        last = item;
+      });
+
+      if (this.props.onUpdateContentsList) {
+        this.props.onUpdateContentsList(result);
+      }
+    }, 300),
   }
 
   constructor(props) {
     super(props);
     this.state = {
       note: null,
-      tagList: {},
+      wordList: [],
+      markdown: '',
     };
-    this.editor = null;
     this.oldMarkdown = '';
+    this.editor = React.createRef();
+    this._onThemeChange = null;
   }
 
   //
@@ -85,22 +137,34 @@ class MarkdownEditor extends React.Component {
     window.wizApi.userManager.on('tagRenamed', this.handler.handleTagRenamed);
     this.getAllTags();
     await this.loadNote();
+    if (this.editor.current) {
+      const editor = this.editor.current.editor;
+      editor.addEventListener('click', this.handler.handleClickEditor);
+    }
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     const { note: currentNote } = this.state;
     const { note: propsNote } = this.props;
     if (propsNote?.guid !== currentNote?.guid) {
       // note changed
       this.saveAndLoadNote();
     }
+    if (prevProps.theme.palette.type !== this.props.theme.palette.type) {
+      if (this._onThemeChange) {
+        this._onThemeChange({
+          matches: this.props.theme.palette.type === 'dark',
+        });
+      }
+    }
   }
 
   componentWillUnmount() {
     window.wizApi.userManager.off('tagsChanged', this.handler.handleTagsChanged);
     window.wizApi.userManager.off('tagRenamed', this.handler.handleTagRenamed);
-    if (this.editor) {
-      this.editor.vditor.element.removeEventListener('click', this.handler.handleClickEditor);
+    if (this.editor.current) {
+      const editor = this.editor.current.editor;
+      editor.removeEventListener('click', this.handler.handleClickEditor);
     }
   }
 
@@ -118,37 +182,39 @@ class MarkdownEditor extends React.Component {
   async getAllTags() {
     const { kbGuid } = this.props;
     const tagList = await window.wizApi.userManager.getAllTags(kbGuid);
-    // console.log(tagList);
-    this.setState({ tagList });
+    const wordList = [];
+    this.convertToTreeData(wordList, tagList);
+    this.setState({ wordList });
   }
 
-  initEditor = (editor) => {
-    this.editor = editor;
-    this.editor.vditor.element.addEventListener('click', this.handler.handleClickEditor);
+  convertToTreeData(list, data, path) {
+    try {
+      for (const tag in data) {
+        if (tag === 'wizName' || tag === 'wizFull') continue;
+        if (data[tag]) {
+          const name = path ? `${path}/${data[tag].wizName}` : data[tag].wizName;
+          list.push(name);
+          this.convertToTreeData(list, data[tag], name);
+        }
+      }
+    } catch (e) {
+      console.log(e);
+    }
   }
 
-  async saveNote() {
+  async saveNote(contentId, markdown) {
     const { note } = this.state;
-    if (!this.editor || !note) {
+    if (!this.editor.current || !note || contentId !== note.guid) {
       return;
     }
     const { kbGuid } = this.props;
     //
-    const contentId = this.editor.contentId;
-    if (contentId !== note.guid) {
-      // 校验 editor 为当前笔记时，才能保存
-      return;
-    }
-
-    let markdown = this.editor.getValue();
     const wizPathReg = new RegExp(this.resourceUrl, 'ig');
+    // eslint-disable-next-line no-param-reassign
     markdown = markdown.replace(wizPathReg, 'index_files');
     if (markdown !== this.oldMarkdown) {
       this.oldMarkdown = markdown;
-      // console.log(`saveNode -----------------${note.title}`);
-      // console.log(markdown);
       await this.props.onSaveNote(kbGuid, note.guid, markdown);
-      // await window.wizApi.userManager.setNoteMarkdown(kbGuid, note.guid, markdown);
     }
   }
 
@@ -164,7 +230,7 @@ class MarkdownEditor extends React.Component {
 
           // console.log(`loadNode ---------------${note.title}`);
           // console.log(markdown);
-          this.setState({ note });
+          this.setState({ note, markdown: this.oldMarkdown });
         } else {
           // console.log('note changed');
         }
@@ -187,48 +253,60 @@ class MarkdownEditor extends React.Component {
 
   render() {
     //
-    const { note, tagList } = this.state;
-    const { classes, theme } = this.props;
+    const {
+      note,
+      wordList,
+      markdown,
+    } = this.state;
+    const { classes, scrollbar } = this.props;
+    const scrollingElement = scrollbar?.container?.children[0];
     //
     return (
       <div className={classNames(classes.root, !note && classes.invisible)}>
-        <VditorEditor
-          disabled={!note}
-          value={this.oldMarkdown}
-          isMac={window.wizApi.platform.isMac}
-          contentId={note ? note.guid : 'empty'}
-          onInit={this.initEditor}
-          onInput={this.handler.handleNoteModified}
+        <MarkdownEditor
+          ref={this.editor}
+          wordList={wordList}
+          markdown={markdown}
           resourceUrl={this.resourceUrl}
-          darkMode={theme.palette.type === 'dark'}
+          scrollingElement={scrollingElement}
+          contentId={note ? note.guid : 'empty'}
+          onChange={this.handler.handleOnChange}
           onSave={this.handler.handleNoteModified}
-          onInsertImage={this.handler.handleInsertImages}
-          onInsertImageFromData={this.handler.handleInsertImagesFromData}
-          tagList={tagList}
-          autoSelectTitle={note && new Date().getTime() - note.created <= 10 * 1000}
-          onUpdateContentsList={this.props.onUpdateContentsList}
+          onSelectImages={this.handler.handleSelectImages}
+          onThemeChange={(fn) => {
+            this._onThemeChange = fn;
+          }}
+          onScreenCaptureManual={this.handler.handleScreenCaptureManual}
+          onImageAction={this.handler.handleImageAction}
+        />
+        <TableMenu
+          editor={this.editor}
+          onSaveNote={() => {}}
         />
       </div>
     );
   }
 }
 
-MarkdownEditor.propTypes = {
+MarkdownEditorComponent.propTypes = {
   classes: PropTypes.object.isRequired,
   note: PropTypes.object,
   kbGuid: PropTypes.string,
-  theme: PropTypes.object.isRequired,
+  // theme: PropTypes.object.isRequired,
   onLoadNote: PropTypes.func.isRequired,
   onSaveNote: PropTypes.func.isRequired,
   onSelectImages: PropTypes.func.isRequired,
   onClickTag: PropTypes.func.isRequired,
   onUpdateContentsList: PropTypes.func,
+  scrollbar: PropTypes.object,
+  theme: PropTypes.object.isRequired,
 };
 
-MarkdownEditor.defaultProps = {
+MarkdownEditorComponent.defaultProps = {
   note: null,
   kbGuid: null,
   onUpdateContentsList: null,
+  scrollbar: null,
 };
 
-export default withTheme(withStyles(styles)(MarkdownEditor));
+export default withTheme(withStyles(styles)(MarkdownEditorComponent));

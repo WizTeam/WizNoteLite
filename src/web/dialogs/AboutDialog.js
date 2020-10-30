@@ -111,7 +111,7 @@ const styles = (theme) => ({
 class AboutDialog extends React.Component {
   handler = {
     handleGotoVditor: () => {
-      window.open('https://github.com/Vanessa219/vditor');
+      window.open('https://github.com/marktext/marktext');
     },
     handleGotoGithub: () => {
       window.open('https://github.com/WizTeam/WizNoteLite');
@@ -168,7 +168,7 @@ class AboutDialog extends React.Component {
             className={classNames(classes.button, classes.vditor)}
             onClick={this.handler.handleGotoVditor}
           >
-            Vditor.js
+            Mark Text
           </Button>
           {/* 暂时屏蔽 */}
           {/* <Button

@@ -120,6 +120,12 @@ export default {
   errorSyncFailed: '同步失败: {message}',
   errorNoteSyncFailed: '笔记上传失败: {message}',
   buttonViewLog: '查看日志',
+  labelWordsCounter: '字数统计',
+  labelWordsCount: '字数: {value}',
+  labelWordsWithPunctuationCount: '字数（包含标点）: {value}',
+  labelAsianCount: '中日韩字数: {value}',
+  labelCharsCount: '字符: {value}',
+  labelCharsWithSpaceCount: '字符（包含空白）: {value}',
 
   // export
   exportPng: '导出为图片',

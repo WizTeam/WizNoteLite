@@ -10,7 +10,9 @@ import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import copy from 'copy-to-clipboard';
 import Icon from '../../../config/icons';
 import {
-  filterParentElement, updateHotkeyTip, matchHotKey, hasClass,
+  filterParentElement, updateHotkeyTip, hasClass,
+  filterChildrenElement,
+  // matchHotKey
 } from '../libs/dom_utils';
 import { setRangeByDomBeforeEnd } from '../libs/range_utils';
 import LiteMenu from './LiteMenu';
@@ -101,10 +103,11 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
 
 let currentCellElement;
 let tableElement;
-// 修复md表头分割线 | - | - | - |   => | ----- | ----- | ----- |
+let clickTimer;
+// 修复md表头分割线 | --- | --- | --- |   => | ----- | ----- | ----- |
 function fixTableMd(md) {
   const textArr = md.split('\n');
-  textArr[1] = textArr[1].replace(/-/g, '-----');
+  textArr[1] = textArr[1].replace(/---/g, '-----');
   return textArr.join('\n');
 }
 
@@ -117,43 +120,43 @@ function TableMenu(props) {
   const [subMenuPos, setSubMenuPos] = useState(null);
   const [align, setAlign] = useState('left');
 
-  function deleteTable() {
-    if (tableElement) {
-      tableElement.outerHTML = '';
-      props.onSaveNote();
-    }
-  }
+  // function deleteTable() {
+  //   if (tableElement) {
+  //     tableElement.outerHTML = '';
+  //     props.onSaveNote();
+  //   }
+  // }
 
-  function addRowAbove() {
-    if (currentCellElement) {
-      let rowHTML = '';
-      for (let i = 0; i < currentCellElement.parentElement.childElementCount; i++) {
-        rowHTML += '<td> </td>';
-      }
-      currentCellElement.parentElement.insertAdjacentHTML('beforebegin', `<tr>${rowHTML}</tr>`);
-      setRangeByDomBeforeEnd(currentCellElement.parentElement.previousElementSibling.children[0]);
-      props.onSaveNote();
-    }
-  }
+  // function addRowAbove() {
+  //   if (currentCellElement) {
+  //     let rowHTML = '';
+  //     for (let i = 0; i < currentCellElement.parentElement.childElementCount; i++) {
+  //       rowHTML += '<td> </td>';
+  //     }
+  //     currentCellElement.parentElement.insertAdjacentHTML('beforebegin', `<tr>${rowHTML}</tr>`);
+  //     setRangeByDomBeforeEnd(currentCellElement.parentElement.previousElementSibling.children[0]);
+  //     props.onSaveNote();
+  //   }
+  // }
 
-  function addColBefore() {
-    if (currentCellElement && tableElement) {
-      let index = 0;
-      let previousElement = currentCellElement.previousElementSibling;
-      while (previousElement) {
-        index++;
-        previousElement = previousElement.previousElementSibling;
-      }
-      for (let i = 0; i < tableElement.rows.length; i++) {
-        if (i === 0) {
-          tableElement.rows[i].cells[index].insertAdjacentHTML('beforebegin', '<th> </th>');
-        } else {
-          tableElement.rows[i].cells[index].insertAdjacentHTML('beforebegin', '<td> </td>');
-        }
-      }
-      props.onSaveNote();
-    }
-  }
+  // function addColBefore() {
+  //   if (currentCellElement && tableElement) {
+  //     let index = 0;
+  //     let previousElement = currentCellElement.previousElementSibling;
+  //     while (previousElement) {
+  //       index++;
+  //       previousElement = previousElement.previousElementSibling;
+  //     }
+  //     for (let i = 0; i < tableElement.rows.length; i++) {
+  //       if (i === 0) {
+  //         tableElement.rows[i].cells[index].insertAdjacentHTML('beforebegin', '<th> </th>');
+  //       } else {
+  //         tableElement.rows[i].cells[index].insertAdjacentHTML('beforebegin', '<td> </td>');
+  //       }
+  //     }
+  //     props.onSaveNote();
+  //   }
+  // }
 
   // 通过触发editor.vditor快捷键实现表格操作功能
   const dispatchKey = useCallback((hotKey) => {
@@ -181,65 +184,82 @@ function TableMenu(props) {
   }, [props.editor]);
 
   function getTableMd() {
-    return fixTableMd(props.editor.html2md(tableElement.outerHTML));
+    return fixTableMd(props.editor.current.htmlToMarkdown(tableElement.outerHTML));
   }
 
   function clickHandler(type, e) {
-    setRangeByDomBeforeEnd(currentCellElement);
-
-    switch (type) {
-      case 'addRowAbove':
-        addRowAbove();
-        break;
-      case 'addRowBelow':
-        dispatchKey('⌘-=');
-        break;
-      case 'addColBefore':
-        addColBefore();
-        break;
-      case 'addColAfter':
-        dispatchKey('⌘-⇧-=');
-        break;
-      case 'alignLeft':
-        dispatchKey('⌘-⇧-L');
-        break;
-      case 'alignCenter':
-        dispatchKey('⌘-⇧-C');
-        break;
-      case 'alignRight':
-        dispatchKey('⌘-⇧-R');
-        break;
-      case 'deleteRow':
-        dispatchKey('⌘--');
-        break;
-      case 'deleteCol':
-        dispatchKey('⌘-⇧--');
-        break;
-      case 'deleteTable':
-        deleteTable();
-        break;
-      case 'CpHtml':
-        if (tableElement) {
-          const copyHandler = (event) => {
-            event.preventDefault();
-            event.clipboardData.setData('text/plain', getTableMd());
-            event.clipboardData.setData('text/html', tableElement.outerHTML);
-          };
-          document.addEventListener('copy', copyHandler);
-          copy();
-          document.removeEventListener('copy', copyHandler);
-        }
-        break;
-      case 'CpMd':
-        if (props.editor && tableElement) {
-          copy(getTableMd());
-        }
-        break;
-      default:
-        break;
+    if (!props.editor) return;
+    if (clickTimer) {
+      clearTimeout(clickTimer);
     }
+    clickTimer = setTimeout(() => {
+      //
+      setRangeByDomBeforeEnd(currentCellElement);
+      props.editor.current.resetCursor();
+
+      switch (type) {
+        case 'addRowAbove':
+          props.editor.current.insertRowAbove();
+          break;
+        case 'addRowBelow':
+          // dispatchKey('⌘-=');
+          props.editor.current.insertRowBelow();
+          break;
+        case 'addColBefore':
+          props.editor.current.insertColLeft();
+          break;
+        case 'addColAfter':
+          // dispatchKey('⌘-⇧-=');
+          props.editor.current.insertColRight();
+          break;
+        case 'alignLeft':
+          // dispatchKey('⌘-⇧-L');
+          props.editor.current.tableColAlignLeft();
+          break;
+        case 'alignCenter':
+          // dispatchKey('⌘-⇧-C');
+          props.editor.current.tableColAlignCenter();
+          break;
+        case 'alignRight':
+          // dispatchKey('⌘-⇧-R');
+          props.editor.current.tableColAlignRight();
+          break;
+        case 'deleteRow':
+          // dispatchKey('⌘--');
+          props.editor.current.removeTableRow();
+          break;
+        case 'deleteCol':
+          // dispatchKey('⌘-⇧--');
+          props.editor.current.removeTableCol();
+          break;
+        case 'deleteTable':
+          props.editor.current.removeTable();
+          break;
+        case 'CpHtml':
+          if (tableElement) {
+            const copyHandler = (event) => {
+              event.preventDefault();
+              event.clipboardData.setData('text/plain', tableElement.outerHTML);
+              event.clipboardData.setData('text/html', tableElement.outerHTML);
+            };
+            document.addEventListener('copy', copyHandler);
+            copy();
+            document.removeEventListener('copy', copyHandler);
+          }
+          break;
+        case 'CpMd':
+          if (props.editor && tableElement) {
+            copy(getTableMd());
+          }
+          break;
+        default:
+          break;
+      }
+      clickTimer = null;
+    }, 500);
     e.preventDefault();
     setMenuPosition(undefined);
+    setSubMenuPos(null);
   }
 
   useEffect(() => {
@@ -257,16 +277,57 @@ function TableMenu(props) {
     }
 
     function handleMouseDown(e) {
-      if (props.editor) {
-        const ele = filterParentElement(e.target, props.editor.vditor.element, (dom) => dom.tagName.toLocaleLowerCase() === 'table');
+      if (props.editor.current) {
+        const ele = filterParentElement(
+          e.target, props.editor.current.editor,
+          (dom) => dom.tagName.toLocaleLowerCase() === 'table',
+        );
         if (e.button === 2 && ele) {
+          const parentId = filterParentElement(
+            e.target,
+            props.editor.current.editor,
+            (dom) => dom.id && dom.className.includes('ag-cell-content'),
+            true,
+          )?.id;
+          //
+          const childrenId = filterChildrenElement(
+            e.target,
+            99,
+            (dom) => dom.id && dom.className.includes('ag-cell-content'),
+            true,
+          )?.id;
+
+          const updateKey = parentId || childrenId || null;
+          //
+          if (!updateKey) {
+            console.warn('Cursor is not find.');
+            return;
+          }
+          // 更新cursor
+          props.editor.current.updateCursor({
+            start: {
+              key: updateKey,
+              offset: 0,
+            },
+            end: {
+              key: updateKey,
+              offset: 0,
+            },
+          });
+          //
           tableElement = ele;
-          currentCellElement = filterParentElement(e.target, props.editor.vditor.element, (dom) => ['th', 'td'].includes(dom.tagName?.toLocaleLowerCase()), true);
+          currentCellElement = filterParentElement(
+            e.target,
+            props.editor.current.editor,
+            (dom) => ['th', 'td'].includes(dom.tagName?.toLocaleLowerCase()),
+            true,
+          );
           if (currentCellElement) {
-            const currentCellElementAlign = currentCellElement.getAttribute('align') ?? 'left';
+            const currentCellElementAlign = getComputedStyle(currentCellElement, null).textAlign ?? 'left';
             if (currentCellElementAlign !== align) {
               setAlign(currentCellElementAlign);
             }
+            props.editor.current.saveCursor();
             setMenuPosition({
               top: e.clientY,
               left: e.clientX,
@@ -283,21 +344,21 @@ function TableMenu(props) {
       }
     }
 
-    function handleKeyDown(e) {
-      if (matchHotKey('⌘-Enter', e)) {
-        dispatchKey('⌘-=');
-        e.preventDefault();
-      } else if (matchHotKey('⌘-⌥-Enter', e)) {
-        dispatchKey('⌘-⇧-=');
-        e.preventDefault();
-      }
-    }
+    // function handleKeyDown(e) {
+    //   if (matchHotKey('⌘-Enter', e)) {
+    //     dispatchKey('⌘-=');
+    //     e.preventDefault();
+    //   } else if (matchHotKey('⌘-⌥-Enter', e)) {
+    //     dispatchKey('⌘-⇧-=');
+    //     e.preventDefault();
+    //   }
+    // }
 
-    window.addEventListener('keydown', handleKeyDown);
+    // window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('mouseover', handleShowSubMenu);
     window.addEventListener('mousedown', handleMouseDown);
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      // window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('mouseover', handleShowSubMenu);
       window.removeEventListener('mousedown', handleMouseDown);
     };
@@ -337,7 +398,7 @@ function TableMenu(props) {
       <MenuItem onClick={(e) => clickHandler('addColAfter', e)}>
         <div className={classes.menuItem}>
           <div className={classes.menuName}>{intl.formatMessage({ id: 'tableMenuAddColAfter' })}</div>
-          <div className={classes.shortcut}>{updateHotkeyTip('⌘+⌥+Enter')}</div>
+          {/* <div className={classes.shortcut}>{updateHotkeyTip('⌘+⌥+Enter')}</div> */}
         </div>
       </MenuItem>
       <div className={classes.menuLine} />
@@ -408,7 +469,7 @@ function TableMenu(props) {
 TableMenu.propTypes = {
   intl: PropTypes.object.isRequired,
   editor: PropTypes.object,
-  onSaveNote: PropTypes.func.isRequired,
+  // onSaveNote: PropTypes.func.isRequired,
 };
 
 TableMenu.defaultProps = {

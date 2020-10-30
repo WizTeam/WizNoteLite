@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import LiteMenu from './LiteMenu';
-import { filterParentElement, getPositionForWin, getTagSpan } from '../libs/dom_utils';
+import { filterParentElement, getPositionForWin, getTagSpanFromRange } from '../libs/dom_utils';
 import { getRange, setRange } from '../libs/range_utils';
 
 class InsertTagMenu extends React.Component {
@@ -47,7 +47,7 @@ class InsertTagMenu extends React.Component {
       this.showMenu();
     },
     insertWord: (word) => {
-      const tagSpan = getTagSpan(this.editor.vditor.element);
+      const tagSpan = getTagSpanFromRange(this.editor.vditor.element);
       if (tagSpan) {
         tagSpan.innerText = `#${word}#`;
       }
@@ -98,7 +98,7 @@ class InsertTagMenu extends React.Component {
   }
 
   checkTagSpanAndCloseMenu() {
-    const tagSpan = getTagSpan(this.editor.vditor.element);
+    const tagSpan = getTagSpanFromRange(this.editor.vditor.element);
     if (!tagSpan) {
       this.closeMenu();
       return false;
@@ -183,7 +183,7 @@ class InsertTagMenu extends React.Component {
       target = target.childNodes[offset - 1];
       offset = target.nodeType === 3 ? target.nodeValue.length : target.childNodes.length;
     }
-    const tagSpan = getTagSpan(this.editor.vditor.element, target);
+    const tagSpan = getTagSpanFromRange(this.editor.vditor.element, target);
     if (tagSpan) {
       let isAtLast = false;
       if (target === tagSpan && tagSpan.childNodes.length === offset) {

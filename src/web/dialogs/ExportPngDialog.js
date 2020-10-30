@@ -137,7 +137,10 @@ class ExportPngDialog extends React.Component {
         }
       };
       //
-      const { widthValue, previewTheme } = this.state;
+      const {
+        widthValue,
+        previewTheme,
+      } = this.state;
       const width = widthValue;
       let padding = 16;
       if (widthValue === MOBILE_PLUS_WIDTH) {
@@ -158,7 +161,7 @@ class ExportPngDialog extends React.Component {
       window.wizApi.userManager.captureScreen(kbGuid, noteGuid, options);
     },
     handleChangePreviewTheme: async (item, value) => {
-      await window.wizApi.userManager.setUserSettings('exportPngTheme', value);
+      await window.wizApi.userManager.setUserSettings('exportPngTheme2', value);
       this.setState({ previewTheme: value });
     },
     handleChangeWidth: async (item, value) => {
@@ -172,7 +175,7 @@ class ExportPngDialog extends React.Component {
     const um = window.wizApi.userManager;
     this.state = {
       loading: false,
-      previewTheme: um.getUserSettingsSync('exportPngTheme', props.theme.palette.type),
+      previewTheme: um.getUserSettingsSync('exportPngTheme2', props.theme.palette.type === 'dark' ? 'dark' : 'lite'),
       widthValue: um.getUserSettingsSync('exportPngWidth', MOBILE_WIDTH),
     };
   }
@@ -186,7 +189,8 @@ class ExportPngDialog extends React.Component {
 
   render() {
     const {
-      loading, previewTheme, widthValue,
+      loading, widthValue,
+      previewTheme,
     } = this.state;
     const {
       classes, open, onClose,
@@ -194,7 +198,7 @@ class ExportPngDialog extends React.Component {
     } = this.props;
 
     const themeOptions = [
-      { value: 'light', title: intl.formatMessage({ id: 'lightOption' }) },
+      { value: 'lite', title: intl.formatMessage({ id: 'lightOption' }) },
       { value: 'dark', title: intl.formatMessage({ id: 'darkOption' }) },
     ];
 
@@ -230,7 +234,7 @@ class ExportPngDialog extends React.Component {
               widthValue === MOBILE_PLUS_WIDTH && classes.mobilePlus,
               widthValue === MOBILE_WIDTH && classes.mobile,
               previewTheme === 'dark' && classes.darkBorderColor,
-              previewTheme === 'light' && classes.lightBorderColor,
+              previewTheme === 'lite' && classes.lightBorderColor,
             )}
             >
               <NoteViewer

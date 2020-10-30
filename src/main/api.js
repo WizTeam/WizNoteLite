@@ -1,25 +1,29 @@
 const {
   ipcMain, BrowserWindow,
+  // clipboard,
   dialog,
   shell,
+  app,
 } = require('electron');
 const fs = require('fs-extra');
 const URL = require('url');
 const path = require('path');
 const PImage = require('pureimage');
-const i18next = require('i18next');
 const log = require('electron-log');
+const sdk = require('wiznote-sdk-js');
+const { WizKnownError } = require('wiznote-sdk-js-share/lib/error');
+const { exec } = require('child_process');
 
-const users = require('./user/users');
-const globalSettings = require('./settings/global_settings');
-const wait = require('./utils/wait');
-const paths = require('./common/paths');
 const inAppPurchase = require('./inapp/in_app_purchase');
+
+const paths = sdk.core.paths;
+const wait = sdk.core.utils.wait;
+const i18next = sdk.core.i18next;
 
 const isDebug = false;
 
 function unregisterWindow(window) {
-  users.unregisterWindow(window.webContents);
+  sdk.unregisterListener(window.webContents);
 }
 
 async function handleApi(name, api) {
@@ -44,138 +48,155 @@ async function handleApi(name, api) {
 }
 
 handleApi('getLink', async (event, ...args) => {
-  const link = await users.getLink(...args);
+  const link = await sdk.getLink(...args);
   return link;
 });
 
 handleApi('signUp', async (event, ...args) => {
-  const user = await users.signUp(...args);
-  users.registerWindow(user.userGuid, event.sender);
+  const user = await sdk.signUp(...args);
+  sdk.registerListener(user.userGuid, event.sender);
   // 因为registerWindow在login/signup之后，所以消息没有正常发出。在这里强制发送一下消息
-  users.emitEvent(user.userGuid, 'userInfoChanged', user);
+  sdk.emitEvent(user.userGuid, 'userInfoChanged', user);
   //
   return user;
 });
 
 handleApi('onlineLogin', async (event, ...args) => {
-  const user = await users.onlineLogin(...args);
-  users.registerWindow(user.userGuid, event.sender);
+  const user = await sdk.onlineLogin(...args);
+  sdk.registerListener(user.userGuid, event.sender);
   // 因为registerWindow在login/signup之后，所以消息没有正常发出。在这里强制发送一下消息
-  users.emitEvent(user.userGuid, 'userInfoChanged', user);
+  sdk.emitEvent(user.userGuid, 'userInfoChanged', user);
   //
   return user;
 });
 
-
 handleApi('localLogin', async (event, ...args) => {
-  const user = await users.localLogin(...args);
+  const user = await sdk.localLogin(...args);
   if (user) {
-    users.registerWindow(user.userGuid, event.sender);
+    sdk.registerListener(user.userGuid, event.sender);
     // 因为registerWindow在login/signup之后，所以消息没有正常发出。在这里强制发送一下消息
-    users.emitEvent(user.userGuid, 'userInfoChanged', user);
+    sdk.emitEvent(user.userGuid, 'userInfoChanged', user);
   }
   return user;
 });
 
 handleApi('logout', async (event, ...args) => {
-  await users.logout(...args);
+  await sdk.logout(...args);
 });
 
 handleApi('queryNotes', async (event, ...args) => {
-  const notes = await users.queryNotes(...args);
+  const notes = await sdk.queryNotes(...args);
   return notes;
 });
 
 handleApi('getNote', async (event, ...args) => {
-  const result = await users.getNote(...args);
+  const result = await sdk.getNote(...args);
   return result;
 });
 
 handleApi('getNoteMarkdown', async (event, ...args) => {
-  const result = await users.getNoteMarkdown(...args);
+  const result = await sdk.getNoteMarkdown(...args);
   return result;
 });
 
 handleApi('setNoteMarkdown', async (event, ...args) => {
-  const result = await users.setNoteMarkdown(...args);
+  const result = await sdk.setNoteMarkdown(...args);
   return result;
 });
 
 handleApi('createNote', async (event, ...args) => {
-  const result = await users.createNote(...args);
+  const result = await sdk.createNote(...args);
   return result;
 });
 
 handleApi('deleteNote', async (event, ...args) => {
-  const result = await users.deleteNote(...args);
+  const result = await sdk.deleteNote(...args);
   return result;
 });
 
 handleApi('putBackNote', async (event, ...args) => {
-  const result = await users.putBackNote(...args);
+  const result = await sdk.putBackNote(...args);
   return result;
 });
 
 handleApi('syncKb', async (event, ...args) => {
-  const result = await users.syncKb(...args);
+  const result = await sdk.syncKb(...args);
   return result;
 });
 
-handleApi('addImagesFromLocal', async (event, ...args) => {
+handleApi('addImagesFromLocal', async (event, userGuid, kbGuid, noteGuid) => {
   const webContents = event.sender;
   const browserWindow = BrowserWindow.fromWebContents(webContents);
-  const result = await users.addImagesFromLocal(browserWindow, ...args);
+  // const result = await sdk.addImagesFromLocal(browserWindow, ...args);
+  // return result;
+
+  const dialogResult = await dialog.showOpenDialog(browserWindow, {
+    properties: ['openFile', 'multiSelections'],
+    filters: [{
+      name: 'Images (*.png, *.jpg, *.jpeg, *,bmp, *.gif)',
+      extensions: [
+        'png', 'jpg', 'jpeg', 'bmp', 'gif',
+      ],
+    }],
+  });
+  if (dialogResult.canceled) {
+    return [];
+  }
+  const result = [];
+  for (const file of dialogResult.filePaths) {
+    const data = await fs.readFile(file);
+    const resName = await sdk.addImageFromData(userGuid, kbGuid, noteGuid, data);
+    result.push(resName);
+  }
   return result;
 });
 
 handleApi('addImageFromData', async (event, ...args) => {
-  const result = await users.addImageFromData(...args);
+  const result = await sdk.addImageFromData(...args);
   return result;
 });
-
 
 handleApi('addImageFromUrl', async (event, ...args) => {
-  const result = await users.addImageFromUrl(...args);
+  const result = await sdk.addImageFromUrl(...args);
   return result;
 });
 
-handleApi('getSettings', async (event, key, defaultValue) => globalSettings.getSettings(key, defaultValue));
+handleApi('getSettings', async (event, key, defaultValue) => sdk.getSettings(key, defaultValue));
 
-handleApi('setSettings', async (event, key, value) => globalSettings.setSettings(key, value));
+handleApi('setSettings', async (event, key, value) => sdk.setSettings(key, value));
 
-handleApi('getUserSettings', async (event, userGuid, key, defaultValue) => users.getSettings(userGuid, key, defaultValue));
+handleApi('getUserSettings', async (event, userGuid, key, defaultValue) => sdk.getUserSettings(userGuid, key, defaultValue));
 
-handleApi('setUserSettings', async (event, userGuid, key, value) => users.setSettings(userGuid, key, value));
+handleApi('setUserSettings', async (event, userGuid, key, value) => sdk.setUserSettings(userGuid, key, value));
 
 ipcMain.on('getUserSettingsSync', (event, userGuid, key, defaultValue) => {
-  const result = users.getSettings(userGuid, key, defaultValue);
+  const result = sdk.getUserSettings(userGuid, key, defaultValue);
   // eslint-disable-next-line no-param-reassign
   event.returnValue = result;
 });
 
-
 handleApi('getAllTags', async (event, ...args) => {
-  const result = await users.getAllTags(...args);
+  const result = await sdk.getAllTags(...args);
   return result;
 });
 
 handleApi('getAllLinks', async (event, ...args) => {
-  const result = await users.getAllLinks(...args);
+  const result = await sdk.getAllLinks(...args);
   return result;
 });
 
 handleApi('renameTag', async (event, ...args) => {
-  const result = await users.renameTag(...args);
+  const result = await sdk.renameTag(...args);
   return result;
 });
 
 handleApi('setNoteStarred', async (event, ...args) => {
-  const result = await users.setNoteStarred(...args);
+  const result = await sdk.setNoteStarred(...args);
   return result;
 });
 
 handleApi('hasNotesInTrash', async (event, ...args) => {
-  const result = await users.hasNotesInTrash(...args);
+  const result = await sdk.hasNotesInTrash(...args);
   return result;
 });
 
@@ -253,6 +274,7 @@ handleApi('captureScreen', async (event, userGuid, kbGuid, noteGuid, options = {
       let scaleY;
       //
       const tempPath = paths.getTempPath();
+      await fs.ensureDir(tempPath);
       //
       for (let i = 0; i < pageCount; i++) {
         //
@@ -310,7 +332,7 @@ handleApi('captureScreen', async (event, userGuid, kbGuid, noteGuid, options = {
       //
       await onProgress(100);
       //
-      const note = await users.getNote(userGuid, kbGuid, noteGuid);
+      const note = await sdk.getNote(userGuid, kbGuid, noteGuid);
       const fileName = noteTitleToFileName(note.title);
       //
       const browserWindow = BrowserWindow.fromWebContents(senderWebContents);
@@ -344,7 +366,6 @@ handleApi('captureScreen', async (event, userGuid, kbGuid, noteGuid, options = {
     }
   });
 });
-
 
 handleApi('printToPDF', async (event, userGuid, kbGuid, noteGuid, options = {}) => {
   //
@@ -436,7 +457,7 @@ handleApi('printToPDF', async (event, userGuid, kbGuid, noteGuid, options = {}) 
       //
       await onProgress(10);
       //
-      const note = await users.getNote(userGuid, kbGuid, noteGuid);
+      const note = await sdk.getNote(userGuid, kbGuid, noteGuid);
       const fileName = noteTitleToFileName(note.title);
       //
       const browserWindow = BrowserWindow.fromWebContents(senderWebContents);
@@ -473,12 +494,12 @@ handleApi('writeToMarkdown', async (event, userGuid, kbGuid, noteGuid) => {
   const webContents = event.sender;
   const browserWindow = BrowserWindow.fromWebContents(webContents);
   //
-  const note = await users.getNote(userGuid, kbGuid, noteGuid);
+  const note = await sdk.getNote(userGuid, kbGuid, noteGuid);
   const fileName = noteTitleToFileName(note.title);
   //
   const dialogResult = await dialog.showSaveDialog(browserWindow, {
     properties: ['saveFile'],
-    defaultPath: `${fileName}.md`,
+    defaultPath: path.join(app.getPath('downloads'), `${fileName}.md`),
     filters: [{
       name: i18next.t('fileFilterMarkdown'),
       extensions: [
@@ -494,22 +515,66 @@ handleApi('writeToMarkdown', async (event, userGuid, kbGuid, noteGuid) => {
   const targetFilesDirname = path.join(targetDirname, 'index_files');
   //
   const resourcePath = await paths.getNoteResources(userGuid, kbGuid, noteGuid);
-  const files = await fs.readdir(resourcePath);
+  let files = [];
+  if (fs.existsSync(resourcePath)) {
+    files = await fs.readdir(resourcePath);
+  }
   //
   if (!fs.existsSync(targetFilesDirname) && files.length) {
-    await fs.mkdir(targetFilesDirname);
+    try {
+      await fs.mkdir(targetFilesDirname);
+    } catch (err) {
+      console.error(err);
+      throw new WizKnownError(i18next.t('errorCreateDir', { message: err.message }));
+    }
   }
   //
   for (const file of files) {
     const oldFilePath = path.join(resourcePath, file);
     const newFilePath = path.join(targetFilesDirname, file);
-    await fs.copyFile(oldFilePath, newFilePath);
+    try {
+      await fs.copyFile(oldFilePath, newFilePath);
+    } catch (err) {
+      console.error(err);
+      throw new WizKnownError(i18next.t('errorCopyFile', { message: err.message }));
+    }
   }
   //
-  const data = await users.getNoteMarkdown(userGuid, kbGuid, noteGuid);
+  const data = await sdk.getNoteMarkdown(userGuid, kbGuid, noteGuid);
   await fs.writeFile(filePath, data);
   //
   shell.showItemInFolder(filePath);
+});
+
+handleApi('getThemeCssString', async (event, theme = '') => {
+  if (!theme) return '';
+  //
+  const cssPath = path.join(__dirname, './resources/editor_theme', `${theme}.css`);
+  //
+  if (fs.existsSync(cssPath)) {
+    const css = await fs.readFile(cssPath, 'utf8');
+    return css;
+  }
+  return '';
+});
+
+handleApi('screenCaptureManual', async (event) => {
+  if (process.platform === 'darwin') {
+    // Use macOs `screencapture` command line when in macOs system.
+    exec('screencapture -i -c', async (err) => {
+      if (err) {
+        log.error(err);
+        // return;
+      }
+      // do nothing...
+      // try {
+      //   const image = clipboard.readImage();
+      //   const bufferImage = image.toPNG();
+      // } catch (err) {
+      //   log.error(err);
+      // }
+    });
+  }
 });
 
 handleApi('queryProducts', inAppPurchase.queryProducts);
@@ -518,13 +583,13 @@ handleApi('restorePurchases', inAppPurchase.restorePurchases);
 handleApi('showUpgradeVipDialog', inAppPurchase.showUpgradeVipDialog);
 
 handleApi('getUserInfo', async (event, userGuid) => {
-  const user = users.getUserInfo(userGuid);
+  const user = sdk.getUserInfo(userGuid);
   return user;
 });
 
 
 handleApi('refreshUserInfo', async (event, userGuid) => {
-  const user = await users.refreshUserInfo(userGuid);
+  const user = await sdk.refreshUserInfo(userGuid);
   return user;
 });
 
