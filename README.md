@@ -140,4 +140,7 @@ npm run pack
 
 [MIT or commercial.](./LICENSE.txt)
 
-## TODO
+## WizNote Lite for Mobile Project
+
+[WizNote Lite for Mobile](https://github.com/WizTeam/WizNoteLiteMobile)
+
