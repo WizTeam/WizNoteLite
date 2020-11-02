@@ -92,9 +92,14 @@ class MarkdownEditorComponent extends React.PureComponent {
       }
       return path;
     },
-    handleFocusChange: (isFocus) => {
+    handleFocusModeChange: (focusMode) => {
       this.setState({
-        isFocus,
+        focusMode,
+      });
+    },
+    handleTypewriterModeChange: (typewriterMode) => {
+      this.setState({
+        typewriterMode,
       });
     },
     handleOnChange: debounce(({ toc }) => {
@@ -133,7 +138,8 @@ class MarkdownEditorComponent extends React.PureComponent {
       note: null,
       wordList: [],
       markdown: '',
-      isFocus: false,
+      focusMode: false,
+      typewriterMode: false,
     };
     this.oldMarkdown = '';
     this.editor = React.createRef();
@@ -144,7 +150,8 @@ class MarkdownEditorComponent extends React.PureComponent {
   async componentDidMount() {
     window.wizApi.userManager.on('tagsChanged', this.handler.handleTagsChanged);
     window.wizApi.userManager.on('tagRenamed', this.handler.handleTagRenamed);
-    window.wizApi.userManager.on('focusEdit', this.handler.handleFocusChange);
+    window.wizApi.userManager.on('focusEdit', this.handler.handleFocusModeChange);
+    window.wizApi.userManager.on('typewriterEdit', this.handler.handleTypewriterModeChange);
     this.getAllTags();
     await this.loadNote();
     if (this.editor.current) {
@@ -152,7 +159,10 @@ class MarkdownEditorComponent extends React.PureComponent {
       editor.addEventListener('click', this.handler.handleClickEditor);
     }
     this.setState({
-      isFocus: await window.wizApi.userManager.getSettings('focusMode', false),
+      focusMode: await window.wizApi.userManager.getSettings('focusMode', false),
+    });
+    this.setState({
+      typewriterMode: await window.wizApi.userManager.getSettings('typewriterMode', false),
     });
   }
 
@@ -175,7 +185,8 @@ class MarkdownEditorComponent extends React.PureComponent {
   componentWillUnmount() {
     window.wizApi.userManager.off('tagsChanged', this.handler.handleTagsChanged);
     window.wizApi.userManager.off('tagRenamed', this.handler.handleTagRenamed);
-    window.wizApi.userManager.off('focusEdit', this.handler.handleFocusChange);
+    window.wizApi.userManager.off('focusEdit', this.handler.handleFocusModeChange);
+    window.wizApi.userManager.off('typewriterEdit', this.handler.handleTypewriterModeChange);
     if (this.editor.current) {
       const editor = this.editor.current.editor;
       editor.removeEventListener('click', this.handler.handleClickEditor);
@@ -271,7 +282,8 @@ class MarkdownEditorComponent extends React.PureComponent {
       note,
       wordList,
       markdown,
-      isFocus,
+      focusMode,
+      typewriterMode,
     } = this.state;
     const { classes, scrollbar } = this.props;
     const scrollingElement = scrollbar?.container?.children[0];
@@ -294,7 +306,8 @@ class MarkdownEditorComponent extends React.PureComponent {
           onScreenCaptureManual={this.handler.handleScreenCaptureManual}
           onImageAction={this.handler.handleImageAction}
           lang={lang}
-          focus={isFocus}
+          focusMode={focusMode}
+          typewriterMode={typewriterMode}
         />
         <TableMenu
           editor={this.editor}

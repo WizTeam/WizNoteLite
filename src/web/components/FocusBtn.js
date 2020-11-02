@@ -74,7 +74,8 @@ function FocusBtn(props) {
 
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const [isFocus, setIsFocus] = useState(false);
+  const [focusMode, setFocusMode] = useState(false);
+  const [typewriterMode, setTypewriterMode] = useState(false);
 
   const [isTimer, setIsTimer] = useState(false);
 
@@ -105,14 +106,20 @@ function FocusBtn(props) {
   }, [props.timeout]);
 
   useEffect(() => {
-    (async function initFocusStatus() {
-      setIsFocus(await window.wizApi.userManager.getSettings('focusMode', false));
-    }());
+    (async () => {
+      setFocusMode(await window.wizApi.userManager.getSettings('focusMode', false));
+      setTypewriterMode(await window.wizApi.userManager.getSettings('typewriterMode', false));
+    })();
   }, []);
 
   function handleFocus(event) {
-    setIsFocus(event.target.checked);
+    setFocusMode(event.target.checked);
     window.wizApi.userManager.setSettings('focusMode', event.target.checked);
+  }
+
+  function handleTypewriter(event) {
+    setTypewriterMode(event.target.checked);
+    window.wizApi.userManager.setSettings('typewriterMode', event.target.checked);
   }
 
   return (
@@ -141,8 +148,19 @@ function FocusBtn(props) {
               classes={{
                 switchBase: classes.switchBase,
               }}
-              checked={isFocus}
+              checked={focusMode}
               onChange={handleFocus}
+            />
+          </div>
+          <div className={classes.menuLine}>
+            <span className={classes.menuLabel}>Typewriter Mode</span>
+            <Switch
+              size="small"
+              classes={{
+                switchBase: classes.switchBase,
+              }}
+              checked={typewriterMode}
+              onChange={handleTypewriter}
             />
           </div>
           {/* <div className={classes.menuLine}>
@@ -171,16 +189,6 @@ function FocusBtn(props) {
   );
 }
 
-FocusBtn.propTypes = {
-  className: PropTypes.string,
-  iconClassName: PropTypes.string,
-  timeout: PropTypes.number,
-};
 
-FocusBtn.defaultProps = {
-  className: '',
-  iconClassName: '',
-  timeout: 25,
-};
 
 export default FocusBtn;
