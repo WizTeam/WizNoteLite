@@ -6,14 +6,14 @@ import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import Switch from '@material-ui/core/Switch';
 import Timer from 'timer.js';
-import classNames from 'classnames';
+// import classNames from 'classnames';
 import { makeStyles } from '@material-ui/core/styles';
 import Icons from '../config/icons';
 
 const useStyles = makeStyles(({ spacing, palette }) => ({
   focusMenu: {
     width: 192,
-    height: 120,
+    // height: 120,
     padding: spacing(0, 3),
     color: palette.type === 'dark' ? '#fff' : '#333',
     boxSizing: 'border-box',
@@ -145,7 +145,7 @@ function FocusBtn(props) {
               onChange={handleFocus}
             />
           </div>
-          <div className={classes.menuLine}>
+          {/* <div className={classes.menuLine}>
             <span className={classes.menuLabel}>Timer</span>
             <Switch
               size="small"
@@ -164,7 +164,7 @@ function FocusBtn(props) {
             >
               {isTimer ? timerText : `${props.timeout} mins`}
             </div>
-          </div>
+          </div> */}
         </div>
       </Menu>
     </>

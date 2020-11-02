@@ -12,7 +12,7 @@ import NoteEditor from './NoteEditor';
 import ExportPngDialog from '../dialogs/ExportPngDialog';
 import ExportPdfDialog from '../dialogs/ExportPdfDialog';
 import Icons from '../config/icons';
-// import FocusBtn from './FocusBtn';
+import FocusBtn from './FocusBtn';
 import SyncButton from './SyncButton';
 import Scrollbar from './Scrollbar';
 import WordCounterButton from './WordCounterButton';
@@ -281,7 +281,7 @@ class Content extends React.Component {
             note={note}
           />
           {/* Focus 模式不完善，暂时屏蔽 */}
-          {/* <FocusBtn className={classes.iconButton} iconClassName={classes.icon} /> */}
+          <FocusBtn className={classes.iconButton} iconClassName={classes.icon} />
         </div>
         )}
         <div className={classes.content}>
