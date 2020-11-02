@@ -273,6 +273,7 @@ class Content extends React.Component {
             kbGuid={kbGuid}
             note={note}
           />
+          <FocusBtn className={classes.iconButton} iconClassName={classes.icon} />
           <SyncButton
             className={classes.iconButton}
             iconClassName={classes.icon}
@@ -280,8 +281,6 @@ class Content extends React.Component {
             kbGuid={kbGuid}
             note={note}
           />
-          {/* Focus 模式不完善，暂时屏蔽 */}
-          <FocusBtn className={classes.iconButton} iconClassName={classes.icon} />
         </div>
         )}
         <div className={classes.content}>
