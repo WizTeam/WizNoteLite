@@ -12,7 +12,7 @@ import Icons from '../config/icons';
 
 const useStyles = makeStyles(({ spacing, palette }) => ({
   focusMenu: {
-    width: 192,
+    width: 220,
     // height: 120,
     padding: spacing(0, 3),
     color: palette.type === 'dark' ? '#fff' : '#333',
@@ -188,7 +188,6 @@ function FocusBtn(props) {
     </>
   );
 }
-
 
 
 export default FocusBtn;
