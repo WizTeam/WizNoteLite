@@ -22,8 +22,6 @@ const styles = (/* theme */) => ({
   },
 });
 
-const locale = getLocale().toLowerCase();
-
 class MarkdownEditorComponent extends React.PureComponent {
   handler = {
     handleClickEditor: (e) => {
