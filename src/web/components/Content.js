@@ -81,23 +81,23 @@ const styles = (theme) => ({
     color: theme.custom.color.contentToolIcon,
   },
   exportMenu: {
-    '& .MuiPaper-elevation8': {
-      boxShadow: '0px 1px 4px 0px rgba(0, 0, 0, 0.31)',
-    },
-    '& .MuiList-padding': {
-      paddingTop: 4,
-      paddingBottom: 4,
-      color: theme.custom.color.noteTypeButton,
-    },
-    '& .MuiListItem-gutters': {
-      paddingLeft: theme.spacing(3),
-      paddingRight: theme.spacing(3),
-    },
-    '& .MuiMenuItem-root': {
-      paddingTop: theme.spacing(1),
-      paddingBottom: theme.spacing(1),
-      fontSize: 15,
-    },
+    // '& .MuiPaper-elevation8': {
+    //   boxShadow: '0px 1px 4px 0px rgba(0, 0, 0, 0.31)',
+    // },
+    // '& .MuiList-padding': {
+    //   paddingTop: 4,
+    //   paddingBottom: 4,
+    //   color: theme.custom.color.noteTypeButton,
+    // },
+    // '& .MuiListItem-gutters': {
+    //   paddingLeft: theme.spacing(3),
+    //   paddingRight: theme.spacing(3),
+    // },
+    // '& .MuiMenuItem-root': {
+    //   paddingTop: theme.spacing(1),
+    //   paddingBottom: theme.spacing(1),
+    //   fontSize: 15,
+    // },
     '& .Mui-disabled': {
       fontSize: 14,
       color: theme.custom.color.matchedText,
