@@ -65,6 +65,7 @@ const styles = (theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    boxSizing: 'border-box',
   },
   message: {
     padding: '32px 16px',
