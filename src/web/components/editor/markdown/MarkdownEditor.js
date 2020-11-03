@@ -4,7 +4,6 @@ import classNames from 'classnames';
 import { withStyles, withTheme } from '@material-ui/core/styles';
 import { MarkdownEditor } from 'wiz-react-markdown-editor/dist';
 import debounce from 'lodash/debounce';
-import TableMenu from './TableMenu';
 import { getTagSpanFromRange } from '../libs/dom_utils';
 import { getLocale } from '../../../utils/lang';
 import './lite.scss';
@@ -308,10 +307,6 @@ class MarkdownEditorComponent extends React.PureComponent {
           lang={lang}
           focusMode={focusMode}
           typewriterMode={typewriterMode}
-        />
-        <TableMenu
-          editor={this.editor}
-          onSaveNote={() => {}}
         />
       </div>
     );
