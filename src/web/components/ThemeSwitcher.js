@@ -56,7 +56,7 @@ export default function ThemeSwitcher(props) {
             borderRadius: 2,
           },
           elevation8: {
-            boxShadow: 'var(--floatShadow)',
+            boxShadow: prefersDarkMode ? '0 4px 8px 0 var(--floatShadow) !important' : 'var(--floatShadow)',
           },
         },
         MuiMenuItem: {
