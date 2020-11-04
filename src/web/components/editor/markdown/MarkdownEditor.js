@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { withStyles, withTheme } from '@material-ui/core/styles';
-import { MarkdownEditor } from 'wiz-react-markdown-editor/dist';
+import { MarkdownEditor } from 'wiz-react-markdown-editor';
 import debounce from 'lodash/debounce';
 import { getTagSpanFromRange } from '../libs/dom_utils';
 import { getLocale } from '../../../utils/lang';

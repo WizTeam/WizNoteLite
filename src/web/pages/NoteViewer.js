@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { withStyles, withTheme } from '@material-ui/core/styles';
 import { injectIntl } from 'react-intl';
-import { MarkdownEditor } from 'wiz-react-markdown-editor/dist';
+import { MarkdownEditor } from 'wiz-react-markdown-editor';
 import Scrollbar from '../components/Scrollbar';
 import { injectionCssFormId } from '../utils/utils';
 import Icons from '../config/icons';
