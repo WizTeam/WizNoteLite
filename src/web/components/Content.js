@@ -12,7 +12,7 @@ import NoteEditor from './NoteEditor';
 import ExportPngDialog from '../dialogs/ExportPngDialog';
 import ExportPdfDialog from '../dialogs/ExportPdfDialog';
 import Icons from '../config/icons';
-import FocusBtn from './FocusBtn';
+import FocusButton from './FocusButton';
 import SyncButton from './SyncButton';
 import Scrollbar from './Scrollbar';
 import WordCounterButton from './WordCounterButton';
@@ -273,7 +273,7 @@ class Content extends React.Component {
             kbGuid={kbGuid}
             note={note}
           />
-          <FocusBtn className={classes.iconButton} iconClassName={classes.icon} />
+          <FocusButton className={classes.iconButton} iconClassName={classes.icon} />
           <SyncButton
             className={classes.iconButton}
             iconClassName={classes.icon}
