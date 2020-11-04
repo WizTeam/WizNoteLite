@@ -1,12 +1,10 @@
 import React, {
-  useRef, useState, useEffect, useMemo,
+  useRef, useState, useEffect,
 } from 'react';
 import PropTypes from 'prop-types';
 import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import Switch from '@material-ui/core/Switch';
-import Timer from 'timer.js';
-// import classNames from 'classnames';
 import { makeStyles } from '@material-ui/core/styles';
 import Icons from '../config/icons';
 
@@ -30,21 +28,6 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  timerInput: {
-    width: '56px',
-    height: '20px',
-    border: '1px solid #d8d8d8',
-    boxSizing: 'border-box',
-    padding: '0 4px',
-    fontSize: 12,
-    alignItems: 'center',
-    color: '#aaaaaa',
-    textAlign: 'center',
-    lineHeight: '20px',
-    '&.active': {
-      color: palette.type === 'dark' ? '#fff' : '#333',
-    },
-  },
   inpContainer: {
     width: 15,
     border: 'none',
@@ -67,7 +50,7 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
   },
 }));
 
-function FocusBtn(props) {
+function FocusButton(props) {
   const focusRef = useRef();
 
   const classes = useStyles();
@@ -76,34 +59,6 @@ function FocusBtn(props) {
 
   const [focusMode, setFocusMode] = useState(false);
   const [typewriterMode, setTypewriterMode] = useState(false);
-
-  const [isTimer, setIsTimer] = useState(false);
-
-  const [timerText, setTimerText] = useState('');
-
-  const timer = useMemo(() => new Timer({
-    ontick: (ms) => {
-      const second = Math.floor(ms / 1000);
-      setTimerText(`${Math.floor(second / 60)
-        .toString()
-        .padStart(2, '0')}:${(second % 60).toString().padStart(2, '0')}`);
-    },
-    onend: () => {
-      setTimerText('');
-    },
-  }), [setTimerText]);
-
-  useEffect(() => {
-    if (isTimer) {
-      setTimerText(`${props.timeout}:00`);
-      timer.start(props.timeout * 60);
-    }
-  }, [isTimer]);
-
-  useEffect(() => {
-    timer.stop();
-    setIsTimer(false);
-  }, [props.timeout]);
 
   useEffect(() => {
     (async () => {
@@ -163,31 +118,20 @@ function FocusBtn(props) {
               onChange={handleTypewriter}
             />
           </div>
-          {/* <div className={classes.menuLine}>
-            <span className={classes.menuLabel}>Timer</span>
-            <Switch
-              size="small"
-              classes={{
-                switchBase: classes.switchBase,
-              }}
-              checked={isTimer}
-              onChange={(event) => setIsTimer(event.target.checked)}
-            />
-          </div>
-          <div className={classes.menuLine}>
-            <div
-              className={classNames(classes.timerInput, {
-                active: isTimer,
-              })}
-            >
-              {isTimer ? timerText : `${props.timeout} mins`}
-            </div>
-          </div> */}
         </div>
       </Menu>
     </>
   );
 }
 
+FocusButton.propTypes = {
+  className: PropTypes.string,
+  iconClassName: PropTypes.string,
+};
 
-export default FocusBtn;
+FocusButton.defaultProps = {
+  className: '',
+  iconClassName: '',
+};
+
+export default FocusButton;
