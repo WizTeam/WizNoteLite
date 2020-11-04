@@ -200,7 +200,7 @@
     "react-style-proptype": "^3.2.2",
     "run-script-os": "^1.0.7",
     "timer.js": "^1.0.4",
-    "wiz-react-markdown-editor": "^0.4.0"
+    "wiz-react-markdown-editor": "^0.4.1"
   },
   "__npminstall_done": false
 }
