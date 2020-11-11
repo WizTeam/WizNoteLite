@@ -1,3 +1,39 @@
+export function overwriteEditorConfig(options) {
+  const styleId = 'editor-overwrite';
+  let style = document.querySelector(`#${styleId}`);
+  //
+  if (!style) {
+    style = document.createElement('style');
+    style.id = styleId;
+  }
+  let css = '';
+  //
+  Object.keys(options).forEach((item) => {
+    switch (item) {
+      case 'fontFamily':
+        css += `--text-font-family: '${options[item]}';`;
+        break;
+      case 'fontSize':
+        css += `--text-font-size: ${options[item]}px;`;
+        break;
+      case 'lineHeight':
+        {
+          const h = Math.floor(options[item] * options.fontSize);
+          css += `--text-line-height: ${h}px;`;
+        }
+        break;
+      case 'paragraphHeight':
+        css += `--p-margin-bottom: ${options[item]}px;`;
+        break;
+      default:
+        break;
+    }
+  });
+  //
+  style.innerHTML = `div[id^='ag-editor-id'] { ${css} }`;
+  document.head.appendChild(style);
+}
+
 export function injectionCssFormId(id, css = '') {
   if (!id) return;
   //

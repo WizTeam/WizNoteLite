@@ -17,7 +17,8 @@ import SideBar from '../components/SideBar';
 import LiteText from '../components/LiteText';
 import LoginDialog from '../dialogs/LoginDialog';
 import UpgradeToVIPDialog from '../dialogs/UpgradeToVIPDialog';
-// import SettingDialog from '../components/SettingDialog';
+import SettingDialog from '../dialogs/SettingDialog';
+import { overwriteEditorConfig } from '../utils/utils';
 import Icons from '../config/icons';
 
 const styles = (theme) => ({
@@ -185,12 +186,12 @@ class Main extends React.Component {
     },
     handleShowSettingDialog: () => {
       this.setState({
-        // showSettingDialog: true,
+        showSettingDialog: true,
       });
     },
     handleSettingDialogClose: () => {
       this.setState({
-        // showSettingDialog: false,
+        showSettingDialog: false,
       });
     },
     handleClickTag: (text) => {
@@ -334,6 +335,9 @@ class Main extends React.Component {
     handleSizeChange: debounce((type, size) => {
       window.wizApi.userManager.setUserSettings(`${type}Size`, size);
     }, 500),
+    handleEditorConfigChange: (config) => {
+      overwriteEditorConfig(config);
+    },
   }
 
   sideBarSize = window.wizApi.userManager.getUserSettingsSync('sideBarSize', undefined);
@@ -352,7 +356,7 @@ class Main extends React.Component {
       showMatched: false,
       showLoginDialog: false,
       showUpgradeToVipDialog: false,
-      // showSettingDialog: false,
+      showSettingDialog: false,
       backgroundType: window.wizApi.userManager.getUserSettingsSync('background', 'white'),
       isFullScreen: window.wizApi.windowManager.isFullScreen(),
     };
@@ -441,7 +445,7 @@ class Main extends React.Component {
       showLoginDialog,
       showUpgradeToVipDialog,
       isFullScreen,
-      // showSettingDialog,
+      showSettingDialog,
     } = this.state;
 
     const openSidebar = showDrawer && !isFullScreen;
@@ -548,11 +552,12 @@ class Main extends React.Component {
           onClose={this.handler.handleCloseUpgradeToVipDialog}
         />
 
-        {/* <SettingDialog
+        <SettingDialog
           open={showSettingDialog}
           user={user}
           onClose={this.handler.handleSettingDialogClose}
-        /> */}
+          onEditorConfigChange={this.handler.handleEditorConfigChange}
+        />
       </div>
     );
   }

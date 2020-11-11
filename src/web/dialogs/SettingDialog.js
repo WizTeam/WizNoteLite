@@ -16,6 +16,12 @@ import LiteText from '../components/LiteText';
 import LiteSelect from '../components/LiteSelect';
 import Icons from '../config/icons';
 
+const EDITOR_DEFAULT_CONFIG = {
+  fontFamily: 'Open Sans',
+  fontSize: '16',
+  lineHeight: '1.8',
+  paragraphHeight: '20',
+};
 
 const styles = (theme) => ({
   root: {
@@ -105,12 +111,24 @@ class SettingDialog extends React.Component {
         type,
       });
     },
+    handleEditorConfigChange: (select) => {
+      const { editorConfig } = this.state;
+
+      editorConfig[select.type] = select.value;
+      //
+      if (this.props.onEditorConfigChange) {
+        this.props.onEditorConfigChange(editorConfig);
+      }
+      //
+      this.setState({ editorConfig });
+    },
   };
 
   constructor(props) {
     super(props);
     this.state = {
       type: 'account',
+      editorConfig: EDITOR_DEFAULT_CONFIG,
     };
   }
 
@@ -192,46 +210,74 @@ class SettingDialog extends React.Component {
   }
 
   renderEdit() {
+    const { editorConfig } = this.state;
     const { classes } = this.props;
     //
     const fontFamilyOptions = [
-      { title: 'source hen CN', value: '' },
+      { title: 'Open Sans', type: 'fontFamily', value: 'Open Sans' },
+      { title: 'WenQuanYi Micro Hei', type: 'fontFamily', value: 'WenQuanYi Micro Hei' },
+      { title: 'sans-serif', type: 'fontFamily', value: 'sans-serif' },
     ];
     const fontSizeOptions = [
-      { title: '16px', value: '16' },
+      { title: '12px', type: 'fontSize', value: '12' },
+      { title: '14px', type: 'fontSize', value: '14' },
+      { title: '16px', type: 'fontSize', value: '16' },
     ];
     const lineHeightOptions = [
-      { title: '1.8', value: '1.8' },
+      { title: '1.8', type: 'lineHeight', value: '1.8' },
+      { title: '1.9', type: 'lineHeight', value: '1.9' },
     ];
     const paragraphOptions = [
-      { title: '46', value: '46' },
+      { title: '10px', type: 'paragraphHeight', value: '10' },
+      { title: '15px', type: 'paragraphHeight', value: '15' },
+      { title: '20px', type: 'paragraphHeight', value: '20' },
     ];
 
     return (
       <div>
-        <LiteText disableUserSelect>font family</LiteText>
+        <LiteText disableUserSelect>
+          <FormattedMessage id="settingLabelFontFamily" />
+        </LiteText>
         <LiteSelect
           className={classes.liteSelect}
           options={fontFamilyOptions}
+          value={editorConfig.fontFamily}
+          onChange={this.handler.handleEditorConfigChange}
         />
-        <LiteText disableUserSelect>font size</LiteText>
+        <LiteText disableUserSelect>
+          <FormattedMessage id="settingLabelFontSize" />
+        </LiteText>
         <LiteSelect
           className={classes.liteSelect}
           options={fontSizeOptions}
+          value={editorConfig.fontSize}
+          onChange={this.handler.handleEditorConfigChange}
         />
-        <LiteText disableUserSelect>line height</LiteText>
+        <LiteText disableUserSelect>
+          <FormattedMessage id="settingLabelLineHeight" />
+        </LiteText>
         <LiteSelect
           className={classes.liteSelect}
           options={lineHeightOptions}
+          value={editorConfig.lineHeight}
+          onChange={this.handler.handleEditorConfigChange}
         />
-        <LiteText disableUserSelect>paragraph</LiteText>
+        <LiteText disableUserSelect>
+          <FormattedMessage id="settingLabelParagraphHeight" />
+        </LiteText>
         <LiteSelect
           className={classes.liteSelect}
           options={paragraphOptions}
+          value={editorConfig.paragraphHeight}
+          onChange={this.handler.handleEditorConfigChange}
         />
-        <LiteText disableUserSelect>edit mode</LiteText>
+        <LiteText disableUserSelect>
+          <FormattedMessage id="settingLabelEditorMode" />
+        </LiteText>
         <div className={classes.checkboxList}>
-          <LiteText disableUserSelect fullWidth={false}>open focus mode</LiteText>
+          <LiteText disableUserSelect fullWidth={false}>
+            <FormattedMessage id="settingButtonRenderNow" />
+          </LiteText>
           <Switch />
         </div>
       </div>
@@ -336,6 +382,7 @@ SettingDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   open: PropTypes.bool,
   user: PropTypes.object.isRequired,
+  onEditorConfigChange: PropTypes.func.isRequired,
 };
 
 SettingDialog.defaultProps = {

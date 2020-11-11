@@ -8,7 +8,7 @@ div[id^='ag-editor-id'] {
   // 正文字体
   --text-font-family: 'Open Sans', 'Noto Sans SC', Menlo, "Ubuntu Mono", Consolas, "Courier New", "Microsoft Yahei", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif;
   // 段落下边距
-  --p-margin-bottom: 16px;
+  --p-margin-bottom: 20px;
   // 引用背景
   --blockquote-background: inherit;
   // 引用边框颜色
@@ -47,35 +47,35 @@ div[id^='ag-editor-id'] {
   font-family: var(--text-font-family);
 
   & > h1 {
-    font-size: 32px;
-    line-height: 44px;
+    font-size: 2em;
+    line-height: 1.375;
     border: none;
     @include hStyle;
   }
   & > h2 {
-    font-size: 28px;
-    line-height: 40px;
+    font-size: 1.75em;
+    line-height: 1.428;
     border: none;
     @include hStyle;
   }
   & > h3 {
-    font-size: 24px;
-    line-height: 36px;
+    font-size: 1.5em;
+    line-height: 1.5;
     @include hStyle;
   }
   & > h4 {
-    font-size: 20px;
-    line-height: 32px;
+    font-size: 1.25em;
+    line-height: 1.6;
     @include hStyle;
   }
   & > h5 {
-    font-size: 16px;
-    line-height: 28px;
+    font-size: 1em;
+    line-height: 1.75;
     @include hStyle;
   }
   & > h6 {
-    font-size: 16px;
-    line-height: 28px;
+    font-size: 1em;
+    line-height: 1.75;
     color: #aaaaaa;
     @include hStyle;
   }
@@ -93,6 +93,10 @@ div[id^='ag-editor-id'] {
       left: 0;
       background: var(--blockquote-border-color);
     }
+  }
+
+  .ag-paragraph {
+    margin-bottom: var(--p-margin-bottom);
   }
 
   // 屏蔽table工具栏

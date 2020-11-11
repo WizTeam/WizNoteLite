@@ -166,8 +166,15 @@ export default {
   settingLabelNickname: 'Nickname',
   settingLabelMobile: 'Mobile',
   settingLabelWechat: 'Wechat',
+  settingLabelFontFamily: 'Font Family',
+  settingLabelFontSize: 'Font Size',
+  settingLabelLineHeight: 'Line Height',
+  settingLabelParagraphHeight: 'Paragraph Height',
+  settingLabelEditorMode: 'Editor Mode',
   settingButtonChangeEmail: 'Change Email',
   settingButtonRemoveMobile: 'Delete',
   settingButtonUnbindWechat: 'Unbind',
   settingButtonChangePassword: 'Change Password',
+  settingButtonRenderNow: 'Render Now Mode',
+
 };
