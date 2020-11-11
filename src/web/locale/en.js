@@ -156,4 +156,18 @@ export default {
   menuQuit: 'Quit',
 
   editorContents: 'Contents',
+
+  // setting
+  settingSidebarAccount: 'Account',
+  settingSidebarTheme: 'Theme',
+  settingSidebarEdit: 'Edit',
+  settingSidebarCommon: 'Common',
+  settingLabelEmail: 'Email',
+  settingLabelNickname: 'Nickname',
+  settingLabelMobile: 'Mobile',
+  settingLabelWechat: 'Wechat',
+  settingButtonChangeEmail: 'Change Email',
+  settingButtonRemoveMobile: 'Delete',
+  settingButtonUnbindWechat: 'Unbind',
+  settingButtonChangePassword: 'Change Password',
 };

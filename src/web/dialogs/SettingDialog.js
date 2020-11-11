@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
+import { injectIntl, FormattedMessage } from 'react-intl';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import List from '@material-ui/core/List';
@@ -10,9 +11,9 @@ import IconButton from '@material-ui/core/IconButton';
 import Checkbox from '@material-ui/core/Checkbox';
 import Switch from '@material-ui/core/Switch';
 //
-import LiteInput from './LiteInput';
-import LiteText from './LiteText';
-import LiteSelect from './LiteSelect';
+import LiteInput from '../components/LiteInput';
+import LiteText from '../components/LiteText';
+import LiteSelect from '../components/LiteSelect';
 import Icons from '../config/icons';
 
 
@@ -42,14 +43,18 @@ const styles = (theme) => ({
     overflow: 'auto',
   },
   close: {
-    position: 'fixed',
-    top: theme.spacing(4),
-    right: theme.spacing(4),
+    position: 'absolute',
+    top: 0,
+    right: 0,
     fontSize: 12,
-    color: '#aaa',
+    color: theme.custom.color.contentToolIcon,
     userSelect: 'none',
+    '&:hover': {
+      color: theme.custom.color.contentToolIconHover,
+    },
     '& .MuiIconButton-root': {
-      padding: 0,
+      padding: 6,
+      borderRadius: 0,
     },
   },
   liteSelect: {
@@ -70,10 +75,11 @@ const styles = (theme) => ({
     color: '#006eff',
   },
   displayName: {
-    width: 352,
+    maxWidth: 352,
+    marginTop: theme.spacing(1),
   },
   accountTitle: {
-    marginTop: theme.spacing(4),
+    marginTop: theme.spacing(3),
     fontSize: 14,
     color: '#aaa',
     '&:first-child': {
@@ -115,30 +121,50 @@ class SettingDialog extends React.Component {
 
     return (
       <div>
-        <LiteText className={classes.accountTitle}>email</LiteText>
+        <LiteText className={classes.accountTitle}>
+          <FormattedMessage id="settingLabelEmail" />
+        </LiteText>
         {user && user.email && (
           <div className={classes.accountItem}>
             <LiteText fullWidth={false}>{user.email}</LiteText>
-            <Button className={classes.itemButton}>change email</Button>
+            <Button className={classes.itemButton}>
+              <FormattedMessage id="settingButtonChangeEmail" />
+            </Button>
           </div>
         )}
-        <LiteText className={classes.accountTitle}>nickname</LiteText>
+        <LiteText className={classes.accountTitle}>
+          <FormattedMessage id="settingLabelNickname" />
+        </LiteText>
         <LiteInput className={classes.displayName} value={user.displayName} />
-        <LiteText className={classes.accountTitle}>mobile phone</LiteText>
         {user && user.mobile && (
-          <div className={classes.accountItem}>
-            <LiteText fullWidth={false}>{user.mobile}</LiteText>
-            <Button className={classes.itemButton}>delete</Button>
-          </div>
+          <>
+            <LiteText className={classes.accountTitle}>
+              <FormattedMessage id="settingLabelMobile" />
+            </LiteText>
+            <div className={classes.accountItem}>
+              <LiteText fullWidth={false}>{user.mobile}</LiteText>
+              <Button className={classes.itemButton}>
+                <FormattedMessage id="settingButtonRemoveMobile" />
+              </Button>
+            </div>
+          </>
         )}
-        <LiteText className={classes.accountTitle}>wechat</LiteText>
         {user && user.wechat && (
-          <div className={classes.accountItem}>
-            <LiteText fullWidth={false}>{user.wechat}</LiteText>
-            <Button className={classes.itemButton}>unbind</Button>
-          </div>
+          <>
+            <LiteText className={classes.accountTitle}>
+              <FormattedMessage id="settingLabelWechat" />
+            </LiteText>
+            <div className={classes.accountItem}>
+              <LiteText fullWidth={false}>{user.wechat}</LiteText>
+              <Button className={classes.itemButton}>
+                <FormattedMessage id="settingButtonUnbindWechat" />
+              </Button>
+            </div>
+          </>
         )}
-        <Button className={classes.changePasswordButton}>change password</Button>
+        <Button className={classes.changePasswordButton}>
+          <FormattedMessage id="settingButtonChangePassword" />
+        </Button>
       </div>
     );
   }
@@ -262,10 +288,10 @@ class SettingDialog extends React.Component {
     const { type } = this.state;
     //
     const sidebar = [
-      { type: 'account', title: 'account' },
-      { type: 'theme', title: 'theme' },
-      { type: 'edit', title: 'edit' },
-      { type: 'common', title: 'common' },
+      { type: 'account', title: 'settingSidebarAccount' },
+      { type: 'theme', title: 'settingSidebarTheme' },
+      { type: 'edit', title: 'settingSidebarEdit' },
+      { type: 'common', title: 'settingSidebarCommon' },
     ];
 
     return (
@@ -284,7 +310,7 @@ class SettingDialog extends React.Component {
                 onClick={() => this.handler.handleSidebarChange(item.type)}
                 classes={{ selected: classes.selected }}
               >
-                {item.title}
+                <FormattedMessage id={item.title} />
               </ListItem>
             ))}
           </List>
@@ -299,7 +325,6 @@ class SettingDialog extends React.Component {
           <IconButton color="inherit" onClick={onClose}>
             <Icons.ClearIcon />
           </IconButton>
-          <LiteText>ESC</LiteText>
         </div>
       </Dialog>
     );
@@ -317,4 +342,4 @@ SettingDialog.defaultProps = {
   open: false,
 };
 
-export default withStyles(styles)(SettingDialog);
+export default withStyles(styles)(injectIntl(SettingDialog));

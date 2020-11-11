@@ -156,4 +156,18 @@ export default {
   menuQuit: '退出',
 
   editorContents: '目录',
+
+  // setting
+  settingSidebarAccount: '账号',
+  settingSidebarTheme: '主题',
+  settingSidebarEdit: '编辑',
+  settingSidebarCommon: '通用',
+  settingLabelEmail: '邮箱',
+  settingLabelNickname: '昵称',
+  settingLabelMobile: '手机',
+  settingLabelWechat: '微信',
+  settingButtonChangeEmail: '更换邮箱',
+  settingButtonRemoveMobile: '删除',
+  settingButtonUnbindWechat: '解绑',
+  settingButtonChangePassword: '修改密码',
 };

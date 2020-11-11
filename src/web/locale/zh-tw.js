@@ -155,4 +155,18 @@ export default {
   menuQuit: '退出',
 
   editorContents: '目錄',
+
+  // setting
+  settingSidebarAccount: '賬號',
+  settingSidebarTheme: '主題',
+  settingSidebarEdit: '編輯',
+  settingSidebarCommon: '通用',
+  settingLabelEmail: '郵箱',
+  settingLabelNickname: '暱稱',
+  settingLabelMobile: '手機',
+  settingLabelWechat: '微信',
+  settingButtonChangeEmail: '更換郵箱',
+  settingButtonRemoveMobile: '刪除',
+  settingButtonUnbindWechat: '解綁',
+  settingButtonChangePassword: '修改密碼',
 };

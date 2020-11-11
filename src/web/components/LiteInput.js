@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     position: 'relative',
-    border: `solid 1px ${theme.custom.color.liteInputNormalBorder}`,
+    border: `solid 2px ${theme.custom.color.liteInputNormalBorder}`,
     paddingLeft: 10,
     paddingRight: 10,
     '& > input::-webkit-input-safebox-button': {
