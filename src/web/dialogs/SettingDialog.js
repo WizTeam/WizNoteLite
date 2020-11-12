@@ -122,13 +122,35 @@ class SettingDialog extends React.Component {
       //
       this.setState({ editorConfig });
     },
+    handleChangeStartLayout: (select) => {
+      const showDrawer = select.value === '1';
+
+      this.setState({ showDrawer });
+
+      window.wizApi.userManager.setUserSettings('showDrawer', showDrawer);
+    },
+    handleChangeNoteListOrderBy: (select, value) => {
+      this.setState({ orderBy: value });
+
+      window.wizApi.userManager.setUserSettings('orderBy', value);
+
+      if (this.props.onOrderByChange) {
+        this.props.onOrderByChange(value);
+      }
+    },
+    handleFocusMode: (event) => {
+      window.wizApi.userManager.setUserSettings('focusWithTypewriter', event.target.checked);
+    },
   };
 
   constructor(props) {
     super(props);
+    const um = window.wizApi.userManager;
     this.state = {
       type: 'account',
       editorConfig: EDITOR_DEFAULT_CONFIG,
+      showDrawer: um.getUserSettingsSync('showDrawer', false),
+      orderBy: um.getUserSettingsSync('orderBy', 'modified'),
     };
   }
 
@@ -285,45 +307,55 @@ class SettingDialog extends React.Component {
   }
 
   renderCommon() {
-    const { classes } = this.props;
+    const { showDrawer, orderBy } = this.state;
+    const { classes, intl } = this.props;
     //
     const showOptions = [
-      {
-        title: 'Note list and note',
-        value: '',
-      },
-      {
-        title: 'Note list',
-        value: '1',
-      },
+      { title: intl.formatMessage({ id: 'settingLabelLayoutAll' }), value: '1' },
+      { title: intl.formatMessage({ id: 'settingLabelLayoutNoteListAndNote' }), value: '2' },
     ];
     const sortOptions = [
-      { title: 'created', value: '' },
+      { title: intl.formatMessage({ id: 'settingLabelLayoutCreated' }), value: 'created' },
+      { title: intl.formatMessage({ id: 'settingLabelLayoutModify' }), value: 'modified' },
     ];
     const countdownOptions = [
       { title: '25 min', value: '25' },
     ];
+    //
+    const startValue = showDrawer ? '1' : '2';
 
     return (
       <div>
-        <LiteText disableUserSelect>show at starup</LiteText>
+        <LiteText disableUserSelect>
+          <FormattedMessage id="settingLabelStartLayout" />
+        </LiteText>
         <LiteSelect
           className={classes.liteSelect}
           options={showOptions}
+          value={startValue}
+          onChange={this.handler.handleChangeStartLayout}
         />
-        <LiteText disableUserSelect>note list sort</LiteText>
+        <LiteText disableUserSelect>
+          <FormattedMessage id="settingLabelNoteListSort" />
+        </LiteText>
         <LiteSelect
           className={classes.liteSelect}
           options={sortOptions}
+          value={orderBy}
+          onChange={this.handler.handleChangeNoteListOrderBy}
         />
-        <LiteText disableUserSelect>focus count down</LiteText>
+        <LiteText disableUserSelect>
+          <FormattedMessage id="settingLabelFocusModeTimeout" />
+        </LiteText>
         <LiteSelect
           className={classes.liteSelect}
           options={countdownOptions}
         />
         <div className={classes.checkboxList}>
-          <Checkbox />
-          <LiteText disableUserSelect>open deep focus mode</LiteText>
+          <Checkbox onChange={this.handler.handleFocusMode} />
+          <LiteText disableUserSelect>
+            <FormattedMessage id="settingLabelFocusModeWithTypewriter" />
+          </LiteText>
         </div>
       </div>
     );
@@ -379,14 +411,17 @@ class SettingDialog extends React.Component {
 
 SettingDialog.propTypes = {
   classes: PropTypes.object.isRequired,
+  intl: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
   open: PropTypes.bool,
   user: PropTypes.object.isRequired,
   onEditorConfigChange: PropTypes.func.isRequired,
+  onOrderByChange: PropTypes.func,
 };
 
 SettingDialog.defaultProps = {
   open: false,
+  onOrderByChange: null,
 };
 
 export default withStyles(styles)(injectIntl(SettingDialog));

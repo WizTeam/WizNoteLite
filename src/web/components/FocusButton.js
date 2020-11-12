@@ -67,14 +67,20 @@ function FocusButton(props) {
     })();
   }, []);
 
-  function handleFocus(event) {
-    setFocusMode(event.target.checked);
-    window.wizApi.userManager.setSettings('focusMode', event.target.checked);
-  }
-
   function handleTypewriter(event) {
     setTypewriterMode(event.target.checked);
     window.wizApi.userManager.setSettings('typewriterMode', event.target.checked);
+  }
+
+  function handleFocus(event) {
+    const focusWithTypewriter = window.wizApi.userManager.getUserSettingsSync('focusWithTypewriter', false);
+    //
+    if (focusWithTypewriter && event.target.checked) {
+      handleTypewriter(event);
+    }
+
+    setFocusMode(event.target.checked);
+    window.wizApi.userManager.setSettings('focusMode', event.target.checked);
   }
 
   return (

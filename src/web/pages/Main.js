@@ -117,7 +117,7 @@ class Main extends React.Component {
       this.setState({
         showDrawer,
       });
-      await window.wizApi.userManager.setUserSettings('showDrawer', showDrawer);
+      // await window.wizApi.userManager.setUserSettings('showDrawer', showDrawer);
     },
     handleChangeType: async (type) => {
       this.setState({ type });
@@ -338,6 +338,9 @@ class Main extends React.Component {
     handleEditorConfigChange: (config) => {
       overwriteEditorConfig(config);
     },
+    handleOrderByChange: (orderBy) => {
+      this.setState({ orderBy });
+    },
   }
 
   sideBarSize = window.wizApi.userManager.getUserSettingsSync('sideBarSize', undefined);
@@ -359,6 +362,7 @@ class Main extends React.Component {
       showSettingDialog: false,
       backgroundType: window.wizApi.userManager.getUserSettingsSync('background', 'white'),
       isFullScreen: window.wizApi.windowManager.isFullScreen(),
+      orderBy: null,
     };
     this._upgradeVipDisplayed = false;
   }
@@ -439,7 +443,7 @@ class Main extends React.Component {
     const {
       type,
       currentNote,
-      showDrawer,
+      showDrawer, orderBy,
       tag, matchedNotesCount, showMatched,
       backgroundType,
       showLoginDialog,
@@ -510,6 +514,7 @@ class Main extends React.Component {
                 onChangeType={this.handler.handleChangeType}
                 onChangeNotes={this.handler.handleChangeNotes}
                 onToggleDrawer={this.handler.handleToggleDrawer}
+                orderBy={orderBy}
                 kbGuid={kbGuid}
                 type={type}
                 tag={tag}
@@ -557,6 +562,7 @@ class Main extends React.Component {
           user={user}
           onClose={this.handler.handleSettingDialogClose}
           onEditorConfigChange={this.handler.handleEditorConfigChange}
+          onOrderByChange={this.handler.handleOrderByChange}
         />
       </div>
     );
