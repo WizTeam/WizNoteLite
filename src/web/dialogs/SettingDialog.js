@@ -74,6 +74,10 @@ const styles = (theme) => ({
     display: 'flex',
     alignItems: 'center',
   },
+  checkbox: {
+    marginRight: theme.spacing(1),
+    marginLeft: '-4px',
+  },
   accountItem: {
     display: 'flex',
     alignItems: 'center',
@@ -95,6 +99,7 @@ const styles = (theme) => ({
     },
   },
   changePasswordButton: {
+    minWidth: 112,
     backgroundColor: theme.custom.background.dialogButtonBlack,
     color: theme.custom.color.dialogButtonBlack,
     borderRadius: 0,
@@ -168,6 +173,7 @@ class SettingDialog extends React.Component {
       }
     },
     handleFocusMode: (event) => {
+      this.setState({ focusWithTypewriter: event.target.checked });
       window.wizApi.userManager.setUserSettings('focusWithTypewriter', event.target.checked);
     },
   };
@@ -180,7 +186,18 @@ class SettingDialog extends React.Component {
       editorConfig: EDITOR_DEFAULT_CONFIG,
       showDrawer: um.getUserSettingsSync('showDrawer', false),
       orderBy: um.getUserSettingsSync('orderBy', 'modified'),
+      focusWithTypewriter: um.getUserSettingsSync('focusWithTypewriter', false),
     };
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.open !== this.props.open && this.props.open) {
+      this.reset();
+    }
+  }
+
+  reset() {
+    this.setState({ type: 'account' });
   }
 
   renderAccount() {
@@ -239,6 +256,7 @@ class SettingDialog extends React.Component {
   }
 
   renderTheme() {
+    const { type } = this.state;
     const { classes } = this.props;
     //
     const themeOptions = [
@@ -246,7 +264,7 @@ class SettingDialog extends React.Component {
     ];
 
     return (
-      <div>
+      <div style={{ display: type === 'theme' ? 'block' : 'none' }}>
         <div className={classes.inlineBox}>
           <LiteText fullWidth={false}>
             <FormattedMessage id="settingLabelLightMode" />
@@ -352,18 +370,20 @@ class SettingDialog extends React.Component {
         <LiteText disableUserSelect>
           <FormattedMessage id="settingLabelEditorMode" />
         </LiteText>
-        <div className={classes.checkboxList}>
+        <div className={classes.checkboxList} style={{ margin: '8px 0 16px 0' }}>
           <LiteText disableUserSelect fullWidth={false}>
             <FormattedMessage id="settingButtonRenderNow" />
           </LiteText>
-          <Switch />
+          <Switch
+            size="small"
+          />
         </div>
       </div>
     );
   }
 
   renderCommon() {
-    const { showDrawer, orderBy } = this.state;
+    const { showDrawer, orderBy, focusWithTypewriter } = this.state;
     const { classes, intl } = this.props;
     //
     const showOptions = [
@@ -408,7 +428,12 @@ class SettingDialog extends React.Component {
           options={countdownOptions}
         />
         <div className={classes.checkboxList}>
-          <Checkbox onChange={this.handler.handleFocusMode} />
+          <Checkbox
+            checked={focusWithTypewriter}
+            className={classes.checkbox}
+            size="small"
+            onChange={this.handler.handleFocusMode}
+          />
           <LiteText disableUserSelect>
             <FormattedMessage id="settingLabelFocusModeWithTypewriter" />
           </LiteText>
@@ -450,7 +475,7 @@ class SettingDialog extends React.Component {
           </List>
           <div className={classes.content}>
             {type === 'account' && this.renderAccount()}
-            {type === 'theme' && this.renderTheme()}
+            {this.renderTheme()}
             {type === 'edit' && this.renderEdit()}
             {type === 'common' && this.renderCommon()}
           </div>

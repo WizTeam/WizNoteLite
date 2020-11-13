@@ -35,15 +35,6 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
     color: '#aaaaaa',
     backgroundColor: 'transparent',
   },
-  switchBase: {
-    '&.Mui-checked': {
-      color: '#35e714',
-      '& + .MuiSwitch-track': {
-        backgroundColor: '#35e714',
-        opacity: 0.2,
-      },
-    },
-  },
   menuPaper: {
     backgroundColor: palette.type === 'dark' ? '#555' : '#fff',
     borderRadius: '2px',

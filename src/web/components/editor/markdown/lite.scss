@@ -99,6 +99,16 @@ div[id^='ag-editor-id'] {
     margin-bottom: var(--p-margin-bottom);
   }
 
+  span code,
+  td code,
+  th code,
+  code,
+  code[class*="language-"],
+  .CodeMirror,
+  pre.ag-paragraph {
+    font-size: 0.875em;
+  }
+
   // 屏蔽table工具栏
   figure.ag-active .ag-tool-table.ag-tool-bar,
   table.ag-active tr .ag-drag-handler.left,

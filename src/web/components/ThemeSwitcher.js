@@ -46,6 +46,30 @@ export default function ThemeSwitcher(props) {
             },
           },
         },
+        MuiSwitch: {
+          colorSecondary: {
+            '&$checked': {
+              color: '#35e714',
+            },
+            '&$checked + $track': {
+              backgroundColor: '#35e714',
+              opacity: 0.2,
+            },
+          },
+        },
+        MuiCheckbox: {
+          root: {
+            padding: 4,
+          },
+          colorSecondary: {
+            '&:hover': {
+              backgroundColor: '#35e71410',
+            },
+            '&$checked': {
+              color: '#35e714',
+            },
+          },
+        },
         MuiPopover: {
           paper: {
             minWidth: 100,
@@ -70,18 +94,6 @@ export default function ThemeSwitcher(props) {
             '&:hover': {
               backgroundColor: 'var(--floatHoverColor)',
             },
-            // '&:hover': {
-            //   backgroundColor: '#006eff',
-            //   color: '#ffffff',
-            // },
-            // '&$selected': {
-            //   backgroundColor: '#006eff',
-            //   color: '#ffffff',
-            //   '&:hover': {
-            //     backgroundColor: '#006eff',
-            //     color: '#ffffff',
-            //   },
-            // },
           },
         },
         MuiTypography: {
