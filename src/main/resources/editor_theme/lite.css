@@ -100,17 +100,17 @@
 }
 
 #wiz-note-content-root div[id^='ag-editor-id'] {
-  --text-line-height: 28px;
-  --text-font-size: 16px;
+  /* --text-line-height: 28px; */
+  /* --text-font-size: 16px; */
   --text-font-color: #333333;
-  --text-font-family: 'Open Sans', 'Noto Sans SC', Menlo, "Ubuntu Mono", Consolas, "Courier New", "Microsoft Yahei", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif;
-  --p-margin-bottom: 16px;
+  /* --text-font-family: 'Open Sans', 'Noto Sans SC', Menlo, "Ubuntu Mono", Consolas, "Courier New", "Microsoft Yahei", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif; */
+  /* --p-margin-bottom: 16px; */
   --blockquote-background: inherit;
   --blockquote-border-color: #d8d8d8;
   --blockquote-font-color: #aaa;
-  --link-font-color: #448aff;
-  --ir-bracket-color: #448aff;
-  --bold-font-family: 'Open Sans', 'Noto Sans SC', Menlo, "Ubuntu Mono", Consolas, "Courier New", "Microsoft Yahei", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif;
+  /* --link-font-color: #448aff; */
+  /* --ir-bracket-color: #448aff; */
+  /* --bold-font-family: 'Open Sans', 'Noto Sans SC', Menlo, "Ubuntu Mono", Consolas, "Courier New", "Microsoft Yahei", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif; */
 }
 
 #wiz-note-content-root code[class*="language-"], pre.ag-paragraph {

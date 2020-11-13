@@ -558,6 +558,17 @@ handleApi('getThemeCssString', async (event, theme = '') => {
   return '';
 });
 
+handleApi('getDefaultMarkdown', async (event) => {
+  let markdown = '';
+
+  const mdPath = path.join(__dirname, './resources/default_markdown.md');
+  //
+  if (fs.existsSync(mdPath)) {
+    markdown = await fs.readFile(mdPath, 'utf8');
+  }
+  return markdown;
+});
+
 handleApi('screenCaptureManual', async (event) => {
   if (process.platform === 'darwin') {
     // Use macOs `screencapture` command line when in macOs system.

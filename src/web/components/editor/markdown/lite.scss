@@ -95,7 +95,7 @@ div[id^='ag-editor-id'] {
     }
   }
 
-  .ag-paragraph {
+  & > .ag-paragraph {
     margin-bottom: var(--p-margin-bottom);
   }
 

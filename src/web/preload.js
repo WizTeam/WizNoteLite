@@ -326,6 +326,11 @@ class UserManager extends EventEmitter {
     return result;
   }
 
+  async getDefaultMarkdown() {
+    const result = await invokeApi('getDefaultMarkdown');
+    return result;
+  }
+
   async buildBindSnsUrl(server, type, postMessage, origin, extraParams) {
     const urlPath = '/as/thirdparty/go/auth';
     const query = {

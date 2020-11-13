@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import Dialog from '@material-ui/core/Dialog';
@@ -11,6 +12,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Checkbox from '@material-ui/core/Checkbox';
 import Switch from '@material-ui/core/Switch';
 //
+import NoteViewer from '../pages/NoteViewer';
 import LiteInput from '../components/LiteInput';
 import LiteText from '../components/LiteText';
 import LiteSelect from '../components/LiteSelect';
@@ -101,6 +103,33 @@ const styles = (theme) => ({
     '&:hover': {
       backgroundColor: theme.custom.background.dialogButtonBlackHover,
     },
+  },
+  inlineBox: {
+    display: 'flex',
+    alignItems: 'center',
+    paddingRight: theme.spacing(8),
+    boxSizing: 'border-box',
+  },
+  flexRight: {
+    marginLeft: 'auto',
+  },
+  themeSelect: {
+    marginLeft: theme.spacing(2),
+  },
+  noteViewerBox: {
+    width: 'auto',
+    marginRight: theme.spacing(8),
+    boxSizing: 'border-box',
+    marginTop: theme.spacing(2),
+  },
+  noteViewerInner: {
+    border: '1px solid #d8d8d8',
+    width: '100%',
+    height: 300,
+  },
+  previewThemeText: {
+    textAlign: 'center',
+    margin: theme.spacing(1, 0, 4, 0),
   },
 });
 
@@ -213,19 +242,46 @@ class SettingDialog extends React.Component {
     const { classes } = this.props;
     //
     const themeOptions = [
-      { title: 'default', value: '' },
-      { title: 'theme1', value: '1' },
-      { title: 'theme2', value: '2' },
+      { title: 'Default', value: '' },
     ];
 
     return (
       <div>
-        <div>
-          <LiteText>light mode</LiteText>
+        <div className={classes.inlineBox}>
+          <LiteText fullWidth={false}>
+            <FormattedMessage id="settingLabelLightMode" />
+          </LiteText>
           <LiteSelect
-            // className={classes.liteSelect}
+            className={classes.themeSelect}
             options={themeOptions}
           />
+          <Button className={classNames(classes.itemButton, classes.flexRight)}>
+            <FormattedMessage id="settingButtonCustomize" />
+          </Button>
+        </div>
+        <div className={classes.noteViewerBox}>
+          <div className={classes.noteViewerInner}><NoteViewer darkMode={false} /></div>
+          <LiteText className={classes.previewThemeText}>
+            <FormattedMessage id="settingLabelPreviewTheme" />
+          </LiteText>
+        </div>
+        <div className={classes.inlineBox}>
+          <LiteText fullWidth={false}>
+            <FormattedMessage id="settingLabelDarkMode" />
+          </LiteText>
+          <LiteSelect
+            className={classes.themeSelect}
+            options={themeOptions}
+          />
+          <Button className={classNames(classes.itemButton, classes.flexRight)}>
+            <FormattedMessage id="settingButtonCustomize" />
+          </Button>
+        </div>
+        <div className={classes.noteViewerBox}>
+          <div className={classes.noteViewerInner}><NoteViewer darkMode /></div>
+          <LiteText className={classes.previewThemeText}>
+            <FormattedMessage id="settingLabelPreviewTheme" />
+          </LiteText>
         </div>
       </div>
     );
