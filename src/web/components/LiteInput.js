@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import InputBase from '@material-ui/core/InputBase';
 import Tooltip from '@material-ui/core/Tooltip';
+import IconButton from '@material-ui/core/IconButton';
 //
 import Icons from '../config/icons';
 
@@ -48,14 +49,114 @@ const useStyles = makeStyles((theme) => ({
   errorIcon: {
     color: theme.custom.color.liteInputErrorBorder,
   },
+  buttonBox: {
+    position: 'absolute',
+    right: 0,
+    bottom: '-38px',
+  },
+  submitButton: {
+    marginRight: theme.spacing(1),
+    backgroundColor: '#448aff',
+    color: '#ffffff',
+    '&:hover': {
+      backgroundColor: '#448affc0',
+    },
+  },
+  cancelButton: {
+    backgroundColor: '#f2f2f2',
+  },
 }));
+
+function InputComponent(props) {
+  const classes = useStyles();
+  const [isFocus, setIsFocus] = useState(false);
+  const lock = React.useRef(false);
+  const focus = React.useRef(false);
+  const { button, inputRef, ...other } = props;
+
+  const handleFocus = (event) => {
+    focus.current = true;
+    //
+    if (props.onFocus) props.onFocus(event);
+  };
+
+  const handleBlur = (event) => {
+    focus.current = false;
+    //
+    if (props.onBlur) props.onBlur(event);
+  };
+
+  const handleMouseDown = () => {
+    lock.current = true;
+  };
+
+  const handleMouseUp = () => {
+    lock.current = false;
+  };
+
+  const handleSubmit = (event) => {
+    event.stopPropagation();
+    // do something
+    lock.current = false;
+    if (!focus.current && !lock.current) {
+      setIsFocus(false);
+    } else {
+      setIsFocus(true);
+    }
+  };
+
+  const handleCancel = (event) => {
+    event.stopPropagation();
+    lock.current = false;
+    if (!focus.current && !lock.current) {
+      setIsFocus(false);
+    } else {
+      setIsFocus(true);
+    }
+  };
+
+  useEffect(() => {
+    if (!focus.current && !lock.current) {
+      setIsFocus(false);
+    } else {
+      setIsFocus(true);
+    }
+  }, [focus.current, lock.current]);
+  //
+  return (
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+    <div
+      style={{ flex: 1 }}
+      onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
+    >
+      <input
+        ref={inputRef}
+        // eslint-disable-next-line react/jsx-props-no-spreading
+        {...other}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+      />
+      {button && isFocus && (
+        <div className={classes.buttonBox}>
+          <IconButton className={classes.submitButton} onMouseUp={handleSubmit}>
+            <Icons.SelectedIcon />
+          </IconButton>
+          <IconButton className={classes.cancelButton} onMouseUp={handleCancel}>
+            <Icons.ClearIcon />
+          </IconButton>
+        </div>
+      )}
+    </div>
+  );
+}
 
 function LiteInput(props) {
   const classes = useStyles();
   const {
     error, className, helperText, type,
     placeholder, onChange, value, disabled,
-    inputRef, endAdornment,
+    inputRef, endAdornment, button,
   } = props;
 
   const handleKeyDown = (e) => {
@@ -82,20 +183,25 @@ function LiteInput(props) {
       }}
     >
       <InputBase
-        inputRef={inputRef}
-        placeholder={placeholder}
         value={value}
-        onChange={onChange}
-        onKeyDown={handleKeyDown}
         error={error}
+        inputRef={inputRef}
         disabled={disabled}
+        className={className}
+        placeholder={placeholder}
+        inputComponent={InputComponent}
+        inputProps={{
+          button,
+        }}
         classes={{
           root: classes.root,
           focused: classes.focused,
           error: classes.error,
         }}
-        endAdornment={error ? <Icons.InputErrorIcon className={classes.errorIcon} /> : endAdornment}
-        className={className}
+        endAdornment={error
+          ? <Icons.InputErrorIcon className={classes.errorIcon} /> : endAdornment}
+        onChange={onChange}
+        onKeyDown={handleKeyDown}
       />
     </Tooltip>
   );
@@ -116,6 +222,7 @@ LiteInput.propTypes = {
   onEnter: PropTypes.func,
   inputRef: PropTypes.object,
   endAdornment: PropTypes.element,
+  button: PropTypes.bool,
 };
 
 LiteInput.defaultProps = {
@@ -130,6 +237,14 @@ LiteInput.defaultProps = {
   disabled: false,
   inputRef: null,
   endAdornment: null,
+  button: false,
+};
+
+InputComponent.propTypes = {
+  inputRef: PropTypes.func.isRequired,
+  button: PropTypes.bool.isRequired,
+  onFocus: PropTypes.func.isRequired,
+  onBlur: PropTypes.func.isRequired,
 };
 
 export default LiteInput;

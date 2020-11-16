@@ -10,7 +10,7 @@ import ListItem from '@material-ui/core/ListItem';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Checkbox from '@material-ui/core/Checkbox';
-import Switch from '@material-ui/core/Switch';
+// import Switch from '@material-ui/core/Switch';
 //
 import NoteViewer from '../pages/NoteViewer';
 import LiteInput from '../components/LiteInput';
@@ -221,7 +221,7 @@ class SettingDialog extends React.Component {
         <LiteText className={classes.accountTitle}>
           <FormattedMessage id="settingLabelNickname" />
         </LiteText>
-        <LiteInput className={classes.displayName} value={user.displayName} />
+        <LiteInput button className={classes.displayName} value={user.displayName} />
         {user && user.mobile && (
           <>
             <LiteText className={classes.accountTitle}>
@@ -367,7 +367,7 @@ class SettingDialog extends React.Component {
           value={editorConfig.paragraphHeight}
           onChange={this.handler.handleEditorConfigChange}
         />
-        <LiteText disableUserSelect>
+        {/* <LiteText disableUserSelect>
           <FormattedMessage id="settingLabelEditorMode" />
         </LiteText>
         <div className={classes.checkboxList} style={{ margin: '8px 0 16px 0' }}>
@@ -377,7 +377,7 @@ class SettingDialog extends React.Component {
           <Switch
             size="small"
           />
-        </div>
+        </div> */}
       </div>
     );
   }
@@ -420,13 +420,13 @@ class SettingDialog extends React.Component {
           value={orderBy}
           onChange={this.handler.handleChangeNoteListOrderBy}
         />
-        <LiteText disableUserSelect>
+        {/* <LiteText disableUserSelect>
           <FormattedMessage id="settingLabelFocusModeTimeout" />
         </LiteText>
         <LiteSelect
           className={classes.liteSelect}
           options={countdownOptions}
-        />
+        /> */}
         <div className={classes.checkboxList}>
           <Checkbox
             checked={focusWithTypewriter}
