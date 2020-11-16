@@ -11,6 +11,7 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Checkbox from '@material-ui/core/Checkbox';
 // import Switch from '@material-ui/core/Switch';
+import ModifyEmailDialog from './ModifyEmailDialog';
 //
 import NoteViewer from '../pages/NoteViewer';
 import LiteInput from '../components/LiteInput';
@@ -37,18 +38,19 @@ const styles = (theme) => ({
   },
   sidebar: {
     width: 160,
-    backgroundColor: 'rgb(245, 245, 245)',
+    backgroundColor: theme.custom.background.noteList,
     paddingTop: theme.spacing(4),
   },
   selected: {
-    backgroundColor: '#fff !important',
+    backgroundColor: `${theme.custom.background.noteListActive} !important`,
   },
   content: {
     flex: 1,
     paddingTop: theme.spacing(5),
     paddingLeft: theme.spacing(8),
-    boxSizeing: 'border-box',
+    boxSizing: 'border-box',
     overflow: 'auto',
+    backgroundColor: theme.custom.background.noteListActive,
   },
   close: {
     position: 'absolute',
@@ -176,6 +178,19 @@ class SettingDialog extends React.Component {
       this.setState({ focusWithTypewriter: event.target.checked });
       window.wizApi.userManager.setUserSettings('focusWithTypewriter', event.target.checked);
     },
+    handleToggleFocusWithTypewriter: () => {
+      const { focusWithTypewriter } = this.state;
+      this.setState({
+        focusWithTypewriter: !focusWithTypewriter,
+      });
+      window.wizApi.userManager.setUserSettings('focusWithTypewriter', !focusWithTypewriter);
+    },
+    handleOpenModifyEmailDialog: () => {
+      this.setState({ openModifyEmailDialog: true });
+    },
+    handleCloseModifyEmailDialog: () => {
+      this.setState({ openModifyEmailDialog: false });
+    },
   };
 
   constructor(props) {
@@ -187,6 +202,7 @@ class SettingDialog extends React.Component {
       showDrawer: um.getUserSettingsSync('showDrawer', false),
       orderBy: um.getUserSettingsSync('orderBy', 'modified'),
       focusWithTypewriter: um.getUserSettingsSync('focusWithTypewriter', false),
+      openModifyEmailDialog: false,
     };
   }
 
@@ -210,10 +226,13 @@ class SettingDialog extends React.Component {
         <LiteText className={classes.accountTitle}>
           <FormattedMessage id="settingLabelEmail" />
         </LiteText>
-        {user && user.email && (
+        {user && user.userId && (
           <div className={classes.accountItem}>
             <LiteText fullWidth={false}>{user.email}</LiteText>
-            <Button className={classes.itemButton}>
+            <Button
+              className={classes.itemButton}
+              onClick={this.handler.handleOpenModifyEmailDialog}
+            >
               <FormattedMessage id="settingButtonChangeEmail" />
             </Button>
           </div>
@@ -434,7 +453,7 @@ class SettingDialog extends React.Component {
             size="small"
             onChange={this.handler.handleFocusMode}
           />
-          <LiteText disableUserSelect>
+          <LiteText onClick={this.handler.handleToggleFocusWithTypewriter} style={{ cursor: 'pointer' }}>
             <FormattedMessage id="settingLabelFocusModeWithTypewriter" />
           </LiteText>
         </div>
@@ -443,8 +462,11 @@ class SettingDialog extends React.Component {
   }
 
   render() {
-    const { classes, onClose, open } = this.props;
-    const { type } = this.state;
+    const {
+      classes, onClose, open,
+      user,
+    } = this.props;
+    const { type, openModifyEmailDialog } = this.state;
     //
     const sidebar = [
       { type: 'account', title: 'settingSidebarAccount' },
@@ -485,6 +507,11 @@ class SettingDialog extends React.Component {
             <Icons.ClearIcon />
           </IconButton>
         </div>
+        <ModifyEmailDialog
+          open={openModifyEmailDialog}
+          user={user}
+          onClose={this.handler.handleCloseModifyEmailDialog}
+        />
       </Dialog>
     );
   }

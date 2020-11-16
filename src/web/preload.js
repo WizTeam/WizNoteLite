@@ -1,4 +1,5 @@
 const EventEmitter = require('events');
+const axios = require('axios');
 const { remote, ipcRenderer } = require('electron');
 const platform = require('platform');
 const path = require('path');
@@ -162,6 +163,19 @@ class UserManager extends EventEmitter {
 
   get userGuid() {
     return this._user.userGuid;
+  }
+
+  get userToken() {
+    return this._user.token;
+  }
+
+  get getAsUrl() {
+    if (window.location.host === 'localhost:3000') {
+      return 'https://v3.wiz.cn';
+    } else if (window.location.host === '') {
+      return 'https://as.wiz.cn';
+    }
+    return window.location.origin;
   }
 
   async signUp(server, userId, password, options = {}) {
@@ -331,23 +345,6 @@ class UserManager extends EventEmitter {
     return result;
   }
 
-  async buildBindSnsUrl(server, type, postMessage, origin, extraParams) {
-    const urlPath = '/as/thirdparty/go/auth';
-    const query = {
-      type,
-      state: '',
-      redirectUrl: '',
-      postMessage: postMessage ? 1 : '',
-      origin,
-      extra: encodeURIComponent(extraParams),
-    };
-
-    const params = Object.keys(query).map((key) => `${key}=${query[key]}`).join('&');
-    const url = `${server}${urlPath}?${params}`;
-
-    return url;
-  }
-
   async screenCaptureManual() {
     const result = await invokeApi('screenCaptureManual');
     return result;
@@ -386,6 +383,31 @@ class UserManager extends EventEmitter {
   async viewLogFile() {
     const result = await invokeApi('viewLogFile', this.userGuid);
     return result;
+  }
+
+  async changeAccount(password, userId, newUserId) {
+    const url = `as/users/change_account`;
+    const options = {
+      url: `${this.getAsUrl}/${url}?clientType=web&clientVersion=3.0`,
+      method: 'post',
+      headers: {
+        'X-Wiz-Token': this.userToken,
+      },
+      data: {
+        userId,
+        newUserId,
+        password,
+      },
+    };
+
+    const result = await axios(options);
+    if (result.status !== 200) {
+      throw new Error(result.statusText);
+    }
+    if (result.data && result.data.returnCode !== 200) {
+      throw new Error(result.data.returnCode);
+    }
+    return result.data;
   }
 
   async sendMessage(name, ...args) {

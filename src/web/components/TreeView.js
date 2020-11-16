@@ -139,7 +139,6 @@ function TreeView(props) {
             >
               {renderArrowIcon(item)}
               <LiteText
-                disableTypography
                 title={item.title}
                 className={classNames(classes.text, classes.overflow, textClassName)}
               >
