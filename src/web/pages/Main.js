@@ -563,6 +563,7 @@ class Main extends React.Component {
           onClose={this.handler.handleSettingDialogClose}
           onEditorConfigChange={this.handler.handleEditorConfigChange}
           onOrderByChange={this.handler.handleOrderByChange}
+          onLoggedIn={this.props.onLoggedIn}
         />
       </div>
     );

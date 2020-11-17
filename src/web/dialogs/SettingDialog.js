@@ -216,13 +216,28 @@ class SettingDialog extends React.Component {
       }
 
       try {
-        await window.wizApi.userManager.updateUserInfo(displayName);
+        await window.wizApi.userManager.updateUserDisplayName(displayName);
       } catch (err) {
         this.setState({ displayNameErrorText: intl.formatMessage({ id: 'errorUpdateUserName' }) });
         return false;
       }
       //
       return true;
+    },
+    handleRemoveMobile: async () => {
+      const { user } = this.props;
+      //
+      try {
+        await window.wizApi.userManager.removeMobile();
+        await window.wizApi.userManager.refreshUserInfo();
+      } catch (err) {
+        return;
+      }
+      //
+      if (this.props.onLoggedIn) {
+        user.mobile = null;
+        this.props.onLoggedIn(user);
+      }
     },
   };
 
@@ -299,7 +314,7 @@ class SettingDialog extends React.Component {
             </LiteText>
             <div className={classes.accountItem}>
               <LiteText fullWidth={false}>{user.mobile}</LiteText>
-              <Button className={classes.itemButton}>
+              <Button className={classes.itemButton} onClick={this.handler.handleRemoveMobile}>
                 <FormattedMessage id="settingButtonRemoveMobile" />
               </Button>
             </div>
@@ -583,11 +598,13 @@ SettingDialog.propTypes = {
   user: PropTypes.object.isRequired,
   onEditorConfigChange: PropTypes.func.isRequired,
   onOrderByChange: PropTypes.func,
+  onLoggedIn: PropTypes.func,
 };
 
 SettingDialog.defaultProps = {
   open: false,
   onOrderByChange: null,
+  onLoggedIn: null,
 };
 
 export default withStyles(styles)(injectIntl(SettingDialog));

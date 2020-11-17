@@ -427,7 +427,7 @@ class UserManager extends EventEmitter {
     return simpleAsRequest(options);
   }
 
-  async updateUserInfo(displayName) {
+  async updateUserDisplayName(displayName) {
     const url = `as/users/update_info`;
     const options = {
       asUrl: this.getAsUrl,
@@ -436,6 +436,21 @@ class UserManager extends EventEmitter {
       token: this.userToken,
       data: {
         displayName,
+      },
+    };
+    //
+    return simpleAsRequest(options);
+  }
+
+  async removeMobile() {
+    const url = `as/users/update_info`;
+    const options = {
+      asUrl: this.getAsUrl,
+      url,
+      method: 'put',
+      token: this.userToken,
+      data: {
+        mobile: '',
       },
     };
     //
