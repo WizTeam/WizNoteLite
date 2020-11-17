@@ -94,6 +94,11 @@ export default {
 
   errorUpdateUserName: 'Failed to change the name',
   errorUpdateUserNameNull: 'Please input name',
+  errorOriginPasswordNull: 'Please input origin password',
+  errorNewPasswordNull: 'Please input new password',
+  errorConfirmPasswordNull: 'Please input confirm new password',
+  errorConfirmPasswordNotSame: 'Your confirmed password and new password do not match',
+  errorPasswordFormat: 'Error format',
 
   // upgrade vip
   buttonUpgradeVip: 'Upgrade VIP',
@@ -188,6 +193,11 @@ export default {
   settingLabelSettingEmail: 'Setting Email',
   settingLabelSettingEmailTip: 'After modifying your email address, please log in with your new email address',
   settingLabelPassword: 'Password',
+  settingLabelModifyPassword: 'Modify Password',
+  settingLabelOriginPassword: 'Origin Password',
+  settingLabelNewPassword: 'New Password',
+  settingLabelConfirmNewPassword: 'Confirm New Password',
+  settingLabelPasswordTip: 'The password should be more than 6 characters',
   settingButtonCustomize: 'Customize',
   settingButtonChangeEmail: 'Change Email',
   settingButtonRemoveMobile: 'Delete',

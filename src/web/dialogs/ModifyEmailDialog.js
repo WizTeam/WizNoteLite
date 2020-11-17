@@ -39,6 +39,7 @@ const styles = (theme) => ({
   },
   tip: {
     color: '#aaaaaa',
+    fontSize: 12,
     marginTop: theme.spacing(1),
   },
   label: {

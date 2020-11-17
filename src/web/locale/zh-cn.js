@@ -94,6 +94,11 @@ export default {
 
   errorUpdateUserName: '更新用户昵称失败',
   errorUpdateUserNameNull: '请输入用户昵称',
+  errorOriginPasswordNull: '请输入原密码',
+  errorNewPasswordNull: '请输入新密码',
+  errorConfirmPasswordNull: '请输入确认新密码',
+  errorConfirmPasswordNotSame: '您输入的确认密码与新密码不一致',
+  errorPasswordFormat: '密码格式不正确',
 
   // upgrade vip
   buttonUpgradeVip: '升级VIP',
@@ -188,6 +193,11 @@ export default {
   settingLabelSettingEmail: '设置邮箱',
   settingLabelSettingEmailTip: '修改邮箱后，请使用新邮箱登录',
   settingLabelPassword: '密码',
+  settingLabelModifyPassword: '修改密码',
+  settingLabelOriginPassword: '原密码',
+  settingLabelNewPassword: '新密码',
+  settingLabelConfirmNewPassword: '确认新密码',
+  settingLabelPasswordTip: '密码长度不少于6字节，由数字、字母及常用符号组成，字母区分大小写',
   settingButtonCustomize: '自定义',
   settingButtonChangeEmail: '更换邮箱',
   settingButtonRemoveMobile: '删除',

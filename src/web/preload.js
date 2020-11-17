@@ -442,6 +442,22 @@ class UserManager extends EventEmitter {
     return simpleAsRequest(options);
   }
 
+  async changePassword(newPwd, oldPwd) {
+    const url = `as/users/change_pwd`;
+    const options = {
+      asUrl: this.getAsUrl,
+      url,
+      method: 'post',
+      token: this.userToken,
+      data: {
+        newPwd,
+        oldPwd,
+      },
+    };
+    //
+    return simpleAsRequest(options);
+  }
+
   async sendMessage(name, ...args) {
     ipcRenderer.send(name, this.userGuid, ...args);
   }

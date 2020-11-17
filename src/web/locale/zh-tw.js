@@ -93,6 +93,11 @@ export default {
 
   errorUpdateUserName: '更新用戶暱稱失敗',
   errorUpdateUserNameNull: '請輸入用戶暱稱',
+  errorOriginPasswordNull: '請輸入原密碼',
+  errorNewPasswordNull: '請輸入新密碼',
+  errorConfirmPasswordNull: '請輸入確認新密碼',
+  errorConfirmPasswordNotSame: '您輸入的確認密碼與新密碼不一致',
+  errorPasswordFormat: '密碼格式不正確',
 
   // upgrade vip
   buttonUpgradeVip: '升級 VIP',
@@ -187,6 +192,11 @@ export default {
   settingLabelSettingEmail: '設置郵箱',
   settingLabelSettingEmailTip: '修改郵箱後，請使用新郵箱登錄',
   settingLabelPassword: '密碼',
+  settingLabelModifyPassword: '修改密碼',
+  settingLabelOriginPassword: '原密碼',
+  settingLabelNewPassword: '新密碼',
+  settingLabelConfirmNewPassword: '確認新密碼',
+  settingLabelPasswordTip: '密碼長度不少於6字節，由數字、字母及常用符號組成，字母區分大小寫',
   settingButtonCustomize: '自定義',
   settingButtonChangeEmail: '更換郵箱',
   settingButtonRemoveMobile: '刪除',

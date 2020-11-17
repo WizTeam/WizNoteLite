@@ -12,6 +12,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Checkbox from '@material-ui/core/Checkbox';
 // import Switch from '@material-ui/core/Switch';
 import ModifyEmailDialog from './ModifyEmailDialog';
+import ModifyPasswordDialog from './ModifyPasswordDialog';
 //
 import NoteViewer from '../pages/NoteViewer';
 import LiteInput from '../components/LiteInput';
@@ -191,6 +192,12 @@ class SettingDialog extends React.Component {
     handleCloseModifyEmailDialog: () => {
       this.setState({ openModifyEmailDialog: false });
     },
+    handleOpenModifyPasswordDialog: () => {
+      this.setState({ openModifyPasswordDialog: true });
+    },
+    handleCloseModifyPasswordDialog: () => {
+      this.setState({ openModifyPasswordDialog: false });
+    },
     handleDisplayNameChange: (event) => {
       this.setState({
         displayName: event.target.value,
@@ -229,6 +236,7 @@ class SettingDialog extends React.Component {
       orderBy: um.getUserSettingsSync('orderBy', 'modified'),
       focusWithTypewriter: um.getUserSettingsSync('focusWithTypewriter', false),
       openModifyEmailDialog: false,
+      openModifyPasswordDialog: false,
       displayName: '',
       displayNameErrorText: '',
     };
@@ -310,7 +318,10 @@ class SettingDialog extends React.Component {
             </div>
           </>
         )}
-        <Button className={classes.changePasswordButton}>
+        <Button
+          className={classes.changePasswordButton}
+          onClick={this.handler.handleOpenModifyPasswordDialog}
+        >
           <FormattedMessage id="settingButtonChangePassword" />
         </Button>
       </div>
@@ -509,7 +520,7 @@ class SettingDialog extends React.Component {
       classes, onClose, open,
       user,
     } = this.props;
-    const { type, openModifyEmailDialog } = this.state;
+    const { type, openModifyEmailDialog, openModifyPasswordDialog } = this.state;
     //
     const sidebar = [
       { type: 'account', title: 'settingSidebarAccount' },
@@ -554,6 +565,10 @@ class SettingDialog extends React.Component {
           open={openModifyEmailDialog}
           user={user}
           onClose={this.handler.handleCloseModifyEmailDialog}
+        />
+        <ModifyPasswordDialog
+          open={openModifyPasswordDialog}
+          onClose={this.handler.handleCloseModifyPasswordDialog}
         />
       </Dialog>
     );
