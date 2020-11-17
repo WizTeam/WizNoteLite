@@ -32,7 +32,11 @@ function LiteButton(props) {
 
 LiteButton.propTypes = {
   className: PropTypes.string,
-  children: PropTypes.string.isRequired,
+  children: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.array,
+    PropTypes.element,
+  ]).isRequired,
 };
 
 LiteButton.defaultProps = {

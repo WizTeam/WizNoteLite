@@ -182,11 +182,15 @@ export default {
   settingLabelLightMode: 'Light Mode',
   settingLabelDarkMode: 'Dark Mode',
   settingLabelPreviewTheme: 'Preview Theme',
+  settingLabelSettingEmail: 'Setting Email',
+  settingLabelSettingEmailTip: 'After modifying your email address, please log in with your new email address',
+  settingLabelPassword: 'Password',
   settingButtonCustomize: 'Customize',
   settingButtonChangeEmail: 'Change Email',
   settingButtonRemoveMobile: 'Delete',
   settingButtonUnbindWechat: 'Unbind',
   settingButtonChangePassword: 'Change Password',
   settingButtonRenderNow: 'Render Now Mode',
+  settingButtonConfirm: 'Confirm',
 
 };

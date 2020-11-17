@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 // import classNames from 'classnames';
-import { injectIntl } from 'react-intl';
+import { injectIntl, FormattedMessage } from 'react-intl';
 import { withStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -69,8 +69,7 @@ class ModifyEmailDialog extends React.Component {
           window.wizApi.userManager.logout();
         });
       } catch (err) {
-        this.setState({ loading: false });
-        console.log(err);
+        this.processError(err);
       }
 
       return false;
@@ -92,6 +91,7 @@ class ModifyEmailDialog extends React.Component {
       emailErrorText: '',
       loading: false,
     };
+    this.emailRef = React.createRef();
   }
 
   componentDidUpdate(prevProps) {
@@ -112,18 +112,44 @@ class ModifyEmailDialog extends React.Component {
 
   vaildInput() {
     const { password, email } = this.state;
+    const { intl } = this.props;
 
     if (password.trim() === '') {
-      this.setState({ passwordErrorText: 'please input password' });
+      this.setState({ passwordErrorText: intl.formatMessage({ id: 'inputPasswordNullError' }) });
       return false;
     }
 
     if (email.trim() === '') {
-      this.setState({ emailErrorText: 'please input email' });
+      this.setState({ emailErrorText: intl.formatMessage({ id: 'inputUserIdNullError' }) });
+      return false;
+    }
+
+    if (!/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(email)) {
+      this.setState({ emailErrorText: intl.formatMessage({ id: 'errorUserIdFormat' }) });
       return false;
     }
 
     return true;
+  }
+
+  processError(err) {
+    const { intl } = this.props;
+    const state = {
+      passwordErrorText: '',
+      emailErrorText: '',
+    };
+
+    if (err.message === 31002) {
+      state.passwordErrorText = intl.formatMessage({ id: 'errorInvalidPassword' });
+    } else if (err.message === 31000) {
+      state.emailErrorText = intl.formatMessage({ id: 'errorUserExists' });
+    } else if (err.message === 31001) {
+      state.emailErrorText = intl.formatMessage({ id: 'errorInvalidUserId' });
+    } else {
+      state.emailErrorText = 'error';
+    }
+
+    this.setState({ ...state, loading: false });
   }
 
   render() {
@@ -131,18 +157,25 @@ class ModifyEmailDialog extends React.Component {
       password, email, passwordErrorText,
       emailErrorText, loading,
     } = this.state;
-    const { classes, onClose, open } = this.props;
+    const {
+      classes, onClose, open,
+      intl,
+    } = this.props;
 
     return (
       <Dialog
         open={open}
       >
         <DialogContent className={classes.root}>
-          <LiteText className={classes.title}>Setting Email</LiteText>
-          <LiteText className={classes.tip}>
-            Please login with new email when modified email.
+          <LiteText disableUserSelect className={classes.title}>
+            <FormattedMessage id="settingLabelSettingEmail" />
           </LiteText>
-          <LiteText className={classes.label}>Password</LiteText>
+          <LiteText disableUserSelect className={classes.tip}>
+            <FormattedMessage id="settingLabelSettingEmailTip" />
+          </LiteText>
+          <LiteText disableUserSelect className={classes.label}>
+            <FormattedMessage id="settingLabelPassword" />
+          </LiteText>
           <LiteInput
             error={Boolean(passwordErrorText)}
             helperText={passwordErrorText}
@@ -150,22 +183,33 @@ class ModifyEmailDialog extends React.Component {
             className={classes.input}
             value={password}
             type="password"
-            placeholder="password"
+            placeholder={intl.formatMessage({ id: 'settingLabelPassword' })}
             onChange={(event) => this.handler.handleInputChange('password', event.target.value)}
+            onEnter={() => {
+              if (this.emailRef) {
+                this.emailRef.current.focus();
+              }
+            }}
           />
-          <LiteText className={classes.label}>Email</LiteText>
+          <LiteText disableUserSelect className={classes.label}>
+            <FormattedMessage id="settingLabelEmail" />
+          </LiteText>
           <LiteInput
+            inputRef={this.emailRef}
             error={Boolean(emailErrorText)}
             helperText={emailErrorText}
             disabled={loading}
             className={classes.input}
             value={email}
             password="email"
-            placeholder="email"
+            placeholder={intl.formatMessage({ id: 'settingLabelEmail' })}
             onChange={(event) => this.handler.handleInputChange('email', event.target.value)}
+            onEnter={this.handler.handleSubmit}
           />
           <div className={classes.buttonBox}>
-            <LiteButton onClick={this.handler.handleSubmit}>Submit</LiteButton>
+            <LiteButton disabled={loading} onClick={this.handler.handleSubmit}>
+              <FormattedMessage id="settingButtonConfirm" />
+            </LiteButton>
           </div>
         </DialogContent>
         <div className={classes.close}>
@@ -180,6 +224,7 @@ class ModifyEmailDialog extends React.Component {
 
 ModifyEmailDialog.propTypes = {
   classes: PropTypes.object.isRequired,
+  intl: PropTypes.object.isRequired,
   onClose: PropTypes.func,
   user: PropTypes.object.isRequired,
   open: PropTypes.bool.isRequired,
