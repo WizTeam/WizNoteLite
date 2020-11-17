@@ -52,6 +52,31 @@ async function invokeApi(name, ...args) {
   return ret;
 }
 
+async function simpleAsRequest(opt) {
+  const token = opt.token;
+  const version = remote.app.getVersion();
+  const url = `${opt.asUrl}/${opt.url}?clientType=web&clientVersion=${version}`;
+
+  const options = {
+    url,
+    method: opt.method,
+    headers: {
+      'X-Wiz-Token': token,
+    },
+    data: opt.data,
+  };
+
+  const result = await axios(options);
+  if (result.status !== 200) {
+    throw new Error(result.statusText);
+  }
+  if (result.data && result.data.returnCode !== 200) {
+    throw new Error(result.data.returnCode);
+  }
+  //
+  return result.data;
+}
+
 class WindowManager {
   toggleMaximize() {
     const window = remote.getCurrentWindow();
@@ -388,26 +413,33 @@ class UserManager extends EventEmitter {
   async changeAccount(password, userId, newUserId) {
     const url = `as/users/change_account`;
     const options = {
-      url: `${this.getAsUrl}/${url}?clientType=web&clientVersion=3.0`,
+      asUrl: this.getAsUrl,
+      url,
       method: 'post',
-      headers: {
-        'X-Wiz-Token': this.userToken,
-      },
+      token: this.userToken,
       data: {
         userId,
         newUserId,
         password,
       },
     };
+    //
+    return simpleAsRequest(options);
+  }
 
-    const result = await axios(options);
-    if (result.status !== 200) {
-      throw new Error(result.statusText);
-    }
-    if (result.data && result.data.returnCode !== 200) {
-      throw new Error(result.data.returnCode);
-    }
-    return result.data;
+  async updateUserInfo(displayName) {
+    const url = `as/users/update_info`;
+    const options = {
+      asUrl: this.getAsUrl,
+      url,
+      method: 'put',
+      token: this.userToken,
+      data: {
+        displayName,
+      },
+    };
+    //
+    return simpleAsRequest(options);
   }
 
   async sendMessage(name, ...args) {

@@ -91,6 +91,9 @@ export default {
   error31005: '用戶被鎖定',
   error31013: '手機號已經被註冊，請更換手機號！',
 
+  errorUpdateUserName: '更新用戶暱稱失敗',
+  errorUpdateUserNameNull: '請輸入用戶暱稱',
+
   // upgrade vip
   buttonUpgradeVip: '升級 VIP',
   buttonRenewVip: '續費 VIP',

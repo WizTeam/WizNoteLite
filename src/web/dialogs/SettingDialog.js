@@ -191,6 +191,32 @@ class SettingDialog extends React.Component {
     handleCloseModifyEmailDialog: () => {
       this.setState({ openModifyEmailDialog: false });
     },
+    handleDisplayNameChange: (event) => {
+      this.setState({
+        displayName: event.target.value,
+        displayNameErrorText: '',
+      });
+    },
+    handleUpdateDisplayName: async () => {
+      const { displayName } = this.state;
+      const { intl } = this.props;
+
+      if (displayName.trim() === '') {
+        this.setState({
+          displayNameErrorText: intl.formatMessage({ id: 'errorUpdateUserNameNull' }),
+        });
+        return false;
+      }
+
+      try {
+        await window.wizApi.userManager.updateUserInfo(displayName);
+      } catch (err) {
+        this.setState({ displayNameErrorText: intl.formatMessage({ id: 'errorUpdateUserName' }) });
+        return false;
+      }
+      //
+      return true;
+    },
   };
 
   constructor(props) {
@@ -203,6 +229,8 @@ class SettingDialog extends React.Component {
       orderBy: um.getUserSettingsSync('orderBy', 'modified'),
       focusWithTypewriter: um.getUserSettingsSync('focusWithTypewriter', false),
       openModifyEmailDialog: false,
+      displayName: '',
+      displayNameErrorText: '',
     };
   }
 
@@ -213,10 +241,17 @@ class SettingDialog extends React.Component {
   }
 
   reset() {
-    this.setState({ type: 'account' });
+    const { user } = this.props;
+    //
+    this.setState({
+      type: 'account',
+      displayNameErrorText: '',
+      displayName: user?.displayName ?? '',
+    });
   }
 
   renderAccount() {
+    const { displayName, displayNameErrorText } = this.state;
     const { classes, user } = this.props;
 
     if (user === null) return <></>;
@@ -240,7 +275,15 @@ class SettingDialog extends React.Component {
         <LiteText className={classes.accountTitle}>
           <FormattedMessage id="settingLabelNickname" />
         </LiteText>
-        <LiteInput button className={classes.displayName} value={user.displayName} />
+        <LiteInput
+          error={Boolean(displayNameErrorText)}
+          helperText={displayNameErrorText}
+          button
+          className={classes.displayName}
+          value={displayName}
+          onChange={this.handler.handleDisplayNameChange}
+          onSubmit={this.handler.handleUpdateDisplayName}
+        />
         {user && user.mobile && (
           <>
             <LiteText className={classes.accountTitle}>

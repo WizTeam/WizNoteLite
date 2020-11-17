@@ -92,6 +92,9 @@ export default {
   error31005: '用户被锁定',
   error31013: '手机号已经被注册，请更换手机号！',
 
+  errorUpdateUserName: '更新用户昵称失败',
+  errorUpdateUserNameNull: '请输入用户昵称',
+
   // upgrade vip
   buttonUpgradeVip: '升级VIP',
   buttonRenewVip: '续费VIP',

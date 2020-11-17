@@ -92,6 +92,9 @@ export default {
   error31005: 'Deactivate Account',
   error31013: 'This phone number has been used for registration, please change another one.',
 
+  errorUpdateUserName: 'Failed to change the name',
+  errorUpdateUserNameNull: 'Please input name',
+
   // upgrade vip
   buttonUpgradeVip: 'Upgrade VIP',
   buttonRenewVip: 'Renewal VIP',

@@ -139,11 +139,11 @@ class ModifyEmailDialog extends React.Component {
       emailErrorText: '',
     };
 
-    if (err.message === 31002) {
+    if (err.message === '31002') {
       state.passwordErrorText = intl.formatMessage({ id: 'errorInvalidPassword' });
-    } else if (err.message === 31000) {
+    } else if (err.message === '31000') {
       state.emailErrorText = intl.formatMessage({ id: 'errorUserExists' });
-    } else if (err.message === 31001) {
+    } else if (err.message === '31001') {
       state.emailErrorText = intl.formatMessage({ id: 'errorInvalidUserId' });
     } else {
       state.emailErrorText = 'error';
