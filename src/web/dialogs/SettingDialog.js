@@ -158,6 +158,7 @@ class SettingDialog extends React.Component {
       }
       //
       this.setState({ editorConfig });
+      window.wizApi.userManager.setUserSettings('editorConfig', editorConfig);
     },
     handleChangeStartLayout: (select) => {
       const showDrawer = select.value === '1';
@@ -256,7 +257,7 @@ class SettingDialog extends React.Component {
     const um = window.wizApi.userManager;
     this.state = {
       type: 'account',
-      editorConfig: EDITOR_DEFAULT_CONFIG,
+      editorConfig: um.getUserSettingsSync('editorConfig', EDITOR_DEFAULT_CONFIG),
       showDrawer: um.getUserSettingsSync('showDrawer', false),
       orderBy: um.getUserSettingsSync('orderBy', 'modified'),
       focusWithTypewriter: um.getUserSettingsSync('focusWithTypewriter', false),
@@ -277,6 +278,12 @@ class SettingDialog extends React.Component {
   async reset() {
     const { user } = this.props;
     //
+    this.setState({
+      type: 'account',
+      displayNameErrorText: '',
+      displayName: user?.displayName ?? '',
+    });
+    //
     try {
       const result = await window.wizApi.userManager.getUserInfoOnline();
       //
@@ -288,12 +295,6 @@ class SettingDialog extends React.Component {
     } catch (err) {
       //
     }
-    //
-    this.setState({
-      type: 'account',
-      displayNameErrorText: '',
-      displayName: user?.displayName ?? '',
-    });
   }
 
   renderAccount() {

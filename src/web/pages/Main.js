@@ -383,6 +383,7 @@ class Main extends React.Component {
         //
       }
     }
+    this.initEditorStyle();
     window.wizApi.userManager.on('syncFinish', this.handler.handleSyncFinish);
     window.wizApi.userManager.on('menuItemClicked', this.handler.handleMenuItemClicked);
   }
@@ -390,6 +391,11 @@ class Main extends React.Component {
   componentWillUnmount() {
     window.wizApi.userManager.off('syncFinish', this.handler.handleSyncFinish);
     window.wizApi.userManager.off('menuItemClicked', this.handler.handleMenuItemClicked);
+  }
+
+  initEditorStyle() {
+    const editorConfig = window.wizApi.userManager.getUserSettingsSync('editorConfig', {});
+    overwriteEditorConfig(editorConfig);
   }
 
   showUpgradeVipMessage(isVipExpired, syncOptions) {
