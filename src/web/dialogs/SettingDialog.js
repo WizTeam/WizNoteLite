@@ -385,9 +385,9 @@ class SettingDialog extends React.Component {
             className={classes.themeSelect}
             options={themeOptions}
           />
-          <Button className={classNames(classes.itemButton, classes.flexRight)}>
+          {/* <Button className={classNames(classes.itemButton, classes.flexRight)}>
             <FormattedMessage id="settingButtonCustomize" />
-          </Button>
+          </Button> */}
         </div>
         <div className={classes.noteViewerBox}>
           <div className={classes.noteViewerInner}><NoteViewer darkMode={false} /></div>
@@ -403,9 +403,9 @@ class SettingDialog extends React.Component {
             className={classes.themeSelect}
             options={themeOptions}
           />
-          <Button className={classNames(classes.itemButton, classes.flexRight)}>
+          {/* <Button className={classNames(classes.itemButton, classes.flexRight)}>
             <FormattedMessage id="settingButtonCustomize" />
-          </Button>
+          </Button> */}
         </div>
         <div className={classes.noteViewerBox}>
           <div className={classes.noteViewerInner}><NoteViewer darkMode /></div>
@@ -430,12 +430,21 @@ class SettingDialog extends React.Component {
       { title: '12px', type: 'fontSize', value: '12' },
       { title: '14px', type: 'fontSize', value: '14' },
       { title: '16px', type: 'fontSize', value: '16' },
+      { title: '18px', type: 'fontSize', value: '18' },
+      { title: '20px', type: 'fontSize', value: '20' },
     ];
     const lineHeightOptions = [
+      { title: '1.3', type: 'lineHeight', value: '1.3' },
+      { title: '1.4', type: 'lineHeight', value: '1.4' },
+      { title: '1.5', type: 'lineHeight', value: '1.5' },
+      { title: '1.6', type: 'lineHeight', value: '1.6' },
+      { title: '1.7', type: 'lineHeight', value: '1.7' },
       { title: '1.8', type: 'lineHeight', value: '1.8' },
       { title: '1.9', type: 'lineHeight', value: '1.9' },
+      { title: '2.0', type: 'lineHeight', value: '2.0' },
     ];
     const paragraphOptions = [
+      { title: '5px', type: 'paragraphHeight', value: '5' },
       { title: '10px', type: 'paragraphHeight', value: '10' },
       { title: '15px', type: 'paragraphHeight', value: '15' },
       { title: '20px', type: 'paragraphHeight', value: '20' },

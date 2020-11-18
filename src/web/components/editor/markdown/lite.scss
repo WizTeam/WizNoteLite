@@ -82,11 +82,12 @@ div[id^='ag-editor-id'] {
 
   a {
     color: var(--link-font-color);
-    line-height: 24px;
+    line-height: var(--text-line-height);
   }
+
   blockquote {
     padding: 0 1em;
-    line-height: 24px;
+    line-height: var(--text-line-height);
 
     &::before {
       width: .25em;
