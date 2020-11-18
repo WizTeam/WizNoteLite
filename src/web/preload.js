@@ -55,7 +55,8 @@ async function invokeApi(name, ...args) {
 async function simpleAsRequest(opt) {
   const token = opt.token;
   const version = remote.app.getVersion();
-  const url = `${opt.asUrl}/${opt.url}?clientType=web&clientVersion=${version}`;
+  const url = `${opt.asUrl}/${opt.url}`;
+  const params = opt.params ?? {};
 
   const options = {
     url,
@@ -63,7 +64,12 @@ async function simpleAsRequest(opt) {
     headers: {
       'X-Wiz-Token': token,
     },
-    data: opt.data,
+    data: opt.data ?? {},
+    params: {
+      clientType: 'web',
+      clientVersion: version,
+      ...params,
+    },
   };
 
   const result = await axios(options);
@@ -408,6 +414,36 @@ class UserManager extends EventEmitter {
   async viewLogFile() {
     const result = await invokeApi('viewLogFile', this.userGuid);
     return result;
+  }
+
+  async unbindSns(st) {
+    const url = `as/openid2/unbind`;
+    const options = {
+      asUrl: this.getAsUrl,
+      url,
+      method: 'post',
+      token: this.userToken,
+      params: {
+        st,
+      },
+    };
+    //
+    return simpleAsRequest(options);
+  }
+
+  async getUserInfoOnline() {
+    const url = `as/user/info`;
+    const options = {
+      asUrl: this.getAsUrl,
+      url,
+      method: 'get',
+      token: this.userToken,
+      params: {
+        with_sns: true,
+      },
+    };
+    //
+    return simpleAsRequest(options);
   }
 
   async changeAccount(password, userId, newUserId) {

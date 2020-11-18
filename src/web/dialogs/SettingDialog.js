@@ -239,6 +239,16 @@ class SettingDialog extends React.Component {
         this.props.onLoggedIn(user);
       }
     },
+    handleUnbindWeixin: async () => {
+      try {
+        await window.wizApi.userManager.unbindSns('weixin');
+        this.setState({
+          snsStatus: {},
+        });
+      } catch (err) {
+        //
+      }
+    },
   };
 
   constructor(props) {
@@ -254,6 +264,7 @@ class SettingDialog extends React.Component {
       openModifyPasswordDialog: false,
       displayName: '',
       displayNameErrorText: '',
+      snsStatus: {},
     };
   }
 
@@ -263,8 +274,20 @@ class SettingDialog extends React.Component {
     }
   }
 
-  reset() {
+  async reset() {
     const { user } = this.props;
+    //
+    try {
+      const result = await window.wizApi.userManager.getUserInfoOnline();
+      //
+      if (result.sns_status) {
+        this.setState({
+          snsStatus: result.sns_status,
+        });
+      }
+    } catch (err) {
+      //
+    }
     //
     this.setState({
       type: 'account',
@@ -274,7 +297,7 @@ class SettingDialog extends React.Component {
   }
 
   renderAccount() {
-    const { displayName, displayNameErrorText } = this.state;
+    const { displayName, displayNameErrorText, snsStatus } = this.state;
     const { classes, user } = this.props;
 
     if (user === null) return <></>;
@@ -320,14 +343,14 @@ class SettingDialog extends React.Component {
             </div>
           </>
         )}
-        {user && user.wechat && (
+        {snsStatus && snsStatus.openid_weixin_alias && (
           <>
             <LiteText className={classes.accountTitle}>
               <FormattedMessage id="settingLabelWechat" />
             </LiteText>
             <div className={classes.accountItem}>
-              <LiteText fullWidth={false}>{user.wechat}</LiteText>
-              <Button className={classes.itemButton}>
+              <LiteText fullWidth={false}>{snsStatus.openid_weixin_alias}</LiteText>
+              <Button className={classes.itemButton} onClick={this.handler.handleUnbindWeixin}>
                 <FormattedMessage id="settingButtonUnbindWechat" />
               </Button>
             </div>
