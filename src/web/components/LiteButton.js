@@ -12,6 +12,10 @@ const useStyles = makeStyles((theme) => ({
     '&:hover': {
       backgroundColor: theme.custom.background.dialogButtonBlackHover,
     },
+    '&.Mui-disabled': {
+      color: theme.custom.color.dialogButtonBlack,
+      opacity: 0.5,
+    },
   },
 }));
 

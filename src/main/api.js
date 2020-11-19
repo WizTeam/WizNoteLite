@@ -281,12 +281,12 @@ handleApi('captureScreen', async (event, userGuid, kbGuid, noteGuid, options = {
         if (pageCount > 1) {
           if (i === pageCount - 1) {
             const top = totalHeight - pageHeight;
-            await window.webContents.executeJavaScript(`document.getElementById('wiz-note-content-root').parentElement.scrollTop = ${top};`);
+            await window.webContents.executeJavaScript(`document.querySelector("div[id^='wiz-note-content-root']").parentElement.scrollTop = ${top};`);
           } else if (i > 0) {
-            await window.webContents.executeJavaScript(`document.getElementById('wiz-note-content-root').parentElement.scrollTop = ${i * pageHeight};`);
+            await window.webContents.executeJavaScript(`document.querySelector("div[id^='wiz-note-content-root']").parentElement.scrollTop = ${i * pageHeight};`);
           }
         }
-        const top = await window.webContents.executeJavaScript(`document.getElementById('wiz-note-content-root').parentElement.scrollTop;`);
+        const top = await window.webContents.executeJavaScript(`document.querySelector("div[id^='wiz-note-content-root']").parentElement.scrollTop;`);
         //
         await wait(300); // wait scrollbar
         try {
