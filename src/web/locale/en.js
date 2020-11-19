@@ -99,6 +99,8 @@ export default {
   errorConfirmPasswordNull: 'Please input confirm new password',
   errorConfirmPasswordNotSame: 'Your confirmed password and new password do not match',
   errorPasswordFormat: 'Error format',
+  errorModifyEmail: 'Failed to modify email',
+  errorModifyPassword: 'Failed to modify password',
 
   // upgrade vip
   buttonUpgradeVip: 'Upgrade VIP',

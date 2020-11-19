@@ -99,6 +99,8 @@ export default {
   errorConfirmPasswordNull: '请输入确认新密码',
   errorConfirmPasswordNotSame: '您输入的确认密码与新密码不一致',
   errorPasswordFormat: '密码格式不正确',
+  errorModifyEmail: '修改邮箱失败',
+  errorModifyPassword: '修改密码失败',
 
   // upgrade vip
   buttonUpgradeVip: '升级VIP',

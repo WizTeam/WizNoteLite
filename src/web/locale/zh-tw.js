@@ -98,6 +98,8 @@ export default {
   errorConfirmPasswordNull: '請輸入確認新密碼',
   errorConfirmPasswordNotSame: '您輸入的確認密碼與新密碼不一致',
   errorPasswordFormat: '密碼格式不正確',
+  errorModifyEmail: '修改郵箱失敗',
+  errorModifyPassword: '修改密碼失敗',
 
   // upgrade vip
   buttonUpgradeVip: '升級 VIP',

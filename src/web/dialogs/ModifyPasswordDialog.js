@@ -165,14 +165,14 @@ class ModifyPasswordDialog extends React.Component {
   }
 
   processError(/* err */) {
-    // const { intl } = this.props;
+    const { intl } = this.props;
     const state = {
       originPasswordErrorText: '',
       newPasswordErrorText: '',
       confirmPasswordErrorText: '',
     };
 
-    state.confirmPasswordErrorText = 'error';
+    state.confirmPasswordErrorText = intl.formatMessage({ id: 'errorModifyPassword' });
 
     this.setState({ ...state, loading: false });
   }
