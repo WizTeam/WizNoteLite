@@ -1,7 +1,7 @@
 {
   "name": "wiznotelite",
   "description": "WizNote Lite - An instant rendering markdown note tool.",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "private": true,
   "homepage": ".",
   "productName": "WizNote Lite",
@@ -200,7 +200,7 @@
     "react-style-proptype": "^3.2.2",
     "run-script-os": "^1.0.7",
     "timer.js": "^1.0.4",
-    "wiz-react-markdown-editor": "^0.5.10"
+    "wiz-react-markdown-editor": "^0.5.19"
   },
   "__npminstall_done": false
 }
