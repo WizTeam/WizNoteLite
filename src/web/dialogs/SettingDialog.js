@@ -250,6 +250,15 @@ class SettingDialog extends React.Component {
         //
       }
     },
+    handleColorThemeChange: (select, val) => {
+      this.setState({
+        colorTheme: val,
+      });
+      //
+      if (this.props.onColorThemeChange) {
+        this.props.onColorThemeChange(val);
+      }
+    },
   };
 
   constructor(props) {
@@ -261,6 +270,7 @@ class SettingDialog extends React.Component {
       showDrawer: um.getUserSettingsSync('showDrawer', false),
       orderBy: um.getUserSettingsSync('orderBy', 'modified'),
       focusWithTypewriter: um.getUserSettingsSync('focusWithTypewriter', false),
+      colorTheme: 'default',
       openModifyEmailDialog: false,
       openModifyPasswordDialog: false,
       displayName: '',
@@ -368,11 +378,12 @@ class SettingDialog extends React.Component {
   }
 
   renderTheme() {
-    const { type } = this.state;
+    const { type, colorTheme } = this.state;
     const { classes } = this.props;
     //
     const themeOptions = [
-      { title: 'Default', value: '' },
+      { title: 'Default', value: 'default' },
+      { title: 'Beiges', value: 'beiges' },
     ];
 
     return (
@@ -384,6 +395,8 @@ class SettingDialog extends React.Component {
           <LiteSelect
             className={classes.themeSelect}
             options={themeOptions}
+            value={colorTheme}
+            onChange={this.handler.handleColorThemeChange}
           />
           {/* <Button className={classNames(classes.itemButton, classes.flexRight)}>
             <FormattedMessage id="settingButtonCustomize" />
@@ -402,6 +415,8 @@ class SettingDialog extends React.Component {
           <LiteSelect
             className={classes.themeSelect}
             options={themeOptions}
+            value={colorTheme}
+            onChange={this.handler.handleColorThemeChange}
           />
           {/* <Button className={classNames(classes.itemButton, classes.flexRight)}>
             <FormattedMessage id="settingButtonCustomize" />
@@ -632,12 +647,14 @@ SettingDialog.propTypes = {
   onEditorConfigChange: PropTypes.func.isRequired,
   onOrderByChange: PropTypes.func,
   onLoggedIn: PropTypes.func,
+  onColorThemeChange: PropTypes.func,
 };
 
 SettingDialog.defaultProps = {
   open: false,
   onOrderByChange: null,
   onLoggedIn: null,
+  onColorThemeChange: null,
 };
 
 export default withStyles(styles)(injectIntl(SettingDialog));

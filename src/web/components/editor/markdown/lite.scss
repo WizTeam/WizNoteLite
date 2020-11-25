@@ -1,3 +1,7 @@
+:root {
+  --editorBgColor: transparent;
+}
+
 div[id^='ag-editor-id'] {
   // 正文行高
   --text-line-height: 28px;
@@ -34,6 +38,7 @@ div[id^='ag-editor-id'] {
     font-weight: normal;
     letter-spacing: 1px;
     font-family: var(--bold-font-family);
+    color: var(--text-font-color);
     &::before {
       cursor: pointer;
     }

@@ -362,7 +362,7 @@ class Main extends React.Component {
       showSettingDialog: false,
       backgroundType: window.wizApi.userManager.getUserSettingsSync('background', 'white'),
       isFullScreen: window.wizApi.windowManager.isFullScreen(),
-      orderBy: null,
+      orderBy: um.getUserSettingsSync('orderBy', 'modified'),
     };
     this._upgradeVipDisplayed = false;
   }
@@ -570,6 +570,7 @@ class Main extends React.Component {
           onEditorConfigChange={this.handler.handleEditorConfigChange}
           onOrderByChange={this.handler.handleOrderByChange}
           onLoggedIn={this.props.onLoggedIn}
+          onColorThemeChange={this.props.onColorThemeChange}
         />
       </div>
     );
@@ -587,6 +588,7 @@ Main.propTypes = {
   onLoggedIn: PropTypes.func.isRequired,
   enqueueSnackbar: PropTypes.func.isRequired,
   closeSnackbar: PropTypes.func.isRequired,
+  onColorThemeChange: PropTypes.func.isRequired,
 };
 
 Main.defaultProps = {

@@ -121,14 +121,14 @@ const styles = (theme) => ({
   toolBarIcon: {
     width: theme.spacing(3),
     height: theme.spacing(3),
-    color: theme.custom.color.sidebarIcon,
+    color: theme.custom.color.noteTypeButton,
   },
   activeStarIcon: {
     color: theme.custom.color.activeStarIcon,
   },
   defaultStarIcon: {
-    stroke: theme.custom.color.defaultStarIcon,
-    color: theme.custom.color.defaultStarIcon,
+    stroke: theme.custom.color.noteTypeButton,
+    color: theme.custom.color.noteTypeButton,
   },
   toolbarIconButton: {
     margin: theme.spacing(0, 0.5),

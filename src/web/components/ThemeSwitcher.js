@@ -3,9 +3,11 @@ import PropTypes from 'prop-types';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import queryString from 'query-string';
+import { overwriteEditorConfig } from '../utils/utils';
 
 export default function ThemeSwitcher(props) {
   //
+  const { color } = props;
   const params = queryString.parse(window.location.search);
   //
   let prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
@@ -21,8 +23,52 @@ export default function ThemeSwitcher(props) {
     }
   }
 
-  const theme = React.useMemo(
-    () => createMuiTheme({
+  const getColorTheme = () => (
+    {
+      default: {
+        sideDrawer: prefersDarkMode ? '#121212' : '#333333',
+        sidebarItemHover: prefersDarkMode ? '#232323' : '#2a2a2a',
+        noteList: prefersDarkMode ? '#2a2a2a' : 'rgb(245, 245, 245)',
+        noteListActive: prefersDarkMode ? '#333333' : '#fff',
+        content: prefersDarkMode ? '#333333' : '#fff',
+        noteDate: prefersDarkMode ? '#555555' : '#aaaaaa',
+        noteTitle: prefersDarkMode ? '#d8d8d8' : '#333333',
+        noteTypeButton: prefersDarkMode ? '#d8d8d8' : '#333333',
+      },
+      beiges: {
+        sideDrawer: prefersDarkMode ? '#322b27' : '#3f332b',
+        sidebarItemHover: '#56504c',
+        noteList: prefersDarkMode ? '#57544e' : '#f8efd2',
+        noteListActive: prefersDarkMode ? '#6d6b65' : '#fff9e2',
+        content: prefersDarkMode ? '#6d6b65' : '#fff9e2',
+        noteDate: prefersDarkMode ? '#98948d' : '#aaaaaa',
+        noteTitle: prefersDarkMode ? '#f8efd2' : '#333333',
+        noteTypeButton: prefersDarkMode ? '#f8efd2' : '#333333',
+      },
+    }
+  );
+
+  const getEditorColor = () => (
+    {
+      default: {
+        textColor: prefersDarkMode ? '#f0f0f0' : '#333333',
+      },
+      beiges: {
+        textColor: prefersDarkMode ? '#fff9e2' : '#333333',
+      },
+    }
+  );
+
+  React.useEffect(() => {
+    const editorColor = getEditorColor();
+    overwriteEditorConfig(editorColor[color], 'editor-color');
+  }, [prefersDarkMode, color]);
+
+  const theme = React.useMemo(() => {
+    const colorTheme = getColorTheme();
+    const wizColor = Object.assign(colorTheme.default, colorTheme[color]);
+    //
+    return createMuiTheme({
       unstable_strictMode: true,
       palette: {
         type: prefersDarkMode ? 'dark' : 'light',
@@ -104,15 +150,14 @@ export default function ThemeSwitcher(props) {
       },
       custom: {
         background: {
-          noteList: prefersDarkMode ? '#2a2a2a' : 'rgb(245, 245, 245)',
+          noteList: wizColor.noteList,
           about: prefersDarkMode ? '#2a2a2a' : '#ffffff',
-          noteListActive: prefersDarkMode ? '#333333' : '#fff',
-          content: prefersDarkMode ? '#333333' : '#fff',
+          noteListActive: wizColor.noteListActive,
+          content: wizColor.content,
           contentGreen: 'rgb(237, 249, 240)',
           contentYellow: 'rgb(255, 248, 222)',
-          sideDrawer: prefersDarkMode ? '#121212' : '#333333',
-          sidebarSelected: prefersDarkMode ? '#232323' : 'rgba(255,255,255,0.08)',
-          sidebarItemHover: prefersDarkMode ? '#232323' : '#2a2a2a',
+          sideDrawer: wizColor.sideDrawer,
+          sidebarItemHover: wizColor.sidebarItemHover,
           dialogButtonBlack: prefersDarkMode ? '#f0f0f0' : '#333333',
           dialogButtonBlackHover: prefersDarkMode ? '#ffffff' : '#121212',
           login: prefersDarkMode ? '#101115' : '#fafafa',
@@ -125,14 +170,12 @@ export default function ThemeSwitcher(props) {
           textHighlight: '#e82100',
           drawerText: prefersDarkMode ? '#d8d8d8' : '#ffffff',
           drawerTitle: '#aaa',
-          noteTitle: prefersDarkMode ? '#d8d8d8' : '#333333',
-          noteDate: prefersDarkMode ? '#555555' : '#aaaaaa',
+          noteTitle: wizColor.noteTitle,
+          noteDate: wizColor.noteDate,
           noteAbstract: prefersDarkMode ? '#d8d8d8' : '#333333',
-          noteTypeButton: prefersDarkMode ? '#d8d8d8' : '#333333',
+          noteTypeButton: wizColor.noteTypeButton,
           matchedText: '#aaaaaa',
           activeStarIcon: '#FDDD10',
-          defaultStarIcon: prefersDarkMode ? '#d8d8d8' : '#333333',
-          sidebarIcon: prefersDarkMode ? '#d8d8d8' : '#333333',
           hr: prefersDarkMode ? '#404040' : '#d8d8d8',
           contentToolIcon: '#aaaaaa',
           contentToolIconHover: prefersDarkMode ? '#ffffff' : '#333333',
@@ -155,9 +198,8 @@ export default function ThemeSwitcher(props) {
           liteInputErrorBorder: '#e82100',
         },
       },
-    }),
-    [prefersDarkMode],
-  );
+    });
+  }, [prefersDarkMode, color]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -171,4 +213,9 @@ ThemeSwitcher.propTypes = {
     PropTypes.element,
     PropTypes.array,
   ]).isRequired,
+  color: PropTypes.string,
+};
+
+ThemeSwitcher.defaultProps = {
+  color: 'default',
 };
