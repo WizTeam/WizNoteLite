@@ -136,12 +136,13 @@ class Main extends React.Component {
         }
       }
     },
-    handleCreateNote: (noteType) => {
+    handleCreateNote: (noteType, markdown) => {
       const type = this.state.type;
       const { tag } = this.state;
       const note = {
         type: noteType,
         tag: type === 'tag' && tag?.key,
+        markdown,
       };
       window.wizApi.userManager.createNote(this.props.kbGuid, note);
     },
@@ -523,6 +524,8 @@ class Main extends React.Component {
               <div className={classes.contentMainContainer}>
                 <Content
                   note={currentNote}
+                  onSelectNote={this.handler.handleSelectNote}
+                  onCreateNote={this.handler.handleCreateNote}
                   kbGuid={kbGuid}
                   isSearch={showMatched}
                   isShowDrawer={showDrawer}

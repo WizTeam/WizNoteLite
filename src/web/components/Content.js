@@ -291,6 +291,8 @@ class Content extends React.Component {
               onClickTag={onClickTag}
               scrollbar={this.scrollContentRef.current ?? null}
               onUpdateContentsList={this.handler.handleChangeEditorContents}
+              onSelectNote={this.props.onSelectNote}
+              onCreateNote={this.props.onCreateNote}
             />
           </Scrollbar>
           <EditorContents
@@ -361,12 +363,16 @@ Content.propTypes = {
   onClickTag: PropTypes.func.isRequired,
   onRequestFullScreen: PropTypes.func.isRequired,
   isShowDrawer: PropTypes.bool,
+  onSelectNote: PropTypes.func,
+  onCreateNote: PropTypes.func,
 };
 
 Content.defaultProps = {
   note: null,
   backgroundType: 'white',
   isShowDrawer: false,
+  onSelectNote: null,
+  onCreateNote: null,
 };
 
 export default withTheme(withStyles(styles)(injectIntl(Content)));

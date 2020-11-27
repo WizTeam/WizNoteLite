@@ -129,6 +129,41 @@ class MarkdownEditorComponent extends React.PureComponent {
         this.props.onUpdateContentsList(result);
       }
     }, 300),
+
+    handleOnNoteLinksContentChange: debounce(async ({ content, render }) => {
+      const subNotes = await window.wizApi.userManager.queryNotes(this.props.kbGuid, 0, 10, {
+        // searchTitle: content.trim(),
+        // fuzzy: true,
+        searchText: content.trim(),
+      });
+      console.log('subNotes', subNotes);
+      render(subNotes.map((item) => ({
+        id: item.guid,
+        title: item.title,
+      })));
+    }, 300),
+
+    handleNoteLink: async (item) => {
+      const id = item?.href.trim();
+      if (id) {
+        const note = await window.wizApi.userManager.getNote(this.props.kbGuid, id);
+        if (note) {
+          if (this.props.onSelectNote) {
+            this.props.onSelectNote(note);
+          }
+        } else {
+          const notes = await window.wizApi.userManager.queryNotes(this.props.kbGuid, 0, 1, {
+            // searchTitle: id,
+            searchText: id,
+          });
+          if (notes && notes.length && this.props.onSelectNote) {
+            this.props.onSelectNote(notes[0]);
+          } else if (this.props.onCreateNote) {
+            this.props.onCreateNote('lite/markdown', `# ${item.href}`);
+          }
+        }
+      }
+    },
   }
 
   constructor(props) {
@@ -163,6 +198,8 @@ class MarkdownEditorComponent extends React.PureComponent {
     this.setState({
       typewriterMode: await window.wizApi.userManager.getSettings('typewriterMode', false),
     });
+    this.editor.current.on('muya-note-link-change', this.handler.handleOnNoteLinksContentChange);
+    this.editor.current.on('muya-note-link', this.handler.handleNoteLink);
   }
 
   componentDidUpdate(prevProps) {
@@ -325,6 +362,8 @@ MarkdownEditorComponent.propTypes = {
   onUpdateContentsList: PropTypes.func,
   scrollbar: PropTypes.object,
   theme: PropTypes.object.isRequired,
+  onSelectNote: PropTypes.func,
+  onCreateNote: PropTypes.func,
 };
 
 MarkdownEditorComponent.defaultProps = {
@@ -332,6 +371,8 @@ MarkdownEditorComponent.defaultProps = {
   kbGuid: null,
   onUpdateContentsList: null,
   scrollbar: null,
+  onSelectNote: null,
+  onCreateNote: null,
 };
 
 export default withTheme(withStyles(styles)(MarkdownEditorComponent));

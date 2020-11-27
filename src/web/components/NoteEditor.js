@@ -81,6 +81,8 @@ class NoteEditor extends React.Component {
             onClickTag={onClickTag}
             scrollbar={scrollbar}
             onUpdateContentsList={this.props.onUpdateContentsList}
+            onSelectNote={this.props.onSelectNote}
+            onCreateNote={this.props.onCreateNote}
           />
         </TabPanel>
         <TabPanel tabKey="unknown" visible={!hasEditor}>
@@ -104,6 +106,8 @@ NoteEditor.propTypes = {
   onClickTag: PropTypes.func.isRequired,
   onUpdateContentsList: PropTypes.func,
   scrollbar: PropTypes.object,
+  onSelectNote: PropTypes.func,
+  onCreateNote: PropTypes.func,
 };
 
 NoteEditor.defaultProps = {
@@ -111,6 +115,8 @@ NoteEditor.defaultProps = {
   kbGuid: null,
   onUpdateContentsList: null,
   scrollbar: null,
+  onSelectNote: null,
+  onCreateNote: null,
   // isLogin: true,
 };
 
