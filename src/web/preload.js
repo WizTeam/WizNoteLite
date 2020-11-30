@@ -194,6 +194,11 @@ class UserManager extends EventEmitter {
     return notes;
   }
 
+  async getAllTitles(kbGuid) {
+    const notes = await invokeApi('getAllTitles', this.userGuid, kbGuid);
+    return notes;
+  }
+
   async getNote(kbGuid, noteGuid, options) {
     const note = await invokeApi('getNote', this.userGuid, kbGuid, noteGuid, options);
     return note;

@@ -89,6 +89,11 @@ handleApi('queryNotes', async (event, ...args) => {
   return notes;
 });
 
+handleApi('getAllTitles', async (event, ...args) => {
+  const notes = await sdk.getAllTitles(...args);
+  return notes;
+});
+
 handleApi('getNote', async (event, ...args) => {
   const result = await sdk.getNote(...args);
   return result;

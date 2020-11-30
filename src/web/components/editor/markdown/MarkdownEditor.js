@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import { withStyles, withTheme } from '@material-ui/core/styles';
 import { MarkdownEditor } from 'wiz-react-markdown-editor';
 import debounce from 'lodash/debounce';
+import { filter } from 'fuzzaldrin';
 import { getTagSpanFromRange } from '../libs/dom_utils';
 import { getLocale } from '../../../utils/lang';
 import './lite.scss';
@@ -20,7 +21,6 @@ const styles = (/* theme */) => ({
     display: 'none',
   },
 });
-
 class MarkdownEditorComponent extends React.PureComponent {
   handler = {
     handleClickEditor: (e) => {
@@ -130,18 +130,10 @@ class MarkdownEditorComponent extends React.PureComponent {
       }
     }, 300),
 
-    handleOnNoteLinksContentChange: debounce(async ({ content, render }) => {
-      const subNotes = await window.wizApi.userManager.queryNotes(this.props.kbGuid, 0, 10, {
-        // searchTitle: content.trim(),
-        // fuzzy: true,
-        searchText: content.trim(),
-      });
-      console.log('subNotes', subNotes);
-      render(subNotes.map((item) => ({
-        id: item.guid,
-        title: item.title,
-      })));
-    }, 300),
+    handleOnNoteLinksContentChange: ({ content, render }) => {
+      render(filter(this.state.titlesList, content, { key: 'title' }));
+    },
+
 
     handleNoteLink: async (item) => {
       const id = item?.href.trim();
@@ -174,6 +166,7 @@ class MarkdownEditorComponent extends React.PureComponent {
       markdown: '',
       focusMode: false,
       typewriterMode: false,
+      titlesList: [],
     };
     this.oldMarkdown = '';
     this.editor = React.createRef();
@@ -307,9 +300,20 @@ class MarkdownEditorComponent extends React.PureComponent {
     }
   }
 
+  async refreshTitlesList() {
+    const titlesList = await window.wizApi.userManager.getAllTitles(this.props.kbGuid);
+    this.setState({
+      titlesList: titlesList?.map((item) => ({
+        id: item.guid,
+        title: item.title,
+      })),
+    });
+  }
+
   async saveAndLoadNote() {
     await this.saveNote();
     await this.loadNote();
+    await this.refreshTitlesList();
   }
 
   render() {
@@ -320,6 +324,7 @@ class MarkdownEditorComponent extends React.PureComponent {
       markdown,
       focusMode,
       typewriterMode,
+      titlesList,
     } = this.state;
     const { classes, scrollbar } = this.props;
     const scrollingElement = scrollbar?.container?.children[0];
@@ -344,6 +349,7 @@ class MarkdownEditorComponent extends React.PureComponent {
           lang={lang}
           focusMode={focusMode}
           typewriterMode={typewriterMode}
+          noteLinks={titlesList}
         />
       </div>
     );
