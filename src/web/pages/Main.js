@@ -149,6 +149,7 @@ class Main extends React.Component {
     handleSelectNote: (currentNote) => {
       this.setState({ currentNote });
       window.wizApi.userManager.setUserSettings('lastNote', currentNote?.guid);
+      this.getNoteLinks(currentNote.guid);
     },
     handleTagSelected: async (tag) => {
       this.setState({
@@ -362,6 +363,7 @@ class Main extends React.Component {
 
   async componentDidMount() {
     const selectedNoteGuid = await window.wizApi.userManager.getUserSettings('lastNote');
+    await this.getNoteLinks(selectedNoteGuid);
     if (selectedNoteGuid) {
       try {
         const currentNote = await window.wizApi.userManager.getNote(
@@ -383,6 +385,11 @@ class Main extends React.Component {
   componentWillUnmount() {
     window.wizApi.userManager.off('syncFinish', this.handler.handleSyncFinish);
     window.wizApi.userManager.off('menuItemClicked', this.handler.handleMenuItemClicked);
+  }
+
+  async getNoteLinks(guid) {
+    const res = await window.wizApi.userManager.getLinkToNotes(this.props.kbGuid, guid);
+    console.log('res', res);
   }
 
   showUpgradeVipMessage(isVipExpired, syncOptions) {

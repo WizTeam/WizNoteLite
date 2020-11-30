@@ -199,6 +199,11 @@ class UserManager extends EventEmitter {
     return notes;
   }
 
+  async getLinkToNotes(kbGuid, noteGuid) {
+    const res = await invokeApi('getLinkToNotes', this.userGuid, kbGuid, noteGuid);
+    return res;
+  }
+
   async getNote(kbGuid, noteGuid, options) {
     const note = await invokeApi('getNote', this.userGuid, kbGuid, noteGuid, options);
     return note;
@@ -212,8 +217,9 @@ class UserManager extends EventEmitter {
     return markdown;
   }
 
-  async setNoteMarkdown(kbGuid, noteGuid, markdown) {
-    const result = await invokeApi('setNoteMarkdown', this.userGuid, kbGuid, noteGuid, markdown);
+  async setNoteMarkdown(kbGuid, noteGuid, markdown, noteLinks) {
+    console.log('noteLinks', noteLinks);
+    const result = await invokeApi('setNoteMarkdown', this.userGuid, kbGuid, noteGuid, markdown, noteLinks);
     wordCounter({
       kbGuid, noteGuid, markdown,
     });

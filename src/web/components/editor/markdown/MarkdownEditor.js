@@ -30,8 +30,8 @@ class MarkdownEditorComponent extends React.PureComponent {
         this.props.onClickTag(tagSpan.textContent);
       }
     },
-    handleNoteModified: ({ contentId, markdown }) => {
-      this.saveNote(contentId, markdown);
+    handleNoteModified: ({ contentId, markdown, noteLinks }) => {
+      this.saveNote(contentId, markdown, noteLinks);
     },
     handleSelectImages: async () => {
       if (!this.editor.current) {
@@ -256,7 +256,7 @@ class MarkdownEditorComponent extends React.PureComponent {
     }
   }
 
-  async saveNote(contentId, markdown) {
+  async saveNote(contentId, markdown, noteLinks) {
     const { note } = this.state;
     if (!this.editor.current || !note || contentId !== note.guid) {
       return;
@@ -268,7 +268,7 @@ class MarkdownEditorComponent extends React.PureComponent {
     markdown = markdown.replace(wizPathReg, 'index_files');
     if (markdown !== this.oldMarkdown) {
       this.oldMarkdown = markdown;
-      await this.props.onSaveNote(kbGuid, note.guid, markdown);
+      await this.props.onSaveNote(kbGuid, note.guid, markdown, noteLinks);
     }
   }
 

@@ -190,6 +190,11 @@ handleApi('getAllLinks', async (event, ...args) => {
   return result;
 });
 
+handleApi('getLinkToNotes', async (event, ...args) => {
+  const result = await sdk.getLinkToNotes(...args);
+  return result;
+});
+
 handleApi('renameTag', async (event, ...args) => {
   const result = await sdk.renameTag(...args);
   return result;
