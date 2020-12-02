@@ -385,6 +385,8 @@ class SettingDialog extends React.Component {
     const themeOptions = [
       { title: 'Default', value: 'default' },
       { title: 'Beiges', value: 'beiges' },
+      { title: 'Mint Green', value: 'mintGreen' },
+      { title: 'Coffee', value: 'coffee' },
     ];
 
     return (

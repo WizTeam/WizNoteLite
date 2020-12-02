@@ -36,6 +36,7 @@ export default function ThemeSwitcher(props) {
         noteTypeButton: prefersDarkMode ? '#d8d8d8' : '#333333',
         about: prefersDarkMode ? '#2a2a2a' : '#ffffff',
         hr: prefersDarkMode ? '#404040' : '#d8d8d8',
+        MuiCheckColor: '#35e714',
       },
       beiges: {
         sideDrawer: prefersDarkMode ? '#322b27' : '#3f332b',
@@ -48,6 +49,33 @@ export default function ThemeSwitcher(props) {
         noteTypeButton: prefersDarkMode ? '#f8efd2' : '#333333',
         about: prefersDarkMode ? '#57544e' : '#fff9e2',
         hr: prefersDarkMode ? '#322b27' : '#d8d8d8',
+        MuiCheckColor: '#35e714',
+      },
+      mintGreen: {
+        sideDrawer: prefersDarkMode ? '#1f3134' : '#3a605d',
+        sidebarItemHover: '#000000',
+        noteList: prefersDarkMode ? '#364e4c' : '#bccecb',
+        noteListActive: prefersDarkMode ? '#5b6b6a' : '#eae9e5',
+        content: prefersDarkMode ? '#5b6b6a' : '#eae9e5',
+        noteDate: prefersDarkMode ? '#889794' : '#969696',
+        noteTitle: prefersDarkMode ? '#bccecb' : '#000000',
+        noteTypeButton: prefersDarkMode ? '#bccecb' : '#000000',
+        about: prefersDarkMode ? '#364e4c' : '#eae9e5',
+        hr: prefersDarkMode ? '#1f3134' : '#aaaaaa',
+        MuiCheckColor: '#21cdc0',
+      },
+      coffee: {
+        sideDrawer: prefersDarkMode ? '#1b1b1b' : '#333333',
+        sidebarItemHover: '#84614d',
+        noteList: prefersDarkMode ? '#333333' : '#f4f4f4',
+        noteListActive: prefersDarkMode ? '#494949' : '#ffffff',
+        content: prefersDarkMode ? '#494949' : '#ffffff',
+        noteDate: '#969696',
+        noteTitle: prefersDarkMode ? '#b58a75' : '#8e6c53',
+        noteTypeButton: prefersDarkMode ? '#b58a75' : '#8e6c53',
+        about: prefersDarkMode ? '#333333' : '#ffffff',
+        hr: prefersDarkMode ? '#1f3134' : '#aaaaaa',
+        MuiCheckColor: '#cb561c',
       },
     }
   );
@@ -59,6 +87,12 @@ export default function ThemeSwitcher(props) {
       },
       beiges: {
         textColor: prefersDarkMode ? '#fff9e2' : '#333333',
+      },
+      mintGreen: {
+        textColor: prefersDarkMode ? '#eae9e5' : '#404040',
+      },
+      coffee: {
+        textColor: prefersDarkMode ? '#f4f4f4' : '#8e6c53',
       },
     }
   );
@@ -99,10 +133,10 @@ export default function ThemeSwitcher(props) {
         MuiSwitch: {
           colorSecondary: {
             '&$checked': {
-              color: '#35e714',
+              color: wizColor.MuiCheckColor,
             },
             '&$checked + $track': {
-              backgroundColor: '#35e714',
+              backgroundColor: wizColor.MuiCheckColor,
               opacity: 0.2,
             },
           },
@@ -113,10 +147,10 @@ export default function ThemeSwitcher(props) {
           },
           colorSecondary: {
             '&:hover': {
-              backgroundColor: '#35e71410',
+              backgroundColor: `${wizColor.MuiCheckColor}10`,
             },
             '&$checked': {
-              color: '#35e714',
+              color: wizColor.MuiCheckColor,
             },
           },
         },
