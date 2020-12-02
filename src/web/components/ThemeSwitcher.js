@@ -34,6 +34,8 @@ export default function ThemeSwitcher(props) {
         noteDate: prefersDarkMode ? '#555555' : '#aaaaaa',
         noteTitle: prefersDarkMode ? '#d8d8d8' : '#333333',
         noteTypeButton: prefersDarkMode ? '#d8d8d8' : '#333333',
+        about: prefersDarkMode ? '#2a2a2a' : '#ffffff',
+        hr: prefersDarkMode ? '#404040' : '#d8d8d8',
       },
       beiges: {
         sideDrawer: prefersDarkMode ? '#322b27' : '#3f332b',
@@ -44,6 +46,8 @@ export default function ThemeSwitcher(props) {
         noteDate: prefersDarkMode ? '#98948d' : '#aaaaaa',
         noteTitle: prefersDarkMode ? '#f8efd2' : '#333333',
         noteTypeButton: prefersDarkMode ? '#f8efd2' : '#333333',
+        about: prefersDarkMode ? '#57544e' : '#fff9e2',
+        hr: prefersDarkMode ? '#322b27' : '#d8d8d8',
       },
     }
   );
@@ -151,7 +155,7 @@ export default function ThemeSwitcher(props) {
       custom: {
         background: {
           noteList: wizColor.noteList,
-          about: prefersDarkMode ? '#2a2a2a' : '#ffffff',
+          about: wizColor.about,
           noteListActive: wizColor.noteListActive,
           content: wizColor.content,
           contentGreen: 'rgb(237, 249, 240)',
@@ -176,7 +180,7 @@ export default function ThemeSwitcher(props) {
           noteTypeButton: wizColor.noteTypeButton,
           matchedText: '#aaaaaa',
           activeStarIcon: '#FDDD10',
-          hr: prefersDarkMode ? '#404040' : '#d8d8d8',
+          hr: wizColor.hr,
           contentToolIcon: '#aaaaaa',
           contentToolIconHover: prefersDarkMode ? '#ffffff' : '#333333',
           dialogButton: prefersDarkMode ? '#ffffff' : '#333333',

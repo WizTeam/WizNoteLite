@@ -90,7 +90,7 @@ class NoteViewer extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.darkMode !== this.props.darkMode) {
+    if (prevProps.darkMode !== this.props.darkMode || prevProps.color !== this.props.color) {
       this.checkTheme();
     }
   }
@@ -122,7 +122,7 @@ class NoteViewer extends React.Component {
   }
 
   async checkTheme() {
-    const { params } = this.props;
+    const { params, color } = this.props;
     const id = 'wiz-note-content-root';
     const reg = new RegExp(id, 'g');
     //
@@ -133,8 +133,18 @@ class NoteViewer extends React.Component {
     }
 
     if (this.props.darkMode !== undefined) {
-      const theme = this.props.darkMode ? 'dark' : 'lite';
-      let css = await window.wizApi.userManager.getThemeCssString(theme);
+      const theme = [];
+      //
+      if (color) {
+        theme.push(color);
+      }
+      if (this.props.darkMode) {
+        theme.push('dark');
+      } else {
+        theme.push('lite');
+      }
+      //
+      let css = await window.wizApi.userManager.getThemeCssString(theme.join('.'));
       css = css.replace(reg, this._rootElem.id);
       injectionCssFormId(this._rootElem.id, css);
     }
@@ -235,6 +245,7 @@ NoteViewer.propTypes = {
   params: PropTypes.object,
   darkMode: PropTypes.bool,
   showTableInline: PropTypes.bool,
+  color: PropTypes.string,
 };
 
 NoteViewer.defaultProps = {
@@ -243,6 +254,7 @@ NoteViewer.defaultProps = {
   showTableInline: false,
   noteGuid: null,
   kbGuid: null,
+  color: 'default',
 };
 
 export default withTheme(withStyles(styles)(injectIntl(NoteViewer)));

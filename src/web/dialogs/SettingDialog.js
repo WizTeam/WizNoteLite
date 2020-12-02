@@ -403,7 +403,9 @@ class SettingDialog extends React.Component {
           </Button> */}
         </div>
         <div className={classes.noteViewerBox}>
-          <div className={classes.noteViewerInner}><NoteViewer darkMode={false} /></div>
+          <div className={classes.noteViewerInner}>
+            <NoteViewer color={colorTheme} darkMode={false} />
+          </div>
           <LiteText className={classes.previewThemeText}>
             <FormattedMessage id="settingLabelPreviewTheme" />
           </LiteText>
@@ -423,7 +425,9 @@ class SettingDialog extends React.Component {
           </Button> */}
         </div>
         <div className={classes.noteViewerBox}>
-          <div className={classes.noteViewerInner}><NoteViewer darkMode /></div>
+          <div className={classes.noteViewerInner}>
+            <NoteViewer color={colorTheme} darkMode />
+          </div>
           <LiteText className={classes.previewThemeText}>
             <FormattedMessage id="settingLabelPreviewTheme" />
           </LiteText>
