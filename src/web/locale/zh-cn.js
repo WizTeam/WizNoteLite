@@ -156,4 +156,9 @@ export default {
   menuQuit: '退出',
 
   editorContents: '目录',
+  editorLink: '链接',
+  editorLinkLabel: '本文中的引用',
+  editorLinkInfo: '当前笔记中关联的链接',
+  editorLinkedLabel: '引用本文的笔记',
+  editorLinkedInfo: '在正文中关联 [[{currentTitle}]] 的笔记',
 };

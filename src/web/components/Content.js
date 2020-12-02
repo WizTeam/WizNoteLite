@@ -171,6 +171,11 @@ class Content extends React.Component {
         contentsList: list,
       });
     },
+    handleChangeEditorLink: (list) => {
+      this.setState({
+        linkList: list,
+      });
+    },
     handleContentsNodeClick: (item) => {
       const element = document.querySelector(`#${item.key}`);
       element.scrollIntoView({
@@ -190,6 +195,21 @@ class Content extends React.Component {
         alert(err.message);
       }
     },
+    handleNoteLink: (title) => {
+      const list = this.props.titlesList.filter((item) => item.title === title);
+      if (list.length === 0) {
+        this.props.onCreateNote('lite/markdown', `# ${title}`);
+      } else if (list.length === 1) {
+        this.handler.handleSelectNote(list[0].guid);
+      } else {
+        this.handler.handleSelectNote(list[0].guid);
+        console.log('gg', list);
+      }
+    },
+    handleSelectNote: async (guid) => {
+      const note = await window.wizApi.userManager.getNote(this.props.kbGuid, guid);
+      this.props.onSelectNote(note);
+    },
   };
 
   constructor(props) {
@@ -201,6 +221,7 @@ class Content extends React.Component {
       showExportPdfDialog: false,
       showEditorContents: false,
       contentsList: [],
+      linkList: [],
     };
     this.scrollContentRef = React.createRef();
     this.headerRef = React.createRef();
@@ -291,8 +312,11 @@ class Content extends React.Component {
               onClickTag={onClickTag}
               scrollbar={this.scrollContentRef.current ?? null}
               onUpdateContentsList={this.handler.handleChangeEditorContents}
+              onUpdateLinkList={this.handler.handleChangeEditorLink}
               onSelectNote={this.props.onSelectNote}
               onCreateNote={this.props.onCreateNote}
+              onClickNoteLink={this.handler.handleNoteLink}
+              titlesList={this.props.titlesList}
             />
           </Scrollbar>
           <EditorContents
@@ -301,6 +325,11 @@ class Content extends React.Component {
             onClose={this.handler.handleCloseContents}
             onNodeClick={this.handler.handleContentsNodeClick}
             isShowDrawer={this.props.isShowDrawer}
+            linkedList={this.props.linkedList}
+            linkList={this.state.linkList}
+            title={note?.title}
+            onLinkedClick={this.handler.handleSelectNote}
+            onLinkClick={this.handler.handleNoteLink}
           />
         </div>
         <Menu
@@ -362,9 +391,11 @@ Content.propTypes = {
   onCreateAccount: PropTypes.func.isRequired,
   onClickTag: PropTypes.func.isRequired,
   onRequestFullScreen: PropTypes.func.isRequired,
+  linkedList: PropTypes.array.isRequired,
   isShowDrawer: PropTypes.bool,
   onSelectNote: PropTypes.func,
   onCreateNote: PropTypes.func,
+  titlesList: PropTypes.array,
 };
 
 Content.defaultProps = {
@@ -373,6 +404,7 @@ Content.defaultProps = {
   isShowDrawer: false,
   onSelectNote: null,
   onCreateNote: null,
+  titlesList: [],
 };
 
 export default withTheme(withStyles(styles)(injectIntl(Content)));

@@ -131,31 +131,9 @@ class MarkdownEditorComponent extends React.PureComponent {
     }, 300),
 
     handleOnNoteLinksContentChange: ({ content, render }) => {
-      render(filter(this.state.titlesList, content, { key: 'title' }));
+      render(filter(this.titlesList, content, { key: 'title' }));
     },
-
-
-    handleNoteLink: async (item) => {
-      const id = item?.href.trim();
-      if (id) {
-        const note = await window.wizApi.userManager.getNote(this.props.kbGuid, id);
-        if (note) {
-          if (this.props.onSelectNote) {
-            this.props.onSelectNote(note);
-          }
-        } else {
-          const notes = await window.wizApi.userManager.queryNotes(this.props.kbGuid, 0, 1, {
-            // searchTitle: id,
-            searchText: id,
-          });
-          if (notes && notes.length && this.props.onSelectNote) {
-            this.props.onSelectNote(notes[0]);
-          } else if (this.props.onCreateNote) {
-            this.props.onCreateNote('lite/markdown', `# ${item.href}`);
-          }
-        }
-      }
-    },
+    handleClickLink: ({ href: title }) => this.props.onClickNoteLink(title),
   }
 
   constructor(props) {
@@ -166,8 +144,8 @@ class MarkdownEditorComponent extends React.PureComponent {
       markdown: '',
       focusMode: false,
       typewriterMode: false,
-      titlesList: [],
     };
+    this.titlesList = [];
     this.oldMarkdown = '';
     this.editor = React.createRef();
     this._onThemeChange = null;
@@ -192,7 +170,7 @@ class MarkdownEditorComponent extends React.PureComponent {
       typewriterMode: await window.wizApi.userManager.getSettings('typewriterMode', false),
     });
     this.editor.current.on('muya-note-link-change', this.handler.handleOnNoteLinksContentChange);
-    this.editor.current.on('muya-note-link', this.handler.handleNoteLink);
+    this.editor.current.on('muya-note-link', this.handler.handleClickLink);
   }
 
   componentDidUpdate(prevProps) {
@@ -201,6 +179,20 @@ class MarkdownEditorComponent extends React.PureComponent {
     if (propsNote?.guid !== currentNote?.guid) {
       // note changed
       this.saveAndLoadNote();
+      setTimeout(() => {
+        const linkList = this.editor.current.getNoteLinks();
+        if (this.props.onUpdateLinkList) {
+          this.props.onUpdateLinkList(linkList);
+        }
+      }, 500);
+    }
+    if (prevProps.titlesList !== this.props.titlesList) {
+      this.titlesList = [
+        ...new Set(this.props.titlesList.map((item) => item.title)),
+      ].map((item) => ({
+        id: item,
+        title: item,
+      }));
     }
     if (prevProps.theme.palette.type !== this.props.theme.palette.type) {
       if (this._onThemeChange) {
@@ -216,6 +208,8 @@ class MarkdownEditorComponent extends React.PureComponent {
     window.wizApi.userManager.off('tagRenamed', this.handler.handleTagRenamed);
     window.wizApi.userManager.off('focusEdit', this.handler.handleFocusModeChange);
     window.wizApi.userManager.off('typewriterEdit', this.handler.handleTypewriterModeChange);
+    this.editor.current.off('muya-note-link-change', this.handler.handleOnNoteLinksContentChange);
+    this.editor.current.off('muya-note-link', this.handler.handleClickLink);
     if (this.editor.current) {
       const editor = this.editor.current.editor;
       editor.removeEventListener('click', this.handler.handleClickEditor);
@@ -269,6 +263,9 @@ class MarkdownEditorComponent extends React.PureComponent {
     if (markdown !== this.oldMarkdown) {
       this.oldMarkdown = markdown;
       await this.props.onSaveNote(kbGuid, note.guid, markdown, noteLinks);
+      if (this.props.onUpdateLinkList) {
+        this.props.onUpdateLinkList(noteLinks);
+      }
     }
   }
 
@@ -300,20 +297,9 @@ class MarkdownEditorComponent extends React.PureComponent {
     }
   }
 
-  async refreshTitlesList() {
-    const titlesList = await window.wizApi.userManager.getAllTitles(this.props.kbGuid);
-    this.setState({
-      titlesList: titlesList?.map((item) => ({
-        id: item.guid,
-        title: item.title,
-      })),
-    });
-  }
-
   async saveAndLoadNote() {
     await this.saveNote();
     await this.loadNote();
-    await this.refreshTitlesList();
   }
 
   render() {
@@ -324,7 +310,6 @@ class MarkdownEditorComponent extends React.PureComponent {
       markdown,
       focusMode,
       typewriterMode,
-      titlesList,
     } = this.state;
     const { classes, scrollbar } = this.props;
     const scrollingElement = scrollbar?.container?.children[0];
@@ -349,7 +334,6 @@ class MarkdownEditorComponent extends React.PureComponent {
           lang={lang}
           focusMode={focusMode}
           typewriterMode={typewriterMode}
-          noteLinks={titlesList}
         />
       </div>
     );
@@ -367,18 +351,19 @@ MarkdownEditorComponent.propTypes = {
   onClickTag: PropTypes.func.isRequired,
   onUpdateContentsList: PropTypes.func,
   scrollbar: PropTypes.object,
+  onUpdateLinkList: PropTypes.func,
+  onClickNoteLink: PropTypes.func.isRequired,
   theme: PropTypes.object.isRequired,
-  onSelectNote: PropTypes.func,
-  onCreateNote: PropTypes.func,
+  titlesList: PropTypes.array,
 };
 
 MarkdownEditorComponent.defaultProps = {
   note: null,
   kbGuid: null,
   onUpdateContentsList: null,
+  onUpdateLinkList: null,
   scrollbar: null,
-  onSelectNote: null,
-  onCreateNote: null,
+  titlesList: [],
 };
 
 export default withTheme(withStyles(styles)(MarkdownEditorComponent));

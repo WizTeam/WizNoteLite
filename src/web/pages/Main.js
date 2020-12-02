@@ -149,7 +149,8 @@ class Main extends React.Component {
     handleSelectNote: (currentNote) => {
       this.setState({ currentNote });
       window.wizApi.userManager.setUserSettings('lastNote', currentNote?.guid);
-      this.getNoteLinks(currentNote.guid);
+      this.getNoteLinks(currentNote.title);
+      this.getAllTitle();
     },
     handleTagSelected: async (tag) => {
       this.setState({
@@ -357,19 +358,22 @@ class Main extends React.Component {
       // showSettingDialog: false,
       backgroundType: window.wizApi.userManager.getUserSettingsSync('background', 'white'),
       isFullScreen: window.wizApi.windowManager.isFullScreen(),
+      linkedList: [],
+      titlesList: [],
     };
     this._upgradeVipDisplayed = false;
   }
 
   async componentDidMount() {
     const selectedNoteGuid = await window.wizApi.userManager.getUserSettings('lastNote');
-    await this.getNoteLinks(selectedNoteGuid);
     if (selectedNoteGuid) {
       try {
         const currentNote = await window.wizApi.userManager.getNote(
           this.props.kbGuid,
           selectedNoteGuid,
         );
+        await this.getNoteLinks(currentNote.title);
+        this.getAllTitle();
         // 等待编辑器加载完成。（否则可能会有错误发生）
         setTimeout(() => {
           this.setState({ currentNote });
@@ -387,9 +391,19 @@ class Main extends React.Component {
     window.wizApi.userManager.off('menuItemClicked', this.handler.handleMenuItemClicked);
   }
 
-  async getNoteLinks(guid) {
-    const res = await window.wizApi.userManager.getLinkToNotes(this.props.kbGuid, guid);
-    console.log('res', res);
+  async getAllTitle() {
+    const titlesList = await window.wizApi.userManager.getAllTitles(this.props.kbGuid);
+    this.setState({
+      titlesList,
+    });
+  }
+
+
+  async getNoteLinks(title) {
+    const res = await window.wizApi.userManager.getLinkToNotes(this.props.kbGuid, title);
+    this.setState({
+      linkedList: res,
+    });
   }
 
   showUpgradeVipMessage(isVipExpired, syncOptions) {
@@ -449,6 +463,7 @@ class Main extends React.Component {
       showLoginDialog,
       showUpgradeToVipDialog,
       isFullScreen,
+      titlesList,
       // showSettingDialog,
     } = this.state;
 
@@ -533,6 +548,7 @@ class Main extends React.Component {
                   note={currentNote}
                   onSelectNote={this.handler.handleSelectNote}
                   onCreateNote={this.handler.handleCreateNote}
+                  linkedList={this.state.linkedList}
                   kbGuid={kbGuid}
                   isSearch={showMatched}
                   isShowDrawer={showDrawer}
@@ -540,6 +556,7 @@ class Main extends React.Component {
                   onCreateAccount={this.handler.handleShowLoginDialog}
                   onClickTag={this.handler.handleClickTag}
                   onRequestFullScreen={this.handler.handleFullScreen}
+                  titlesList={titlesList}
                 />
               </div>
             </div>
