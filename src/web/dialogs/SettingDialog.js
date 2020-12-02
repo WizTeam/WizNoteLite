@@ -254,6 +254,7 @@ class SettingDialog extends React.Component {
       this.setState({
         colorTheme: val,
       });
+      window.wizApi.userManager.setUserSettings('colorTheme', val);
       //
       if (this.props.onColorThemeChange) {
         this.props.onColorThemeChange(val);
@@ -270,7 +271,7 @@ class SettingDialog extends React.Component {
       showDrawer: um.getUserSettingsSync('showDrawer', false),
       orderBy: um.getUserSettingsSync('orderBy', 'modified'),
       focusWithTypewriter: um.getUserSettingsSync('focusWithTypewriter', false),
-      colorTheme: 'default',
+      colorTheme: um.getUserSettingsSync('colorTheme', 'default'),
       openModifyEmailDialog: false,
       openModifyPasswordDialog: false,
       displayName: '',

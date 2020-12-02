@@ -45,7 +45,10 @@ const messages = Object.assign(localeMessages.en, localeMessages[locale]);
 class App extends React.Component {
   handler = {
     handleLoggedIn: (user) => {
-      this.setState({ currentUser: user });
+      this.setState({
+        currentUser: user,
+        color: window.wizApi.userManager.getUserSettingsSync('colorTheme', 'default'),
+      });
     },
     handleCreateAccount: () => {
       this.setState({ currentUser: null, mergeLocalAccount: true });
@@ -121,6 +124,7 @@ class App extends React.Component {
               currentUser: user,
               isAutoLogging: false,
               mergeLocalAccount: !!user.isLocalUser,
+              color: window.wizApi.userManager.getUserSettingsSync('colorTheme', 'default'),
             });
           } else {
             this.setState({ isAutoLogging: false });

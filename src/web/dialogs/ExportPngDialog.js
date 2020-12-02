@@ -177,6 +177,7 @@ class ExportPngDialog extends React.Component {
       loading: false,
       previewTheme: um.getUserSettingsSync('exportPngTheme2', props.theme.palette.type === 'dark' ? 'dark' : 'lite'),
       widthValue: um.getUserSettingsSync('exportPngWidth', MOBILE_WIDTH),
+      colorTheme: um.getUserSettingsSync('colorTheme', 'default'),
     };
   }
 
@@ -190,7 +191,7 @@ class ExportPngDialog extends React.Component {
   render() {
     const {
       loading, widthValue,
-      previewTheme,
+      previewTheme, colorTheme,
     } = this.state;
     const {
       classes, open, onClose,
@@ -240,6 +241,7 @@ class ExportPngDialog extends React.Component {
               <NoteViewer
                 kbGuid={kbGuid}
                 noteGuid={noteGuid}
+                color={colorTheme}
                 darkMode={previewTheme === 'dark'}
                 params={{
                   padding: `${padding}`,
