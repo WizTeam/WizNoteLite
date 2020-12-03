@@ -17,6 +17,7 @@ import SyncButton from './SyncButton';
 import Scrollbar from './Scrollbar';
 import WordCounterButton from './WordCounterButton';
 import EditorContents from './editor/markdown/EditorContents';
+import LinkMenu from './LinkMenu';
 
 const styles = (theme) => ({
   main: {
@@ -195,15 +196,17 @@ class Content extends React.Component {
         alert(err.message);
       }
     },
-    handleNoteLink: (title) => {
+    handleNoteLink: (title, position) => {
       const list = this.props.titlesList.filter((item) => item.title === title);
       if (list.length === 0) {
         this.props.onCreateNote('lite/markdown', `# ${title}`);
       } else if (list.length === 1) {
         this.handler.handleSelectNote(list[0].guid);
       } else {
-        this.handler.handleSelectNote(list[0].guid);
-        console.log('gg', list);
+        this.setState({
+          linkMenuPosition: position,
+          linkMenuList: list,
+        });
       }
     },
     handleSelectNote: async (guid) => {
@@ -222,6 +225,8 @@ class Content extends React.Component {
       showEditorContents: false,
       contentsList: [],
       linkList: [],
+      linkMenuPosition: undefined,
+      linkMenuList: [],
     };
     this.scrollContentRef = React.createRef();
     this.headerRef = React.createRef();
@@ -243,7 +248,7 @@ class Content extends React.Component {
     } = this.props;
     const {
       isFullScreen, exportMenuAnchorEl, showExportPngDialog,
-      showExportPdfDialog,
+      showExportPdfDialog, linkMenuPosition, linkMenuList,
     } = this.state;
     //
     const isLite = theme.palette.type !== 'dark';
@@ -374,6 +379,19 @@ class Content extends React.Component {
           kbGuid={kbGuid}
           noteGuid={note?.guid ?? null}
           onClose={this.handler.handleCloseExportPdfDialog}
+        />
+        <LinkMenu
+          position={linkMenuPosition}
+          list={linkMenuList}
+          onClose={() => this.setState({
+            linkMenuPosition: undefined,
+          })}
+          onClickLink={(item) => {
+            this.handler.handleSelectNote(item.guid);
+            this.setState({
+              linkMenuPosition: undefined,
+            });
+          }}
         />
       </main>
     );

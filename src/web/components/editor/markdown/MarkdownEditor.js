@@ -133,7 +133,12 @@ class MarkdownEditorComponent extends React.PureComponent {
     handleOnNoteLinksContentChange: ({ content, render }) => {
       render(filter(this.titlesList, content, { key: 'title' }));
     },
-    handleClickLink: ({ href: title }) => this.props.onClickNoteLink(title),
+    handleClickLink: ({ href: title, event }) => {
+      this.props.onClickNoteLink(title, {
+        left: event.clientX,
+        top: event.clientY + 20,
+      });
+    },
   }
 
   constructor(props) {

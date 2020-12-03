@@ -258,7 +258,10 @@ function EditorContents(props) {
                         aria-hidden
                         role="button"
                         onClick={
-                          () => props.onLinkClick && props.onLinkClick(item)
+                          (e) => props.onLinkClick && props.onLinkClick(item, {
+                            left: e.clientX,
+                            top: e.clientY + 20,
+                          })
                         }
                       >
                         <Icons.NoteIcon className={classes.linkItemIcon} />
