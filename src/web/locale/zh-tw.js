@@ -160,4 +160,9 @@ export default {
   editorLinkInfo: '當前筆記中關聯的鏈接',
   editorLinkedLabel: '引用本文的筆記',
   editorLinkedInfo: '在正文中關聯 [[{currentTitle}]] 的筆記',
+
+  tipNoteListNull: '離列表只差<br />一篇筆記的距離',
+  tipSearchListNull: '沒有你要的',
+  tipTagListNull: '一個標籤都沒有',
+  tipNoteNull: '你就不想寫點啥嗎？',
 };

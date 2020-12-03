@@ -161,4 +161,9 @@ export default {
   editorLinkInfo: 'Associated links in the current note',
   editorLinkedLabel: 'Quote notes from this article',
   editorLinkedInfo: 'Associate the notes of [[{currentTitle}]] in the text',
+
+  tipNoteListNull: 'List need a note',
+  tipSearchListNull: `There's nothing you want`,
+  tipTagListNull: 'Nothing tag',
+  tipNoteNull: `Don't you want to write something`,
 };
