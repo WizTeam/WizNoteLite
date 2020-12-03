@@ -31,8 +31,8 @@ const styles = (/* theme */) => ({
 
 class NoteEditor extends React.Component {
   handler = {
-    handleSaveNote: async (kbGuid, noteGuid, markdown, noteLinks) => {
-      await window.wizApi.userManager.setNoteMarkdown(kbGuid, noteGuid, markdown, noteLinks);
+    handleSaveNote: async (kbGuid, noteGuid, markdown) => {
+      await window.wizApi.userManager.setNoteMarkdown(kbGuid, noteGuid, markdown);
     },
     handleLoadNote: async (kbGuid, noteGuid) => {
       const markdown = await window.wizApi.userManager.getNoteMarkdown(kbGuid, noteGuid);

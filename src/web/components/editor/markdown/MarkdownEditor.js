@@ -267,7 +267,7 @@ class MarkdownEditorComponent extends React.PureComponent {
     markdown = markdown.replace(wizPathReg, 'index_files');
     if (markdown !== this.oldMarkdown) {
       this.oldMarkdown = markdown;
-      await this.props.onSaveNote(kbGuid, note.guid, markdown, noteLinks);
+      await this.props.onSaveNote(kbGuid, note.guid, markdown);
       if (this.props.onUpdateLinkList) {
         this.props.onUpdateLinkList(noteLinks);
       }

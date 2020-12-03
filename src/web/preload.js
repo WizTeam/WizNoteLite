@@ -217,9 +217,8 @@ class UserManager extends EventEmitter {
     return markdown;
   }
 
-  async setNoteMarkdown(kbGuid, noteGuid, markdown, noteLinks) {
-    console.log('noteLinks', noteLinks);
-    const result = await invokeApi('setNoteMarkdown', this.userGuid, kbGuid, noteGuid, markdown, noteLinks);
+  async setNoteMarkdown(kbGuid, noteGuid, markdown) {
+    const result = await invokeApi('setNoteMarkdown', this.userGuid, kbGuid, noteGuid, markdown);
     wordCounter({
       kbGuid, noteGuid, markdown,
     });
