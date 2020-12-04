@@ -199,8 +199,8 @@ class UserManager extends EventEmitter {
     return notes;
   }
 
-  async getLinkToNotes(kbGuid, title) {
-    const res = await invokeApi('getLinkToNotes', this.userGuid, kbGuid, title);
+  async getBackwardLinkedNotes(kbGuid, title) {
+    const res = await invokeApi('getBackwardLinkedNotes', this.userGuid, kbGuid, title);
     return res;
   }
 

@@ -22,8 +22,8 @@
     "pureimage": "^0.2.1",
     "remove-markdown": "^0.3.0",
     "uuid": "^8.0.0",
-    "wiznote-sdk-js": "^1.2.9",
-    "wiznote-sdk-js-share": "^1.0.3",
+    "wiznote-sdk-js": "^1.2.10",
+    "wiznote-sdk-js-share": "^1.0.4",
     "xregexp": "^4.3.0"
   },
   "scripts": {

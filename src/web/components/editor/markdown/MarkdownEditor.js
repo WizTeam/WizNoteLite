@@ -193,7 +193,7 @@ class MarkdownEditorComponent extends React.PureComponent {
     }
     if (prevProps.titlesList !== this.props.titlesList) {
       this.titlesList = [
-        ...new Set(this.props.titlesList.map((item) => item.title)),
+        ...new Set(this.props.titlesList),
       ].map((item) => ({
         id: item,
         title: item,

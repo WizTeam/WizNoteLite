@@ -404,7 +404,7 @@ class Main extends React.Component {
 
 
   async getNoteLinks(title) {
-    const res = await window.wizApi.userManager.getLinkToNotes(this.props.kbGuid, title);
+    const res = await window.wizApi.userManager.getBackwardLinkedNotes(this.props.kbGuid, title);
     this.setState({
       linkedList: res,
     });

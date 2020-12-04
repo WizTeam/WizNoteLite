@@ -190,8 +190,8 @@ handleApi('getAllLinks', async (event, ...args) => {
   return result;
 });
 
-handleApi('getLinkToNotes', async (event, ...args) => {
-  const result = await sdk.getLinkToNotes(...args);
+handleApi('getBackwardLinkedNotes', async (event, ...args) => {
+  const result = await sdk.getBackwardLinkedNotes(...args);
   return result;
 });
 
