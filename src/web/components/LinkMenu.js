@@ -50,7 +50,7 @@ function LinkMenu(Props) {
           <Tooltip title={(
             <div>
               <Typography variant="subtitle2" color="inherit">{moment(item.modified).format('YYYY-MM-DD HH:mm')}</Typography>
-              {item.tags.length ? (<Typography variant="subtitle2" color="inherit">{item.tags.map((tag) => `#${tag}`).join('  ')}</Typography>) : null}
+              {item.tags?.length ? (<Typography variant="subtitle2" color="inherit">{item.tags.map((tag) => `#${tag}`).join('  ')}</Typography>) : null}
 
             </div>
           )}

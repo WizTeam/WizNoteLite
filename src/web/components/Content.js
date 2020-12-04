@@ -196,17 +196,27 @@ class Content extends React.Component {
         alert(err.message);
       }
     },
-    handleNoteLink: (title, position) => {
-      const list = this.props.titlesList.filter((item) => item.title === title);
-      if (list.length === 0) {
-        this.props.onCreateNote('lite/markdown', `# ${title}`);
-      } else if (list.length === 1) {
-        this.handler.handleSelectNote(list[0].guid);
-      } else {
-        this.setState({
-          linkMenuPosition: position,
-          linkMenuList: list,
-        });
+    handleNoteLink: async (content, position) => {
+      const title = content.trim();
+      if (title) {
+        const list = await window.wizApi.userManager.queryNotes(
+          this.props.kbGuid,
+          0,
+          100,
+          { title, analysisTags: true },
+        );
+        // console.log('list', list.filter((item) => item.tags));
+        // const list = this.props.titlesList.filter((item) => item.title === title);
+        if (!list?.length) {
+          this.props.onCreateNote('lite/markdown', `# ${title}`);
+        } else if (list.length === 1) {
+          this.handler.handleSelectNote(list[0].guid);
+        } else {
+          this.setState({
+            linkMenuPosition: position,
+            linkMenuList: list,
+          });
+        }
       }
     },
     handleSelectNote: async (guid) => {
