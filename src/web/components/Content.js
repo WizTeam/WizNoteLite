@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { injectIntl } from 'react-intl';
+import { injectIntl, FormattedMessage } from 'react-intl';
 import { withStyles, withTheme } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
@@ -18,6 +18,7 @@ import Scrollbar from './Scrollbar';
 import WordCounterButton from './WordCounterButton';
 import EditorContents from './editor/markdown/EditorContents';
 import LinkMenu from './LinkMenu';
+import LiteMiddle from './LiteMiddle';
 
 const styles = (theme) => ({
   main: {
@@ -117,6 +118,15 @@ const styles = (theme) => ({
       backgroundColor: 'transparent',
       color: theme.custom.color.forgetPasswordButton,
     },
+  },
+  noteNull: {
+    fontSize: 12,
+  },
+  noteNullIcon: {
+    width: 202,
+    height: 'auto',
+    marginBottom: theme.spacing(6),
+    color: 'inherit',
   },
 });
 
@@ -254,7 +264,7 @@ class Content extends React.Component {
     const {
       note, kbGuid, classes,
       theme, backgroundType, onClickTag,
-      intl,
+      intl, isNullNote,
     } = this.props;
     const {
       isFullScreen, exportMenuAnchorEl, showExportPngDialog,
@@ -321,6 +331,12 @@ class Content extends React.Component {
         )}
         <div className={classes.content}>
           <Scrollbar ref={this.scrollContentRef}>
+            {isNullNote && (
+              <LiteMiddle className={classes.noteNull}>
+                <Icons.NoteNullIcon className={classes.noteNullIcon} />
+                <FormattedMessage id="tipNoteNull" />
+              </LiteMiddle>
+            )}
             <NoteEditor
               note={note}
               kbGuid={kbGuid}
@@ -424,6 +440,7 @@ Content.propTypes = {
   onSelectNote: PropTypes.func,
   onCreateNote: PropTypes.func,
   titlesList: PropTypes.array,
+  isNullNote: PropTypes.bool,
 };
 
 Content.defaultProps = {
@@ -433,6 +450,7 @@ Content.defaultProps = {
   onSelectNote: null,
   onCreateNote: null,
   titlesList: [],
+  isNullNote: false,
 };
 
 export default withTheme(withStyles(styles)(injectIntl(Content)));

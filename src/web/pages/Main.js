@@ -147,9 +147,10 @@ class Main extends React.Component {
       window.wizApi.userManager.createNote(this.props.kbGuid, note);
     },
     handleSelectNote: (currentNote) => {
-      this.setState({ currentNote });
+      const isNullNote = currentNote === null;
+      this.setState({ currentNote, isNullNote });
       window.wizApi.userManager.setUserSettings('lastNote', currentNote?.guid);
-      this.getNoteLinks(currentNote.title);
+      this.getNoteLinks(currentNote?.title);
       this.getAllTitle();
     },
     handleTagSelected: async (tag) => {
@@ -349,6 +350,7 @@ class Main extends React.Component {
     this.state = {
       type: um.getUserSettingsSync('sideBar', 'notes'),
       currentNote: null,
+      isNullNote: false,
       showDrawer: um.getUserSettingsSync('showDrawer', false),
       tag: um.getUserSettingsSync('selectedTag', {}),
       matchedNotesCount: 0,
@@ -381,6 +383,8 @@ class Main extends React.Component {
       } catch (err) {
         //
       }
+    } else {
+      this.setState({ isNullNote: true });
     }
     window.wizApi.userManager.on('syncFinish', this.handler.handleSyncFinish);
     window.wizApi.userManager.on('menuItemClicked', this.handler.handleMenuItemClicked);
@@ -463,7 +467,7 @@ class Main extends React.Component {
       showLoginDialog,
       showUpgradeToVipDialog,
       isFullScreen,
-      titlesList,
+      titlesList, isNullNote,
       // showSettingDialog,
     } = this.state;
 
@@ -546,6 +550,7 @@ class Main extends React.Component {
               <div className={classes.contentMainContainer}>
                 <Content
                   note={currentNote}
+                  isNullNote={isNullNote}
                   onSelectNote={this.handler.handleSelectNote}
                   onCreateNote={this.handler.handleCreateNote}
                   linkedList={this.state.linkedList}

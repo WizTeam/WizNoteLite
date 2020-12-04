@@ -161,4 +161,9 @@ export default {
   editorLinkInfo: '当前笔记中关联的链接',
   editorLinkedLabel: '引用本文的笔记',
   editorLinkedInfo: '在正文中关联 [[{currentTitle}]] 的笔记',
+
+  tipNoteListNull: '离列表只差<br />一篇笔记的距离',
+  tipSearchListNull: '没有你要的',
+  tipTagListNull: '一个标签都没有',
+  tipNoteNull: '你就不想写点啥吗？',
 };

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { injectIntl } from 'react-intl';
+import { injectIntl, FormattedMessage } from 'react-intl';
 import { withStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -19,6 +19,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Scrollbar from './Scrollbar';
 import CommonHeader from './CommonHeader';
 // import LiteText from './LiteText';
+import LiteMiddle from './LiteMiddle';
 import Tags from './Tags';
 import Icons from '../config/icons';
 
@@ -136,6 +137,16 @@ const styles = (theme) => ({
   grow: {
     flex: 1,
   },
+  nullTip: {
+    fontSize: 12,
+    color: '#ffffff',
+  },
+  tagsNullIcon: {
+    width: 82,
+    height: 'auto',
+    marginBottom: theme.spacing(6),
+    color: 'inherit',
+  },
 });
 
 class SideBar extends React.Component {
@@ -204,7 +215,7 @@ class SideBar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      tags: {},
+      tags: null,
       showTrash: false,
       anchorEl: null,
       syncLoading: false,
@@ -294,6 +305,7 @@ class SideBar extends React.Component {
       syncSuccess,
     } = this.state;
     //
+    const isTagsNull = tags !== null && Object.keys(tags).length === 0;
     const isLogin = user && !user.isLocalUser;
     const items = [
       { type: 'notes', text: intl.formatMessage({ id: 'allNoteTitle' }) },
@@ -345,6 +357,12 @@ class SideBar extends React.Component {
           ))}
         </List>
         <Scrollbar themeType="dark">
+          {isTagsNull && (
+            <LiteMiddle className={classes.nullTip}>
+              <Icons.TagsNullIcon className={classes.tagsNullIcon} />
+              <FormattedMessage id="tipTagListNull" />
+            </LiteMiddle>
+          )}
           <Tags
             data={tags}
             onSelected={onTagSelected}
