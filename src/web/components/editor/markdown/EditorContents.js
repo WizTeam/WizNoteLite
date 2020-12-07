@@ -58,10 +58,9 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
     outline: 'none',
     background: 'transparent',
     cursor: 'pointer',
-    color: '#aaaaaa',
-
+    color: palette.type === 'dark' ? '#969696' : '#aaaaaa',
     '&.active': {
-      color: '#333',
+      color: palette.type === 'dark' ? '#f0f0f0' : '#333',
     },
   },
   icon: {
@@ -101,7 +100,7 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
   linkListLabel: {
     display: 'flex',
     fontSize: 14,
-    color: '#333',
+    color: palette.type === 'dark' ? '#fff' : '#333',
   },
   collapseContainer: {
     paddingLeft: 22,
@@ -110,14 +109,14 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
   linkInfo: {
     color: '#aaa',
     fontSize: 12,
-    marginBottom: 20,
+    marginBottom: 8,
   },
   linkItem: {
     display: 'flex',
     alignItems: 'center',
     overflow: 'hidden',
-    marginBottom: 10,
     cursor: 'pointer',
+    lineHeight: 1,
     '&:hover': {
       color: '#000',
       '& .content': {
@@ -136,7 +135,7 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
   linkItemIcon: {
     marginRight: 5,
     color: '#448aff',
-    paddingTop: 5,
+    paddingTop: 4,
   },
 }));
 
