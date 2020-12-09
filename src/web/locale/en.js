@@ -161,9 +161,10 @@ export default {
   editorLinkInfo: 'Associated links in the current note',
   editorLinkedLabel: 'Quote notes from this article',
   editorLinkedInfo: 'Associate the notes of [[{currentTitle}]] in the text',
+  editorLinkedNull: '(no linked)',
 
   tipNoteListNull: 'List need a note',
-  tipSearchListNull: `There's nothing you want`,
+  tipSearchListNull: `No results`,
   tipTagListNull: 'Nothing tag',
-  tipNoteNull: `Don't you want to write something`,
+  tipNoteNull: `Never memorize something that you can look up. —— Einstein`,
 };

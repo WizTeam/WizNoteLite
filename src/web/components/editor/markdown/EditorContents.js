@@ -111,6 +111,10 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
     fontSize: 12,
     marginBottom: 8,
   },
+  noLink: {
+    color: '#aaa',
+    fontSize: 12,
+  },
   linkItem: {
     display: 'flex',
     alignItems: 'center',
@@ -178,6 +182,7 @@ function EditorContents(props) {
     };
   }, [props.onClose, props.open, isFixed, classes.editorContents, onClose]);
 
+  const linkList = [...new Set(props.linkList)];
   return (
     <div className={classNames(classes.editorContents, {
       active: props.open,
@@ -253,7 +258,7 @@ function EditorContents(props) {
                 <Collapse in={linkListOpen} timeout="auto" unmountOnExit>
                   <div className={classes.collapseContainer}>
                     <div className={classes.linkInfo}>{props.intl.formatMessage({ id: 'editorLinkInfo' })}</div>
-                    {[...new Set(props.linkList)].map((item, index) => (
+                    {linkList.length ? linkList.map((item, index) => (
                       <div
                         className={classes.linkItem}
                         key={index.toString()}
@@ -269,7 +274,7 @@ function EditorContents(props) {
                         <Icons.NoteIcon className={classes.linkItemIcon} />
                         <span className={classNames(classes.linkItemContent, 'content')}>{item}</span>
                       </div>
-                    ))}
+                    )) : (<span className={classes.noLink}>{props.intl.formatMessage({ id: 'editorLinkedNull' })}</span>)}
                   </div>
                 </Collapse>
 
@@ -289,7 +294,7 @@ function EditorContents(props) {
                 <Collapse in={linkedListOpen} timeout="auto" unmountOnExit>
                   <div className={classes.collapseContainer}>
                     <div className={classes.linkInfo}>{props.intl.formatMessage({ id: 'editorLinkedInfo' }, { currentTitle: props.title })}</div>
-                    {props.linkedList.map((item, index) => (
+                    {props.linkedList.length ? props.linkedList.map((item, index) => (
                       <div
                         aria-hidden
                         role="button"
@@ -302,7 +307,7 @@ function EditorContents(props) {
                         <Icons.NoteIcon className={classes.linkItemIcon} />
                         <span className={classNames(classes.linkItemContent, 'content')}>{item.title}</span>
                       </div>
-                    ))}
+                    )) : (<span className={classes.noLink}>{props.intl.formatMessage({ id: 'editorLinkedNull' })}</span>)}
                   </div>
                 </Collapse>
               </div>
