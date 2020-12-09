@@ -8,6 +8,7 @@ const url = require('url');
 const windowStateKeeper = require('electron-window-state');
 const log = require('electron-log');
 const sdk = require('wiznote-sdk-js');
+require('@electron/remote/main').initialize();
 
 const i18nResources = require('./i18n');
 const { unregisterWindow } = require('./api');
@@ -69,6 +70,7 @@ function createWindow() {
       nodeIntegrationInWorker: true,
       preload: path.join(__dirname, '../web/preload.js'),
       webSecurity: !isDevelopment,
+      enableRemoteModule: true,
     },
     icon: nativeImage.createFromPath(path.join(__dirname, '../icons/wiznote.icns')),
   };
