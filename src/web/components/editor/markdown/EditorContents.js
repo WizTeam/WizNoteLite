@@ -137,6 +137,9 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
     color: '#448aff',
     paddingTop: 4,
   },
+  groupMargin: {
+    marginTop: 50,
+  },
 }));
 
 function EditorContents(props) {
@@ -273,7 +276,7 @@ function EditorContents(props) {
                 <div
                   aria-hidden
                   onClick={() => setLinkedListOpen((value) => !value)}
-                  className={classes.linkListLabel}
+                  className={classNames(classes.linkListLabel, classes.groupMargin)}
                   role="button"
                 >
                   {linkedListOpen ? (
