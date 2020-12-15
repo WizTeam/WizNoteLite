@@ -134,12 +134,13 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
     overflow: 'hidden',
     color: '#448aff',
     fontSize: 14,
+    lineHeight: '20px',
     borderBottom: '1px solid transparent',
   },
   linkItemIcon: {
     marginRight: 5,
     color: '#448aff',
-    paddingTop: 4,
+    paddingTop: 5,
   },
   groupMargin: {
     marginTop: 50,
