@@ -22,7 +22,7 @@
     "pureimage": "^0.2.1",
     "remove-markdown": "^0.3.0",
     "uuid": "^8.0.0",
-    "wiznote-sdk-js": "^1.2.10",
+    "wiznote-sdk-js": "^1.2.11",
     "wiznote-sdk-js-share": "^1.0.4",
     "xregexp": "^4.3.0"
   },
@@ -201,7 +201,7 @@
     "react-style-proptype": "^3.2.2",
     "run-script-os": "^1.0.7",
     "timer.js": "^1.0.4",
-    "wiz-react-markdown-editor": "^0.5.32"
+    "wiz-react-markdown-editor": "^0.5.34"
   },
   "__npminstall_done": false
 }
