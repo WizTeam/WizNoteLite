@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { withStyles, withTheme } from '@material-ui/core/styles';
-import { MarkdownEditor } from 'wiz-react-markdown-editor/dist';
+import { MarkdownEditor } from 'wiz-react-markdown-editor';
 import debounce from 'lodash/debounce';
-import TableMenu from './TableMenu';
+import { filter } from 'fuzzaldrin';
 import { getTagSpanFromRange } from '../libs/dom_utils';
 import { getLocale } from '../../../utils/lang';
 import './lite.scss';
@@ -21,7 +21,6 @@ const styles = (/* theme */) => ({
     display: 'none',
   },
 });
-
 class MarkdownEditorComponent extends React.PureComponent {
   handler = {
     handleClickEditor: (e) => {
@@ -31,8 +30,8 @@ class MarkdownEditorComponent extends React.PureComponent {
         this.props.onClickTag(tagSpan.textContent);
       }
     },
-    handleNoteModified: ({ contentId, markdown }) => {
-      this.saveNote(contentId, markdown);
+    handleNoteModified: ({ contentId, markdown, noteLinks }) => {
+      this.saveNote(contentId, markdown, noteLinks);
     },
     handleSelectImages: async () => {
       if (!this.editor.current) {
@@ -92,6 +91,16 @@ class MarkdownEditorComponent extends React.PureComponent {
       }
       return path;
     },
+    handleFocusModeChange: (focusMode) => {
+      this.setState({
+        focusMode,
+      });
+    },
+    handleTypewriterModeChange: (typewriterMode) => {
+      this.setState({
+        typewriterMode,
+      });
+    },
     handleOnChange: debounce(({ toc }) => {
       const list = toc.map((item) => ({
         ...item,
@@ -120,6 +129,16 @@ class MarkdownEditorComponent extends React.PureComponent {
         this.props.onUpdateContentsList(result);
       }
     }, 300),
+
+    handleOnNoteLinksContentChange: ({ content, render }) => {
+      render(filter(this.titlesList, content, { key: 'title' }));
+    },
+    handleClickLink: ({ href: title, event }) => {
+      this.props.onClickNoteLink(title, {
+        left: event.clientX,
+        top: event.clientY + 20,
+      });
+    },
   }
 
   constructor(props) {
@@ -128,7 +147,10 @@ class MarkdownEditorComponent extends React.PureComponent {
       note: null,
       wordList: [],
       markdown: '',
+      focusMode: false,
+      typewriterMode: false,
     };
+    this.titlesList = [];
     this.oldMarkdown = '';
     this.editor = React.createRef();
     this._onThemeChange = null;
@@ -138,12 +160,22 @@ class MarkdownEditorComponent extends React.PureComponent {
   async componentDidMount() {
     window.wizApi.userManager.on('tagsChanged', this.handler.handleTagsChanged);
     window.wizApi.userManager.on('tagRenamed', this.handler.handleTagRenamed);
+    window.wizApi.userManager.on('focusEdit', this.handler.handleFocusModeChange);
+    window.wizApi.userManager.on('typewriterEdit', this.handler.handleTypewriterModeChange);
     this.getAllTags();
     await this.loadNote();
     if (this.editor.current) {
       const editor = this.editor.current.editor;
       editor.addEventListener('click', this.handler.handleClickEditor);
     }
+    this.setState({
+      focusMode: await window.wizApi.userManager.getSettings('focusMode', false),
+    });
+    this.setState({
+      typewriterMode: await window.wizApi.userManager.getSettings('typewriterMode', false),
+    });
+    this.editor.current.on('muya-note-link-change', this.handler.handleOnNoteLinksContentChange);
+    this.editor.current.on('muya-note-link', this.handler.handleClickLink);
   }
 
   componentDidUpdate(prevProps) {
@@ -152,6 +184,20 @@ class MarkdownEditorComponent extends React.PureComponent {
     if (propsNote?.guid !== currentNote?.guid) {
       // note changed
       this.saveAndLoadNote();
+      setTimeout(() => {
+        const linkList = this.editor.current.getNoteLinks();
+        if (this.props.onUpdateLinkList) {
+          this.props.onUpdateLinkList(linkList);
+        }
+      }, 500);
+    }
+    if (prevProps.titlesList !== this.props.titlesList) {
+      this.titlesList = [
+        ...new Set(this.props.titlesList.filter((item) => !!item.trim())),
+      ].map((item) => ({
+        id: item,
+        title: item,
+      }));
     }
     if (prevProps.theme.palette.type !== this.props.theme.palette.type) {
       if (this._onThemeChange) {
@@ -165,6 +211,10 @@ class MarkdownEditorComponent extends React.PureComponent {
   componentWillUnmount() {
     window.wizApi.userManager.off('tagsChanged', this.handler.handleTagsChanged);
     window.wizApi.userManager.off('tagRenamed', this.handler.handleTagRenamed);
+    window.wizApi.userManager.off('focusEdit', this.handler.handleFocusModeChange);
+    window.wizApi.userManager.off('typewriterEdit', this.handler.handleTypewriterModeChange);
+    this.editor.current.off('muya-note-link-change', this.handler.handleOnNoteLinksContentChange);
+    this.editor.current.off('muya-note-link', this.handler.handleClickLink);
     if (this.editor.current) {
       const editor = this.editor.current.editor;
       editor.removeEventListener('click', this.handler.handleClickEditor);
@@ -205,7 +255,7 @@ class MarkdownEditorComponent extends React.PureComponent {
     }
   }
 
-  async saveNote(contentId, markdown) {
+  async saveNote(contentId, markdown, noteLinks) {
     const { note } = this.state;
     if (!this.editor.current || !note || contentId !== note.guid) {
       return;
@@ -218,6 +268,9 @@ class MarkdownEditorComponent extends React.PureComponent {
     if (markdown !== this.oldMarkdown) {
       this.oldMarkdown = markdown;
       await this.props.onSaveNote(kbGuid, note.guid, markdown);
+      if (this.props.onUpdateLinkList) {
+        this.props.onUpdateLinkList(noteLinks);
+      }
     }
   }
 
@@ -260,6 +313,8 @@ class MarkdownEditorComponent extends React.PureComponent {
       note,
       wordList,
       markdown,
+      focusMode,
+      typewriterMode,
     } = this.state;
     const { classes, scrollbar } = this.props;
     const scrollingElement = scrollbar?.container?.children[0];
@@ -282,10 +337,8 @@ class MarkdownEditorComponent extends React.PureComponent {
           onScreenCaptureManual={this.handler.handleScreenCaptureManual}
           onImageAction={this.handler.handleImageAction}
           lang={lang}
-        />
-        <TableMenu
-          editor={this.editor}
-          onSaveNote={() => {}}
+          focusMode={focusMode}
+          typewriterMode={typewriterMode}
         />
       </div>
     );
@@ -303,14 +356,19 @@ MarkdownEditorComponent.propTypes = {
   onClickTag: PropTypes.func.isRequired,
   onUpdateContentsList: PropTypes.func,
   scrollbar: PropTypes.object,
+  onUpdateLinkList: PropTypes.func,
+  onClickNoteLink: PropTypes.func.isRequired,
   theme: PropTypes.object.isRequired,
+  titlesList: PropTypes.array,
 };
 
 MarkdownEditorComponent.defaultProps = {
   note: null,
   kbGuid: null,
   onUpdateContentsList: null,
+  onUpdateLinkList: null,
   scrollbar: null,
+  titlesList: [],
 };
 
 export default withTheme(withStyles(styles)(MarkdownEditorComponent));

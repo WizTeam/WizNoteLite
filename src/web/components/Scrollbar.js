@@ -55,7 +55,7 @@ const Scrollbar = React.forwardRef((props, ref) => {
       const inner = container.firstChild;
       inner.style['margin-bottom'] = `-${getScrollbarWidthHorizontal()}px`;
     }
-  }, []);
+  }, [ref]);
   //
   return (
     <Scrollbars

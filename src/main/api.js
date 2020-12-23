@@ -89,6 +89,11 @@ handleApi('queryNotes', async (event, ...args) => {
   return notes;
 });
 
+handleApi('getAllTitles', async (event, ...args) => {
+  const notes = await sdk.getAllTitles(...args);
+  return notes;
+});
+
 handleApi('getNote', async (event, ...args) => {
   const result = await sdk.getNote(...args);
   return result;
@@ -182,6 +187,11 @@ handleApi('getAllTags', async (event, ...args) => {
 
 handleApi('getAllLinks', async (event, ...args) => {
   const result = await sdk.getAllLinks(...args);
+  return result;
+});
+
+handleApi('getBackwardLinkedNotes', async (event, ...args) => {
+  const result = await sdk.getBackwardLinkedNotes(...args);
   return result;
 });
 

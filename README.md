@@ -143,4 +143,3 @@ npm run pack
 ## WizNote Lite for Mobile Project
 
 [WizNote Lite for Mobile](https://github.com/WizTeam/WizNoteLiteMobile)
-

@@ -599,6 +599,8 @@ class UserManager extends EventEmitter {
   async setSettings(key, value) {
     if (key === 'focusMode') {
       this.emit('focusEdit', value);
+    } else if (key === 'typewriterMode') {
+      this.emit('typewriterEdit', value);
     }
     this.setSettings.getSettings(key, value);
   }

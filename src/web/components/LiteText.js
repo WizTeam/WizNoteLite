@@ -19,6 +19,9 @@ const useStyles = makeStyles((theme) => ({
   inheritColor: {
     color: 'inherit',
   },
+  inheritLineheight: {
+    lineHeight: 'inherit',
+  },
   userSelectNone: {
     userSelect: 'none',
   },
@@ -30,7 +33,7 @@ function LiteText(props) {
   const {
     highlightText, children, className, inheritColor,
     isDivContainer, title, style, fullWidth,
-    disableUserSelect, variant,
+    disableUserSelect, variant, inheritLineheight,
   } = props;
 
   const headlineMapping = {
@@ -67,6 +70,7 @@ function LiteText(props) {
         fullWidth && classes.fullWidth,
         disableUserSelect && classes.userSelectNone,
         inheritColor && classes.inheritColor,
+        inheritLineheight && classes.inheritLineheight,
         className)}
     >
       {childrenNodes}
@@ -89,6 +93,7 @@ LiteText.propTypes = {
   fullWidth: PropTypes.bool,
   disableUserSelect: PropTypes.bool,
   variant: PropTypes.string,
+  inheritLineheight: PropTypes.bool,
 };
 
 LiteText.defaultProps = {
@@ -102,6 +107,7 @@ LiteText.defaultProps = {
   fullWidth: true,
   disableUserSelect: false,
   variant: 'body2',
+  inheritLineheight: false,
 };
 
 export default React.memo(LiteText);

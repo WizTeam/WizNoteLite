@@ -136,18 +136,22 @@ class Main extends React.Component {
         }
       }
     },
-    handleCreateNote: (noteType) => {
+    handleCreateNote: (noteType, markdown) => {
       const type = this.state.type;
       const { tag } = this.state;
       const note = {
         type: noteType,
         tag: type === 'tag' && tag?.key,
+        markdown,
       };
       window.wizApi.userManager.createNote(this.props.kbGuid, note);
     },
     handleSelectNote: (currentNote) => {
-      this.setState({ currentNote });
+      const isNullNote = currentNote === null;
+      this.setState({ currentNote, isNullNote });
       window.wizApi.userManager.setUserSettings('lastNote', currentNote?.guid);
+      this.getNoteLinks(currentNote?.title);
+      this.getAllTitle();
     },
     handleTagSelected: async (tag) => {
       this.setState({
@@ -346,6 +350,7 @@ class Main extends React.Component {
     this.state = {
       type: um.getUserSettingsSync('sideBar', 'notes'),
       currentNote: null,
+      isNullNote: false,
       showDrawer: um.getUserSettingsSync('showDrawer', false),
       tag: um.getUserSettingsSync('selectedTag', {}),
       matchedNotesCount: 0,
@@ -355,6 +360,8 @@ class Main extends React.Component {
       // showSettingDialog: false,
       backgroundType: window.wizApi.userManager.getUserSettingsSync('background', 'white'),
       isFullScreen: window.wizApi.windowManager.isFullScreen(),
+      linkedList: [],
+      titlesList: [],
     };
     this._upgradeVipDisplayed = false;
   }
@@ -367,6 +374,8 @@ class Main extends React.Component {
           this.props.kbGuid,
           selectedNoteGuid,
         );
+        await this.getNoteLinks(currentNote.title);
+        this.getAllTitle();
         // 等待编辑器加载完成。（否则可能会有错误发生）
         setTimeout(() => {
           this.setState({ currentNote });
@@ -374,6 +383,8 @@ class Main extends React.Component {
       } catch (err) {
         //
       }
+    } else {
+      this.setState({ isNullNote: true });
     }
     window.wizApi.userManager.on('syncFinish', this.handler.handleSyncFinish);
     window.wizApi.userManager.on('menuItemClicked', this.handler.handleMenuItemClicked);
@@ -382,6 +393,21 @@ class Main extends React.Component {
   componentWillUnmount() {
     window.wizApi.userManager.off('syncFinish', this.handler.handleSyncFinish);
     window.wizApi.userManager.off('menuItemClicked', this.handler.handleMenuItemClicked);
+  }
+
+  async getAllTitle() {
+    const titlesList = await window.wizApi.userManager.getAllTitles(this.props.kbGuid);
+    this.setState({
+      titlesList,
+    });
+  }
+
+
+  async getNoteLinks(title) {
+    const res = await window.wizApi.userManager.getBackwardLinkedNotes(this.props.kbGuid, title);
+    this.setState({
+      linkedList: res,
+    });
   }
 
   showUpgradeVipMessage(isVipExpired, syncOptions) {
@@ -441,6 +467,7 @@ class Main extends React.Component {
       showLoginDialog,
       showUpgradeToVipDialog,
       isFullScreen,
+      titlesList, isNullNote,
       // showSettingDialog,
     } = this.state;
 
@@ -523,6 +550,10 @@ class Main extends React.Component {
               <div className={classes.contentMainContainer}>
                 <Content
                   note={currentNote}
+                  isNullNote={isNullNote}
+                  onSelectNote={this.handler.handleSelectNote}
+                  onCreateNote={this.handler.handleCreateNote}
+                  linkedList={this.state.linkedList}
                   kbGuid={kbGuid}
                   isSearch={showMatched}
                   isShowDrawer={showDrawer}
@@ -530,6 +561,7 @@ class Main extends React.Component {
                   onCreateAccount={this.handler.handleShowLoginDialog}
                   onClickTag={this.handler.handleClickTag}
                   onRequestFullScreen={this.handler.handleFullScreen}
+                  titlesList={titlesList}
                 />
               </div>
             </div>

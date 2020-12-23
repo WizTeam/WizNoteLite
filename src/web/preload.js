@@ -194,6 +194,16 @@ class UserManager extends EventEmitter {
     return notes;
   }
 
+  async getAllTitles(kbGuid) {
+    const notes = await invokeApi('getAllTitles', this.userGuid, kbGuid);
+    return notes;
+  }
+
+  async getBackwardLinkedNotes(kbGuid, title) {
+    const res = await invokeApi('getBackwardLinkedNotes', this.userGuid, kbGuid, title);
+    return res;
+  }
+
   async getNote(kbGuid, noteGuid, options) {
     const note = await invokeApi('getNote', this.userGuid, kbGuid, noteGuid, options);
     return note;
@@ -257,7 +267,7 @@ class UserManager extends EventEmitter {
   async getSettings(key, defaultValue) {
     let result = await invokeApi('getSettings', key, defaultValue);
     // TODO 临时关闭 FocusMode
-    if (/^focusMode$/i.test(key)) {
+    if (/^focusMode$/i.test(key) || /^typewriterMode$/i.test(key)) {
       result = false;
     }
     return result;
@@ -266,6 +276,8 @@ class UserManager extends EventEmitter {
   async setSettings(key, value) {
     if (key === 'focusMode') {
       this.emit('focusEdit', value);
+    } else if (key === 'typewriterMode') {
+      this.emit('typewriterEdit', value);
     }
     await invokeApi('setSettings', key, value);
   }

@@ -63,7 +63,6 @@ class NoteEditor extends React.Component {
     const type = note?.type;
     const isMarkdown = type === 'lite' || type === 'lite/note' || type === 'lite/markdown';
     const hasEditor = isMarkdown;
-
     //
     return (
       <div
@@ -81,6 +80,9 @@ class NoteEditor extends React.Component {
             onClickTag={onClickTag}
             scrollbar={scrollbar}
             onUpdateContentsList={this.props.onUpdateContentsList}
+            onUpdateLinkList={this.props.onUpdateLinkList}
+            onClickNoteLink={this.props.onClickNoteLink}
+            titlesList={this.props.titlesList}
           />
         </TabPanel>
         <TabPanel tabKey="unknown" visible={!hasEditor}>
@@ -103,14 +105,19 @@ NoteEditor.propTypes = {
   theme: PropTypes.object.isRequired,
   onClickTag: PropTypes.func.isRequired,
   onUpdateContentsList: PropTypes.func,
+  onUpdateLinkList: PropTypes.func,
+  onClickNoteLink: PropTypes.func.isRequired,
   scrollbar: PropTypes.object,
+  titlesList: PropTypes.array,
 };
 
 NoteEditor.defaultProps = {
   note: null,
   kbGuid: null,
   onUpdateContentsList: null,
+  onUpdateLinkList: null,
   scrollbar: null,
+  titlesList: [],
   // isLogin: true,
 };
 

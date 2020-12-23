@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { injectIntl } from 'react-intl';
+import { injectIntl, FormattedMessage } from 'react-intl';
 import { withStyles, withTheme } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
@@ -12,11 +12,13 @@ import NoteEditor from './NoteEditor';
 import ExportPngDialog from '../dialogs/ExportPngDialog';
 import ExportPdfDialog from '../dialogs/ExportPdfDialog';
 import Icons from '../config/icons';
-// import FocusBtn from './FocusBtn';
+import FocusButton from './FocusButton';
 import SyncButton from './SyncButton';
 import Scrollbar from './Scrollbar';
 import WordCounterButton from './WordCounterButton';
 import EditorContents from './editor/markdown/EditorContents';
+import LinkMenu from './LinkMenu';
+import LiteMiddle from './LiteMiddle';
 
 const styles = (theme) => ({
   main: {
@@ -81,23 +83,23 @@ const styles = (theme) => ({
     color: theme.custom.color.contentToolIcon,
   },
   exportMenu: {
-    '& .MuiPaper-elevation8': {
-      boxShadow: '0px 1px 4px 0px rgba(0, 0, 0, 0.31)',
-    },
-    '& .MuiList-padding': {
-      paddingTop: 4,
-      paddingBottom: 4,
-      color: theme.custom.color.noteTypeButton,
-    },
-    '& .MuiListItem-gutters': {
-      paddingLeft: theme.spacing(3),
-      paddingRight: theme.spacing(3),
-    },
-    '& .MuiMenuItem-root': {
-      paddingTop: theme.spacing(1),
-      paddingBottom: theme.spacing(1),
-      fontSize: 15,
-    },
+    // '& .MuiPaper-elevation8': {
+    //   boxShadow: '0px 1px 4px 0px rgba(0, 0, 0, 0.31)',
+    // },
+    // '& .MuiList-padding': {
+    //   paddingTop: 4,
+    //   paddingBottom: 4,
+    //   color: theme.custom.color.noteTypeButton,
+    // },
+    // '& .MuiListItem-gutters': {
+    //   paddingLeft: theme.spacing(3),
+    //   paddingRight: theme.spacing(3),
+    // },
+    // '& .MuiMenuItem-root': {
+    //   paddingTop: theme.spacing(1),
+    //   paddingBottom: theme.spacing(1),
+    //   fontSize: 15,
+    // },
     '& .Mui-disabled': {
       fontSize: 14,
       color: theme.custom.color.matchedText,
@@ -116,6 +118,15 @@ const styles = (theme) => ({
       backgroundColor: 'transparent',
       color: theme.custom.color.forgetPasswordButton,
     },
+  },
+  noteNull: {
+    fontSize: 12,
+  },
+  noteNullIcon: {
+    width: 202,
+    height: 'auto',
+    marginBottom: theme.spacing(6),
+    color: 'inherit',
   },
 });
 
@@ -171,6 +182,11 @@ class Content extends React.Component {
         contentsList: list,
       });
     },
+    handleChangeEditorLink: (list) => {
+      this.setState({
+        linkList: list,
+      });
+    },
     handleContentsNodeClick: (item) => {
       const element = document.querySelector(`#${item.key}`);
       element.scrollIntoView({
@@ -190,6 +206,33 @@ class Content extends React.Component {
         alert(err.message);
       }
     },
+    handleNoteLink: async (content, position) => {
+      const title = content.trim();
+      if (title) {
+        const list = await window.wizApi.userManager.queryNotes(
+          this.props.kbGuid,
+          0,
+          100,
+          { title, analysisTags: true },
+        );
+        // console.log('list', list.filter((item) => item.tags));
+        // const list = this.props.titlesList.filter((item) => item.title === title);
+        if (!list?.length) {
+          this.props.onCreateNote('lite/markdown', `# ${title}`);
+        } else if (list.length === 1) {
+          this.handler.handleSelectNote(list[0].guid);
+        } else {
+          this.setState({
+            linkMenuPosition: position,
+            linkMenuList: list,
+          });
+        }
+      }
+    },
+    handleSelectNote: async (guid) => {
+      const note = await window.wizApi.userManager.getNote(this.props.kbGuid, guid);
+      this.props.onSelectNote(note);
+    },
   };
 
   constructor(props) {
@@ -201,6 +244,9 @@ class Content extends React.Component {
       showExportPdfDialog: false,
       showEditorContents: false,
       contentsList: [],
+      linkList: [],
+      linkMenuPosition: undefined,
+      linkMenuList: [],
     };
     this.scrollContentRef = React.createRef();
     this.headerRef = React.createRef();
@@ -218,11 +264,11 @@ class Content extends React.Component {
     const {
       note, kbGuid, classes,
       theme, backgroundType, onClickTag,
-      intl,
+      intl, isNullNote,
     } = this.props;
     const {
       isFullScreen, exportMenuAnchorEl, showExportPngDialog,
-      showExportPdfDialog,
+      showExportPdfDialog, linkMenuPosition, linkMenuList,
     } = this.state;
     //
     const isLite = theme.palette.type !== 'dark';
@@ -273,6 +319,7 @@ class Content extends React.Component {
             kbGuid={kbGuid}
             note={note}
           />
+          <FocusButton className={classes.iconButton} iconClassName={classes.icon} />
           <SyncButton
             className={classes.iconButton}
             iconClassName={classes.icon}
@@ -280,18 +327,27 @@ class Content extends React.Component {
             kbGuid={kbGuid}
             note={note}
           />
-          {/* Focus 模式不完善，暂时屏蔽 */}
-          {/* <FocusBtn className={classes.iconButton} iconClassName={classes.icon} /> */}
         </div>
         )}
         <div className={classes.content}>
           <Scrollbar ref={this.scrollContentRef}>
+            {isNullNote && (
+              <LiteMiddle className={classes.noteNull}>
+                <Icons.NoteNullIcon className={classes.noteNullIcon} />
+                <FormattedMessage id="tipNoteNull" />
+              </LiteMiddle>
+            )}
             <NoteEditor
               note={note}
               kbGuid={kbGuid}
               onClickTag={onClickTag}
               scrollbar={this.scrollContentRef.current ?? null}
               onUpdateContentsList={this.handler.handleChangeEditorContents}
+              onUpdateLinkList={this.handler.handleChangeEditorLink}
+              onSelectNote={this.props.onSelectNote}
+              onCreateNote={this.props.onCreateNote}
+              onClickNoteLink={this.handler.handleNoteLink}
+              titlesList={this.props.titlesList}
             />
           </Scrollbar>
           <EditorContents
@@ -300,6 +356,11 @@ class Content extends React.Component {
             onClose={this.handler.handleCloseContents}
             onNodeClick={this.handler.handleContentsNodeClick}
             isShowDrawer={this.props.isShowDrawer}
+            linkedList={this.props.linkedList}
+            linkList={this.state.linkList}
+            title={note?.title}
+            onLinkedClick={this.handler.handleSelectNote}
+            onLinkClick={this.handler.handleNoteLink}
           />
         </div>
         <Menu
@@ -345,6 +406,19 @@ class Content extends React.Component {
           noteGuid={note?.guid ?? null}
           onClose={this.handler.handleCloseExportPdfDialog}
         />
+        <LinkMenu
+          position={linkMenuPosition}
+          list={linkMenuList}
+          onClose={() => this.setState({
+            linkMenuPosition: undefined,
+          })}
+          onClickLink={(item) => {
+            this.handler.handleSelectNote(item.guid);
+            this.setState({
+              linkMenuPosition: undefined,
+            });
+          }}
+        />
       </main>
     );
   }
@@ -361,13 +435,22 @@ Content.propTypes = {
   onCreateAccount: PropTypes.func.isRequired,
   onClickTag: PropTypes.func.isRequired,
   onRequestFullScreen: PropTypes.func.isRequired,
+  linkedList: PropTypes.array.isRequired,
   isShowDrawer: PropTypes.bool,
+  onSelectNote: PropTypes.func,
+  onCreateNote: PropTypes.func,
+  titlesList: PropTypes.array,
+  isNullNote: PropTypes.bool,
 };
 
 Content.defaultProps = {
   note: null,
   backgroundType: 'white',
   isShowDrawer: false,
+  onSelectNote: null,
+  onCreateNote: null,
+  titlesList: [],
+  isNullNote: false,
 };
 
 export default withTheme(withStyles(styles)(injectIntl(Content)));

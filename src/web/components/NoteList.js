@@ -15,6 +15,7 @@ import InfiniteScroll from './InfiniteScroller';
 import SearchBox from './SearchBox';
 // import SyncingIcon from './SyncingIcon';
 import LiteText from './LiteText';
+import LiteMiddle from './LiteMiddle';
 import Icons from '../config/icons';
 import NoteListItem from './NoteListItem';
 import Scrollbar from './Scrollbar';
@@ -27,8 +28,8 @@ const styles = (theme) => ({
     width: '100%',
     // maxWidth: '36ch',
     // backgroundColor: 'transparent',
-    overflowY: 'auto',
-    minHeight: '100%',
+    // overflowY: 'auto',
+    // minHeight: '100%',
   },
   root_mac: {
     height: '100%',
@@ -138,6 +139,23 @@ const styles = (theme) => ({
     right: 4,
     height: 6,
     minWidth: 6,
+  },
+  nullTip: {
+    fontSize: 12,
+    textAlign: 'center',
+    lineHeight: `24px`,
+  },
+  searchNullIcon: {
+    width: 96,
+    height: 'auto',
+    marginBottom: theme.spacing(6),
+    color: 'inherit',
+  },
+  noteListNullIcon: {
+    width: 80,
+    height: 'auto',
+    marginBottom: theme.spacing(6),
+    color: 'inherit',
   },
 });
 
@@ -440,7 +458,7 @@ class NoteList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      notes: [],
+      notes: null,
       isShowSearch: false,
       // isSyncing: false,
       anchorEl: null,
@@ -588,6 +606,7 @@ class NoteList extends React.Component {
     }
     //
     const isTrash = type === 'trash';
+    const showNullIcon = notes !== null && notes.length === 0;
     //
     return (
       <div className={classNames(classes.container, className)}>
@@ -669,11 +688,30 @@ class NoteList extends React.Component {
           useWindow={false}
         >
           <Scrollbar>
+            {showNullIcon && (
+              <LiteMiddle className={classes.nullTip}>
+                {isShowSearch && (
+                  <>
+                    <Icons.SearchNullIcon className={classes.searchNullIcon} />
+                    <FormattedMessage id="tipSearchListNull" />
+                  </>
+                )}
+                {!isShowSearch && (
+                  <>
+                    <Icons.NoteListNullIcon className={classes.noteListNullIcon} />
+                    <LiteText
+                      inheritLineheight
+                      highlightText={intl.formatMessage({ id: 'tipNoteListNull' })}
+                    />
+                  </>
+                )}
+              </LiteMiddle>
+            )}
             <List
               className={classNames(classes.root)}
               disablePadding
             >
-              {notes.map((note) => (
+              {notes && notes.map((note) => (
                 <NoteListItem
                   key={note.guid}
                   kbGuid={kbGuid}

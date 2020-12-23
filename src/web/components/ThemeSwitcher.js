@@ -46,20 +46,42 @@ export default function ThemeSwitcher(props) {
             },
           },
         },
+        MuiPopover: {
+          paper: {
+            minWidth: 100,
+          },
+        },
+        MuiPaper: {
+          rounded: {
+            borderRadius: 2,
+          },
+          elevation8: {
+            boxShadow: prefersDarkMode ? '0 4px 8px 0 var(--floatShadow) !important' : 'var(--floatShadow)',
+          },
+        },
         MuiMenuItem: {
           root: {
+            padding: '0 10px',
+            paddingTop: 0,
+            paddingBottom: 0,
+            fontSize: 14,
+            height: 28,
+            lineHeight: 28,
             '&:hover': {
-              backgroundColor: '#006eff',
-              color: '#ffffff',
+              backgroundColor: 'var(--floatHoverColor)',
             },
-            '&$selected': {
-              backgroundColor: '#006eff',
-              color: '#ffffff',
-              '&:hover': {
-                backgroundColor: '#006eff',
-                color: '#ffffff',
-              },
-            },
+            // '&:hover': {
+            //   backgroundColor: '#006eff',
+            //   color: '#ffffff',
+            // },
+            // '&$selected': {
+            //   backgroundColor: '#006eff',
+            //   color: '#ffffff',
+            //   '&:hover': {
+            //     backgroundColor: '#006eff',
+            //     color: '#ffffff',
+            //   },
+            // },
           },
         },
         MuiTypography: {
