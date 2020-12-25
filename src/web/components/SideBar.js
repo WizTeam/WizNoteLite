@@ -7,7 +7,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Drawer from '@material-ui/core/Drawer';
-// import IconButton from '@material-ui/core/IconButton';
+import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import Avatar from '@material-ui/core/Avatar';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -297,7 +297,7 @@ class SideBar extends React.Component {
     const {
       classes, onChangeType, type, onTagSelected,
       intl, user, selectedTag, onClickLogin,
-      // onClickSetting,
+      onClickSetting,
     } = this.props;
     const {
       tags, showTrash, anchorEl,
@@ -399,10 +399,9 @@ class SideBar extends React.Component {
                   {user.displayName}
                 </span>
               </Button>
-              {/* 暂时隐藏 设置入口 */}
-              {/* <IconButton className={classes.settingButton} onClick={onClickSetting}>
+              <IconButton className={classes.settingButton} onClick={onClickSetting}>
                 <Icons.SettingIcon />
-              </IconButton> */}
+              </IconButton>
             </>
           )}
         </div>
@@ -452,7 +451,7 @@ SideBar.propTypes = {
   selectedTag: PropTypes.object,
   onClickLogin: PropTypes.func.isRequired,
   onUpgradeVip: PropTypes.func.isRequired,
-  // onClickSetting: PropTypes.func.isRequired,
+  onClickSetting: PropTypes.func.isRequired,
 };
 
 SideBar.defaultProps = {

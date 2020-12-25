@@ -45,7 +45,10 @@ const messages = Object.assign(localeMessages.en, localeMessages[locale]);
 class App extends React.Component {
   handler = {
     handleLoggedIn: (user) => {
-      this.setState({ currentUser: user });
+      this.setState({
+        currentUser: user,
+        color: window.wizApi.userManager.getUserSettingsSync('colorTheme', 'default'),
+      });
     },
     handleCreateAccount: () => {
       this.setState({ currentUser: null, mergeLocalAccount: true });
@@ -69,6 +72,11 @@ class App extends React.Component {
       }
       this.setState({ showAboutDialog: true });
     },
+    handleColorThemeChange: (color) => {
+      this.setState({
+        color,
+      });
+    },
   }
 
   constructor(props) {
@@ -78,6 +86,7 @@ class App extends React.Component {
       isAutoLogging: true,
       mergeLocalAccount: false,
       showAboutDialog: false,
+      color: 'default',
     };
     this.shouldAutoLogging = true;
     const params = queryString.parse(window.location.search);
@@ -115,6 +124,7 @@ class App extends React.Component {
               currentUser: user,
               isAutoLogging: false,
               mergeLocalAccount: !!user.isLocalUser,
+              color: window.wizApi.userManager.getUserSettingsSync('colorTheme', 'default'),
             });
           } else {
             this.setState({ isAutoLogging: false });
@@ -134,7 +144,7 @@ class App extends React.Component {
     const { classes } = this.props;
     const {
       currentUser, isAutoLogging, mergeLocalAccount,
-      showAboutDialog,
+      showAboutDialog, color,
     } = this.state;
     //
     const loggedIn = currentUser;
@@ -144,7 +154,7 @@ class App extends React.Component {
       window.document.body.className = window.document.body.className.replace('loading', '');
     }
     return (
-      <ThemeSwitcher>
+      <ThemeSwitcher color={color}>
         <IntlProvider
           locale={locale}
           messages={messages}
@@ -185,6 +195,7 @@ class App extends React.Component {
                       mergeLocalAccount={mergeLocalAccount}
                       onCreateAccount={this.handler.handleCreateAccount}
                       onInvalidPassword={this.handler.handleInvalidPassword}
+                      onColorThemeChange={this.handler.handleColorThemeChange}
                     />
                   )
               )}

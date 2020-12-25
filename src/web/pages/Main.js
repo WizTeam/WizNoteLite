@@ -17,7 +17,8 @@ import SideBar from '../components/SideBar';
 import LiteText from '../components/LiteText';
 import LoginDialog from '../dialogs/LoginDialog';
 import UpgradeToVIPDialog from '../dialogs/UpgradeToVIPDialog';
-// import SettingDialog from '../components/SettingDialog';
+import SettingDialog from '../dialogs/SettingDialog';
+import { overwriteEditorConfig } from '../utils/utils';
 import Icons from '../config/icons';
 
 const styles = (theme) => ({
@@ -116,7 +117,7 @@ class Main extends React.Component {
       this.setState({
         showDrawer,
       });
-      await window.wizApi.userManager.setUserSettings('showDrawer', showDrawer);
+      // await window.wizApi.userManager.setUserSettings('showDrawer', showDrawer);
     },
     handleChangeType: async (type) => {
       this.setState({ type });
@@ -189,12 +190,12 @@ class Main extends React.Component {
     },
     handleShowSettingDialog: () => {
       this.setState({
-        // showSettingDialog: true,
+        showSettingDialog: true,
       });
     },
     handleSettingDialogClose: () => {
       this.setState({
-        // showSettingDialog: false,
+        showSettingDialog: false,
       });
     },
     handleClickTag: (text) => {
@@ -338,6 +339,12 @@ class Main extends React.Component {
     handleSizeChange: debounce((type, size) => {
       window.wizApi.userManager.setUserSettings(`${type}Size`, size);
     }, 500),
+    handleEditorConfigChange: (config) => {
+      overwriteEditorConfig(config);
+    },
+    handleOrderByChange: (orderBy) => {
+      this.setState({ orderBy });
+    },
   }
 
   sideBarSize = window.wizApi.userManager.getUserSettingsSync('sideBarSize', undefined);
@@ -357,11 +364,12 @@ class Main extends React.Component {
       showMatched: false,
       showLoginDialog: false,
       showUpgradeToVipDialog: false,
-      // showSettingDialog: false,
+      showSettingDialog: false,
       backgroundType: window.wizApi.userManager.getUserSettingsSync('background', 'white'),
       isFullScreen: window.wizApi.windowManager.isFullScreen(),
       linkedList: [],
       titlesList: [],
+      orderBy: um.getUserSettingsSync('orderBy', 'modified'),
     };
     this._upgradeVipDisplayed = false;
   }
@@ -386,6 +394,7 @@ class Main extends React.Component {
     } else {
       this.setState({ isNullNote: true });
     }
+    this.initEditorStyle();
     window.wizApi.userManager.on('syncFinish', this.handler.handleSyncFinish);
     window.wizApi.userManager.on('menuItemClicked', this.handler.handleMenuItemClicked);
   }
@@ -408,6 +417,11 @@ class Main extends React.Component {
     this.setState({
       linkedList: res,
     });
+  }
+
+  initEditorStyle() {
+    const editorConfig = window.wizApi.userManager.getUserSettingsSync('editorConfig', {});
+    overwriteEditorConfig(editorConfig);
   }
 
   showUpgradeVipMessage(isVipExpired, syncOptions) {
@@ -461,7 +475,7 @@ class Main extends React.Component {
     const {
       type,
       currentNote,
-      showDrawer,
+      showDrawer, orderBy,
       tag, matchedNotesCount, showMatched,
       backgroundType,
       showLoginDialog,
@@ -469,6 +483,7 @@ class Main extends React.Component {
       isFullScreen,
       titlesList, isNullNote,
       // showSettingDialog,
+      showSettingDialog,
     } = this.state;
 
     const openSidebar = showDrawer && !isFullScreen;
@@ -533,6 +548,7 @@ class Main extends React.Component {
                 onChangeType={this.handler.handleChangeType}
                 onChangeNotes={this.handler.handleChangeNotes}
                 onToggleDrawer={this.handler.handleToggleDrawer}
+                orderBy={orderBy}
                 kbGuid={kbGuid}
                 type={type}
                 tag={tag}
@@ -580,11 +596,15 @@ class Main extends React.Component {
           onClose={this.handler.handleCloseUpgradeToVipDialog}
         />
 
-        {/* <SettingDialog
+        <SettingDialog
           open={showSettingDialog}
           user={user}
           onClose={this.handler.handleSettingDialogClose}
-        /> */}
+          onEditorConfigChange={this.handler.handleEditorConfigChange}
+          onOrderByChange={this.handler.handleOrderByChange}
+          onLoggedIn={this.props.onLoggedIn}
+          onColorThemeChange={this.props.onColorThemeChange}
+        />
       </div>
     );
   }
@@ -601,6 +621,7 @@ Main.propTypes = {
   onLoggedIn: PropTypes.func.isRequired,
   enqueueSnackbar: PropTypes.func.isRequired,
   closeSnackbar: PropTypes.func.isRequired,
+  onColorThemeChange: PropTypes.func.isRequired,
 };
 
 Main.defaultProps = {

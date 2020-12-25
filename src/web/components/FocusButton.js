@@ -35,15 +35,6 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
     color: '#aaaaaa',
     backgroundColor: 'transparent',
   },
-  switchBase: {
-    '&.Mui-checked': {
-      color: '#35e714',
-      '& + .MuiSwitch-track': {
-        backgroundColor: '#35e714',
-        opacity: 0.2,
-      },
-    },
-  },
   menuPaper: {
     backgroundColor: palette.type === 'dark' ? '#555' : '#fff',
     borderRadius: '2px',
@@ -67,14 +58,20 @@ function FocusButton(props) {
     })();
   }, []);
 
-  function handleFocus(event) {
-    setFocusMode(event.target.checked);
-    window.wizApi.userManager.setSettings('focusMode', event.target.checked);
-  }
-
   function handleTypewriter(event) {
     setTypewriterMode(event.target.checked);
     window.wizApi.userManager.setSettings('typewriterMode', event.target.checked);
+  }
+
+  function handleFocus(event) {
+    const focusWithTypewriter = window.wizApi.userManager.getUserSettingsSync('focusWithTypewriter', false);
+    //
+    if (focusWithTypewriter && event.target.checked) {
+      handleTypewriter(event);
+    }
+
+    setFocusMode(event.target.checked);
+    window.wizApi.userManager.setSettings('focusMode', event.target.checked);
   }
 
   return (

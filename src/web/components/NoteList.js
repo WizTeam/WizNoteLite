@@ -122,14 +122,14 @@ const styles = (theme) => ({
   toolBarIcon: {
     width: theme.spacing(3),
     height: theme.spacing(3),
-    color: theme.custom.color.sidebarIcon,
+    color: theme.custom.color.noteTypeButton,
   },
   activeStarIcon: {
     color: theme.custom.color.activeStarIcon,
   },
   defaultStarIcon: {
-    stroke: theme.custom.color.defaultStarIcon,
-    color: theme.custom.color.defaultStarIcon,
+    stroke: theme.custom.color.noteTypeButton,
+    color: theme.custom.color.noteTypeButton,
   },
   toolbarIconButton: {
     margin: theme.spacing(0, 0.5),
@@ -464,7 +464,7 @@ class NoteList extends React.Component {
       anchorEl: null,
       hasMore: true,
       filter: 'notes',
-      category: 'modify',
+      category: window.wizApi.userManager.getUserSettingsSync('orderBy', 'modified'),
       mouseX: null,
       mouseY: null,
       isFirst: window.wizApi.userManager.getUserSettingsSync('isFirstOpenSidebar', true),
@@ -480,13 +480,17 @@ class NoteList extends React.Component {
 
 
   componentDidUpdate(prevProps) {
-    const { type, tag } = this.props;
+    const { type, tag, orderBy } = this.props;
     if (type !== prevProps.type
       || (type === 'tag' && tag !== prevProps.tag)) {
       this._searchText = '';
       this.resetNotes({
         resetFilter: true,
       });
+    }
+    //
+    if (orderBy && orderBy !== this.state.category) {
+      this.updateCategory();
     }
   }
 
@@ -534,6 +538,12 @@ class NoteList extends React.Component {
     return false;
   }
 
+  updateCategory() {
+    this.setState({
+      category: this.props.orderBy,
+    });
+  }
+
   resetNotes(options = {}) {
     setTimeout(() => {
       this._needResetNotes = true;
@@ -549,8 +559,10 @@ class NoteList extends React.Component {
 
 
   sortNotes(currentNotes) {
+    const { category } = this.state;
+
     currentNotes.sort(
-      (note1, note2) => new Date(note2.modified).valueOf() - new Date(note1.modified).valueOf(),
+      (note1, note2) => new Date(note2[category]).valueOf() - new Date(note1[category]).valueOf(),
     );
   }
 
@@ -788,6 +800,7 @@ NoteList.propTypes = {
   type: PropTypes.string.isRequired,
   tag: PropTypes.object,
   intl: PropTypes.object.isRequired,
+  orderBy: PropTypes.string,
 };
 
 NoteList.defaultProps = {
@@ -799,6 +812,7 @@ NoteList.defaultProps = {
   onChangeNotes: null,
   kbGuid: null,
   tag: null,
+  orderBy: null,
 };
 
 

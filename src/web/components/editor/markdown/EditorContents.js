@@ -13,9 +13,10 @@ import Icons from '../../../config/icons';
 import TreeView from '../../TreeView';
 import { filterParentElement, hasClass } from '../libs/dom_utils';
 
-const useStyles = makeStyles(({ spacing, palette }) => ({
+const useStyles = makeStyles(({ spacing, palette, custom }) => ({
   editorContents: ({ contentsWidth }) => ({
-    backgroundColor: palette.type === 'dark' ? '#333' : '#fff',
+    // backgroundColor: palette.type === 'dark' ? '#333' : '#fff',
+    backgroundColor: custom.background.content,
     display: 'none',
     width: contentsWidth,
     boxSizing: 'border-box',
@@ -32,7 +33,7 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
     bottom: 0,
     right: 0,
     zIndex: 99,
-    backgroundColor: palette.type === 'dark' ? '#333333' : '#fafafa',
+    // backgroundColor: palette.type === 'dark' ? '#333333' : '#fafafa',
     boxShadow: '0px 1px 16px 0px rgba(0, 0, 0, 0.31)',
     opacity: 0.8,
     backdropFilter: 'blur(8px)',
