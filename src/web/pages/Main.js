@@ -229,6 +229,8 @@ class Main extends React.Component {
         this.setState({ isFullScreen: false, showDrawer: false });
       } else if (id === 'menuViewEditorAndNotesAndTags') {
         this.setState({ isFullScreen: false, showDrawer: true });
+      } else if (id === 'newNote') {
+        this.handler.handleCreateNote('lite/markdown');
       }
     },
 

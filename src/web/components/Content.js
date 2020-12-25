@@ -233,6 +233,14 @@ class Content extends React.Component {
       const note = await window.wizApi.userManager.getNote(this.props.kbGuid, guid);
       this.props.onSelectNote(note);
     },
+
+    handleMenuItemClicked: (id) => {
+      if (id === 'exportPdf') {
+        this.handler.handleShowExportPdfDialog();
+      } else if (id === 'exportMd') {
+        this.handler.handleExportMarkdown();
+      }
+    },
   };
 
   constructor(props) {
@@ -254,10 +262,12 @@ class Content extends React.Component {
 
   componentDidMount() {
     window.addEventListener('resize', this.handler.handleResize);
+    window.wizApi.userManager.on('menuItemClicked', this.handler.handleMenuItemClicked);
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.handler.handleResize);
+    window.wizApi.userManager.off('menuItemClicked', this.handler.handleMenuItemClicked);
   }
 
   render() {
