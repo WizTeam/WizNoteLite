@@ -8,6 +8,7 @@
   "fileMenu": "文件",
   "newNote": "新建笔记",
   "exportMd": "导出为 Markdown",
+  "importMd": "导入 Markdown",
   "exportPdf": "导出为 PDF",
   "feedback": "用户反馈",
   "helpBook": "帮助手册",

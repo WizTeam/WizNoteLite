@@ -376,6 +376,16 @@ class UserManager extends EventEmitter {
     return result;
   }
 
+  async uploadMarkdown() {
+    const result = await invokeApi('uploadMarkdown');
+    return result;
+  }
+
+  async readToMarkdown(filePath) {
+    const data = await invokeApi('readToMarkdown', filePath);
+    return data;
+  }
+
   async getThemeCssString(theme) {
     const result = await invokeApi('getThemeCssString', theme);
     return result;

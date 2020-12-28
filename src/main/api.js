@@ -556,6 +556,46 @@ handleApi('writeToMarkdown', async (event, userGuid, kbGuid, noteGuid) => {
   shell.showItemInFolder(filePath);
 });
 
+handleApi('uploadMarkdown', async (event) => {
+  const webContents = event.sender;
+  const browserWindow = BrowserWindow.fromWebContents(webContents);
+
+  const dialogResult = await dialog.showOpenDialog(browserWindow, {
+    properties: ['openFile', 'openDirectory', 'multiSelections'],
+    filters: [{
+      name: i18next.t('fileFilterMarkdown'),
+      extensions: [
+        'md',
+      ],
+    }],
+  });
+
+  const contents = [];
+
+  async function getMdPaths(files) {
+    for (let i = 0; i < files.length; i++) {
+      const stat = await fs.stat(files[i]);
+      if (stat.isFile() && files[i].endsWith('.md')) {
+        const content = await fs.readFile(files[i], 'utf8');
+        contents.push(content);
+      } else if (stat.isDirectory()) {
+        const arr = await fs.readdir(files[i]);
+        getMdPaths(arr);
+      }
+    }
+  }
+
+  if (!dialogResult.canceled) {
+    await getMdPaths(dialogResult.filePaths);
+  }
+  return contents;
+});
+
+handleApi('readToMarkdown', async (event, filePath) => {
+  const data = await fs.readFile(filePath, 'utf8');
+  return data;
+});
+
 handleApi('getThemeCssString', async (event, theme = '') => {
   if (!theme) return '';
   //

@@ -231,6 +231,8 @@ class Main extends React.Component {
         this.setState({ isFullScreen: false, showDrawer: true });
       } else if (id === 'newNote') {
         this.handler.handleCreateNote('lite/markdown');
+      } else if (id === 'importMd') {
+        this.handler.handleImportMarkdown();
       }
     },
 
@@ -347,6 +349,33 @@ class Main extends React.Component {
     handleOrderByChange: (orderBy) => {
       this.setState({ orderBy });
     },
+    handleDrag: async (e) => {
+      e.preventDefault();
+      const files = e.dataTransfer.files;
+      for (let i = 0; i < files.length; i++) {
+        if (files[i].name.endsWith('.md')) {
+          console.log(files[i].path);
+          const content = await window.wizApi.userManager.readToMarkdown(files[i].path);
+          this.handler.handleCreateNote('lite/markdown', content);
+        }
+      }
+    },
+    handleDragover: (e) => {
+      e.preventDefault();
+    },
+    handleImportMarkdown: async () => {
+      const { kbGuid } = this.props;
+      //
+      try {
+        const res = await window.wizApi.userManager.uploadMarkdown(kbGuid);
+        for (let i = 0; i < res.length; i++) {
+          await this.handler.handleCreateNote('lite/markdown', res[i]);
+        }
+      } catch (err) {
+        alert(err.message);
+      }
+    },
+
   }
 
   sideBarSize = window.wizApi.userManager.getUserSettingsSync('sideBarSize', undefined);
@@ -397,11 +426,15 @@ class Main extends React.Component {
       this.setState({ isNullNote: true });
     }
     this.initEditorStyle();
+    window.document.addEventListener('drop', this.handler.handleDrag);
+    window.document.addEventListener('dragover', this.handler.handleDragover);
     window.wizApi.userManager.on('syncFinish', this.handler.handleSyncFinish);
     window.wizApi.userManager.on('menuItemClicked', this.handler.handleMenuItemClicked);
   }
 
   componentWillUnmount() {
+    window.document.removeEventListener('drop', this.handler.handleDrag);
+    window.document.removeEventListener('dragover', this.handler.handleDragover);
     window.wizApi.userManager.off('syncFinish', this.handler.handleSyncFinish);
     window.wizApi.userManager.off('menuItemClicked', this.handler.handleMenuItemClicked);
   }

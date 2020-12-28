@@ -8,6 +8,7 @@
   "fileMenu": "文件",
   "newNote": "新建筆記",
   "exportMd": "導出為 md",
+  "importMd": "導入 Markdown",
   "exportPdf": "導出為 PDF",
   "feedback": "用戶反饋",
   "helpBook": "幫助手冊",

@@ -57,6 +57,7 @@ function getMainMenuTemplate() {
       toMenuItem('newNote', 'CmdOrCtrl+n'),
       toMenuItem('exportMd'),
       toMenuItem('exportPdf'),
+      toMenuItem('importMd'),
       { role: 'close', label: i18next.t('close') },
     ],
   });
