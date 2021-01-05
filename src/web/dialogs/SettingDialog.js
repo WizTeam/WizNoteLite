@@ -13,6 +13,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 // import Switch from '@material-ui/core/Switch';
 import ModifyEmailDialog from './ModifyEmailDialog';
 import ModifyPasswordDialog from './ModifyPasswordDialog';
+import Scrollbar from '../components/Scrollbar';
 //
 import NoteViewer from '../pages/NoteViewer';
 import LiteInput from '../components/LiteInput';
@@ -47,10 +48,12 @@ const styles = (theme) => ({
   },
   content: {
     flex: 1,
+    minHeight: '100%',
     paddingTop: theme.spacing(5),
     paddingLeft: theme.spacing(8),
+    paddingRight: theme.spacing(8),
     boxSizing: 'border-box',
-    overflow: 'auto',
+    overflow: 'hidden',
     backgroundColor: theme.custom.background.noteListActive,
   },
   close: {
@@ -619,12 +622,14 @@ class SettingDialog extends React.Component {
               </ListItem>
             ))}
           </List>
-          <div className={classes.content}>
-            {type === 'account' && this.renderAccount()}
-            {this.renderTheme()}
-            {type === 'edit' && this.renderEdit()}
-            {type === 'common' && this.renderCommon()}
-          </div>
+          <Scrollbar>
+            <div className={classes.content}>
+              {type === 'account' && this.renderAccount()}
+              {this.renderTheme()}
+              {type === 'edit' && this.renderEdit()}
+              {type === 'common' && this.renderCommon()}
+            </div>
+          </Scrollbar>
         </DialogContent>
         <div className={classes.close}>
           <IconButton color="inherit" onClick={onClose}>
