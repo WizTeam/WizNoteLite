@@ -180,6 +180,10 @@ class WindowManager {
       y,
     });
   }
+
+  openImageViewer(imagesList, index) {
+    invokeApi('openImage', imagesList, index);
+  }
 }
 
 class UserManager extends EventEmitter {
@@ -551,6 +555,10 @@ ipcRenderer.on('syncFinish', (event, ...args) => {
 
 ipcRenderer.on('newNote', (event, ...args) => {
   userManager.emit('newNote', ...args);
+});
+
+ipcRenderer.on('showImage', (event, ...args) => {
+  userManager.emit('showImage', ...args);
 });
 
 ipcRenderer.on('modifyNote', (event, ...args) => {

@@ -1,12 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './web/index.css';
+import queryString from 'query-string';
 import App from './web/App';
 import * as serviceWorker from './serviceWorker';
+import ImageViewer from './web/ImageViewer';
+
+const params = queryString.parse(window.location.search);
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    {params.type === 'imageViewer' ? (
+      <ImageViewer />
+    ) : (<App />)}
   </React.StrictMode>,
   document.getElementById('root'),
 );

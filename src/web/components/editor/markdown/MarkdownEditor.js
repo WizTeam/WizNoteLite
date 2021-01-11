@@ -23,6 +23,29 @@ const styles = (/* theme */) => ({
 });
 class MarkdownEditorComponent extends React.PureComponent {
   handler = {
+    handleImageDbClick: (e) => {
+      if (this._imageClickFlag) {
+        clearTimeout(this._imageClickFlag);
+        this._imageClickFlag = null;
+        if (e.target.tagName === 'IMG' && e.target.closest('.ag-image-container')) {
+          const elements = this._rootElem.querySelectorAll('.ag-image-container img');
+          const imgArr = [];
+          let index = -1;
+          const targetSrc = e.target.getAttribute('src');
+          for (let i = 0; i < elements.length; i++) {
+            const src = elements[i].getAttribute('src');
+            imgArr.push(src);
+            if (src === targetSrc) {
+              index = i;
+            }
+          }
+          console.log('handleImageDbClick', imgArr, index);
+          window.wizApi.windowManager.openImageViewer(imgArr, index);
+        }
+      } else {
+        this._imageClickFlag = setTimeout(() => this._imageClickFlag === null, 500);
+      }
+    },
     handleClickEditor: (e) => {
       const target = e.target;
       const tagSpan = getTagSpanFromRange(this.editor.current.editor, target);
@@ -162,6 +185,7 @@ class MarkdownEditorComponent extends React.PureComponent {
     window.wizApi.userManager.on('tagRenamed', this.handler.handleTagRenamed);
     window.wizApi.userManager.on('focusEdit', this.handler.handleFocusModeChange);
     window.wizApi.userManager.on('typewriterEdit', this.handler.handleTypewriterModeChange);
+    this._rootElem.addEventListener('click', this.handler.handleImageDbClick);
     this.getAllTags();
     await this.loadNote();
     if (this.editor.current) {
@@ -209,6 +233,7 @@ class MarkdownEditorComponent extends React.PureComponent {
   }
 
   componentWillUnmount() {
+    this._rootElem.removeEventListener('dblclick', this.handler.handleImageDbClick);
     window.wizApi.userManager.off('tagsChanged', this.handler.handleTagsChanged);
     window.wizApi.userManager.off('tagRenamed', this.handler.handleTagRenamed);
     window.wizApi.userManager.off('focusEdit', this.handler.handleFocusModeChange);
@@ -320,7 +345,12 @@ class MarkdownEditorComponent extends React.PureComponent {
     const scrollingElement = scrollbar?.container?.children[0];
     //
     return (
-      <div className={classNames(classes.root, !note && classes.invisible)}>
+      <div
+        className={classNames(classes.root, !note && classes.invisible)}
+        ref={(node) => {
+          this._rootElem = node;
+        }}
+      >
         <MarkdownEditor
           ref={this.editor}
           wordList={wordList}

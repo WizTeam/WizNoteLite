@@ -13,6 +13,7 @@ const log = require('electron-log');
 const sdk = require('wiznote-sdk-js');
 const { WizKnownError } = require('wiznote-sdk-js-share/lib/error');
 const { exec } = require('child_process');
+const ImageViewer = require('./ImageViewer');
 
 const inAppPurchase = require('./inapp/in_app_purchase');
 
@@ -46,6 +47,11 @@ async function handleApi(name, api) {
     }
   });
 }
+
+handleApi('openImage', async (event, ...args) => {
+  const imageViewer = new ImageViewer();
+  setTimeout(() => imageViewer.show(...args), 2000);
+});
 
 handleApi('getLink', async (event, ...args) => {
   const link = await sdk.getLink(...args);
