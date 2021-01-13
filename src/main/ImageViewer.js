@@ -35,7 +35,7 @@ class ImageViewer {
     });
     this.win.loadURL(`${mainUrl}?type=imageViewer`);
     this.win.maximize();
-    this.win.webContents.openDevTools();
+    // this.win.webContents.openDevTools();
   }
 
   show(imagesList, index) {
