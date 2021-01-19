@@ -15,7 +15,7 @@ import ModifyEmailDialog from './ModifyEmailDialog';
 import ModifyPasswordDialog from './ModifyPasswordDialog';
 import Scrollbar from '../components/Scrollbar';
 //
-import NoteViewer from '../pages/NoteViewer';
+import PreviewNoteLite from '../components/PreviewNoteLite';
 import LiteInput from '../components/LiteInput';
 import LiteText from '../components/LiteText';
 import LiteSelect from '../components/LiteSelect';
@@ -129,7 +129,7 @@ const styles = (theme) => ({
   },
   noteViewerBox: {
     width: 'auto',
-    marginRight: theme.spacing(8),
+    // marginRight: theme.spacing(8),
     boxSizing: 'border-box',
     marginTop: theme.spacing(2),
   },
@@ -410,7 +410,7 @@ class SettingDialog extends React.Component {
         </div>
         <div className={classes.noteViewerBox}>
           <div className={classes.noteViewerInner}>
-            <NoteViewer color={colorTheme} darkMode={false} />
+            <PreviewNoteLite color={colorTheme} darkMode={false} />
           </div>
           <LiteText className={classes.previewThemeText}>
             <FormattedMessage id="settingLabelPreviewTheme" />
@@ -432,7 +432,7 @@ class SettingDialog extends React.Component {
         </div>
         <div className={classes.noteViewerBox}>
           <div className={classes.noteViewerInner}>
-            <NoteViewer color={colorTheme} darkMode />
+            <PreviewNoteLite color={colorTheme} darkMode />
           </div>
           <LiteText className={classes.previewThemeText}>
             <FormattedMessage id="settingLabelPreviewTheme" />
