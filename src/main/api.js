@@ -52,7 +52,11 @@ handleApi('openImage', async (event, imagesList, index) => {
   for (let i = 0; i < index; i++) {
     imageArr.push(imageArr.shift());
   }
-  exec(`open ${imageArr.join(' ')}`);
+  if (process.platform === 'darwin') {
+    exec(`open ${imageArr.join(' ')}`);
+  } else {
+    shell.openPath(imageArr[0]);
+  }
 });
 
 handleApi('getLink', async (event, ...args) => {
