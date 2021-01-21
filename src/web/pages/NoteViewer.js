@@ -126,10 +126,12 @@ class NoteViewer extends React.Component {
     const id = 'wiz-note-content-root';
     const reg = new RegExp(id, 'g');
     //
-    if (params.theme) {
-      let css = await window.wizApi.userManager.getThemeCssString(params.theme);
+    if (params.theme && params.color) {
+      const themeName = `${params.color}.${params.theme}`;
+      let css = await window.wizApi.userManager.getThemeCssString(themeName);
       css = css.replace(reg, this._rootElem.id);
       injectionCssFormId(this._rootElem.id, css);
+      return;
     }
 
     if (this.props.darkMode !== undefined) {

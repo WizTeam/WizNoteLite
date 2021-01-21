@@ -140,6 +140,7 @@ class ExportPngDialog extends React.Component {
       const {
         widthValue,
         previewTheme,
+        colorTheme,
       } = this.state;
       const width = widthValue;
       let padding = 16;
@@ -152,6 +153,7 @@ class ExportPngDialog extends React.Component {
       const options = {
         progressCallback: 'onCaptureScreenProgress',
         theme: previewTheme,
+        color: colorTheme,
         width,
         padding,
       };
