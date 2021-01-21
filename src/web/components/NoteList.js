@@ -19,6 +19,7 @@ import LiteMiddle from './LiteMiddle';
 import Icons from '../config/icons';
 import NoteListItem from './NoteListItem';
 import Scrollbar from './Scrollbar';
+import { eventCenter, eventMap } from '../utils/event';
 
 const styles = (theme) => ({
   container: {
@@ -568,6 +569,8 @@ class NoteList extends React.Component {
 
 
   initEvents() {
+    eventCenter.on(eventMap.SEARCH, this.handler.handleSearchNotes);
+    eventCenter.on(eventMap.STAR_NOTE, this.handler.handleStarredFilterToggle);
     window.wizApi.userManager.on('syncStart', this.handler.handleSyncStart);
     window.wizApi.userManager.on('newNote', this.handler.handleNewNote);
     window.wizApi.userManager.on('downloadNotes', this.handler.handleDownloadNotes);
@@ -578,6 +581,8 @@ class NoteList extends React.Component {
   }
 
   removeEvents() {
+    eventCenter.off(eventMap.SEARCH, this.handler.handleSearchNotes);
+    eventCenter.off(eventMap.STAR_NOTE, this.handler.handleStarredFilterToggle);
     window.wizApi.userManager.off('syncStart', this.handler.handleSyncStart);
     window.wizApi.userManager.off('newNote', this.handler.handleNewNote);
     window.wizApi.userManager.off('downloadNotes', this.handler.handleDownloadNotes);
@@ -653,7 +658,13 @@ class NoteList extends React.Component {
                 </LiteText>
               )}
               <div className={classes.grow} />
-              <IconButton className={classes.toolbarIconButton} aria-label="toggle starred" color="inherit" onClick={this.handler.handleStarredFilterToggle}>
+              <IconButton
+                className={classes.toolbarIconButton}
+                aria-label="toggle starred"
+                color="inherit"
+                onClick={this.handler.handleStarredFilterToggle}
+                title={intl.formatMessage({ id: 'starredNode' })}
+              >
                 {isFilterStarred && (
                   <Icons.ActiveStarIcon
                     className={classNames(classes.toolBarIcon, classes.activeStarIcon)}
@@ -665,7 +676,13 @@ class NoteList extends React.Component {
                   />
                 )}
               </IconButton>
-              <IconButton className={classes.toolbarIconButton} aria-label="search" color="inherit" onClick={this.handler.handleSearchNotes}>
+              <IconButton
+                className={classes.toolbarIconButton}
+                aria-label="search"
+                color="inherit"
+                onClick={this.handler.handleSearchNotes}
+                title={intl.formatMessage({ id: 'search' })}
+              >
                 <Icons.SearchIcon className={classes.toolBarIcon} />
               </IconButton>
               {/* <IconButton
@@ -680,6 +697,7 @@ class NoteList extends React.Component {
                 className={classes.toolbarIconButton}
                 aria-label="create note"
                 color="inherit"
+                title={intl.formatMessage({ id: 'newNote' })}
                 // onClick={this.handler.handleOpenMenu}
                 onClick={this.handler.handleCreateMarkdownNote}
                 ref={anchorEl}

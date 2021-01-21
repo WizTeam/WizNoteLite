@@ -218,4 +218,9 @@ export default {
   settingButtonChangePassword: '修改密码',
   settingButtonRenderNow: '即时渲染模式',
   settingButtonConfirm: '确定',
+
+  newNote: '新建笔记',
+  search: '搜索',
+  starredNode: '星标笔记',
+  preference: '设置',
 };

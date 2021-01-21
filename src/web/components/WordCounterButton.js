@@ -5,6 +5,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import IconButton from '@material-ui/core/IconButton';
+import { eventCenter, eventMap } from '../utils/event';
 
 const useStyles = makeStyles(({ spacing, palette }) => ({
   info: {
@@ -49,6 +50,7 @@ let oldResult = {};
 function WordCounterButton(props) {
   const classes = useStyles();
   const [countResult, setResult] = useState(null);
+  const [open, setOpen] = useState(false);
 
   function handleWordCounterResult(wordCounterResult) {
     oldResult = wordCounterResult;
@@ -56,10 +58,16 @@ function WordCounterButton(props) {
   }
 
   useEffect(() => {
+    function switchShow() {
+      setOpen((val) => !val);
+    }
+
     window.wizApi.userManager.on('wordCounter', handleWordCounterResult);
+    eventCenter.on(eventMap.WORDS_NUMBER, switchShow);
 
     return () => {
       window.wizApi.userManager.off('wordCounter', handleWordCounterResult);
+      eventCenter.off(eventMap.WORDS_NUMBER, switchShow);
     };
   }, []);
 
@@ -85,6 +93,9 @@ function WordCounterButton(props) {
         classes={{
           tooltip: classes.tooltip,
         }}
+        open={open}
+        onOpen={() => setOpen(true)}
+        onClose={() => setOpen(false)}
       >
         <div>
           <IconButton className={props.className}>

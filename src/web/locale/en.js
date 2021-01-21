@@ -219,4 +219,8 @@ export default {
   settingButtonRenderNow: 'Render Now Mode',
   settingButtonConfirm: 'Confirm',
 
+  newNote: 'New Note',
+  search: 'Search',
+  starredNode: 'Starred Note',
+  preference: 'Preference',
 };

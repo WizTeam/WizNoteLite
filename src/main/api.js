@@ -13,7 +13,6 @@ const log = require('electron-log');
 const sdk = require('wiznote-sdk-js');
 const { WizKnownError } = require('wiznote-sdk-js-share/lib/error');
 const { exec } = require('child_process');
-const ImageViewer = require('./ImageViewer');
 
 const inAppPurchase = require('./inapp/in_app_purchase');
 
@@ -48,9 +47,12 @@ async function handleApi(name, api) {
   });
 }
 
-handleApi('openImage', async (event, ...args) => {
-  const imageViewer = new ImageViewer();
-  setTimeout(() => imageViewer.show(...args), 2000);
+handleApi('openImage', async (event, imagesList, index) => {
+  const imageArr = imagesList.map((imgUrl) => imgUrl.replace(/^wiz:\/\//, `${paths.getUsersData()}/`).replace(/\s/g, '\\ '));
+  for (let i = 0; i < index; i++) {
+    imageArr.push(imageArr.shift());
+  }
+  exec(`open ${imageArr.join(' ')}`);
 });
 
 handleApi('getLink', async (event, ...args) => {
@@ -557,7 +559,9 @@ handleApi('writeToMarkdown', async (event, userGuid, kbGuid, noteGuid) => {
   }
   //
   const data = await sdk.getNoteMarkdown(userGuid, kbGuid, noteGuid);
-  await fs.writeFile(filePath, data);
+  log.log('data', data);
+  const mdStr = data.replace(/(\!\[.*?\\*\]\()(index_files\/.*?\\*?(\s=(\d+(?:\.\d+)?)x(\d+(?:\.\d+)?))?\))/g, (str, p1, p2) => `${p1 + targetDirname}/${p2}`);
+  await fs.writeFile(filePath, mdStr);
   //
   shell.showItemInFolder(filePath);
 });

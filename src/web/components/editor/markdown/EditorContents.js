@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, {
+  useState, useEffect, useImperativeHandle,
+} from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { makeStyles } from '@material-ui/core/styles';
@@ -161,6 +163,11 @@ function EditorContents(props) {
 
   const { onClose } = props;
 
+  // eslint-disable-next-line react/prop-types
+  useImperativeHandle(props.contentRef, () => ({
+    setTab,
+  }));
+
   useEffect(() => {
     function clickHandler(e) {
       if (
@@ -185,6 +192,7 @@ function EditorContents(props) {
   }, [props.onClose, props.open, isFixed, classes.editorContents, onClose]);
 
   const linkList = [...new Set(props.linkList)];
+
   return (
     <div className={classNames(classes.editorContents, {
       active: props.open,
@@ -346,4 +354,7 @@ EditorContents.defaultProps = {
   onLinkClick: null,
 };
 
-export default injectIntl(EditorContents);
+export default React.forwardRef((props, ref) => {
+  const Component = injectIntl(EditorContents);
+  return <Component {...props} contentRef={ref} />;
+});

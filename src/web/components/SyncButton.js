@@ -7,6 +7,7 @@ import { injectIntl } from 'react-intl';
 import Icons from '../config/icons';
 import dateUtils from '../utils/date';
 import SyncingIcon from './SyncingIcon';
+import { eventCenter, eventMap } from '../utils/event';
 
 const useStyles = makeStyles(({ spacing, palette }) => ({
   syncInfo: {
@@ -78,12 +79,14 @@ function SyncButton(props) {
     window.wizApi.userManager.on('uploadNote', handleUploadNote);
     window.wizApi.userManager.on('syncStart', handleSyncStart);
     window.wizApi.userManager.on('syncFinish', handleSyncFinish);
+    eventCenter.on(eventMap.SYNC, handleClick);
 
     return () => {
       window.wizApi.userManager.off('modifyNote', handleModifyNote);
       window.wizApi.userManager.off('uploadNote', handleUploadNote);
       window.wizApi.userManager.off('syncStart', handleSyncStart);
       window.wizApi.userManager.off('syncFinish', handleSyncFinish);
+      eventCenter.off(eventMap.SYNC, handleClick);
     };
   }, [props.note, props.intl]);
 
@@ -156,6 +159,7 @@ function SyncButton(props) {
           <IconButton
             className={props.className}
             onClick={handleClick}
+            title={props.intl.formatMessage({ id: 'buttonSync' })}
           >
             {icon}
           </IconButton>

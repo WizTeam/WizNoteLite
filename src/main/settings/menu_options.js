@@ -38,6 +38,7 @@ function getMainMenuTemplate() {
       label: app.name,
       submenu: [
         toMenuItem('menuShowAbout'),
+        toMenuItem('setting', 'CmdOrCtrl+,'),
         { type: 'separator' },
         { role: 'services', label: i18next.t('services') },
         { type: 'separator' },
@@ -55,8 +56,8 @@ function getMainMenuTemplate() {
     label: i18next.t('fileMenu'),
     submenu: [
       toMenuItem('newNote', 'CmdOrCtrl+n'),
-      toMenuItem('exportMd'),
-      toMenuItem('exportPdf'),
+      toMenuItem('exportMd', 'CmdOrCtrl+Shift+M'),
+      toMenuItem('exportPdf', 'CmdOrCtrl+Shift+Alt+P'),
       toMenuItem('importMd'),
       { role: 'close', label: i18next.t('close') },
     ],

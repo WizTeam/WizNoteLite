@@ -233,6 +233,8 @@ class Main extends React.Component {
         this.handler.handleCreateNote('lite/markdown');
       } else if (id === 'importMd') {
         this.handler.handleImportMarkdown();
+      } else if (id === 'setting') {
+        this.handler.handleShowSettingDialog();
       }
     },
 

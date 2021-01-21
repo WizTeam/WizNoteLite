@@ -217,4 +217,9 @@ export default {
   settingButtonChangePassword: '修改密碼',
   settingButtonRenderNow: '即時渲染模式',
   settingButtonConfirm: '確定',
+
+  newNote: '新建筆記',
+  search: '搜索',
+  starredNode: '星標筆記',
+  preference: '設置',
 };

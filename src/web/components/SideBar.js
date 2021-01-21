@@ -399,7 +399,7 @@ class SideBar extends React.Component {
                   {user.displayName}
                 </span>
               </Button>
-              <IconButton className={classes.settingButton} onClick={onClickSetting}>
+              <IconButton className={classes.settingButton} onClick={onClickSetting} title={intl.formatMessage({ id: 'preference' })}>
                 <Icons.SettingIcon />
               </IconButton>
             </>

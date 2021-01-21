@@ -19,6 +19,8 @@ import AboutDialog from './dialogs/AboutDialog';
 import ThemeSwitcher from './components/ThemeSwitcher';
 import localeMessages from './locale';
 import { getLocale } from './utils/lang';
+import { matchHotKey } from './utils/utils';
+import { eventCenter, eventMap } from './utils/event';
 import onlineApi from './OnlineApi';
 import Icons from './config/icons';
 
@@ -77,6 +79,25 @@ class App extends React.Component {
         color,
       });
     },
+    handlerShortcut: (event) => {
+      if (matchHotKey('cmd+shift+F', event, '+')) {
+        eventCenter.dispatch(eventMap.SEARCH);
+      } else if (matchHotKey('cmd+alt+/', event, '+')) {
+        eventCenter.dispatch(eventMap.STAR_NOTE);
+      } else if (matchHotKey('cmd+alt+s', event, '+')) {
+        eventCenter.dispatch(eventMap.SYNC);
+      } else if (matchHotKey('cmd+alt+t', event, '+')) {
+        eventCenter.dispatch(eventMap.FOCUS_MODE);
+      } else if (matchHotKey('cmd+shift+j', event, '+')) {
+        eventCenter.dispatch(eventMap.TYPEWRITER_MODE);
+      } else if (matchHotKey('cmd+alt+c', event, '+')) {
+        eventCenter.dispatch(eventMap.WORDS_NUMBER);
+      } else if (matchHotKey('cmd+shift+o', event, '+')) {
+        eventCenter.dispatch(eventMap.OUTLINE);
+      } else if (matchHotKey('cmd+shift+w', event, '+')) {
+        eventCenter.dispatch(eventMap.WIKILINK);
+      }
+    },
   }
 
   constructor(props) {
@@ -132,6 +153,8 @@ class App extends React.Component {
         });
       });
     }
+
+    window.addEventListener('keydown', this.handler.handlerShortcut);
   }
 
   componentWillUnmount() {

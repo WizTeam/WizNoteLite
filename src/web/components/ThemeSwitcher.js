@@ -48,7 +48,7 @@ export default function ThemeSwitcher(props) {
         noteTitle: prefersDarkMode ? '#f8efd2' : '#333333',
         noteTypeButton: prefersDarkMode ? '#f8efd2' : '#333333',
         about: prefersDarkMode ? '#57544e' : '#fff9e2',
-        hr: prefersDarkMode ? '#322b27' : '#d8d8d8',
+        hr: prefersDarkMode ? '#6D6B65' : '#d8d8d8',
         MuiCheckColor: '#35e714',
       },
       mintGreen: {
@@ -73,7 +73,7 @@ export default function ThemeSwitcher(props) {
         noteDate: '#969696',
         noteTitle: prefersDarkMode ? '#b58a75' : '#8e6c53',
         noteTypeButton: prefersDarkMode ? '#b58a75' : '#8e6c53',
-        about: prefersDarkMode ? '#333333' : '#ffffff',
+        about: prefersDarkMode ? '#494949' : '#ffffff',
         hr: prefersDarkMode ? '#1f3134' : '#aaaaaa',
         MuiCheckColor: '#cb561c',
       },
