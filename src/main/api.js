@@ -266,9 +266,10 @@ handleApi('captureScreen', async (event, userGuid, kbGuid, noteGuid, options = {
   });
 
   const theme = options.theme || 'lite';
+  const color = options.color || 'default';
   const padding = options.padding || 16;
 
-  window.loadURL(`${mainUrl}?kbGuid=${kbGuid}&noteGuid=${noteGuid}&padding=${padding}&theme=${theme}&hideThumb=1&showFooter=1`);
+  window.loadURL(`${mainUrl}?kbGuid=${kbGuid}&noteGuid=${noteGuid}&padding=${padding}&color=${color}&theme=${theme}&hideThumb=1&showFooter=1`);
   if (isDebug) window.webContents.toggleDevTools();
   //
   window.webContents.on('ipc-message', async (e, channel, ...args) => {
@@ -463,7 +464,7 @@ handleApi('printToPDF', async (event, userGuid, kbGuid, noteGuid, options = {}) 
     slashes: true,
   });
 
-  window.loadURL(`${mainUrl}?kbGuid=${kbGuid}&noteGuid=${noteGuid}&standardScrollBar=1&padding=32&theme=lite`);
+  window.loadURL(`${mainUrl}?kbGuid=${kbGuid}&noteGuid=${noteGuid}&standardScrollBar=1&padding=32&color=default&theme=lite`);
   if (isDebug) window.webContents.toggleDevTools();
   //
   window.webContents.on('ipc-message', async (e, channel) => {
