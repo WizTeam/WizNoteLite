@@ -218,6 +218,11 @@ export default {
   settingButtonChangePassword: 'Change Password',
   settingButtonRenderNow: 'Render Now Mode',
   settingButtonConfirm: 'Confirm',
+  settingTextWidth: 'Text Width',
+  settingVIPExpiryTime: 'Expiry Time:',
+  settingVIPProbation: 'Probation:',
+  settingExpired: '(Expired)',
+
 
   newNote: 'New Note',
   search: 'Search',

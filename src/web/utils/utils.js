@@ -28,12 +28,15 @@ export function overwriteEditorConfig(options, id = 'editor-overwrite') {
       case 'textColor':
         css += `--text-font-color: ${val}`;
         break;
+      case 'textWidth':
+        css += `--editor-container-padding: ${(100 - val) / 2}%`;
+        break;
       default:
         break;
     }
   });
   //
-  style.innerHTML = `div[id^='ag-editor-id'] { ${css} }`;
+  style.innerHTML = `:root,div[id^='ag-editor-id'] { ${css} }`;
   document.head.appendChild(style);
 }
 

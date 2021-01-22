@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import Dialog from '@material-ui/core/Dialog';
@@ -10,6 +9,7 @@ import ListItem from '@material-ui/core/ListItem';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Checkbox from '@material-ui/core/Checkbox';
+import Slider from '@material-ui/core/Slider';
 // import Switch from '@material-ui/core/Switch';
 import ModifyEmailDialog from './ModifyEmailDialog';
 import ModifyPasswordDialog from './ModifyPasswordDialog';
@@ -26,6 +26,7 @@ const EDITOR_DEFAULT_CONFIG = {
   fontSize: '16',
   lineHeight: '1.8',
   paragraphHeight: '20',
+  textWidth: 80,
 };
 
 const styles = (theme) => ({
@@ -263,6 +264,21 @@ class SettingDialog extends React.Component {
         this.props.onColorThemeChange(val);
       }
     },
+    handlePurchase: async () => {
+      if (window.wizApi.platform.isMac) {
+        try {
+          await window.wizApi.userManager.purchaseProduct(this.state.yearProduct);
+        } catch (err) {
+          if (err.externCode === 'WizErrorNowAllowMakePayments') {
+            await window.wizApi.userManager.showUpgradeVipDialog();
+          } else {
+            alert(err.message);
+          }
+        }
+      } else {
+        await window.wizApi.userManager.showUpgradeVipDialog();
+      }
+    },
   };
 
   constructor(props) {
@@ -289,8 +305,11 @@ class SettingDialog extends React.Component {
     }
   }
 
+
   async reset() {
     const { user } = this.props;
+
+    console.log('user', user);
     //
     this.setState({
       type: 'account',
@@ -313,7 +332,20 @@ class SettingDialog extends React.Component {
 
   renderAccount() {
     const { displayName, displayNameErrorText, snsStatus } = this.state;
-    const { classes, user } = this.props;
+    const { classes, user, intl } = this.props;
+
+    let userVipMessage = '';
+    if (user) {
+      if (user.vipDate) {
+        const date = new Date(user.vipDate).toLocaleDateString();
+        userVipMessage = `${intl.formatMessage({ id: 'settingVIPExpiryTime' })} ${date} ${user.vip ? '' : intl.formatMessage({ id: 'settingExpired' })}`;
+      } else {
+        const probationDateValue = user.created + 100 * 60 * 60 * 24 * 1000;
+        const now = new Date().valueOf();
+        const probationDate = new Date(probationDateValue).toLocaleDateString();
+        userVipMessage = `${intl.formatMessage({ id: 'settingVIPProbation' })} ${probationDate} ${now < probationDateValue ? '' : intl.formatMessage({ id: 'settingExpired' })}`;
+      }
+    }
 
     if (user === null) return <></>;
 
@@ -371,6 +403,15 @@ class SettingDialog extends React.Component {
             </div>
           </>
         )}
+        <LiteText className={classes.accountTitle}>
+          VIP
+        </LiteText>
+        <div className={classes.accountItem}>
+          <LiteText fullWidth={false}>{userVipMessage}</LiteText>
+          <Button className={classes.itemButton} onClick={this.handler.handlePurchase}>
+            <FormattedMessage id="userTypeUpgrade" />
+          </Button>
+        </div>
         <Button
           className={classes.changePasswordButton}
           onClick={this.handler.handleOpenModifyPasswordDialog}
@@ -475,6 +516,12 @@ class SettingDialog extends React.Component {
       { title: '20px', type: 'paragraphHeight', value: '20' },
     ];
 
+    const textWidthMark = [
+      { value: 70, label: '70%' },
+      { value: 80, label: '80%' },
+      { value: 100, label: '100%' },
+    ];
+
     return (
       <div>
         <LiteText disableUserSelect>
@@ -512,6 +559,16 @@ class SettingDialog extends React.Component {
           options={paragraphOptions}
           value={editorConfig.paragraphHeight}
           onChange={this.handler.handleEditorConfigChange}
+        />
+        <LiteText disableUserSelect>
+          <FormattedMessage id="settingTextWidth" />
+        </LiteText>
+        <Slider
+          min={70}
+          defaultValue={editorConfig.textWidth}
+          marks={textWidthMark}
+          valueLabelDisplay="on"
+          onChangeCommitted={(e, value) => this.handler.handleEditorConfigChange({ type: 'textWidth', value })}
         />
         {/* <LiteText disableUserSelect>
           <FormattedMessage id="settingLabelEditorMode" />

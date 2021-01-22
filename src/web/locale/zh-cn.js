@@ -218,6 +218,10 @@ export default {
   settingButtonChangePassword: '修改密码',
   settingButtonRenderNow: '即时渲染模式',
   settingButtonConfirm: '确定',
+  settingTextWidth: '正文区域宽度',
+  settingVIPExpiryTime: '到期时间:',
+  settingVIPProbation: '试用到期:',
+  settingExpired: '(已过期)',
 
   newNote: '新建笔记',
   search: '搜索',
