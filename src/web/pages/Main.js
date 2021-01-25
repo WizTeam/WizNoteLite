@@ -150,9 +150,11 @@ class Main extends React.Component {
     handleSelectNote: (currentNote) => {
       const isNullNote = currentNote === null;
       this.setState({ currentNote, isNullNote });
-      window.wizApi.userManager.setUserSettings('lastNote', currentNote?.guid);
-      this.getNoteLinks(currentNote?.title);
-      this.getAllTitle();
+      setTimeout(() => {
+        window.wizApi.userManager.setUserSettings('lastNote', currentNote?.guid);
+        this.getNoteLinks(currentNote?.title);
+        this.getAllTitle();
+      });
     },
     handleTagSelected: async (tag) => {
       this.setState({
