@@ -48,14 +48,16 @@ async function handleApi(name, api) {
 }
 
 handleApi('openImage', async (event, imagesList, index) => {
-  const imageArr = imagesList.map((imgUrl) => imgUrl.replace(/^wiz:\/\//, `${paths.getUsersData()}/`).replace(/\s/g, '\\ '));
-  for (let i = 0; i < index; i++) {
-    imageArr.push(imageArr.shift());
-  }
-  if (process.platform === 'darwin') {
+  console.log('imagesList', imagesList);
+  if (process.platform === 'darwin' && (imagesList[index].startsWith('wiz://') || imagesList[index].startsWith('file://'))) {
+    let imageArr = [...imagesList];
+    for (let i = 0; i < index; i++) {
+      imageArr.push(imageArr.shift());
+    }
+    imageArr = imageArr.filter((item) => item.startsWith('wiz://') || item.startsWith('file://')).map((imgUrl) => imgUrl.replace(/^wiz:\/\//, `${paths.getUsersData()}/`).replace(/\s/g, '\\ '));
     exec(`open ${imageArr.join(' ')}`);
   } else {
-    shell.openPath(imageArr[0]);
+    shell.openPath(imagesList[index].replace(/^wiz:\/\//, `${paths.getUsersData()}/`).replace(/\s/g, '\\ '));
   }
 });
 

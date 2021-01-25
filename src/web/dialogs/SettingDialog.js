@@ -73,7 +73,7 @@ const styles = (theme) => ({
     },
   },
   liteSelect: {
-    minWidth: 288,
+    width: 300,
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(3),
   },
@@ -519,6 +519,7 @@ class SettingDialog extends React.Component {
     const textWidthMark = [
       { value: 70, label: '70%' },
       { value: 80, label: '80%' },
+      { value: 90, label: '90%' },
       { value: 100, label: '100%' },
     ];
 
@@ -566,6 +567,7 @@ class SettingDialog extends React.Component {
         <Slider
           min={70}
           defaultValue={editorConfig.textWidth}
+          className={classes.liteSelect}
           marks={textWidthMark}
           valueLabelDisplay="on"
           onChangeCommitted={(e, value) => this.handler.handleEditorConfigChange({ type: 'textWidth', value })}
