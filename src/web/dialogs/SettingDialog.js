@@ -299,17 +299,19 @@ class SettingDialog extends React.Component {
     };
   }
 
+  shouldComponentUpdate(nextProps) {
+    return nextProps.open || (this.props.open !== nextProps.open);
+  }
+
   componentDidUpdate(prevProps) {
     if (prevProps.open !== this.props.open && this.props.open) {
       this.reset();
     }
   }
 
-
   async reset() {
     const { user } = this.props;
 
-    console.log('user', user);
     //
     this.setState({
       type: 'account',

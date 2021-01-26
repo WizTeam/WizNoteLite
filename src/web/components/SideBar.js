@@ -233,6 +233,10 @@ class SideBar extends React.Component {
     window.wizApi.userManager.on('syncFinish', this.handler.handleSyncFinish);
   }
 
+  shouldComponentUpdate(nextProps) {
+    return nextProps.open || (this.props.open !== nextProps.open);
+  }
+
   componentWillUnmount() {
     window.wizApi.userManager.off('tagsChanged', this.handler.handleTagsChanged);
     window.wizApi.userManager.off('tagRenamed', this.handler.handleTagRenamed);
@@ -449,6 +453,7 @@ SideBar.propTypes = {
   intl: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
   selectedTag: PropTypes.object,
+  open: PropTypes.bool,
   onClickLogin: PropTypes.func.isRequired,
   onUpgradeVip: PropTypes.func.isRequired,
   onClickSetting: PropTypes.func.isRequired,
@@ -456,6 +461,7 @@ SideBar.propTypes = {
 
 SideBar.defaultProps = {
   selectedTag: null,
+  open: false,
 };
 
 export default withStyles(styles)(injectIntl(SideBar));
