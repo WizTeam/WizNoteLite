@@ -175,7 +175,7 @@ export default {
 
   tipNoteListNull: 'List need a note',
   tipSearchListNull: `No results`,
-  tipTagListNull: 'Nothing tag',
+  tipTagListNull: 'No #tag# ',
   tipNoteNull: `Never memorize something that you can look up. —— Einstein`,
 
   // setting
