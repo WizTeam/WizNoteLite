@@ -20,6 +20,7 @@ import Icons from '../config/icons';
 import NoteListItem from './NoteListItem';
 import Scrollbar from './Scrollbar';
 import { eventCenter, eventMap } from '../utils/event';
+import { COMMAND_KEY } from '../utils/utils';
 
 const styles = (theme) => ({
   container: {
@@ -663,7 +664,7 @@ class NoteList extends React.Component {
                 aria-label="toggle starred"
                 color="inherit"
                 onClick={this.handler.handleStarredFilterToggle}
-                title={intl.formatMessage({ id: 'starredNode' })}
+                title={`${intl.formatMessage({ id: 'starredNode' })} ${COMMAND_KEY}+Alt+?`}
               >
                 {isFilterStarred && (
                   <Icons.ActiveStarIcon
@@ -681,7 +682,7 @@ class NoteList extends React.Component {
                 aria-label="search"
                 color="inherit"
                 onClick={this.handler.handleSearchNotes}
-                title={intl.formatMessage({ id: 'search' })}
+                title={`${intl.formatMessage({ id: 'search' })} ⇧+${COMMAND_KEY}+F`}
               >
                 <Icons.SearchIcon className={classes.toolBarIcon} />
               </IconButton>
@@ -697,7 +698,7 @@ class NoteList extends React.Component {
                 className={classes.toolbarIconButton}
                 aria-label="create note"
                 color="inherit"
-                title={intl.formatMessage({ id: 'newNote' })}
+                title={`${intl.formatMessage({ id: 'newNote' })} ${COMMAND_KEY}+N`}
                 // onClick={this.handler.handleOpenMenu}
                 onClick={this.handler.handleCreateMarkdownNote}
                 ref={anchorEl}

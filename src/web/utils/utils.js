@@ -160,7 +160,16 @@ export function matchHotKey(hotkey, event, separator = '-') {
   );
 }
 
+export const COMMAND_KEY = isMacSystem() ? '⌘' : 'Ctrl';
+
 
 export default {
-  overwriteEditorConfig, injectionCssFormId, getScrollbarWidthHorizontal, isMacSystem, parseKey, transformKey, isTouchCtrlKey,
+  overwriteEditorConfig,
+  injectionCssFormId,
+  getScrollbarWidthHorizontal,
+  isMacSystem,
+  parseKey,
+  transformKey,
+  isTouchCtrlKey,
+  COMMAND_KEY,
 };

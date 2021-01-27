@@ -8,6 +8,7 @@ import Icons from '../config/icons';
 import dateUtils from '../utils/date';
 import SyncingIcon from './SyncingIcon';
 import { eventCenter, eventMap } from '../utils/event';
+import { COMMAND_KEY } from '../utils/utils';
 
 const useStyles = makeStyles(({ spacing, palette }) => ({
   syncInfo: {
@@ -159,7 +160,7 @@ function SyncButton(props) {
           <IconButton
             className={props.className}
             onClick={handleClick}
-            title={props.intl.formatMessage({ id: 'buttonSync' })}
+            title={`${props.intl.formatMessage({ id: 'buttonSync' })} ${COMMAND_KEY}+Alt+s`}
           >
             {icon}
           </IconButton>
