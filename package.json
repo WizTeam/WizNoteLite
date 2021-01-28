@@ -195,7 +195,7 @@
     "react-custom-scrollbars": "^4.2.1",
     "react-dom": "^16.13.1",
     "react-infinite-scroller": "^1.2.4",
-    "react-intl": "^4.5.12",
+    "react-intl": "5.7.1",
     "react-lifecycles-compat": "^3.0.4",
     "react-scripts": "3.4.1",
     "react-style-proptype": "^3.2.2",
