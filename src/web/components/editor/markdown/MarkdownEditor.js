@@ -35,6 +35,11 @@ class MarkdownEditorComponent extends React.PureComponent {
         this.props.onClickTag(tagSpan.textContent);
       }
     },
+    handleLiveEditorChange: (editor) => {
+      const { note } = this.state;
+      const markdown = editor.toMarkdown();
+      this.saveNote(note.guid, markdown, []);
+    },
     handleNoteModified: ({ contentId, markdown, noteLinks }) => {
       this.saveNote(contentId, markdown, noteLinks);
     },
@@ -157,7 +162,7 @@ class MarkdownEditorComponent extends React.PureComponent {
     };
     this.titlesList = [];
     this.oldMarkdown = '';
-    this.editor = React.createRef();
+    this.editor = null;
     this._onThemeChange = null;
     this.editorContainer = React.createRef();
   }
@@ -169,7 +174,7 @@ class MarkdownEditorComponent extends React.PureComponent {
     window.wizApi.userManager.on('focusEdit', this.handler.handleFocusModeChange);
     window.wizApi.userManager.on('typewriterEdit', this.handler.handleTypewriterModeChange);
     this.getAllTags();
-    await this.renderEditor();
+    this.editor = await this.renderEditor();
     await this.loadNote();
     if (this.editor.current) {
       const editor = this.editor.current.editor;
@@ -262,7 +267,7 @@ class MarkdownEditorComponent extends React.PureComponent {
 
   async saveNote(contentId, markdown, noteLinks) {
     const { note } = this.state;
-    if (!this.editor.current || !note || contentId !== note.guid) {
+    if (!this.editor || !note || contentId !== note.guid) {
       return;
     }
     const { kbGuid } = this.props;
@@ -291,6 +296,14 @@ class MarkdownEditorComponent extends React.PureComponent {
 
           // console.log(`loadNode ---------------${note.title}`);
           // console.log(markdown);
+          const rootBlockId = this.editor.doc._data.blocks[0]?.id;
+          if (rootBlockId) {
+            const block = this.editor.getBlockById(rootBlockId);
+            this.editor.insertMarkdown(markdown, {
+              block,
+              offset: 0,
+            });
+          }
           this.setState({ note, markdown: this.oldMarkdown });
         } else {
           // console.log('note changed');
@@ -312,42 +325,34 @@ class MarkdownEditorComponent extends React.PureComponent {
     await this.loadNote();
   }
 
-  async fakeGetAccessTokenFromServer(userId, docId) {
-    const res = await fetch(`https://api.live-editor.com/token/${AppId}/${docId}/${userId}`);
-    const ret = await res.json();
-    return ret.token;
-  }
-
-  async renderEditor(template = '', templateValues = {}) {
-    const WsServerUrl = 'wss://api.live-editor.com';
+  async renderEditor() {
     const user = {
-      avatarUrl: 'https://live-editor.com/wp-content/new-uploads/2f4c76a6-db63-4de1-a5c0-28cf36384b7e.png',
+      avatarUrl: '',
       userId: 'test',
       displayName: 'test',
     };
     const docId = genId();
-    const token = await this.fakeGetAccessTokenFromServer(user.userId, docId, 'w');
     const auth = {
       appId: AppId,
       userId: user.userId,
       permission: 'w',
       docId,
-      token,
+      token: '',
     };
 
     const options = {
-      serverUrl: WsServerUrl,
+      local: true,
+      // serverUrl: WsServerUrl,
       user,
-      template,
-      templateValues,
+      // template,
+      // templateValues,
       placeholder: 'Please enter document title',
       markdownOnly: true,
-      lineNumber: true,
-      // local: true,
-      titleInEditor: true,
+      lineNumber: false,
+      // titleInEditor: true,
       hideComments: true,
       callbacks: {
-        onReauth: this.fakeGetAccessTokenFromServer,
+        onChange: this.handler.handleLiveEditorChange,
       },
     };
     const editor = await createEditorPromise(this.editorContainer.current, options, auth);
