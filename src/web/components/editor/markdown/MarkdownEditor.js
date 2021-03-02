@@ -2,6 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { withStyles, withTheme } from '@material-ui/core/styles';
+import {
+  createEditorPromise,
+  genId,
+} from 'live-editor/client';
 import { MarkdownEditor } from 'wiz-react-markdown-editor';
 import debounce from 'lodash/debounce';
 import { filter } from 'fuzzaldrin';
@@ -9,7 +13,8 @@ import { getTagSpanFromRange } from '../libs/dom_utils';
 import { getLocale } from '../../../utils/lang';
 import './lite.scss';
 
-const lang = getLocale().toLowerCase();
+// const lang = getLocale().toLowerCase();
+const AppId = '_LC1xOdRp';
 
 const styles = (/* theme */) => ({
   root: {
@@ -154,6 +159,7 @@ class MarkdownEditorComponent extends React.PureComponent {
     this.oldMarkdown = '';
     this.editor = React.createRef();
     this._onThemeChange = null;
+    this.editorContainer = React.createRef();
   }
 
   //
@@ -163,19 +169,18 @@ class MarkdownEditorComponent extends React.PureComponent {
     window.wizApi.userManager.on('focusEdit', this.handler.handleFocusModeChange);
     window.wizApi.userManager.on('typewriterEdit', this.handler.handleTypewriterModeChange);
     this.getAllTags();
+    await this.renderEditor();
     await this.loadNote();
     if (this.editor.current) {
       const editor = this.editor.current.editor;
       editor.addEventListener('click', this.handler.handleClickEditor);
+      this.editor.current.on('muya-note-link-change', this.handler.handleOnNoteLinksContentChange);
+      this.editor.current.on('muya-note-link', this.handler.handleClickLink);
     }
     this.setState({
       focusMode: await window.wizApi.userManager.getSettings('focusMode', false),
-    });
-    this.setState({
       typewriterMode: await window.wizApi.userManager.getSettings('typewriterMode', false),
     });
-    this.editor.current.on('muya-note-link-change', this.handler.handleOnNoteLinksContentChange);
-    this.editor.current.on('muya-note-link', this.handler.handleClickLink);
   }
 
   componentDidUpdate(prevProps) {
@@ -185,7 +190,7 @@ class MarkdownEditorComponent extends React.PureComponent {
       // note changed
       this.saveAndLoadNote();
       setTimeout(() => {
-        const linkList = this.editor.current.getNoteLinks();
+        const linkList = this.editor?.current?.getNoteLinks();
         if (this.props.onUpdateLinkList) {
           this.props.onUpdateLinkList(linkList);
         }
@@ -307,6 +312,48 @@ class MarkdownEditorComponent extends React.PureComponent {
     await this.loadNote();
   }
 
+  async fakeGetAccessTokenFromServer(userId, docId) {
+    const res = await fetch(`https://api.live-editor.com/token/${AppId}/${docId}/${userId}`);
+    const ret = await res.json();
+    return ret.token;
+  }
+
+  async renderEditor(template = '', templateValues = {}) {
+    const WsServerUrl = 'wss://api.live-editor.com';
+    const user = {
+      avatarUrl: 'https://live-editor.com/wp-content/new-uploads/2f4c76a6-db63-4de1-a5c0-28cf36384b7e.png',
+      userId: 'test',
+      displayName: 'test',
+    };
+    const docId = genId();
+    const token = await this.fakeGetAccessTokenFromServer(user.userId, docId, 'w');
+    const auth = {
+      appId: AppId,
+      userId: user.userId,
+      permission: 'w',
+      docId,
+      token,
+    };
+
+    const options = {
+      serverUrl: WsServerUrl,
+      user,
+      template,
+      templateValues,
+      placeholder: 'Please enter document title',
+      markdownOnly: true,
+      lineNumber: true,
+      // local: true,
+      titleInEditor: true,
+      hideComments: true,
+      callbacks: {
+        onReauth: this.fakeGetAccessTokenFromServer,
+      },
+    };
+    const editor = await createEditorPromise(this.editorContainer.current, options, auth);
+    return editor;
+  }
+
   render() {
     //
     const {
@@ -317,11 +364,14 @@ class MarkdownEditorComponent extends React.PureComponent {
       typewriterMode,
     } = this.state;
     const { classes, scrollbar } = this.props;
-    const scrollingElement = scrollbar?.container?.children[0];
+    // const scrollingElement = scrollbar?.container?.children[0];
     //
     return (
-      <div className={classNames(classes.root, !note && classes.invisible)}>
-        <MarkdownEditor
+      <div
+        ref={this.editorContainer}
+        className={classNames(classes.root, !note && classes.invisible)}
+      >
+        {/* <MarkdownEditor
           ref={this.editor}
           wordList={wordList}
           markdown={markdown}
@@ -339,7 +389,7 @@ class MarkdownEditorComponent extends React.PureComponent {
           lang={lang}
           focusMode={focusMode}
           typewriterMode={typewriterMode}
-        />
+        /> */}
       </div>
     );
   }

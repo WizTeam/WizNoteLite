@@ -324,7 +324,7 @@ function EditorContents(props) {
 EditorContents.propTypes = {
   intl: PropTypes.object.isRequired,
   contents: PropTypes.array.isRequired,
-  linkList: PropTypes.array.isRequired,
+  linkList: PropTypes.array,
   linkedList: PropTypes.array.isRequired,
   title: PropTypes.string,
   onClose: PropTypes.func,
@@ -341,6 +341,7 @@ EditorContents.defaultProps = {
   onNodeClick: null,
   isShowDrawer: false,
   title: '',
+  linkList: [],
   onLinkedClick: null,
   onLinkClick: null,
 };
