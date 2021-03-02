@@ -11,7 +11,7 @@ import debounce from 'lodash/debounce';
 import { filter } from 'fuzzaldrin';
 import { getTagSpanFromRange } from '../libs/dom_utils';
 import { getLocale } from '../../../utils/lang';
-import './lite.scss';
+import './live-editor.scss';
 
 // const lang = getLocale().toLowerCase();
 const AppId = '_LC1xOdRp';
@@ -35,9 +35,25 @@ class MarkdownEditorComponent extends React.PureComponent {
         this.props.onClickTag(tagSpan.textContent);
       }
     },
+    handleGetToc: (blocks) => {
+      const toc = [];
+      blocks.forEach((block) => {
+        if (block.heading) {
+          const item = block;
+          item.lvl = block.heading;
+          item.slug = block.id;
+          item.content = block.text.reduce((c, text) => c + text.insert, '');
+
+          toc.push(item);
+        }
+      });
+      return toc;
+    },
     handleLiveEditorChange: (editor) => {
       const { note } = this.state;
       const markdown = editor.toMarkdown();
+      const toc = this.handler.handleGetToc(editor.doc._data.blocks);
+      this.handler.handleOnChange({ toc });
       this.saveNote(note.guid, markdown, []);
     },
     handleNoteModified: ({ contentId, markdown, noteLinks }) => {
@@ -349,7 +365,7 @@ class MarkdownEditorComponent extends React.PureComponent {
       placeholder: 'Please enter document title',
       markdownOnly: true,
       lineNumber: false,
-      // titleInEditor: true,
+      titleInEditor: true,
       hideComments: true,
       callbacks: {
         onChange: this.handler.handleLiveEditorChange,
