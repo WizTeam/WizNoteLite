@@ -190,9 +190,9 @@ class MarkdownEditorComponent extends React.PureComponent {
     window.wizApi.userManager.on('focusEdit', this.handler.handleFocusModeChange);
     window.wizApi.userManager.on('typewriterEdit', this.handler.handleTypewriterModeChange);
     this.getAllTags();
-    this.editor = await this.renderEditor();
+    // this.editor = await this.renderEditor();
     await this.loadNote();
-    if (this.editor.current) {
+    if (this.editor?.current) {
       const editor = this.editor.current.editor;
       editor.addEventListener('click', this.handler.handleClickEditor);
       this.editor.current.on('muya-note-link-change', this.handler.handleOnNoteLinksContentChange);
@@ -302,6 +302,7 @@ class MarkdownEditorComponent extends React.PureComponent {
 
   async loadNote() {
     const { note, kbGuid } = this.props;
+    console.log('note--->', note);
     if (note) {
       const noteGuid = note.guid;
       try {
@@ -309,11 +310,17 @@ class MarkdownEditorComponent extends React.PureComponent {
         // const markdown = await window.wizApi.userManager.getNoteMarkdown(kbGuid, note.guid);
         if (note.guid === this.props.note?.guid) {
           this.oldMarkdown = markdown;
+          if (this.editor) {
+            this.editor.destroy();
+          }
+          this.editor = await this.renderEditor();
 
           // console.log(`loadNode ---------------${note.title}`);
           // console.log(markdown);
           const rootBlockId = this.editor.doc._data.blocks[0]?.id;
           if (rootBlockId) {
+            console.log('editor--->', this.editor);
+            // .resetContent();
             const block = this.editor.getBlockById(rootBlockId);
             this.editor.insertMarkdown(markdown, {
               block,
