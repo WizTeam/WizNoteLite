@@ -47,26 +47,10 @@ class MarkdownEditorComponent extends React.PureComponent {
         this.props.onClickTag(tagSpan.textContent);
       }
     },
-    handleGetToc: (blocks) => {
-      const toc = [];
-      blocks.forEach((block) => {
-        if (block.heading) {
-          const item = block;
-          item.lvl = block.heading;
-          item.slug = block.id;
-          item.content = block.text.reduce((c, text) => c + text.insert, '');
-
-          toc.push(item);
-        }
-      });
-      return toc;
-    },
     handleLiveEditorChange: (editor) => {
       const { note } = this.state;
       const markdown = editor.toMarkdown();
       this.handler.handleMdLink(markdown);
-      const toc = this.handler.handleGetToc(editor.doc._data.blocks);
-      this.handler.handleOnChange({ toc });
       this.saveNote(note.guid, markdown, []);
     },
     handleNoteModified: ({ contentId, markdown, noteLinks }) => {
@@ -144,35 +128,25 @@ class MarkdownEditorComponent extends React.PureComponent {
         typewriterMode,
       });
     },
-    handleOnChange: debounce(({ toc }) => {
-      const list = toc.map((item) => ({
-        ...item,
-        title: item.content,
-        key: item.slug,
-        children: [],
-        open: true,
-      }));
-
-      const result = [];
-      const parent = new Map();
-      let last = null;
-
-      parent.set(last, { lvl: 0, children: result });
-
-      list.forEach((item) => {
-        while (!last || item.lvl <= last.lvl) {
-          last = parent.get(last);
-        }
-        last.children.push(item);
-        parent.set(item, last);
-        last = item;
+    handleProcessToc: (toc) => {
+      if (!Array.isArray(toc)) return [];
+      //
+      toc.forEach((item) => {
+        const tocItem = item;
+        tocItem.title = item.text;
+        tocItem.key = item.blockId;
+        tocItem.open = true;
+        tocItem.children = this.handler.handleProcessToc(item.children);
       });
-
+      return toc;
+    },
+    handleUpdateToc: (editor, toc) => {
+      const result = this.handler.handleProcessToc(toc);
+      //
       if (this.props.onUpdateContentsList) {
         this.props.onUpdateContentsList(result);
       }
-    }, 300),
-
+    },
     handleOnNoteLinksContentChange: ({ content, render }) => {
       render(filter(this.titlesList, content, { key: 'title' }));
     },
@@ -382,6 +356,7 @@ class MarkdownEditorComponent extends React.PureComponent {
       callbacks: {
         onChange: this.handler.handleLiveEditorChange,
         onUploadResource: this.handler.handleUploadResource,
+        onUpdateToc: this.handler.handleUpdateToc,
       },
     };
     const editor = await createEditorPromise(this.editorContainer.current, options, auth);

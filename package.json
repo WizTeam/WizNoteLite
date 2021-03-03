@@ -202,7 +202,7 @@
     "run-script-os": "^1.0.7",
     "timer.js": "^1.0.4",
     "wiz-react-markdown-editor": "^0.5.34",
-    "live-editor": "^0.0.28"
+    "live-editor": "^0.0.30"
   },
   "__npminstall_done": false
 }
