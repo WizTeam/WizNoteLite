@@ -4,6 +4,8 @@ import classNames from 'classnames';
 import { withStyles, withTheme } from '@material-ui/core/styles';
 import {
   createEditorPromise,
+  domUtils,
+  markdown2Doc,
   genId,
 } from 'live-editor/client';
 import { MarkdownEditor } from 'wiz-react-markdown-editor';
@@ -92,6 +94,10 @@ class MarkdownEditorComponent extends React.PureComponent {
     //     this.editor.insertValue(`![image](${src})`);
     //   });
     // },
+    handleUploadResource: async (editor, file, onProgress) => {
+      const res = await domUtils.fileToDataUrl(file);
+      return res;
+    },
     handleInsertImagesFromData: async (file) => {
       if (!this.editor.current) {
         return null;
@@ -201,7 +207,6 @@ class MarkdownEditorComponent extends React.PureComponent {
     window.wizApi.userManager.on('focusEdit', this.handler.handleFocusModeChange);
     window.wizApi.userManager.on('typewriterEdit', this.handler.handleTypewriterModeChange);
     this.getAllTags();
-    // this.editor = await this.renderEditor();
     await this.loadNote();
     if (this.editor?.current) {
       const editor = this.editor.current.editor;
@@ -323,20 +328,9 @@ class MarkdownEditorComponent extends React.PureComponent {
           if (this.editor) {
             this.editor.destroy();
           }
-          this.editor = await this.renderEditor();
-
-          // console.log(`loadNode ---------------${note.title}`);
-          // console.log(markdown);
-          const rootBlockId = this.editor.doc._data.blocks[0]?.id;
-          if (rootBlockId) {
-            console.log('editor--->', this.editor);
-            // .resetContent();
-            const block = this.editor.getBlockById(rootBlockId);
-            this.editor.insertMarkdown(markdown, {
-              block,
-              offset: 0,
-            });
-          }
+          //
+          const doc = markdown2Doc(markdown);
+          this.renderEditor(doc);
           this.setState({ note, markdown: this.oldMarkdown });
         } else {
           // console.log('note changed');
@@ -358,7 +352,7 @@ class MarkdownEditorComponent extends React.PureComponent {
     await this.loadNote();
   }
 
-  async renderEditor() {
+  async renderEditor(initLocalData) {
     const user = {
       avatarUrl: '',
       userId: 'test',
@@ -375,6 +369,7 @@ class MarkdownEditorComponent extends React.PureComponent {
 
     const options = {
       local: true,
+      initLocalData,
       // serverUrl: WsServerUrl,
       user,
       // template,
@@ -386,9 +381,11 @@ class MarkdownEditorComponent extends React.PureComponent {
       hideComments: true,
       callbacks: {
         onChange: this.handler.handleLiveEditorChange,
+        onUploadResource: this.handler.handleUploadResource,
       },
     };
     const editor = await createEditorPromise(this.editorContainer.current, options, auth);
+    this.editor = editor;
     return editor;
   }
 
