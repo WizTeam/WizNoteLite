@@ -13,6 +13,10 @@ import { getTagSpanFromRange } from '../libs/dom_utils';
 import { getLocale } from '../../../utils/lang';
 import './live-editor.scss';
 
+const {
+  extractLinksFromMarkdown,
+} = require('wiznote-sdk-js-share').noteAnalysis;
+
 // const lang = getLocale().toLowerCase();
 const AppId = '_LC1xOdRp';
 
@@ -28,6 +32,12 @@ const styles = (/* theme */) => ({
 });
 class MarkdownEditorComponent extends React.PureComponent {
   handler = {
+    handleMdLink: (md) => {
+      const lists = extractLinksFromMarkdown(md);
+      if (this.props.onUpdateLinkList) {
+        this.props.onUpdateLinkList(lists);
+      }
+    },
     handleClickEditor: (e) => {
       const target = e.target;
       const tagSpan = getTagSpanFromRange(this.editor.current.editor, target);
@@ -52,6 +62,7 @@ class MarkdownEditorComponent extends React.PureComponent {
     handleLiveEditorChange: (editor) => {
       const { note } = this.state;
       const markdown = editor.toMarkdown();
+      this.handler.handleMdLink(markdown);
       const toc = this.handler.handleGetToc(editor.doc._data.blocks);
       this.handler.handleOnChange({ toc });
       this.saveNote(note.guid, markdown, []);
@@ -210,12 +221,12 @@ class MarkdownEditorComponent extends React.PureComponent {
     if (propsNote?.guid !== currentNote?.guid) {
       // note changed
       this.saveAndLoadNote();
-      setTimeout(() => {
-        const linkList = this.editor?.current?.getNoteLinks();
-        if (this.props.onUpdateLinkList) {
-          this.props.onUpdateLinkList(linkList);
-        }
-      }, 500);
+      // setTimeout(() => {
+      //   const linkList = this.editor?.current?.getNoteLinks();
+      //   if (this.props.onUpdateLinkList) {
+      //     this.props.onUpdateLinkList(linkList);
+      //   }
+      // }, 500);
     }
     if (prevProps.titlesList !== this.props.titlesList) {
       this.titlesList = [
@@ -302,7 +313,6 @@ class MarkdownEditorComponent extends React.PureComponent {
 
   async loadNote() {
     const { note, kbGuid } = this.props;
-    console.log('note--->', note);
     if (note) {
       const noteGuid = note.guid;
       try {
