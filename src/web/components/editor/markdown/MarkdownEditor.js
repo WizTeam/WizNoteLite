@@ -4,15 +4,14 @@ import classNames from 'classnames';
 import { withStyles, withTheme } from '@material-ui/core/styles';
 import {
   createEditorPromise,
-  domUtils,
   markdown2Doc,
   genId,
 } from 'live-editor/client';
-import { MarkdownEditor } from 'wiz-react-markdown-editor';
-import debounce from 'lodash/debounce';
+// import { MarkdownEditor } from 'wiz-react-markdown-editor';
+// import debounce from 'lodash/debounce';
 import { filter } from 'fuzzaldrin';
 import { getTagSpanFromRange } from '../libs/dom_utils';
-import { getLocale } from '../../../utils/lang';
+// import { getLocale } from '../../../utils/lang';
 import './live-editor.scss';
 
 const {
@@ -78,9 +77,16 @@ class MarkdownEditorComponent extends React.PureComponent {
     //     this.editor.insertValue(`![image](${src})`);
     //   });
     // },
-    handleUploadResource: async (editor, file, onProgress) => {
-      const res = await domUtils.fileToDataUrl(file);
-      return res;
+    handleUploadResource: async (editor, file) => {
+      const { kbGuid, note } = this.props;
+      const fileUrl = await window.wizApi.userManager.addImageFromData(kbGuid, note.guid, file);
+      return fileUrl;
+    },
+    handleBuildResourceUrl: (editor, resourceName) => {
+      if (resourceName.startsWith('index_files/')) {
+        return `${this.resourceUrl}/${resourceName}`;
+      }
+      return resourceName;
     },
     handleInsertImagesFromData: async (file) => {
       if (!this.editor.current) {
@@ -146,6 +152,10 @@ class MarkdownEditorComponent extends React.PureComponent {
       if (this.props.onUpdateContentsList) {
         this.props.onUpdateContentsList(result);
       }
+    },
+    handleGetTagItems: async (editor, keywords) => {
+      const { wordList } = this.state;
+      return filter(wordList, keywords);
     },
     handleOnNoteLinksContentChange: ({ content, render }) => {
       render(filter(this.titlesList, content, { key: 'title' }));
@@ -356,7 +366,9 @@ class MarkdownEditorComponent extends React.PureComponent {
       callbacks: {
         onChange: this.handler.handleLiveEditorChange,
         onUploadResource: this.handler.handleUploadResource,
+        onBuildResourceUrl: this.handler.handleBuildResourceUrl,
         onUpdateToc: this.handler.handleUpdateToc,
+        onGetTagItems: this.handler.handleGetTagItems,
       },
     };
     const editor = await createEditorPromise(this.editorContainer.current, options, auth);
