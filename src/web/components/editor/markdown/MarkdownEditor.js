@@ -288,7 +288,7 @@ class MarkdownEditorComponent extends React.PureComponent {
     }
     const { kbGuid } = this.props;
     //
-    const wizPathReg = new RegExp(this.resourceUrl, 'ig');
+    const wizPathReg = new RegExp(`${this.resourceUrl}/index_files`, 'ig');
     // eslint-disable-next-line no-param-reassign
     markdown = markdown.replace(wizPathReg, 'index_files');
     if (markdown !== this.oldMarkdown) {
