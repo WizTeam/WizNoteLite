@@ -5,12 +5,9 @@ import { withStyles, withTheme } from '@material-ui/core/styles';
 import {
   createEditorPromise,
   markdown2Doc,
-  genId,
 } from 'live-editor/client';
-// import { MarkdownEditor } from 'wiz-react-markdown-editor';
-// import debounce from 'lodash/debounce';
 import { filter } from 'fuzzaldrin';
-import { getTagSpanFromRange } from '../libs/dom_utils';
+// import { getTagSpanFromRange } from '../libs/dom_utils';
 // import { getLocale } from '../../../utils/lang';
 import './live-editor.scss';
 
@@ -19,7 +16,6 @@ const {
 } = require('wiznote-sdk-js-share').noteAnalysis;
 
 // const lang = getLocale().toLowerCase();
-const AppId = '_LC1xOdRp';
 
 const styles = (/* theme */) => ({
   root: {
@@ -39,12 +35,15 @@ class MarkdownEditorComponent extends React.PureComponent {
         this.props.onUpdateLinkList(lists);
       }
     },
-    handleClickEditor: (e) => {
-      const target = e.target;
-      const tagSpan = getTagSpanFromRange(this.editor.current.editor, target);
-      if (tagSpan) {
-        this.props.onClickTag(tagSpan.textContent);
-      }
+    // handleClickEditor: (e) => {
+    //   const target = e.target;
+    //   const tagSpan = getTagSpanFromRange(this.editor.current.editor, target);
+    //   if (tagSpan) {
+    //     this.props.onClickTag(tagSpan.textContent);
+    //   }
+    // },
+    handleTagClicked: (editor, tag) => {
+      this.props.onClickTag(tag);
     },
     handleLiveEditorChange: (editor) => {
       const { note } = this.state;
@@ -52,18 +51,18 @@ class MarkdownEditorComponent extends React.PureComponent {
       this.handler.handleMdLink(markdown);
       this.saveNote(note.guid, markdown, []);
     },
-    handleNoteModified: ({ contentId, markdown, noteLinks }) => {
-      this.saveNote(contentId, markdown, noteLinks);
-    },
-    handleSelectImages: async () => {
-      if (!this.editor.current) {
-        return null;
-      }
-      const { kbGuid, note } = this.props;
-      const files = await this.props.onSelectImages(kbGuid, note.guid);
-      //
-      return files.pop();
-    },
+    // handleNoteModified: ({ contentId, markdown, noteLinks }) => {
+    //   this.saveNote(contentId, markdown, noteLinks);
+    // },
+    // handleSelectImages: async () => {
+    //   if (!this.editor.current) {
+    //     return null;
+    //   }
+    //   const { kbGuid, note } = this.props;
+    //   const files = await this.props.onSelectImages(kbGuid, note.guid);
+    //   //
+    //   return files.pop();
+    // },
     // handleInsertImages: async (successCb) => {
     //   if (!this.editor) {
     //     return;
@@ -88,18 +87,18 @@ class MarkdownEditorComponent extends React.PureComponent {
       }
       return resourceName;
     },
-    handleInsertImagesFromData: async (file) => {
-      if (!this.editor.current) {
-        return null;
-      }
-      const { kbGuid, note } = this.props;
-      const f = file;
-      const fileUrl = await window.wizApi.userManager.addImageFromData(kbGuid, note.guid, f);
-      return {
-        path: fileUrl,
-        name: file.name,
-      };
-    },
+    // handleInsertImagesFromData: async (file) => {
+    //   if (!this.editor.current) {
+    //     return null;
+    //   }
+    //   const { kbGuid, note } = this.props;
+    //   const f = file;
+    //   const fileUrl = await window.wizApi.userManager.addImageFromData(kbGuid, note.guid, f);
+    //   return {
+    //     path: fileUrl,
+    //     name: file.name,
+    //   };
+    // },
     handleTagsChanged: async (kbGuid) => {
       if (kbGuid !== this.props.kbGuid) {
         return;
@@ -117,13 +116,13 @@ class MarkdownEditorComponent extends React.PureComponent {
     handleScreenCaptureManual: () => {
       window.wizApi.userManager.screenCaptureManual();
     },
-    handleImageAction: async (path) => {
-      if (typeof path !== 'string') {
-        const result = await this.handler.handleInsertImagesFromData(path);
-        return result.path;
-      }
-      return path;
-    },
+    // handleImageAction: async (path) => {
+    //   if (typeof path !== 'string') {
+    //     const result = await this.handler.handleInsertImagesFromData(path);
+    //     return result.path;
+    //   }
+    //   return path;
+    // },
     handleFocusModeChange: (focusMode) => {
       this.setState({
         focusMode,
@@ -339,15 +338,14 @@ class MarkdownEditorComponent extends React.PureComponent {
   async renderEditor(initLocalData) {
     const user = {
       avatarUrl: '',
-      userId: 'test',
-      displayName: 'test',
+      userId: '',
+      displayName: '',
     };
-    const docId = genId();
     const auth = {
-      appId: AppId,
-      userId: user.userId,
+      appId: '',
+      userId: '',
       permission: 'w',
-      docId,
+      docId: '',
       token: '',
     };
 
@@ -369,6 +367,7 @@ class MarkdownEditorComponent extends React.PureComponent {
         onBuildResourceUrl: this.handler.handleBuildResourceUrl,
         onUpdateToc: this.handler.handleUpdateToc,
         onGetTagItems: this.handler.handleGetTagItems,
+        onTagClicked: this.handler.handleTagClicked,
       },
     };
     const editor = await createEditorPromise(this.editorContainer.current, options, auth);

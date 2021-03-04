@@ -3,7 +3,10 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { withStyles, withTheme } from '@material-ui/core/styles';
 import { injectIntl } from 'react-intl';
-import { MarkdownEditor } from 'wiz-react-markdown-editor';
+import {
+  createEditorPromise,
+  markdown2Doc,
+} from 'live-editor/client';
 import Scrollbar from '../components/Scrollbar';
 import { injectionCssFormId } from '../utils/utils';
 import Icons from '../config/icons';
@@ -50,14 +53,21 @@ const OverwriteTableStyle = React.lazy(() => import('../components/OverwriteTabl
 
 class NoteViewer extends React.Component {
   handler = {
+    handleBuildResourceUrl: (editor, resourceName) => {
+      const { resourceUrl } = this.state;
+      if (resourceName.startsWith('index_files/')) {
+        return `${resourceUrl}/${resourceName}`;
+      }
+      return resourceName;
+    },
   }
 
   constructor(props) {
     super(props);
     this.state = {
-      markdown: '',
+      // markdown: '',
       resourceUrl: '',
-      loading: true,
+      // loading: true,
     };
     this._scrollBarRef = React.createRef();
   }
@@ -73,10 +83,14 @@ class NoteViewer extends React.Component {
 
     await this.checkTheme();
     const markdown = await window.wizApi.userManager.getNoteMarkdown(kbGuid, noteGuid);
+    //
     this.setState({
-      markdown,
-      loading: false,
+      // markdown,
+      // loading: false,
       resourceUrl,
+    }, async () => {
+      const doc = markdown2Doc(markdown);
+      await this.loadDocument(doc);
     });
     //
     this._loadTimer = setInterval(() => {
@@ -92,6 +106,36 @@ class NoteViewer extends React.Component {
 
   componentWillUnmount() {
     clearInterval(this._loadTimer);
+  }
+
+  async loadDocument(initLocalData) {
+    const user = {
+      avatarUrl: '',
+      userId: '',
+      displayName: '',
+    };
+    const auth = {
+      appId: '',
+      userId: '',
+      permission: 'r',
+      docId: '',
+      token: '',
+    };
+    const options = {
+      local: true,
+      initLocalData,
+      user,
+      placeholder: 'Please enter document title',
+      markdownOnly: true,
+      lineNumber: false,
+      titleInEditor: true,
+      hideComments: true,
+      callbacks: {
+        onBuildResourceUrl: this.handler.handleBuildResourceUrl,
+      },
+    };
+    const editor = await createEditorPromise(this._rootElem, options, auth);
+    return editor;
   }
 
   async waitForLoad() {
@@ -136,7 +180,7 @@ class NoteViewer extends React.Component {
   render() {
     const {
       classes, theme,
-      noteGuid, showTableInline,
+      showTableInline,
       params,
     } = this.props;
     //
@@ -149,7 +193,6 @@ class NoteViewer extends React.Component {
     // const backgroundClass = darkMode ? classes.root_dark : classes.root_lite;
     const footerClass = darkMode ? classes.footer_dark : classes.footer_lite;
 
-    const { loading, markdown, resourceUrl } = this.state;
     //
     const style = {
       paddingTop: Number.parseInt(params.paddingTop || params.padding, 10) || 32,
@@ -167,12 +210,6 @@ class NoteViewer extends React.Component {
         style={style}
         // className={classNames(resetBackground && backgroundClass)}
       >
-        <MarkdownEditor
-          readOnly
-          markdown={markdown}
-          contentId={loading ? 'empty' : noteGuid}
-          resourceUrl={resourceUrl}
-        />
         {params.showFooter === '1' && (
           <div className={classNames(classes.footer, footerClass)}>
             <Icons.LiteMarkerIcon />
