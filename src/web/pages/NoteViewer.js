@@ -49,8 +49,6 @@ const styles = (theme) => ({
   },
 });
 
-const OverwriteTableStyle = React.lazy(() => import('../components/OverwriteTableStyle'));
-
 class NoteViewer extends React.Component {
   handler = {
     handleBuildResourceUrl: (editor, resourceName) => {
@@ -152,7 +150,7 @@ class NoteViewer extends React.Component {
       params,
     } = this.props;
     //
-    const elem = this._rootElem;
+    const elem = document.getElementById('wiz-note-content-root');
     const height = elem.scrollHeight;
     window.wizApi.userManager.sendMessage('onNoteLoaded', kbGuid, noteGuid, {
       height,
@@ -180,7 +178,6 @@ class NoteViewer extends React.Component {
   render() {
     const {
       classes, theme,
-      showTableInline,
       params,
     } = this.props;
     //
@@ -204,12 +201,10 @@ class NoteViewer extends React.Component {
     const contentEditor = (
       <div
         id="wiz-note-content-root"
-        ref={(node) => {
-          this._rootElem = node;
-        }}
         style={style}
         // className={classNames(resetBackground && backgroundClass)}
       >
+        <div ref={(node) => { this._rootElem = node; }} />
         {params.showFooter === '1' && (
           <div className={classNames(classes.footer, footerClass)}>
             <Icons.LiteMarkerIcon />
@@ -239,9 +234,6 @@ class NoteViewer extends React.Component {
         )}
       >
         {contentMain}
-        <Suspense fallback={<></>}>
-          {showTableInline && <OverwriteTableStyle />}
-        </Suspense>
       </div>
     );
   }
@@ -254,13 +246,11 @@ NoteViewer.propTypes = {
   noteGuid: PropTypes.string.isRequired,
   params: PropTypes.object,
   darkMode: PropTypes.bool,
-  showTableInline: PropTypes.bool,
 };
 
 NoteViewer.defaultProps = {
   params: {},
   darkMode: undefined,
-  showTableInline: false,
 };
 
 export default withTheme(withStyles(styles)(injectIntl(NoteViewer)));
