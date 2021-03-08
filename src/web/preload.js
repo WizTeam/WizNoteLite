@@ -265,11 +265,11 @@ class UserManager extends EventEmitter {
   }
 
   async getSettings(key, defaultValue) {
-    let result = await invokeApi('getSettings', key, defaultValue);
+    const result = await invokeApi('getSettings', key, defaultValue);
     // TODO 临时关闭 FocusMode
-    if (/^focusMode$/i.test(key) || /^typewriterMode$/i.test(key)) {
-      result = false;
-    }
+    // if (/^focusMode$/i.test(key) || /^typewriterMode$/i.test(key)) {
+    //   result = false;
+    // }
     return result;
   }
 

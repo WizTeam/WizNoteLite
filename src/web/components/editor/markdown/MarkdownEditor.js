@@ -161,15 +161,15 @@ class MarkdownEditorComponent extends React.PureComponent {
         top: event.clientY + 20,
       });
     },
-    handleCheckMode: () => {
+    handleCheckMode: (editor) => {
       const { focusMode, typewriterMode } = this.state;
-      if (!this.editor) return;
+      if (!editor) return;
       //
       if (focusMode) {
-        this.editor.setFocusMode(focusMode);
+        editor.setFocusMode(focusMode);
       }
       if (typewriterMode) {
-        this.editor.setTypewriterMode(typewriterMode);
+        editor.setTypewriterMode(typewriterMode);
       }
     },
   }
@@ -198,12 +198,6 @@ class MarkdownEditorComponent extends React.PureComponent {
     window.wizApi.userManager.on('typewriterEdit', this.handler.handleTypewriterModeChange);
     this.getAllTags();
     await this.loadNote();
-    if (this.editor?.current) {
-      const editor = this.editor.current.editor;
-      editor.addEventListener('click', this.handler.handleClickEditor);
-      this.editor.current.on('muya-note-link-change', this.handler.handleOnNoteLinksContentChange);
-      this.editor.current.on('muya-note-link', this.handler.handleClickLink);
-    }
     this.setState({
       focusMode: await window.wizApi.userManager.getSettings('focusMode', false),
       typewriterMode: await window.wizApi.userManager.getSettings('typewriterMode', false),
@@ -366,6 +360,7 @@ class MarkdownEditorComponent extends React.PureComponent {
       titleInEditor: true,
       hideComments: true,
       callbacks: {
+        onLoad: this.handler.handleCheckMode,
         onChange: this.handler.handleLiveEditorChange,
         onUploadResource: this.handler.handleUploadResource,
         onBuildResourceUrl: this.handler.handleBuildResourceUrl,
