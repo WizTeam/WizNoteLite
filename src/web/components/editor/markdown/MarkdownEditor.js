@@ -124,14 +124,10 @@ class MarkdownEditorComponent extends React.PureComponent {
     //   return path;
     // },
     handleFocusModeChange: (focusMode) => {
-      this.setState({
-        focusMode,
-      });
+      this.editor.setFocusMode(focusMode);
     },
     handleTypewriterModeChange: (typewriterMode) => {
-      this.setState({
-        typewriterMode,
-      });
+      this.editor.setTypewriterMode(typewriterMode);
     },
     handleProcessToc: (toc) => {
       if (!Array.isArray(toc)) return [];
