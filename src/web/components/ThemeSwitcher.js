@@ -68,7 +68,7 @@ export default function ThemeSwitcher(props) {
             height: 28,
             lineHeight: 28,
             '&:hover': {
-              backgroundColor: 'var(--floatHoverColor)',
+              backgroundColor: prefersDarkMode ? 'rgba(255, 255, 255, .04)' : 'rgba(0, 0, 0, .04)',
             },
             // '&:hover': {
             //   backgroundColor: '#006eff',

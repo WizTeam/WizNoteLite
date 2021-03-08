@@ -161,6 +161,17 @@ class MarkdownEditorComponent extends React.PureComponent {
         top: event.clientY + 20,
       });
     },
+    handleCheckMode: () => {
+      const { focusMode, typewriterMode } = this.state;
+      if (!this.editor) return;
+      //
+      if (focusMode) {
+        this.editor.setFocusMode(focusMode);
+      }
+      if (typewriterMode) {
+        this.editor.setTypewriterMode(typewriterMode);
+      }
+    },
   }
 
   constructor(props) {
@@ -168,7 +179,7 @@ class MarkdownEditorComponent extends React.PureComponent {
     this.state = {
       note: null,
       wordList: [],
-      markdown: '',
+      // markdown: '',
       focusMode: false,
       typewriterMode: false,
     };
@@ -196,7 +207,7 @@ class MarkdownEditorComponent extends React.PureComponent {
     this.setState({
       focusMode: await window.wizApi.userManager.getSettings('focusMode', false),
       typewriterMode: await window.wizApi.userManager.getSettings('typewriterMode', false),
-    });
+    }, this.handler.handleCheckMode);
   }
 
   componentDidUpdate(prevProps) {
@@ -308,9 +319,9 @@ class MarkdownEditorComponent extends React.PureComponent {
             this.editor.destroy();
           }
           //
+          this.setState({ note });
           const doc = markdown2Doc(markdown);
-          this.renderEditor(doc);
-          this.setState({ note, markdown: this.oldMarkdown });
+          await this.renderEditor(doc);
         } else {
           // console.log('note changed');
         }
@@ -348,10 +359,7 @@ class MarkdownEditorComponent extends React.PureComponent {
     const options = {
       local: true,
       initLocalData,
-      // serverUrl: WsServerUrl,
       user,
-      // template,
-      // templateValues,
       placeholder: 'Please enter document title',
       markdownOnly: true,
       lineNumber: false,
@@ -375,39 +383,14 @@ class MarkdownEditorComponent extends React.PureComponent {
     //
     const {
       note,
-      wordList,
-      markdown,
-      focusMode,
-      typewriterMode,
     } = this.state;
-    const { classes, scrollbar } = this.props;
-    // const scrollingElement = scrollbar?.container?.children[0];
+    const { classes } = this.props;
     //
     return (
       <div
         ref={this.editorContainer}
         className={classNames(classes.root, !note && classes.invisible)}
-      >
-        {/* <MarkdownEditor
-          ref={this.editor}
-          wordList={wordList}
-          markdown={markdown}
-          resourceUrl={this.resourceUrl}
-          scrollingElement={scrollingElement}
-          contentId={note ? note.guid : 'empty'}
-          onChange={this.handler.handleOnChange}
-          onSave={this.handler.handleNoteModified}
-          onSelectImages={this.handler.handleSelectImages}
-          onThemeChange={(fn) => {
-            this._onThemeChange = fn;
-          }}
-          onScreenCaptureManual={this.handler.handleScreenCaptureManual}
-          onImageAction={this.handler.handleImageAction}
-          lang={lang}
-          focusMode={focusMode}
-          typewriterMode={typewriterMode}
-        /> */}
-      </div>
+      />
     );
   }
 }
@@ -419,10 +402,10 @@ MarkdownEditorComponent.propTypes = {
   // theme: PropTypes.object.isRequired,
   onLoadNote: PropTypes.func.isRequired,
   onSaveNote: PropTypes.func.isRequired,
-  onSelectImages: PropTypes.func.isRequired,
+  // onSelectImages: PropTypes.func.isRequired,
   onClickTag: PropTypes.func.isRequired,
   onUpdateContentsList: PropTypes.func,
-  scrollbar: PropTypes.object,
+  // scrollbar: PropTypes.object,
   onUpdateLinkList: PropTypes.func,
   onClickNoteLink: PropTypes.func.isRequired,
   theme: PropTypes.object.isRequired,
@@ -434,7 +417,7 @@ MarkdownEditorComponent.defaultProps = {
   kbGuid: null,
   onUpdateContentsList: null,
   onUpdateLinkList: null,
-  scrollbar: null,
+  // scrollbar: null,
   titlesList: [],
 };
 
