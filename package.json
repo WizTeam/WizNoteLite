@@ -201,7 +201,7 @@
     "react-style-proptype": "^3.2.2",
     "run-script-os": "^1.0.7",
     "timer.js": "^1.0.4",
-    "live-editor": "^0.0.36"
+    "live-editor": "^0.0.44"
   },
   "__npminstall_done": false
 }
