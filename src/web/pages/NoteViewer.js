@@ -108,9 +108,9 @@ class NoteViewer extends React.Component {
 
   async loadDocument(initLocalData) {
     const user = {
-      avatarUrl: '',
-      userId: '',
-      displayName: '',
+      avatarUrl: 'avatarUrl',
+      userId: 'wiz-note-viewer',
+      displayName: 'wiz-note-viewer',
     };
     const auth = {
       appId: '',
@@ -118,6 +118,8 @@ class NoteViewer extends React.Component {
       permission: 'r',
       docId: '',
       token: '',
+      displayName: user.displayName,
+      avatarUrl: user.avatarUrl,
     };
     const options = {
       local: true,

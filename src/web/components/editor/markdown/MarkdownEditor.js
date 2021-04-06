@@ -44,10 +44,9 @@ class MarkdownEditorComponent extends React.PureComponent {
       this.handler.handleMdLink(markdown);
       this.saveNote(note.guid, markdown, []);
     },
-    handleUploadResource: async (editor, file, onProgress) => {
+    handleUploadResource: async (editor, file) => {
       const { kbGuid, note } = this.props;
       const fileUrl = await window.wizApi.userManager.addImageFromData(kbGuid, note.guid, file);
-      onProgress(null, 100);
       return fileUrl;
     },
     handleBuildResourceUrl: (editor, resourceName) => {
