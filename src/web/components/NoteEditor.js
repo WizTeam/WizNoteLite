@@ -57,7 +57,7 @@ class NoteEditor extends React.Component {
     const {
       classes, theme,
       note, kbGuid, onClickTag,
-      scrollbar,
+      scrollbar, user,
     } = this.props;
     //
     const type = note?.type;
@@ -77,6 +77,7 @@ class NoteEditor extends React.Component {
             onSelectImages={this.handler.handleSelectImages}
             note={note}
             kbGuid={kbGuid}
+            user={user}
             onClickTag={onClickTag}
             scrollbar={scrollbar}
             onUpdateContentsList={this.props.onUpdateContentsList}

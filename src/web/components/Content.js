@@ -264,7 +264,7 @@ class Content extends React.Component {
     const {
       note, kbGuid, classes,
       theme, backgroundType, onClickTag,
-      intl, isNullNote,
+      intl, isNullNote, user,
     } = this.props;
     const {
       isFullScreen, exportMenuAnchorEl, showExportPngDialog,
@@ -340,6 +340,7 @@ class Content extends React.Component {
             <NoteEditor
               note={note}
               kbGuid={kbGuid}
+              user={user}
               onClickTag={onClickTag}
               scrollbar={this.scrollContentRef.current ?? null}
               onUpdateContentsList={this.handler.handleChangeEditorContents}

@@ -35,13 +35,6 @@ class MarkdownEditorComponent extends React.PureComponent {
         this.props.onUpdateLinkList(lists);
       }
     },
-    // handleClickEditor: (e) => {
-    //   const target = e.target;
-    //   const tagSpan = getTagSpanFromRange(this.editor.current.editor, target);
-    //   if (tagSpan) {
-    //     this.props.onClickTag(tagSpan.textContent);
-    //   }
-    // },
     handleTagClicked: (editor, tag) => {
       this.props.onClickTag(tag);
     },
@@ -51,34 +44,10 @@ class MarkdownEditorComponent extends React.PureComponent {
       this.handler.handleMdLink(markdown);
       this.saveNote(note.guid, markdown, []);
     },
-    // handleNoteModified: ({ contentId, markdown, noteLinks }) => {
-    //   this.saveNote(contentId, markdown, noteLinks);
-    // },
-    // handleSelectImages: async () => {
-    //   if (!this.editor.current) {
-    //     return null;
-    //   }
-    //   const { kbGuid, note } = this.props;
-    //   const files = await this.props.onSelectImages(kbGuid, note.guid);
-    //   //
-    //   return files.pop();
-    // },
-    // handleInsertImages: async (successCb) => {
-    //   if (!this.editor) {
-    //     return;
-    //   }
-    //   const { kbGuid, note } = this.props;
-    //   const files = await this.props.onSelectImages(kbGuid, note.guid);
-    //   if (files.length && successCb) {
-    //     successCb();
-    //   }
-    //   files.forEach((src) => {
-    //     this.editor.insertValue(`![image](${src})`);
-    //   });
-    // },
-    handleUploadResource: async (editor, file) => {
+    handleUploadResource: async (editor, file, onProgress) => {
       const { kbGuid, note } = this.props;
       const fileUrl = await window.wizApi.userManager.addImageFromData(kbGuid, note.guid, file);
+      onProgress(null, 100);
       return fileUrl;
     },
     handleBuildResourceUrl: (editor, resourceName) => {
@@ -87,18 +56,6 @@ class MarkdownEditorComponent extends React.PureComponent {
       }
       return resourceName;
     },
-    // handleInsertImagesFromData: async (file) => {
-    //   if (!this.editor.current) {
-    //     return null;
-    //   }
-    //   const { kbGuid, note } = this.props;
-    //   const f = file;
-    //   const fileUrl = await window.wizApi.userManager.addImageFromData(kbGuid, note.guid, f);
-    //   return {
-    //     path: fileUrl,
-    //     name: file.name,
-    //   };
-    // },
     handleTagsChanged: async (kbGuid) => {
       if (kbGuid !== this.props.kbGuid) {
         return;
@@ -116,13 +73,6 @@ class MarkdownEditorComponent extends React.PureComponent {
     handleScreenCaptureManual: () => {
       window.wizApi.userManager.screenCaptureManual();
     },
-    // handleImageAction: async (path) => {
-    //   if (typeof path !== 'string') {
-    //     const result = await this.handler.handleInsertImagesFromData(path);
-    //     return result.path;
-    //   }
-    //   return path;
-    // },
     handleFocusModeChange: (focusMode) => {
       this.editor.setFocusMode(focusMode);
     },
@@ -239,12 +189,9 @@ class MarkdownEditorComponent extends React.PureComponent {
     window.wizApi.userManager.off('tagRenamed', this.handler.handleTagRenamed);
     window.wizApi.userManager.off('focusEdit', this.handler.handleFocusModeChange);
     window.wizApi.userManager.off('typewriterEdit', this.handler.handleTypewriterModeChange);
-    this.editor.current.off('muya-note-link-change', this.handler.handleOnNoteLinksContentChange);
-    this.editor.current.off('muya-note-link', this.handler.handleClickLink);
-    if (this.editor.current) {
-      const editor = this.editor.current.editor;
-      editor.removeEventListener('click', this.handler.handleClickEditor);
-    }
+    // this.editor.current.off('muya-note-link-change',
+    // this.handler.handleOnNoteLinksContentChange);
+    // this.editor.current.off('muya-note-link', this.handler.handleClickLink);
   }
 
   get resourceUrl() {
@@ -337,10 +284,11 @@ class MarkdownEditorComponent extends React.PureComponent {
   }
 
   async renderEditor(initLocalData) {
+    const currentUser = this.props.user;
     const user = {
-      avatarUrl: '',
-      userId: '',
-      displayName: '',
+      avatarUrl: 'avatarUrl',
+      userId: currentUser.userId,
+      displayName: currentUser.displayName,
     };
     const auth = {
       appId: '',
@@ -348,6 +296,8 @@ class MarkdownEditorComponent extends React.PureComponent {
       permission: 'w',
       docId: '',
       token: '',
+      displayName: user.displayName,
+      avatarUrl: user.avatarUrl,
     };
 
     const options = {
@@ -405,6 +355,7 @@ MarkdownEditorComponent.propTypes = {
   onClickNoteLink: PropTypes.func.isRequired,
   theme: PropTypes.object.isRequired,
   titlesList: PropTypes.array,
+  user: PropTypes.object.isRequired,
 };
 
 MarkdownEditorComponent.defaultProps = {

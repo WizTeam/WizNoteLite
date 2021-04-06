@@ -555,6 +555,7 @@ class Main extends React.Component {
                   onCreateNote={this.handler.handleCreateNote}
                   linkedList={this.state.linkedList}
                   kbGuid={kbGuid}
+                  user={user}
                   isSearch={showMatched}
                   isShowDrawer={showDrawer}
                   backgroundType={backgroundType}
