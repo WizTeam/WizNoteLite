@@ -248,6 +248,7 @@ handleApi('captureScreen', async (event, userGuid, kbGuid, noteGuid, options = {
     webPreferences: {
       nodeIntegration: false,
       preload: path.join(__dirname, '../web/preload.js'),
+      enableRemoteModule: true,
     },
   };
   const window = new BrowserWindow(browserWindowOptions);
@@ -446,6 +447,7 @@ handleApi('printToPDF', async (event, userGuid, kbGuid, noteGuid, options = {}) 
     webPreferences: {
       nodeIntegration: false,
       preload: path.join(__dirname, '../web/preload.js'),
+      enableRemoteModule: true,
     },
   };
   const window = new BrowserWindow(browserWindowOptions);

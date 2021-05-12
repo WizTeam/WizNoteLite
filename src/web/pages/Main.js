@@ -314,7 +314,7 @@ class Main extends React.Component {
     },
 
     handleUpgradeVip: () => {
-      const isLocalUser = window.wizApi.userManager.currentUser.isLocalUser;
+      const isLocalUser = window.wizApi.userManager.getCurrentUser().isLocalUser;
       if (isLocalUser) {
         this.handler.handleShowLoginDialog();
         return;

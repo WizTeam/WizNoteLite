@@ -212,6 +212,7 @@ async function showUpgradeVipDialog(event, userGuid) {
     webPreferences: {
       nodeIntegration: false,
       preload: path.join(__dirname, '../../web/dialog_preload.js'),
+      enableRemoteModule: true,
     },
   });
 

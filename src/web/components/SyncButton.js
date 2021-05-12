@@ -87,7 +87,7 @@ function SyncButton(props) {
     };
   }, [props.note, props.intl]);
 
-  const isLocalUser = window.wizApi.userManager.currentUser.isLocalUser;
+  const isLocalUser = window.wizApi.userManager.getCurrentUser().isLocalUser;
   const isLoggedIn = !isLocalUser;
   //
   const isSynced = currentNote?.version >= 0;

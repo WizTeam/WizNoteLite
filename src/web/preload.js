@@ -1,8 +1,8 @@
-const EventEmitter = require('events');
-const { remote, ipcRenderer } = require('electron');
+const { remote, ipcRenderer, contextBridge } = require('electron');
 const platform = require('platform');
 const path = require('path');
 const URL = require('url');
+const EventEmitter = require('events');
 
 const { Menu, MenuItem } = remote;
 
@@ -20,7 +20,8 @@ if (isMainWindow) {
     const data = event.data;
     try {
       const result = JSON.parse(data);
-      window.wizApi.userManager.emit('wordCounter', result);
+      // eslint-disable-next-line no-use-before-define
+      userManager.emit('wordCounter', result);
     } catch (err) {
       console.error(err);
     }
@@ -51,8 +52,8 @@ async function invokeApi(name, ...args) {
   return ret;
 }
 
-class WindowManager {
-  toggleMaximize() {
+const windowManager = {
+  toggleMaximize: () => {
     const window = remote.getCurrentWindow();
     if (window.isFullScreen()) {
       window.setFullScreen(false);
@@ -65,9 +66,9 @@ class WindowManager {
     } else {
       window.maximize();
     }
-  }
+  },
 
-  toggleFullScreen() {
+  toggleFullScreen: () => {
     const window = remote.getCurrentWindow();
     setTimeout(() => {
       if (window.isFullScreen()) {
@@ -76,38 +77,38 @@ class WindowManager {
         window.setFullScreen(true);
       }
     }, 0);
-  }
+  },
 
-  minimizeWindow() {
+  minimizeWindow: () => {
     const window = remote.getCurrentWindow();
     if (!window.isMinimized()) {
       window.minimize();
     }
-  }
+  },
 
-  closeWindow() {
+  closeWindow: () => {
     const window = remote.getCurrentWindow();
     window.close();
-  }
+  },
 
-  isMaximized() {
+  isMaximized: () => {
     const window = remote.getCurrentWindow();
     return window.isMaximized();
-  }
+  },
 
-  isFullScreen() {
+  isFullScreen: () => {
     const window = remote.getCurrentWindow();
     return window.isFullScreen();
-  }
+  },
 
-  setMenu(menu, options) {
+  setMenu: (menu, options) => {
     options.forEach((mItem) => {
       menu.append(new MenuItem(mItem));
     });
-  }
+  },
 
-  showSystemMenu(x, y, intl) {
-    if (!this._systemMenu) {
+  showSystemMenu: (x, y, intl) => {
+    if (!windowManager._systemMenu) {
       const options = [
         {
           label: intl.formatMessage({ id: 'menuSendFeedback' }),
@@ -136,207 +137,213 @@ class WindowManager {
       //
       const menu = new Menu();
 
-      this.setMenu(menu, options);
+      windowManager.setMenu(menu, options);
 
-      this._systemMenu = menu;
+      windowManager._systemMenu = menu;
     }
 
     const currentWindow = remote.getCurrentWindow();
-    this._systemMenu.popup({
+    windowManager._systemMenu.popup({
       window: currentWindow,
       x,
       y,
     });
-  }
-}
+  },
+};
 
-class UserManager extends EventEmitter {
-  constructor() {
-    super();
-    this._user = null;
-  }
+const userManager = {
 
-  get currentUser() {
-    return this._user;
-  }
+  _user: null,
 
-  get userGuid() {
-    return this._user.userGuid;
-  }
+  _events: new EventEmitter(),
 
-  async signUp(server, userId, password, options = {}) {
-    this._user = await invokeApi('signUp', server, userId, password, options);
-    return this._user;
-  }
+  getCurrentUser: () => userManager._user,
 
-  async onlineLogin(server, userId, password, options = {}) {
-    this._user = await invokeApi('onlineLogin', server, userId, password, options);
-    return this._user;
-  }
+  getUserGuid: () => userManager._user.userGuid,
 
-  async localLogin() {
-    this._user = await invokeApi('localLogin');
-    return this._user;
-  }
+  emit: (...args) => userManager._events.emit(...args),
 
-  async logout() {
+  on: (...args) => userManager._events.on(...args),
+
+  off: (...args) => userManager._events.off(...args),
+
+  addEventListener: (...args) => userManager._events.addEventListener(...args),
+
+  removeEventListener: (...args) => userManager._events.removeEventListener(...args),
+
+  signUp: async (server, userId, password, options = {}) => {
+    userManager._user = await invokeApi('signUp', server, userId, password, options);
+    return userManager._user;
+  },
+
+  onlineLogin: async (server, userId, password, options = {}) => {
+    userManager._user = await invokeApi('onlineLogin', server, userId, password, options);
+    return userManager._user;
+  },
+
+  localLogin: async () => {
+    userManager._user = await invokeApi('localLogin');
+    return userManager._user;
+  },
+
+  logout: async () => {
     try {
-      await invokeApi('logout', this.userGuid);
+      await invokeApi('logout', userManager.getUserGuid());
     } catch (err) {
       console.error(err);
     }
-    this.emit('logout');
-    this._user = null;
-  }
+    userManager.emit('logout');
+    userManager._user = null;
+  },
 
-  async queryNotes(kbGuid, start, count, options) {
-    const notes = await invokeApi('queryNotes', this.userGuid, kbGuid, start, count, options);
+  queryNotes: async (kbGuid, start, count, options) => {
+    const notes = await invokeApi('queryNotes', userManager.getUserGuid(), kbGuid, start, count, options);
     return notes;
-  }
+  },
 
-  async getAllTitles(kbGuid) {
-    const notes = await invokeApi('getAllTitles', this.userGuid, kbGuid);
+  getAllTitles: async (kbGuid) => {
+    const notes = await invokeApi('getAllTitles', userManager.getUserGuid(), kbGuid);
     return notes;
-  }
+  },
 
-  async getBackwardLinkedNotes(kbGuid, title) {
-    const res = await invokeApi('getBackwardLinkedNotes', this.userGuid, kbGuid, title);
+  getBackwardLinkedNotes: async (kbGuid, title) => {
+    const res = await invokeApi('getBackwardLinkedNotes', userManager.getUserGuid(), kbGuid, title);
     return res;
-  }
+  },
 
-  async getNote(kbGuid, noteGuid, options) {
-    const note = await invokeApi('getNote', this.userGuid, kbGuid, noteGuid, options);
+  getNote: async (kbGuid, noteGuid, options) => {
+    const note = await invokeApi('getNote', userManager.getUserGuid(), kbGuid, noteGuid, options);
     return note;
-  }
+  },
 
-  async getNoteMarkdown(kbGuid, noteGuid) {
-    const markdown = await invokeApi('getNoteMarkdown', this.userGuid, kbGuid, noteGuid);
+  getNoteMarkdown: async (kbGuid, noteGuid) => {
+    const markdown = await invokeApi('getNoteMarkdown', userManager.getUserGuid(), kbGuid, noteGuid);
     wordCounter({
       kbGuid, noteGuid, markdown,
     });
     return markdown;
-  }
+  },
 
-  async setNoteMarkdown(kbGuid, noteGuid, markdown) {
-    const result = await invokeApi('setNoteMarkdown', this.userGuid, kbGuid, noteGuid, markdown);
+  setNoteMarkdown: async (kbGuid, noteGuid, markdown) => {
+    const result = await invokeApi('setNoteMarkdown', userManager.getUserGuid(), kbGuid, noteGuid, markdown);
     wordCounter({
       kbGuid, noteGuid, markdown,
     });
     return result;
-  }
+  },
 
-  async createNote(kbGuid, note) {
-    const result = await invokeApi('createNote', this.userGuid, kbGuid, note);
+  createNote: async (kbGuid, note) => {
+    const result = await invokeApi('createNote', userManager.getUserGuid(), kbGuid, note);
     return result;
-  }
+  },
 
-  async deleteNote(kbGuid, noteGuid) {
-    const result = await invokeApi('deleteNote', this.userGuid, kbGuid, noteGuid);
+  deleteNote: async (kbGuid, noteGuid) => {
+    const result = await invokeApi('deleteNote', userManager.getUserGuid(), kbGuid, noteGuid);
     return result;
-  }
+  },
 
-  async putBackNote(kbGuid, noteGuid) {
-    const result = await invokeApi('putBackNote', this.userGuid, kbGuid, noteGuid);
+  putBackNote: async (kbGuid, noteGuid) => {
+    const result = await invokeApi('putBackNote', userManager.getUserGuid(), kbGuid, noteGuid);
     return result;
-  }
+  },
 
-  async syncKb(kbGuid, options) {
-    const result = await invokeApi('syncKb', this.userGuid, kbGuid, options);
+  syncKb: async (kbGuid, options) => {
+    const result = await invokeApi('syncKb', userManager.getUserGuid(), kbGuid, options);
     return result;
-  }
+  },
 
-  async addImagesFromLocal(kbGuid, noteGuid, options) {
-    const result = await invokeApi('addImagesFromLocal', this.userGuid, kbGuid, noteGuid, options);
+  addImagesFromLocal: async (kbGuid, noteGuid, options) => {
+    const result = await invokeApi('addImagesFromLocal', userManager.getUserGuid(), kbGuid, noteGuid, options);
     return result;
-  }
+  },
 
-  async addImageFromData(kbGuid, noteGuid, data, options) {
+  addImageFromData: async (kbGuid, noteGuid, data, options) => {
     let arrayBuffer = null;
     if (data instanceof File) {
       arrayBuffer = await data.arrayBuffer();
     }
-    const result = await invokeApi('addImageFromData', this.userGuid, kbGuid, noteGuid, arrayBuffer || data, options);
+    const result = await invokeApi('addImageFromData', userManager.getUserGuid(), kbGuid, noteGuid, arrayBuffer || data, options);
     return result;
-  }
+  },
 
-  async addImageFromUrl(kbGuid, noteGuid, url, options) {
-    const result = await invokeApi('addImageFromUrl', this.userGuid, kbGuid, noteGuid, url, options);
+  addImageFromUrl: async (kbGuid, noteGuid, url, options) => {
+    const result = await invokeApi('addImageFromUrl', userManager.getUserGuid(), kbGuid, noteGuid, url, options);
     return result;
-  }
+  },
 
-  async getSettings(key, defaultValue) {
+  getSettings: async (key, defaultValue) => {
     const result = await invokeApi('getSettings', key, defaultValue);
     // TODO 临时关闭 FocusMode
     // if (/^focusMode$/i.test(key) || /^typewriterMode$/i.test(key)) {
     //   result = false;
     // }
     return result;
-  }
+  },
 
-  async setSettings(key, value) {
+  setSettings: async (key, value) => {
     if (key === 'focusMode') {
-      this.emit('focusEdit', value);
+      userManager.emit('focusEdit', value);
     } else if (key === 'typewriterMode') {
-      this.emit('typewriterEdit', value);
+      userManager.emit('typewriterEdit', value);
     }
     await invokeApi('setSettings', key, value);
-  }
+  },
 
-  async getUserSettings(key, defaultValue) {
-    const result = await invokeApi('getUserSettings', this.userGuid, key, defaultValue);
+  getUserSettings: async (key, defaultValue) => {
+    const result = await invokeApi('getUserSettings', userManager.getUserGuid(), key, defaultValue);
     return result;
-  }
+  },
 
-  async setUserSettings(key, value) {
-    await invokeApi('setUserSettings', this.userGuid, key, value);
-  }
+  setUserSettings: async (key, value) => {
+    await invokeApi('setUserSettings', userManager.getUserGuid(), key, value);
+  },
 
-  getUserSettingsSync(key, defaultValue) {
-    const result = ipcRenderer.sendSync('getUserSettingsSync', this.userGuid, key, defaultValue);
+  getUserSettingsSync: (key, defaultValue) => {
+    const result = ipcRenderer.sendSync('getUserSettingsSync', userManager.getUserGuid(), key, defaultValue);
     return result;
-  }
+  },
 
-  async getAllTags(kbGuid) {
-    const result = await invokeApi('getAllTags', this.userGuid, kbGuid);
+  getAllTags: async (kbGuid) => {
+    const result = await invokeApi('getAllTags', userManager.getUserGuid(), kbGuid);
     return result;
-  }
+  },
 
-  async getAllLinks(kbGuid) {
-    const result = await invokeApi('getAllLinks', this.userGuid, kbGuid);
+  getAllLinks: async (kbGuid) => {
+    const result = await invokeApi('getAllLinks', userManager.getUserGuid(), kbGuid);
     return result;
-  }
+  },
 
-  async setNoteStarred(kbGuid, noteGuid, starred) {
-    const result = await invokeApi('setNoteStarred', this.userGuid, kbGuid, noteGuid, starred);
+  setNoteStarred: async (kbGuid, noteGuid, starred) => {
+    const result = await invokeApi('setNoteStarred', userManager.getUserGuid(), kbGuid, noteGuid, starred);
     return result;
-  }
+  },
 
-  async hasNotesInTrash(kbGuid) {
-    const result = await invokeApi('hasNotesInTrash', this.userGuid, kbGuid);
+  hasNotesInTrash: async (kbGuid) => {
+    const result = await invokeApi('hasNotesInTrash', userManager.getUserGuid(), kbGuid);
     return result;
-  }
+  },
 
-  async captureScreen(kbGuid, noteGuid, options) {
-    const result = await invokeApi('captureScreen', this.userGuid, kbGuid, noteGuid, options);
+  captureScreen: async (kbGuid, noteGuid, options) => {
+    const result = await invokeApi('captureScreen', userManager.getUserGuid(), kbGuid, noteGuid, options);
     return result;
-  }
+  },
 
-  async printToPDF(kbGuid, noteGuid, options) {
-    const result = await invokeApi('printToPDF', this.userGuid, kbGuid, noteGuid, options);
+  printToPDF: async (kbGuid, noteGuid, options) => {
+    const result = await invokeApi('printToPDF', userManager.getUserGuid(), kbGuid, noteGuid, options);
     return result;
-  }
+  },
 
-  async writeToMarkdown(kbGuid, noteGuid) {
-    const result = await invokeApi('writeToMarkdown', this.userGuid, kbGuid, noteGuid);
+  writeToMarkdown: async (kbGuid, noteGuid) => {
+    const result = await invokeApi('writeToMarkdown', userManager.getUserGuid(), kbGuid, noteGuid);
     return result;
-  }
+  },
 
-  async getThemeCssString(theme) {
+  getThemeCssString: async (theme) => {
     const result = await invokeApi('getThemeCssString', theme);
     return result;
-  }
+  },
 
-  async buildBindSnsUrl(server, type, postMessage, origin, extraParams) {
+  buildBindSnsUrl: (server, type, postMessage, origin, extraParams) => {
     const urlPath = '/as/thirdparty/go/auth';
     const query = {
       type,
@@ -351,55 +358,52 @@ class UserManager extends EventEmitter {
     const url = `${server}${urlPath}?${params}`;
 
     return url;
-  }
+  },
 
-  async screenCaptureManual() {
+  screenCaptureManual: async () => {
     const result = await invokeApi('screenCaptureManual');
     return result;
-  }
+  },
 
-  async queryProducts() {
-    const result = await invokeApi('queryProducts', this.userGuid);
+  queryProducts: async () => {
+    const result = await invokeApi('queryProducts', userManager.getUserGuid());
     return result;
-  }
+  },
 
-  async purchaseProduct(product) {
-    const result = await invokeApi('purchaseProduct', this.userGuid, product);
+  purchaseProduct: async (product) => {
+    const result = await invokeApi('purchaseProduct', userManager.getUserGuid(), product);
     return result;
-  }
+  },
 
-  async restorePurchases() {
-    const result = await invokeApi('restorePurchases', this.userGuid);
+  restorePurchases: async () => {
+    const result = await invokeApi('restorePurchases', userManager.getUserGuid());
     return result;
-  }
+  },
 
-  async showUpgradeVipDialog() {
-    const result = await invokeApi('showUpgradeVipDialog', this.userGuid);
+  showUpgradeVipDialog: async () => {
+    const result = await invokeApi('showUpgradeVipDialog', userManager.getUserGuid());
     return result;
-  }
+  },
 
-  async getUserInfo() {
-    const result = await invokeApi('getUserInfo', this.userGuid);
+  getUserInfo: async () => {
+    const result = await invokeApi('getUserInfo', userManager.getUserGuid());
     return result;
-  }
+  },
 
-  async refreshUserInfo() {
-    const result = await invokeApi('refreshUserInfo', this.userGuid);
+  refreshUserInfo: async () => {
+    const result = await invokeApi('refreshUserInfo', userManager.getUserGuid());
     return result;
-  }
+  },
 
-  async viewLogFile() {
-    const result = await invokeApi('viewLogFile', this.userGuid);
+  viewLogFile: async () => {
+    const result = await invokeApi('viewLogFile', userManager.getUserGuid());
     return result;
-  }
+  },
 
-  async sendMessage(name, ...args) {
-    ipcRenderer.send(name, this.userGuid, ...args);
-  }
-}
-
-const userManager = new UserManager();
-const windowManager = new WindowManager();
+  sendMessage: async (name, ...args) => {
+    ipcRenderer.send(name, userManager.getUserGuid(), ...args);
+  },
+};
 
 ipcRenderer.on('logout', (event, ...args) => {
   userManager.emit('logout', ...args);
@@ -466,10 +470,12 @@ platform.isMac = platform.os.family === 'OS X';
 platform.isWindows = platform.os.family === 'Windows';
 platform.isLinux = platform.os.family === 'Linux';
 
-window.wizApi = {
+contextBridge.exposeInMainWorld('wizApi', {
   isElectron: true,
   version: remote.app.getVersion(),
   platform,
   windowManager,
-  userManager,
-};
+  userManager: {
+    ...userManager,
+  },
+});

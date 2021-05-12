@@ -69,6 +69,7 @@ function createWindow() {
       nodeIntegrationInWorker: true,
       preload: path.join(__dirname, '../web/preload.js'),
       webSecurity: !isDevelopment,
+      enableRemoteModule: true,
     },
     icon: nativeImage.createFromPath(path.join(__dirname, '../icons/wiznote.icns')),
   };
