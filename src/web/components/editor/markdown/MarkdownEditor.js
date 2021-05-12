@@ -2,9 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { withStyles, withTheme } from '@material-ui/core/styles';
+import { injectIntl } from 'react-intl';
 import {
   createEditorPromise,
   markdown2Doc,
+  LANGS,
 } from 'live-editor/client';
 import { filter } from 'fuzzaldrin';
 // import { getTagSpanFromRange } from '../libs/dom_utils';
@@ -299,7 +301,19 @@ class MarkdownEditorComponent extends React.PureComponent {
       avatarUrl: user.avatarUrl,
     };
 
+    const langs = {
+      'zh-CN': LANGS.ZH_CN,
+      'zh-SG': LANGS.ZH_CN,
+      'zh-HK': LANGS.ZH_TW,
+      'zh-TW': LANGS.ZH_TW,
+      'zh-MO': LANGS.ZH_TW,
+      en: LANGS.EN_US,
+    };
+
+    const lang = langs[this.props.intl.local] || LANGS.EN_US;
+
     const options = {
+      lang,
       local: true,
       initLocalData,
       user,
@@ -340,6 +354,7 @@ class MarkdownEditorComponent extends React.PureComponent {
 }
 
 MarkdownEditorComponent.propTypes = {
+  intl: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
   note: PropTypes.object,
   kbGuid: PropTypes.string,
@@ -366,4 +381,4 @@ MarkdownEditorComponent.defaultProps = {
   titlesList: [],
 };
 
-export default withTheme(withStyles(styles)(MarkdownEditorComponent));
+export default withTheme(withStyles(styles)(injectIntl(MarkdownEditorComponent)));
