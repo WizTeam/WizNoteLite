@@ -35,12 +35,12 @@
     "electron-start": "node src/start-react",
     "react-start": "cross-env BROWSER=none react-scripts start",
     "postinstall": "run-script-os",
-    "postinstall:win32": "post-install.cmd",
-    "postinstall:default": "bash ./post-install.sh",
+    "postinstall:win32": "electron-builder install-app-deps && post-install.cmd",
+    "postinstall:default": "electron-builder install-app-deps && bash ./post-install.sh",
     "pack32": ".\\node_modules\\.bin\\electron ./tools/build_sqlite3 --ia32 && npm run build && electron-builder --ia32 &&  del out\\WizNoteLite-x86-%npm_package_version%.exe && ren out\\WizNoteLite-%npm_package_version%.exe WizNoteLite-x86-%npm_package_version%.exe",
     "pack": "run-script-os",
     "pack:win32": ".\\node_modules\\.bin\\electron ./tools/build_sqlite3  && npm run build && electron-builder && del out\\WizNoteLite-x64-%npm_package_version%.exe && ren out\\WizNoteLite-%npm_package_version%.exe WizNoteLite-x64-%npm_package_version%.exe",
-    "pack:default": "npm run build && electron-builder"
+    "pack:default": "./node_modules/.bin/electron ./tools/build_sqlite3 && npm run build && electron-builder"
   },
   "build": {
     "appId": "cn.wiz.note.lite",
@@ -178,13 +178,14 @@
     "crypto-js": "^4.0.0",
     "customize-cra": "^1.0.0",
     "electron": "^12.0.6",
-    "electron-builder": "^22.7.0",
+    "electron-builder": "22.10.5",
     "electron-rebuild": "^2.3.5",
     "eslint": "^6.8.0",
     "eslint-config-airbnb": "^18.1.0",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.19.0",
+    "live-editor": "^0.0.240",
     "moment": "^2.26.0",
     "node-sass": "^4.14.1",
     "notistack": "^0.9.17",
@@ -200,8 +201,7 @@
     "react-scripts": "3.4.1",
     "react-style-proptype": "^3.2.2",
     "run-script-os": "^1.0.7",
-    "timer.js": "^1.0.4",
-    "live-editor": "^0.0.240"
+    "timer.js": "^1.0.4"
   },
   "__npminstall_done": false
 }
