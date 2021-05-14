@@ -147,7 +147,7 @@ class MarkdownEditorComponent extends React.PureComponent {
     window.wizApi.userManager.on('tagRenamed', this.handler.handleTagRenamed);
     window.wizApi.userManager.on('focusEdit', this.handler.handleFocusModeChange);
     window.wizApi.userManager.on('typewriterEdit', this.handler.handleTypewriterModeChange);
-    this._rootElem.addEventListener('click', this.handler.handleImageDbClick);
+    // this._rootElem.addEventListener('click', this.handler.handleImageDbClick);
     this.getAllTags();
     await this.loadNote();
     this.setState({
@@ -187,7 +187,7 @@ class MarkdownEditorComponent extends React.PureComponent {
   }
 
   componentWillUnmount() {
-    this._rootElem.removeEventListener('dblclick', this.handler.handleImageDbClick);
+    // this._rootElem.removeEventListener('dblclick', this.handler.handleImageDbClick);
     window.wizApi.userManager.off('tagsChanged', this.handler.handleTagsChanged);
     window.wizApi.userManager.off('tagRenamed', this.handler.handleTagRenamed);
     window.wizApi.userManager.off('focusEdit', this.handler.handleFocusModeChange);
