@@ -18,10 +18,10 @@
   --ir-bracket-color: #448aff;
   // 粗体字体
   --bold-font-family: 'Open Sans', 'Noto Sans SC', Menlo, "Ubuntu Mono", Consolas, "Courier New", "Microsoft Yahei", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif;
-  --editor-bg-color: #ffffff;
+  --editor-bg-color: transparent;
 
   @media (prefers-color-scheme: dark) {
-    --editor-bg-color: #333333;
+    --editor-bg-color: transparent !important;
     --panel-background-color: transparent;
     --text-font-color: #f0f0f0;
     --blockquote-border-color: #555;

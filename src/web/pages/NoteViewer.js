@@ -76,20 +76,18 @@ class NoteViewer extends React.Component {
       noteGuid,
     } = this.props;
     //
-    if (!kbGuid || !noteGuid) {
-      this.loadDefaultMarkdown();
-      return;
-    }
-    //
     const userGuid = window.wizApi?.userManager?.userGuid || '';
     const resourceUrl = `wiz://${userGuid}/${kbGuid}/${noteGuid}`;
 
     await this.checkTheme();
-    const markdown = await window.wizApi.userManager.getNoteMarkdown(kbGuid, noteGuid);
+    let markdown = '';
+    if (!kbGuid || !noteGuid) {
+      markdown = await window.wizApi.userManager.getDefaultMarkdown();
+    } else {
+      markdown = await window.wizApi.userManager.getNoteMarkdown(kbGuid, noteGuid);
+    }
     //
     this.setState({
-      // markdown,
-      // loading: false,
       resourceUrl,
     }, async () => {
       const doc = markdown2Doc(markdown);
@@ -157,7 +155,7 @@ class NoteViewer extends React.Component {
       params,
     } = this.props;
     //
-    const elem = document.getElementById('wiz-note-content-root');
+    const elem = document.getElementById(`wiz-note-content-root-${this.key}`);
     const height = elem.scrollHeight;
     window.wizApi.userManager.sendMessage('onNoteLoaded', kbGuid, noteGuid, {
       height,
@@ -194,17 +192,6 @@ class NoteViewer extends React.Component {
       css = css.replace(reg, this._rootElem.id);
       injectionCssFormId(this._rootElem.id, css);
     }
-  }
-
-  async loadDefaultMarkdown() {
-    // const markdown = await window.wizApi.userManager.getDefaultMarkdown();
-
-    await this.checkTheme();
-
-    // this.setState({
-    //   markdown,
-    //   loading: false,
-    // });
   }
 
   render() {
