@@ -1,0 +1,128 @@
+/* Common CSS use by both light and dark themes */
+#wiz-note-content-root {
+  min-height: 100%;
+  box-sizing: border-box;
+  background-color: #fff9e2;
+  color: #333333;
+}
+
+#wiz-note-content-root {
+  --titleBarHeight: 32px;
+  --editorAreaWidth: 750px;
+
+  /*editor*/
+  /*Theme color cluster*/
+  --themeColor: #448aff;
+  --themeColor90: rgba(33, 181, 111, .9);
+  --themeColor80: rgba(33, 181, 111, .8);
+  --themeColor70: rgba(33, 181, 111, .7);
+  --themeColor60: rgba(33, 181, 111, .6);
+  --themeColor50: rgba(33, 181, 111, .5);
+  --themeColor40: rgba(33, 181, 111, .4);
+  --themeColor30: rgba(33, 181, 111, .3);
+  --themeColor20: rgba(33, 181, 111, .2);
+  --themeColor10: rgba(33, 181, 111, .1);
+  --highlightThemeColor: var(--themeColor);
+
+  --highlightColor: rgba(33, 181, 111, .4);
+  --selectionColor: rgba(0, 0, 0, .1);
+  --editorColor:#333333;
+  --editorColor80: rgba(0, 0, 0, .8);
+  --editorColor60: rgba(0, 0, 0, .6);
+  --editorColor50: #aaaaaa;
+  --editorColor40: rgba(0, 0, 0, .4);
+  --editorColor30: rgba(0, 0, 0, .3);
+  --editorColor10: rgba(0, 0, 0, .1);
+  --editorColor04: rgba(0, 0, 0, .03);
+  --editorBgColor: #fff9e2;
+  --deleteColor: #ff6969;
+  --iconColor: #6B737B;
+  --codeBgColor: #d8d8d869;
+  --codeBlockBgColor: rgba(0, 0, 0, 0.03);
+  --footnoteBgColor: rgba(0, 0, 0, .03);
+  --inputBgColor: rgba(0, 0, 0, .06);
+  --focusColor: var(--themeColor);
+  --link-color: #448aff;
+
+  --buttonFontColor: var(--editorColor);
+  --buttonBgColor: #ffffff;
+  --buttonBorder: 1px solid #dcdfe6;
+  --buttonShadow: none;
+  --buttonFontColorHover: var(--buttonFontColor);
+  --buttonBgColorHover: linear-gradient(#f9f9f9, #f2f2f2);
+  --buttonBorderHover: var(--buttonBorder);
+  --buttonFontColorActive: var(--buttonFontColor);
+  --buttonBgColorActive: #f0f0f0;
+  --buttonBorderActive: var(--buttonBorder);
+  --buttonFocusBorder: 1px solid var(--themeColor);
+
+  --buttonPrimaryFontColor: #ffffff;
+  --buttonPrimaryBgColor: var(--themeColor);
+  --buttonPrimaryBorder: none;
+  --buttonPrimaryShadow: 0 0 8px 0 rgba(0, 0, 0, .1);
+  --buttonPrimaryFontColorHover: var(--buttonPrimaryFontColor);
+  --buttonPrimaryBgColorHover: var(--buttonPrimaryBgColor);
+  --buttonPrimaryBorderHover: var(--buttonPrimaryBorder);
+  --buttonPrimaryFontColorActive: var(--buttonPrimaryFontColor);
+  --buttonPrimaryBgColorActive: var(--buttonPrimaryBgColor);
+  --buttonPrimaryBorderActive: var(--buttonPrimaryBorder);
+  --buttonPrimaryFocusBorder: none;
+  --buttonPrimaryFocusShadow: inset 0 0 0 1px rgba(13, 91, 55, 0.5), 0 0 0 1px var(--themeColor);
+  --tableBorderColor: #e5e5e5;
+  --tableBackgroundColor: transparent;
+  --tableTextColor: rgba(0, 0, 0, .7);
+
+  /*marktext*/
+  --sideBarColor: rgba(0, 0, 0, .6);
+  --sideBarIconColor: var(--iconColor);
+  --sideBarTitleColor: rgba(0, 0, 0, 1);
+  --sideBarTextColor: rgba(0, 0, 0, .4);
+  --sideBarBgColor: rgba(242, 242, 242, 0.9);
+  --sideBarItemHoverBgColor: rgba(0, 0, 0, .03);
+  --itemBgColor: rgba(255, 255, 255, 0.6);
+
+  --floatFontColor: rgba(0, 0, 0, .6);
+  --floatBgColor: #fff;
+  --floatHoverColor: rgba(0, 0, 0, .04);
+  --floatBorderColor: rgba(0, 0, 0, .1);
+  --floatShadow: rgba(15, 15, 15, 0.03) 0px 0px 0px 1px, rgba(15, 15, 15, 0.04) 0px 3px 6px, rgba(15, 15, 15, 0.05) 0px 9px 24px;
+  --maskColor: rgba(232, 232, 232, .8);
+
+  /* Notification colors */
+  --notificationPrimaryColor: #ffffff;
+  --notificationPrimaryBg: var(--themeColor);
+  --notificationInfoColor: #ffffff;
+  --notificationInfoBg: #909399;
+  --notificationWarningColor: #ffffff;
+  --notificationWarningBg: #ff8800;
+  --notificationErrorColor: #ffffff;
+  --notificationErrorBg: #ff6969;
+}
+
+#wiz-note-content-root div[id^='ag-editor-id'] {
+  /* --text-line-height: 28px; */
+  /* --text-font-size: 16px; */
+  --text-font-color: #333333;
+  /* --text-font-family: 'Open Sans', 'Noto Sans SC', Menlo, "Ubuntu Mono", Consolas, "Courier New", "Microsoft Yahei", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif; */
+  /* --p-margin-bottom: 16px; */
+  --blockquote-background: inherit;
+  --blockquote-border-color: #d8d8d8;
+  --blockquote-font-color: #aaa;
+  /* --link-font-color: #448aff; */
+  /* --ir-bracket-color: #448aff; */
+  /* --bold-font-family: 'Open Sans', 'Noto Sans SC', Menlo, "Ubuntu Mono", Consolas, "Courier New", "Microsoft Yahei", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif; */
+}
+
+#wiz-note-content-root code[class*="language-"], pre.ag-paragraph {
+  color: black;
+}
+
+#wiz-note-content-root div[id^='ag-editor-id'] table td,
+#wiz-note-content-root div[id^='ag-editor-id'] table th {
+  border: 1px solid var(--tableBorderColor);
+}
+
+#wiz-note-content-root div[id^='ag-editor-id'] table td::before,
+#wiz-note-content-root div[id^='ag-editor-id'] table th::before {
+  display: none;
+}

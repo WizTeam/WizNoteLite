@@ -11,8 +11,8 @@
   --text-line-height: 28px;
   --text-font-size: 16px;
   --text-font-color: #333333;
-  --text-font-family: 'Open Sans', 'Noto Sans SC', Menlo, "Ubuntu Mono", Consolas, "Courier New", "Microsoft Yahei", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif;
-  --p-margin-bottom: 16px;
+  /* --text-font-family: 'Open Sans', 'Noto Sans SC', Menlo, "Ubuntu Mono", Consolas, "Courier New", "Microsoft Yahei", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif; */
+  /* --p-margin-bottom: 16px; */
   --blockquote-background: inherit;
   --blockquote-border-color: #d8d8d8;
   --blockquote-font-color: #aaa;

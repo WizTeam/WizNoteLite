@@ -7,7 +7,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Drawer from '@material-ui/core/Drawer';
-// import IconButton from '@material-ui/core/IconButton';
+import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import Avatar from '@material-ui/core/Avatar';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -233,6 +233,10 @@ class SideBar extends React.Component {
     window.wizApi.userManager.on('syncFinish', this.handler.handleSyncFinish);
   }
 
+  shouldComponentUpdate(nextProps) {
+    return nextProps.open || (this.props.open !== nextProps.open);
+  }
+
   componentWillUnmount() {
     window.wizApi.userManager.off('tagsChanged', this.handler.handleTagsChanged);
     window.wizApi.userManager.off('tagRenamed', this.handler.handleTagRenamed);
@@ -297,7 +301,7 @@ class SideBar extends React.Component {
     const {
       classes, onChangeType, type, onTagSelected,
       intl, user, selectedTag, onClickLogin,
-      // onClickSetting,
+      onClickSetting,
     } = this.props;
     const {
       tags, showTrash, anchorEl,
@@ -399,10 +403,9 @@ class SideBar extends React.Component {
                   {user.displayName}
                 </span>
               </Button>
-              {/* 暂时隐藏 设置入口 */}
-              {/* <IconButton className={classes.settingButton} onClick={onClickSetting}>
+              <IconButton className={classes.settingButton} onClick={onClickSetting} title={intl.formatMessage({ id: 'preference' })}>
                 <Icons.SettingIcon />
-              </IconButton> */}
+              </IconButton>
             </>
           )}
         </div>
@@ -450,13 +453,15 @@ SideBar.propTypes = {
   intl: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
   selectedTag: PropTypes.object,
+  open: PropTypes.bool,
   onClickLogin: PropTypes.func.isRequired,
   onUpgradeVip: PropTypes.func.isRequired,
-  // onClickSetting: PropTypes.func.isRequired,
+  onClickSetting: PropTypes.func.isRequired,
 };
 
 SideBar.defaultProps = {
   selectedTag: null,
+  open: false,
 };
 
 export default withStyles(styles)(injectIntl(SideBar));

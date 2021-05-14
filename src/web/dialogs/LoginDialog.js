@@ -334,6 +334,10 @@ class LoginDialog extends React.Component {
 
   componentDidMount() {
   }
+  
+  shouldComponentUpdate(nextProps) {
+    return nextProps.open || (this.props.open !== nextProps.open);
+  }
 
   componentWillUnmount() {
   }

@@ -207,7 +207,6 @@ class UpgradeToVIPDialog extends React.Component {
     super(props);
     this.state = {
       yearProduct: undefined,
-      loading: true,
       purchasing: false,
       purchaseState: '',
       user: null,
@@ -218,6 +217,10 @@ class UpgradeToVIPDialog extends React.Component {
     window.onTransactionsUpdated = this.handler.onTransactionsUpdated;
     const user = await window.wizApi.userManager.getUserInfo();
     this.setState({ user });
+  }
+
+  shouldComponentUpdate(nextProps) {
+    return nextProps.open || (this.props.open !== nextProps.open);
   }
 
   componentWillUnmount() {

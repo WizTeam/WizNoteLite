@@ -19,6 +19,8 @@ import LiteMiddle from './LiteMiddle';
 import Icons from '../config/icons';
 import NoteListItem from './NoteListItem';
 import Scrollbar from './Scrollbar';
+import { eventCenter, eventMap } from '../utils/event';
+import { COMMAND_KEY } from '../utils/utils';
 
 const styles = (theme) => ({
   container: {
@@ -122,14 +124,14 @@ const styles = (theme) => ({
   toolBarIcon: {
     width: theme.spacing(3),
     height: theme.spacing(3),
-    color: theme.custom.color.sidebarIcon,
+    color: theme.custom.color.noteTypeButton,
   },
   activeStarIcon: {
     color: theme.custom.color.activeStarIcon,
   },
   defaultStarIcon: {
-    stroke: theme.custom.color.defaultStarIcon,
-    color: theme.custom.color.defaultStarIcon,
+    stroke: theme.custom.color.noteTypeButton,
+    color: theme.custom.color.noteTypeButton,
   },
   toolbarIconButton: {
     margin: theme.spacing(0, 0.5),
@@ -464,7 +466,7 @@ class NoteList extends React.Component {
       anchorEl: null,
       hasMore: true,
       filter: 'notes',
-      category: 'modify',
+      category: window.wizApi.userManager.getUserSettingsSync('orderBy', 'modified'),
       mouseX: null,
       mouseY: null,
       isFirst: window.wizApi.userManager.getUserSettingsSync('isFirstOpenSidebar', true),
@@ -480,13 +482,17 @@ class NoteList extends React.Component {
 
 
   componentDidUpdate(prevProps) {
-    const { type, tag } = this.props;
+    const { type, tag, orderBy } = this.props;
     if (type !== prevProps.type
       || (type === 'tag' && tag !== prevProps.tag)) {
       this._searchText = '';
       this.resetNotes({
         resetFilter: true,
       });
+    }
+    //
+    if (orderBy && orderBy !== this.state.category) {
+      this.updateCategory();
     }
   }
 
@@ -534,6 +540,12 @@ class NoteList extends React.Component {
     return false;
   }
 
+  updateCategory() {
+    this.setState({
+      category: this.props.orderBy,
+    });
+  }
+
   resetNotes(options = {}) {
     setTimeout(() => {
       this._needResetNotes = true;
@@ -549,13 +561,17 @@ class NoteList extends React.Component {
 
 
   sortNotes(currentNotes) {
+    const { category } = this.state;
+
     currentNotes.sort(
-      (note1, note2) => new Date(note2.modified).valueOf() - new Date(note1.modified).valueOf(),
+      (note1, note2) => new Date(note2[category]).valueOf() - new Date(note1[category]).valueOf(),
     );
   }
 
 
   initEvents() {
+    eventCenter.on(eventMap.SEARCH, this.handler.handleSearchNotes);
+    eventCenter.on(eventMap.STAR_NOTE, this.handler.handleStarredFilterToggle);
     window.wizApi.userManager.on('syncStart', this.handler.handleSyncStart);
     window.wizApi.userManager.on('newNote', this.handler.handleNewNote);
     window.wizApi.userManager.on('downloadNotes', this.handler.handleDownloadNotes);
@@ -566,6 +582,8 @@ class NoteList extends React.Component {
   }
 
   removeEvents() {
+    eventCenter.off(eventMap.SEARCH, this.handler.handleSearchNotes);
+    eventCenter.off(eventMap.STAR_NOTE, this.handler.handleStarredFilterToggle);
     window.wizApi.userManager.off('syncStart', this.handler.handleSyncStart);
     window.wizApi.userManager.off('newNote', this.handler.handleNewNote);
     window.wizApi.userManager.off('downloadNotes', this.handler.handleDownloadNotes);
@@ -641,7 +659,13 @@ class NoteList extends React.Component {
                 </LiteText>
               )}
               <div className={classes.grow} />
-              <IconButton className={classes.toolbarIconButton} aria-label="toggle starred" color="inherit" onClick={this.handler.handleStarredFilterToggle}>
+              <IconButton
+                className={classes.toolbarIconButton}
+                aria-label="toggle starred"
+                color="inherit"
+                onClick={this.handler.handleStarredFilterToggle}
+                title={`${intl.formatMessage({ id: 'starredNode' })} ${COMMAND_KEY}+Alt+?`}
+              >
                 {isFilterStarred && (
                   <Icons.ActiveStarIcon
                     className={classNames(classes.toolBarIcon, classes.activeStarIcon)}
@@ -653,7 +677,13 @@ class NoteList extends React.Component {
                   />
                 )}
               </IconButton>
-              <IconButton className={classes.toolbarIconButton} aria-label="search" color="inherit" onClick={this.handler.handleSearchNotes}>
+              <IconButton
+                className={classes.toolbarIconButton}
+                aria-label="search"
+                color="inherit"
+                onClick={this.handler.handleSearchNotes}
+                title={`${intl.formatMessage({ id: 'search' })} ⇧+${COMMAND_KEY}+F`}
+              >
                 <Icons.SearchIcon className={classes.toolBarIcon} />
               </IconButton>
               {/* <IconButton
@@ -668,6 +698,7 @@ class NoteList extends React.Component {
                 className={classes.toolbarIconButton}
                 aria-label="create note"
                 color="inherit"
+                title={`${intl.formatMessage({ id: 'newNote' })} ${COMMAND_KEY}+N`}
                 // onClick={this.handler.handleOpenMenu}
                 onClick={this.handler.handleCreateMarkdownNote}
                 ref={anchorEl}
@@ -788,6 +819,7 @@ NoteList.propTypes = {
   type: PropTypes.string.isRequired,
   tag: PropTypes.object,
   intl: PropTypes.object.isRequired,
+  orderBy: PropTypes.string,
 };
 
 NoteList.defaultProps = {
@@ -799,6 +831,7 @@ NoteList.defaultProps = {
   onChangeNotes: null,
   kbGuid: null,
   tag: null,
+  orderBy: null,
 };
 
 

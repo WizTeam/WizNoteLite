@@ -1,4 +1,5 @@
 const EventEmitter = require('events');
+const axios = require('axios');
 const { remote, ipcRenderer } = require('electron');
 const platform = require('platform');
 const path = require('path');
@@ -49,6 +50,37 @@ async function invokeApi(name, ...args) {
     throw err;
   }
   return ret;
+}
+
+async function simpleAsRequest(opt) {
+  const token = opt.token;
+  const version = remote.app.getVersion();
+  const url = `${opt.asUrl}/${opt.url}`;
+  const params = opt.params ?? {};
+
+  const options = {
+    url,
+    method: opt.method,
+    headers: {
+      'X-Wiz-Token': token,
+    },
+    data: opt.data ?? {},
+    params: {
+      clientType: 'web',
+      clientVersion: version,
+      ...params,
+    },
+  };
+
+  const result = await axios(options);
+  if (result.status !== 200) {
+    throw new Error(result.statusText);
+  }
+  if (result.data && result.data.returnCode !== 200) {
+    throw new Error(result.data.returnCode);
+  }
+  //
+  return result.data;
 }
 
 class WindowManager {
@@ -148,6 +180,10 @@ class WindowManager {
       y,
     });
   }
+
+  openImageViewer(imagesList, index) {
+    invokeApi('openImage', imagesList, index);
+  }
 }
 
 class UserManager extends EventEmitter {
@@ -162,6 +198,19 @@ class UserManager extends EventEmitter {
 
   get userGuid() {
     return this._user.userGuid;
+  }
+
+  get userToken() {
+    return this._user.token;
+  }
+
+  get getAsUrl() {
+    if (window.location.host === 'localhost:3000') {
+      return 'https://v3.wiz.cn';
+    } else if (window.location.host === '') {
+      return 'https://as.wiz.cn';
+    }
+    return window.location.origin;
   }
 
   async signUp(server, userId, password, options = {}) {
@@ -331,26 +380,24 @@ class UserManager extends EventEmitter {
     return result;
   }
 
+  async uploadMarkdown() {
+    const result = await invokeApi('uploadMarkdown');
+    return result;
+  }
+
+  async readToMarkdown(filePath) {
+    const data = await invokeApi('readToMarkdown', filePath);
+    return data;
+  }
+
   async getThemeCssString(theme) {
     const result = await invokeApi('getThemeCssString', theme);
     return result;
   }
 
-  async buildBindSnsUrl(server, type, postMessage, origin, extraParams) {
-    const urlPath = '/as/thirdparty/go/auth';
-    const query = {
-      type,
-      state: '',
-      redirectUrl: '',
-      postMessage: postMessage ? 1 : '',
-      origin,
-      extra: encodeURIComponent(extraParams),
-    };
-
-    const params = Object.keys(query).map((key) => `${key}=${query[key]}`).join('&');
-    const url = `${server}${urlPath}?${params}`;
-
-    return url;
+  async getDefaultMarkdown() {
+    const result = await invokeApi('getDefaultMarkdown');
+    return result;
   }
 
   async screenCaptureManual() {
@@ -393,6 +440,99 @@ class UserManager extends EventEmitter {
     return result;
   }
 
+  async unbindSns(st) {
+    const url = `as/openid2/unbind`;
+    const options = {
+      asUrl: this.getAsUrl,
+      url,
+      method: 'post',
+      token: this.userToken,
+      params: {
+        st,
+      },
+    };
+    //
+    return simpleAsRequest(options);
+  }
+
+  async getUserInfoOnline() {
+    const url = `as/user/info`;
+    const options = {
+      asUrl: this.getAsUrl,
+      url,
+      method: 'get',
+      token: this.userToken,
+      params: {
+        with_sns: true,
+      },
+    };
+    //
+    return simpleAsRequest(options);
+  }
+
+  async changeAccount(password, userId, newUserId) {
+    const url = `as/users/change_account`;
+    const options = {
+      asUrl: this.getAsUrl,
+      url,
+      method: 'post',
+      token: this.userToken,
+      data: {
+        userId,
+        newUserId,
+        password,
+      },
+    };
+    //
+    return simpleAsRequest(options);
+  }
+
+  async updateUserDisplayName(displayName) {
+    const url = `as/users/update_info`;
+    const options = {
+      asUrl: this.getAsUrl,
+      url,
+      method: 'put',
+      token: this.userToken,
+      data: {
+        displayName,
+      },
+    };
+    //
+    return simpleAsRequest(options);
+  }
+
+  async removeMobile() {
+    const url = `as/users/update_info`;
+    const options = {
+      asUrl: this.getAsUrl,
+      url,
+      method: 'put',
+      token: this.userToken,
+      data: {
+        mobile: '',
+      },
+    };
+    //
+    return simpleAsRequest(options);
+  }
+
+  async changePassword(newPwd, oldPwd) {
+    const url = `as/users/change_pwd`;
+    const options = {
+      asUrl: this.getAsUrl,
+      url,
+      method: 'post',
+      token: this.userToken,
+      data: {
+        newPwd,
+        oldPwd,
+      },
+    };
+    //
+    return simpleAsRequest(options);
+  }
+
   async sendMessage(name, ...args) {
     ipcRenderer.send(name, this.userGuid, ...args);
   }
@@ -415,6 +555,10 @@ ipcRenderer.on('syncFinish', (event, ...args) => {
 
 ipcRenderer.on('newNote', (event, ...args) => {
   userManager.emit('newNote', ...args);
+});
+
+ipcRenderer.on('showImage', (event, ...args) => {
+  userManager.emit('showImage', ...args);
 });
 
 ipcRenderer.on('modifyNote', (event, ...args) => {

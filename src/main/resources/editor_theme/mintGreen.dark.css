@@ -1,0 +1,113 @@
+/* Common CSS use by both light and dark themes */
+#wiz-note-content-root {
+  min-height: 100%;
+  box-sizing: border-box;
+  background-color: #5b6b6a;
+  color: #f0f0f0;
+}
+
+#wiz-note-content-root {
+  /*editor*/
+  --themeColor: #555555;
+  --themeColor90: rgba(64, 158, 255, .9);
+  --themeColor80: rgba(64, 158, 255, .8);
+  --themeColor70: rgba(64, 158, 255, .7);
+  --themeColor60: rgba(64, 158, 255, .6);
+  --themeColor50: rgba(64, 158, 255, .5);
+  --themeColor40: rgba(64, 158, 255, .4);
+  --themeColor30: rgba(64, 158, 255, .3);
+  --themeColor20: rgba(64, 158, 255, .2);
+  --themeColor10: rgba(64, 158, 255, .1);
+
+  --highlightColor: rgba(102, 177, 255, .6);
+  --selectionColor: rgba(102, 177, 255, .3);
+  --editorColor: #f0f0f0;
+  --editorColor80: #f0f0f0;
+  --editorColor60: rgba(255, 255, 255, .6);
+  --editorColor50: #969696;
+  --editorColor40: rgba(255, 255, 255, .4);
+  --editorColor30: rgba(255, 255, 255, 0.1);
+  --editorColor10: rgba(255, 255, 255, .1);
+  --editorColor04: rgba(255, 255, 255, .04);
+  --editorBgColor: #5b6b6a;
+  --deleteColor: #409eff;
+  --iconColor: rgba(255, 255, 255, .56);
+  --codeBgColor: #424344;
+  --codeBlockBgColor: #424344;
+  --footnoteBgColor: rgba(66, 67, 68, .3);
+  --inputBgColor: #2f3336;
+
+  --focusColor: var(--themeColor);
+
+  --buttonFontColor: rgba(255, 255, 255, .6);
+  --buttonBgColor: #424344;
+  --buttonBorder: 1px solid rgba(0, 0, 0, 0.2);
+  --buttonShadow: none;
+  --buttonFontColorHover: var(--buttonFontColor);
+  --buttonBgColorHover: #4f5051;
+  --buttonBorderHover: 1px solid rgba(0, 0, 0, 0.3);
+  --buttonFontColorActive: var(--buttonFontColor);
+  --buttonBgColorActive: #333434;
+  --buttonBorderActive: var(--buttonBorder);
+
+  --buttonPrimaryFontColor: #ffffff;
+  --buttonPrimaryBgColor: var(--themeColor);
+  --buttonPrimaryBorder: none;
+  --buttonPrimaryShadow: none;
+  --buttonPrimaryFontColorHover: var(--buttonPrimaryFontColor);
+  --buttonPrimaryBgColorHover: #5aabff;
+  --buttonPrimaryBorderHover: var(--buttonPrimaryBorder);
+  --buttonPrimaryFontColorActive: var(--buttonPrimaryFontColor);
+  --buttonPrimaryBgColorActive: #2791ff;
+  --buttonPrimaryBorderActive: var(--buttonPrimaryBorder);
+  --buttonPrimaryFocusBorder: none;
+  --buttonPrimaryFocusShadow: inset 0 0 0 1px rgba(24, 26, 31, 0.5), 0 0 0 1px var(--themeColor);
+  --tableBorderColor: #404040;
+  --tableBackgroundColor: #2a2a2a;
+  --tableTextColor: #969696;
+
+  /*marktext*/
+  --sideBarColor: rgba(255, 255, 255, .6);
+  --sideBarIconColor: var(--iconColor);
+  --sideBarTitleColor: rgba(255, 255, 255, .8);
+  --sideBarTextColor: rgba(255, 255, 255, .4);
+  --sideBarBgColor: #1e1e1e;
+  --sideBarItemHoverBgColor: rgba(255, 255, 255, .03);
+  --itemBgColor: #3f3f3f;
+
+  --floatFontColor: rgba(255, 255, 255, .7);
+  --floatBgColor: #3f3f3f;
+  --floatHoverColor: rgba(255, 255, 255, .04);
+  --floatBorderColor: rgba(0, 0, 0, .05);
+  --floatShadow: rgba(0, 0, 0, 0.2);
+  --maskColor: rgba(0, 0, 0, .7);
+  --editorAreaWidth: 750px;
+}
+
+#wiz-note-content-root div[id^='ag-editor-id'] {
+  --panel-background-color: transparent;
+  --text-font-color: #eae9e5;
+  --blockquote-border-color: #555;
+  --blockquote-font-color: #969696;
+  --blockquote-background: none repeat scroll 0 0 rgba(51,51,51,.5);
+}
+
+#wiz-note-content-root code[class*="language-"],
+#wiz-note-content-root pre.ag-paragraph {
+  color: #f8f8f2;
+  /*font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;*/
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  -moz-tab-size: 4;
+  -o-tab-size: 4;
+  tab-size: 4;
+
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+  overflow: visible;
+}

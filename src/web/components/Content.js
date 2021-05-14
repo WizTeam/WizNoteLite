@@ -19,6 +19,7 @@ import WordCounterButton from './WordCounterButton';
 import EditorContents from './editor/markdown/EditorContents';
 import LinkMenu from './LinkMenu';
 import LiteMiddle from './LiteMiddle';
+import { eventCenter, eventMap } from '../utils/event';
 
 const styles = (theme) => ({
   main: {
@@ -233,6 +234,31 @@ class Content extends React.Component {
       const note = await window.wizApi.userManager.getNote(this.props.kbGuid, guid);
       this.props.onSelectNote(note);
     },
+
+    handleMenuItemClicked: (id) => {
+      if (id === 'exportPdf') {
+        this.handler.handleShowExportPdfDialog();
+      } else if (id === 'exportMd') {
+        this.handler.handleExportMarkdown();
+      }
+    },
+
+    handleSwitchContent: () => {
+      if (this.editorContentRef.current && this.editorContentRef.current.setTab) {
+        this.setState((state) => ({
+          showEditorContents: !state.showEditorContents,
+        }));
+        this.editorContentRef.current.setTab('content');
+      }
+    },
+    handleSwitchLink: () => {
+      if (this.editorContentRef.current && this.editorContentRef.current.setTab) {
+        this.setState((state) => ({
+          showEditorContents: !state.showEditorContents,
+        }));
+        this.editorContentRef.current.setTab('link');
+      }
+    },
   };
 
   constructor(props) {
@@ -250,14 +276,22 @@ class Content extends React.Component {
     };
     this.scrollContentRef = React.createRef();
     this.headerRef = React.createRef();
+    this.editorContentRef = React.createRef();
   }
 
   componentDidMount() {
     window.addEventListener('resize', this.handler.handleResize);
+    window.wizApi.userManager.on('menuItemClicked', this.handler.handleMenuItemClicked);
+
+    eventCenter.on(eventMap.OUTLINE, this.handler.handleSwitchContent);
+    eventCenter.on(eventMap.WIKILINK, this.handler.handleSwitchLink);
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.handler.handleResize);
+    window.wizApi.userManager.off('menuItemClicked', this.handler.handleMenuItemClicked);
+    eventCenter.off(eventMap.OUTLINE, this.handler.handleSwitchContent);
+    eventCenter.off(eventMap.WIKILINK, this.handler.handleSwitchLink);
   }
 
   render() {
@@ -352,6 +386,7 @@ class Content extends React.Component {
             />
           </Scrollbar>
           <EditorContents
+            ref={this.editorContentRef}
             contents={this.state.contentsList}
             open={note && this.state.showEditorContents}
             onClose={this.handler.handleCloseContents}

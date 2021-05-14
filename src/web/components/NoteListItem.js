@@ -135,7 +135,7 @@ class NoteListItem extends React.Component {
     const backgroundColorClassName = `selectedItem_${backgroundType}`;
     const selectedBackgroundClass = isLite ? (classes[backgroundColorClassName] ?? '') : '';
 
-    const date = dateType === 'modify' ? note.modified : note.created;
+    const date = dateType === 'modified' ? note.modified : note.created;
     const dateText = dateUtils.formatDateString(date, intl);
     //
     return (

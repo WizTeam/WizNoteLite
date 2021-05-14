@@ -67,7 +67,7 @@ class NoteViewer extends React.Component {
       resourceUrl: '',
       // loading: true,
     };
-    this._scrollBarRef = React.createRef();
+    this.key = new Date().getTime();
   }
 
   async componentDidMount() {
@@ -75,6 +75,11 @@ class NoteViewer extends React.Component {
       kbGuid,
       noteGuid,
     } = this.props;
+    //
+    if (!kbGuid || !noteGuid) {
+      this.loadDefaultMarkdown();
+      return;
+    }
     //
     const userGuid = window.wizApi?.userManager?.userGuid || '';
     const resourceUrl = `wiz://${userGuid}/${kbGuid}/${noteGuid}`;
@@ -97,7 +102,7 @@ class NoteViewer extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.darkMode !== this.props.darkMode) {
+    if (prevProps.darkMode !== this.props.darkMode || prevProps.color !== this.props.color) {
       this.checkTheme();
     }
   }
@@ -161,20 +166,45 @@ class NoteViewer extends React.Component {
   }
 
   async checkTheme() {
-    const { params } = this.props;
+    const { params, color } = this.props;
+    const id = 'wiz-note-content-root';
+    const reg = new RegExp(id, 'g');
     //
-    if (params.theme) {
-      const id = 'wiz-note-content-root';
-      const css = await window.wizApi.userManager.getThemeCssString(params.theme);
-      injectionCssFormId(id, css);
+    if (params.theme && params.color) {
+      const themeName = `${params.color}.${params.theme}`;
+      let css = await window.wizApi.userManager.getThemeCssString(themeName);
+      css = css.replace(reg, this._rootElem.id);
+      injectionCssFormId(this._rootElem.id, css);
+      return;
     }
 
     if (this.props.darkMode !== undefined) {
-      const id = 'wiz-note-content-root';
-      const theme = this.props.darkMode ? 'dark' : 'lite';
-      const css = await window.wizApi.userManager.getThemeCssString(theme);
-      injectionCssFormId(id, css);
+      const theme = [];
+      //
+      if (color) {
+        theme.push(color);
+      }
+      if (this.props.darkMode) {
+        theme.push('dark');
+      } else {
+        theme.push('lite');
+      }
+      //
+      let css = await window.wizApi.userManager.getThemeCssString(theme.join('.'));
+      css = css.replace(reg, this._rootElem.id);
+      injectionCssFormId(this._rootElem.id, css);
     }
+  }
+
+  async loadDefaultMarkdown() {
+    // const markdown = await window.wizApi.userManager.getDefaultMarkdown();
+
+    await this.checkTheme();
+
+    // this.setState({
+    //   markdown,
+    //   loading: false,
+    // });
   }
 
   render() {
@@ -202,7 +232,10 @@ class NoteViewer extends React.Component {
     //
     const contentEditor = (
       <div
-        id="wiz-note-content-root"
+        id={`wiz-note-content-root-${this.key}`}
+        ref={(node) => {
+          this._rootElem = node;
+        }}
         style={style}
         // className={classNames(resetBackground && backgroundClass)}
       >
@@ -217,7 +250,6 @@ class NoteViewer extends React.Component {
 
     const contentEditorWithScrollBar = (
       <Scrollbar
-        ref={this._scrollBarRef}
         hideThumb={params.hideThumb === '1'}
         theme={theme}
       >
@@ -244,15 +276,21 @@ class NoteViewer extends React.Component {
 NoteViewer.propTypes = {
   classes: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
-  kbGuid: PropTypes.string.isRequired,
-  noteGuid: PropTypes.string.isRequired,
+  kbGuid: PropTypes.string,
+  noteGuid: PropTypes.string,
   params: PropTypes.object,
   darkMode: PropTypes.bool,
+  // showTableInline: PropTypes.bool,
+  color: PropTypes.string,
 };
 
 NoteViewer.defaultProps = {
   params: {},
   darkMode: undefined,
+  // showTableInline: false,
+  noteGuid: null,
+  kbGuid: null,
+  color: 'default',
 };
 
 export default withTheme(withStyles(styles)(injectIntl(NoteViewer)));
