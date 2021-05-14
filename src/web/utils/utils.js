@@ -36,7 +36,7 @@ export function overwriteEditorConfig(options, id = 'editor-overwrite') {
     }
   });
   //
-  style.innerHTML = `:root,div[id^='ag-editor-id'] { ${css} }`;
+  style.innerHTML = `:root,div.editor-main { ${css} }`;
   document.head.appendChild(style);
 }
 
