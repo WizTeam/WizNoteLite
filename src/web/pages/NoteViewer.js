@@ -63,11 +63,9 @@ class NoteViewer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      // markdown: '',
       resourceUrl: '',
-      // loading: true,
     };
-    this.key = new Date().getTime();
+    this.key = Date.now();
   }
 
   async componentDidMount() {
@@ -165,14 +163,15 @@ class NoteViewer extends React.Component {
 
   async checkTheme() {
     const { params, color } = this.props;
-    const id = 'wiz-note-content-root';
-    const reg = new RegExp(id, 'g');
+    const tempId = 'wiz-note-content-root';
+    const id = `wiz-note-content-root-${this.key}`;
+    const reg = new RegExp(tempId, 'g');
     //
     if (params.theme && params.color) {
       const themeName = `${params.color}.${params.theme}`;
       let css = await window.wizApi.userManager.getThemeCssString(themeName);
-      css = css.replace(reg, this._rootElem.id);
-      injectionCssFormId(this._rootElem.id, css);
+      css = css.replace(reg, id);
+      injectionCssFormId(id, css);
       return;
     }
 
@@ -189,8 +188,8 @@ class NoteViewer extends React.Component {
       }
       //
       let css = await window.wizApi.userManager.getThemeCssString(theme.join('.'));
-      css = css.replace(reg, this._rootElem.id);
-      injectionCssFormId(this._rootElem.id, css);
+      css = css.replace(reg, id);
+      injectionCssFormId(id, css);
     }
   }
 
@@ -220,9 +219,6 @@ class NoteViewer extends React.Component {
     const contentEditor = (
       <div
         id={`wiz-note-content-root-${this.key}`}
-        ref={(node) => {
-          this._rootElem = node;
-        }}
         style={style}
         // className={classNames(resetBackground && backgroundClass)}
       >

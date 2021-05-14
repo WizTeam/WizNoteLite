@@ -186,6 +186,15 @@ class ExportPngDialog extends React.Component {
   componentDidMount() {
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.open && prevProps.open !== this.props.open) {
+      const colorTheme = window.wizApi.userManager.getUserSettingsSync('colorTheme', 'default');
+      this.setState({
+        colorTheme,
+      });
+    }
+  }
+
   componentWillUnmount() {
     window.onCaptureScreenProgress = null;
   }
