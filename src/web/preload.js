@@ -52,37 +52,6 @@ async function invokeApi(name, ...args) {
   return ret;
 }
 
-async function simpleAsRequest(opt) {
-  const token = opt.token;
-  const version = remote.app.getVersion();
-  const url = `${opt.asUrl}/${opt.url}`;
-  const params = opt.params ?? {};
-
-  const options = {
-    url,
-    method: opt.method,
-    headers: {
-      'X-Wiz-Token': token,
-    },
-    data: opt.data ?? {},
-    params: {
-      clientType: 'web',
-      clientVersion: version,
-      ...params,
-    },
-  };
-
-  const result = await axios(options);
-  if (result.status !== 200) {
-    throw new Error(result.statusText);
-  }
-  if (result.data && result.data.returnCode !== 200) {
-    throw new Error(result.data.returnCode);
-  }
-  //
-  return result.data;
-}
-
 class WindowManager {
   toggleMaximize() {
     const window = remote.getCurrentWindow();
@@ -202,15 +171,6 @@ class UserManager extends EventEmitter {
 
   get userToken() {
     return this._user.token;
-  }
-
-  get getAsUrl() {
-    if (window.location.host === 'localhost:3000') {
-      return 'https://v3.wiz.cn';
-    } else if (window.location.host === '') {
-      return 'https://as.wiz.cn';
-    }
-    return window.location.origin;
   }
 
   async signUp(server, userId, password, options = {}) {
