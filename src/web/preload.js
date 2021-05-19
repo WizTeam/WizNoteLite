@@ -441,96 +441,44 @@ class UserManager extends EventEmitter {
   }
 
   async unbindSns(st) {
-    const url = `as/openid2/unbind`;
-    const options = {
-      asUrl: this.getAsUrl,
-      url,
-      method: 'post',
-      token: this.userToken,
-      params: {
-        st,
-      },
-    };
-    //
-    return simpleAsRequest(options);
+    const result = await invokeApi('unbindSns', this.userGuid, this.userToken, {
+      st,
+    });
+    return result;
   }
 
-  async getUserInfoOnline() {
-    const url = `as/user/info`;
-    const options = {
-      asUrl: this.getAsUrl,
-      url,
-      method: 'get',
-      token: this.userToken,
-      params: {
-        with_sns: true,
-      },
-    };
-    //
-    return simpleAsRequest(options);
+  async getUserInfoFromServer() {
+    const result = await invokeApi('getUserInfoFromServer', this.userGuid, this.userToken, {
+      with_sns: true,
+    });
+    return result;
   }
 
   async changeAccount(password, userId, newUserId) {
-    const url = `as/users/change_account`;
-    const options = {
-      asUrl: this.getAsUrl,
-      url,
-      method: 'post',
-      token: this.userToken,
-      data: {
-        userId,
-        newUserId,
-        password,
-      },
-    };
-    //
-    return simpleAsRequest(options);
+    const result = await invokeApi('changeAccount', this.userGuid, this.userToken, {
+      password,
+      userId,
+      newUserId,
+    });
+    return result;
   }
 
   async updateUserDisplayName(displayName) {
-    const url = `as/users/update_info`;
-    const options = {
-      asUrl: this.getAsUrl,
-      url,
-      method: 'put',
-      token: this.userToken,
-      data: {
-        displayName,
-      },
-    };
-    //
-    return simpleAsRequest(options);
+    const result = await invokeApi('changeUserDisplayName', this.userGuid, this.userToken, displayName);
+    return result;
   }
 
   async removeMobile() {
-    const url = `as/users/update_info`;
-    const options = {
-      asUrl: this.getAsUrl,
-      url,
-      method: 'put',
-      token: this.userToken,
-      data: {
-        mobile: '',
-      },
-    };
-    //
-    return simpleAsRequest(options);
+    const result = await invokeApi('changeUserMobile', this.userGuid, this.userToken, '');
+    return result;
   }
 
   async changePassword(newPwd, oldPwd) {
-    const url = `as/users/change_pwd`;
-    const options = {
-      asUrl: this.getAsUrl,
-      url,
-      method: 'post',
-      token: this.userToken,
-      data: {
-        newPwd,
-        oldPwd,
-      },
-    };
-    //
-    return simpleAsRequest(options);
+    const result = await invokeApi('changeUserPassword', this.userGuid, this.userToken, {
+      newPwd,
+      oldPwd,
+    });
+    return result;
   }
 
   async sendMessage(name, ...args) {

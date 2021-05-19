@@ -58,7 +58,7 @@ const styles = (theme) => ({
 class ModifyPasswordDialog extends React.Component {
   handler = {
     handleSubmit: async () => {
-      if (!this.vaildInput()) return false;
+      if (!this.validInput()) return false;
       //
       const { originPassword, newPassword } = this.state;
       this.setState({ loading: true });
@@ -115,7 +115,7 @@ class ModifyPasswordDialog extends React.Component {
     });
   }
 
-  vaildInput() {
+  validInput() {
     const { originPassword, newPassword, confirmPassword } = this.state;
     const { intl } = this.props;
 

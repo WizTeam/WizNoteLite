@@ -567,7 +567,7 @@ handleApi('writeToMarkdown', async (event, userGuid, kbGuid, noteGuid) => {
   //
   const data = await sdk.getNoteMarkdown(userGuid, kbGuid, noteGuid);
   log.log('data', data);
-  const mdStr = data.replace(/(\!\[.*?\\*\]\()(index_files\/.*?\\*?(\s=(\d+(?:\.\d+)?)x(\d+(?:\.\d+)?))?\))/g, (str, p1, p2) => `${p1 + targetDirname}/${p2}`);
+  const mdStr = data.replace(/(!\[.*?\\*\]\()(index_files\/.*?\\*?(\s=(\d+(?:\.\d+)?)x(\d+(?:\.\d+)?))?\))/g, (str, p1, p2) => `${p1 + targetDirname}/${p2}`);
   await fs.writeFile(filePath, mdStr);
   //
   shell.showItemInFolder(filePath);
@@ -665,6 +665,35 @@ handleApi('getUserInfo', async (event, userGuid) => {
   return user;
 });
 
+handleApi('getUserInfoFromServer', async (event, ...args) => {
+  const user = await sdk.getUserInfoFromServer(...args);
+  return user;
+});
+
+handleApi('unbindSns', async (event, ...args) => {
+  const result = await sdk.unbindSns(...args);
+  return result;
+});
+
+handleApi('changeAccount', async (event, ...args) => {
+  const result = await sdk.unbindSns(...args);
+  return result;
+});
+
+handleApi('changeUserDisplayName', async (event, ...args) => {
+  const result = await sdk.changeUserDisplayName(...args);
+  return result;
+});
+
+handleApi('changeUserMobile', async (event, ...args) => {
+  const result = await sdk.changeUserMobile(...args);
+  return result;
+});
+
+handleApi('changeUserPassword', async (event, ...args) => {
+  const result = await sdk.changeUserPassword(...args);
+  return result;
+});
 
 handleApi('refreshUserInfo', async (event, userGuid) => {
   const user = await sdk.refreshUserInfo(userGuid);
@@ -675,7 +704,6 @@ handleApi('viewLogFile', async () => {
   const logPath = log.transports.file.file;
   shell.openPath(logPath);
 });
-
 
 module.exports = {
   unregisterWindow,

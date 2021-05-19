@@ -22,7 +22,7 @@
     "pureimage": "^0.2.1",
     "remove-markdown": "^0.3.0",
     "uuid": "^8.0.0",
-    "wiznote-sdk-js": "^1.2.28",
+    "wiznote-sdk-js": "^1.2.30",
     "wiznote-sdk-js-share": "^1.0.6",
     "xregexp": "^4.3.0"
   },

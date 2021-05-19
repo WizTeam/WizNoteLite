@@ -211,7 +211,7 @@ class SettingDialog extends React.Component {
     },
     handleUpdateDisplayName: async () => {
       const { displayName } = this.state;
-      const { intl } = this.props;
+      const { intl, user } = this.props;
 
       if (displayName.trim() === '') {
         this.setState({
@@ -222,6 +222,12 @@ class SettingDialog extends React.Component {
 
       try {
         await window.wizApi.userManager.updateUserDisplayName(displayName);
+        await window.wizApi.userManager.refreshUserInfo();
+        //
+        if (this.props.onLoggedIn) {
+          user.displayName = displayName;
+          this.props.onLoggedIn(user);
+        }
       } catch (err) {
         this.setState({ displayNameErrorText: intl.formatMessage({ id: 'errorUpdateUserName' }) });
         return false;
@@ -320,7 +326,7 @@ class SettingDialog extends React.Component {
     });
     //
     try {
-      const result = await window.wizApi.userManager.getUserInfoOnline();
+      const result = await window.wizApi.userManager.getUserInfoFromServer();
       //
       if (result.sns_status) {
         this.setState({
