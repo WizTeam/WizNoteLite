@@ -126,10 +126,12 @@ class App extends React.Component {
           return;
         }
         //
-        await um.refreshUserInfo();
+        const _user = await um.refreshUserInfo();
         await um.syncKb(user.kbGuid, {
           noWait: true,
         });
+        // eslint-disable-next-line no-param-reassign
+        user.token = _user.token;
       } catch (err) {
         console.error(err);
       }
@@ -138,9 +140,9 @@ class App extends React.Component {
     if (this.shouldAutoLogging) {
       this.shouldAutoLogging = false;
       window.document.addEventListener('DOMContentLoaded', () => {
-        window.wizApi.userManager.localLogin().then((user) => {
+        window.wizApi.userManager.localLogin().then(async (user) => {
           if (user) {
-            syncData(user);
+            await syncData(user);
             this.setState({
               currentUser: user,
               isAutoLogging: false,
