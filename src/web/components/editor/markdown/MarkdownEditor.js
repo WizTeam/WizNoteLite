@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import debounce from 'lodash/debounce';
 import { withStyles, withTheme } from '@material-ui/core/styles';
 import { injectIntl } from 'react-intl';
 import {
@@ -30,7 +31,18 @@ const styles = (/* theme */) => ({
   },
 });
 class MarkdownEditorComponent extends React.PureComponent {
+  renderEditor = debounce(this.renderEditorCore, 50);
+
   handler = {
+    handleError: (editor, error) => {
+      const { intl } = this.props;
+      // console.log('error:', error, 'error code:', error.code);
+      //
+      if (error.code === 'Assert') {
+        alert(intl.formatMessage({ id: 'editorErrorAssert' }));
+        this.loadNote();
+      }
+    },
     handleMdLink: (md) => {
       const lists = extractLinksFromMarkdown(md);
       if (this.props.onUpdateLinkList) {
@@ -42,9 +54,13 @@ class MarkdownEditorComponent extends React.PureComponent {
     },
     handleLiveEditorChange: (editor) => {
       const { note } = this.state;
-      const markdown = editor.toMarkdown();
-      this.handler.handleMdLink(markdown);
-      this.saveNote(note.guid, markdown, []);
+      try {
+        const markdown = editor.toMarkdown();
+        this.handler.handleMdLink(markdown);
+        this.saveNote(note.guid, markdown, []);
+      } catch (err) {
+        console.log(err);
+      }
     },
     handleUploadResource: async (editor, file) => {
       const { kbGuid, note } = this.props;
@@ -137,7 +153,6 @@ class MarkdownEditorComponent extends React.PureComponent {
     this.titlesList = [];
     this.oldMarkdown = '';
     this.editor = null;
-    this._onThemeChange = null;
     this.editorContainer = React.createRef();
   }
 
@@ -176,13 +191,6 @@ class MarkdownEditorComponent extends React.PureComponent {
         id: item,
         title: item,
       }));
-    }
-    if (prevProps.theme.palette.type !== this.props.theme.palette.type) {
-      if (this._onThemeChange) {
-        this._onThemeChange({
-          matches: this.props.theme.palette.type === 'dark',
-        });
-      }
     }
   }
 
@@ -286,7 +294,12 @@ class MarkdownEditorComponent extends React.PureComponent {
     await this.loadNote();
   }
 
-  async renderEditor(initLocalData) {
+  async renderEditorCore(initLocalData) {
+    if (this.editor) {
+      this.editor.destroy();
+      this.editor = null;
+    }
+    //
     const currentUser = this.props.user;
     const user = {
       avatarUrl: 'avatarUrl',
@@ -326,6 +339,7 @@ class MarkdownEditorComponent extends React.PureComponent {
       hideComments: true,
       callbacks: {
         onLoad: this.handler.handleCheckMode,
+        onError: this.handler.handleError,
         onChange: this.handler.handleLiveEditorChange,
         onUploadResource: this.handler.handleUploadResource,
         onBuildResourceUrl: this.handler.handleBuildResourceUrl,
@@ -369,7 +383,7 @@ MarkdownEditorComponent.propTypes = {
   // scrollbar: PropTypes.object,
   onUpdateLinkList: PropTypes.func,
   onClickNoteLink: PropTypes.func.isRequired,
-  theme: PropTypes.object.isRequired,
+  // theme: PropTypes.object.isRequired,
   titlesList: PropTypes.array,
   user: PropTypes.object.isRequired,
 };

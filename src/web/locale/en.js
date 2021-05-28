@@ -223,9 +223,10 @@ export default {
   settingVIPProbation: 'Probation:',
   settingExpired: '(Expired)',
 
-
   newNote: 'New Note',
   search: 'Search',
   starredNode: 'Starred Note',
   preference: 'Preference',
+
+  editorErrorAssert: 'Editor error',
 };

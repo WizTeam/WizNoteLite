@@ -226,4 +226,6 @@ export default {
   search: '搜索',
   starredNode: '星標筆記',
   preference: '設置',
+
+  editorErrorAssert: '編輯器發生錯誤',
 };

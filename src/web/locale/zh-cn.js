@@ -227,4 +227,6 @@ export default {
   search: '搜索',
   starredNode: '星标笔记',
   preference: '设置',
+
+  editorErrorAssert: '编辑器发生错误',
 };
