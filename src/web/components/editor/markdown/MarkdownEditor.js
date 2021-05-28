@@ -40,7 +40,7 @@ class MarkdownEditorComponent extends React.PureComponent {
       //
       if (error.code === 'Assert') {
         alert(intl.formatMessage({ id: 'editorErrorAssert' }));
-        this.loadNote();
+        this.editor.reload();
       }
     },
     handleMdLink: (md) => {
