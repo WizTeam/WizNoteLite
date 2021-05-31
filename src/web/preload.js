@@ -1,10 +1,8 @@
 const { remote, ipcRenderer, contextBridge } = require('electron');
 const EventEmitter = require('events');
-const { remote, ipcRenderer } = require('electron');
 const platform = require('platform');
 const path = require('path');
 const URL = require('url');
-const EventEmitter = require('events');
 
 const { Menu, MenuItem } = remote;
 
