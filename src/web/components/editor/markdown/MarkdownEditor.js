@@ -73,6 +73,9 @@ class MarkdownEditorComponent extends React.PureComponent {
       }
       return resourceName;
     },
+    handleBuildResourceUrlFromOtherServer: (editor, apiServer, resourceName, token) => {
+      console.log(apiServer, resourceName, token);
+    },
     handleTagsChanged: async (kbGuid) => {
       if (kbGuid !== this.props.kbGuid) {
         return;
@@ -343,6 +346,7 @@ class MarkdownEditorComponent extends React.PureComponent {
         onChange: this.handler.handleLiveEditorChange,
         onUploadResource: this.handler.handleUploadResource,
         onBuildResourceUrl: this.handler.handleBuildResourceUrl,
+        onBuildResourceUrlFromOtherServer: this.handler.handleBuildResourceUrlFromOtherServer,
         onUpdateToc: this.handler.handleUpdateToc,
         onGetTagItems: this.handler.handleGetTagItems,
         onTagClicked: this.handler.handleTagClicked,
