@@ -7,6 +7,7 @@ console.log(`electron version: ${electronVersion}`);
 const spawn = childProcess.spawn;
 
 const buildIA32 = process.argv.indexOf('--ia32') !== -1;
+const buildX64 = process.argv.indexOf('--x64') !== -1;
 
 class OutputData {
   constructor() {
@@ -78,11 +79,18 @@ if (process.platform === 'win32') {
     process.exit(0);
   });
 } else {
-  exec(`node-gyp`, [
+  //
+  const params = [
     `--target=${electronVersion}`,
     `rebuild`,
     '--dist-url=https://electronjs.org/headers',
-  ], {
+  ];
+  if (buildX64) {
+    params.push('--arch=x64');
+    console.log('build for x64');
+  }
+  //
+  exec(`node-gyp`, params, {
     cwd,
     env,
   }, () => {

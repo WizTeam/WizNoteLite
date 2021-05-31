@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import debounce from 'lodash/debounce';
 import { withStyles, withTheme } from '@material-ui/core/styles';
 import { injectIntl } from 'react-intl';
 import {
@@ -30,7 +31,18 @@ const styles = (/* theme */) => ({
   },
 });
 class MarkdownEditorComponent extends React.PureComponent {
+  renderEditor = debounce(this.renderEditorCore, 50);
+
   handler = {
+    handleError: (editor, error) => {
+      const { intl } = this.props;
+      // console.log('error:', error, 'error code:', error.code);
+      //
+      if (error.code === 'Assert') {
+        alert(intl.formatMessage({ id: 'editorErrorAssert' }));
+        this.editor.reload();
+      }
+    },
     handleMdLink: (md) => {
       const lists = extractLinksFromMarkdown(md);
       if (this.props.onUpdateLinkList) {
@@ -42,9 +54,13 @@ class MarkdownEditorComponent extends React.PureComponent {
     },
     handleLiveEditorChange: (editor) => {
       const { note } = this.state;
-      const markdown = editor.toMarkdown();
-      this.handler.handleMdLink(markdown);
-      this.saveNote(note.guid, markdown, []);
+      try {
+        const markdown = editor.toMarkdown();
+        this.handler.handleMdLink(markdown);
+        this.saveNote(note.guid, markdown, []);
+      } catch (err) {
+        console.log(err);
+      }
     },
     handleUploadResource: async (editor, file) => {
       const { kbGuid, note } = this.props;
@@ -56,6 +72,9 @@ class MarkdownEditorComponent extends React.PureComponent {
         return `${this.resourceUrl}/${resourceName}`;
       }
       return resourceName;
+    },
+    handleBuildResourceUrlFromOtherServer: (editor, apiServer, resourceName, token) => {
+      console.log(apiServer, resourceName, token);
     },
     handleTagsChanged: async (kbGuid) => {
       if (kbGuid !== this.props.kbGuid) {
@@ -137,7 +156,6 @@ class MarkdownEditorComponent extends React.PureComponent {
     this.titlesList = [];
     this.oldMarkdown = '';
     this.editor = null;
-    this._onThemeChange = null;
     this.editorContainer = React.createRef();
   }
 
@@ -147,6 +165,7 @@ class MarkdownEditorComponent extends React.PureComponent {
     window.wizApi.userManager.on('tagRenamed', this.handler.handleTagRenamed);
     window.wizApi.userManager.on('focusEdit', this.handler.handleFocusModeChange);
     window.wizApi.userManager.on('typewriterEdit', this.handler.handleTypewriterModeChange);
+    // this._rootElem.addEventListener('click', this.handler.handleImageDbClick);
     this.getAllTags();
     await this.loadNote();
     this.setState({
@@ -176,16 +195,10 @@ class MarkdownEditorComponent extends React.PureComponent {
         title: item,
       }));
     }
-    if (prevProps.theme.palette.type !== this.props.theme.palette.type) {
-      if (this._onThemeChange) {
-        this._onThemeChange({
-          matches: this.props.theme.palette.type === 'dark',
-        });
-      }
-    }
   }
 
   componentWillUnmount() {
+    // this._rootElem.removeEventListener('dblclick', this.handler.handleImageDbClick);
     window.wizApi.userManager.off('tagsChanged', this.handler.handleTagsChanged);
     window.wizApi.userManager.off('tagRenamed', this.handler.handleTagRenamed);
     window.wizApi.userManager.off('focusEdit', this.handler.handleFocusModeChange);
@@ -284,7 +297,12 @@ class MarkdownEditorComponent extends React.PureComponent {
     await this.loadNote();
   }
 
-  async renderEditor(initLocalData) {
+  async renderEditorCore(initLocalData) {
+    if (this.editor) {
+      this.editor.destroy();
+      this.editor = null;
+    }
+    //
     const currentUser = this.props.user;
     const user = {
       avatarUrl: 'avatarUrl',
@@ -324,9 +342,11 @@ class MarkdownEditorComponent extends React.PureComponent {
       hideComments: true,
       callbacks: {
         onLoad: this.handler.handleCheckMode,
+        onError: this.handler.handleError,
         onChange: this.handler.handleLiveEditorChange,
         onUploadResource: this.handler.handleUploadResource,
         onBuildResourceUrl: this.handler.handleBuildResourceUrl,
+        onBuildResourceUrlFromOtherServer: this.handler.handleBuildResourceUrlFromOtherServer,
         onUpdateToc: this.handler.handleUpdateToc,
         onGetTagItems: this.handler.handleGetTagItems,
         onTagClicked: this.handler.handleTagClicked,
@@ -367,7 +387,7 @@ MarkdownEditorComponent.propTypes = {
   // scrollbar: PropTypes.object,
   onUpdateLinkList: PropTypes.func,
   onClickNoteLink: PropTypes.func.isRequired,
-  theme: PropTypes.object.isRequired,
+  // theme: PropTypes.object.isRequired,
   titlesList: PropTypes.array,
   user: PropTypes.object.isRequired,
 };

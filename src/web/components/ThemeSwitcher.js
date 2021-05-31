@@ -3,9 +3,11 @@ import PropTypes from 'prop-types';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import queryString from 'query-string';
+import { overwriteEditorConfig } from '../utils/utils';
 
 export default function ThemeSwitcher(props) {
   //
+  const { color } = props;
   const params = queryString.parse(window.location.search);
   //
   let prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
@@ -21,8 +23,90 @@ export default function ThemeSwitcher(props) {
     }
   }
 
-  const theme = React.useMemo(
-    () => createMuiTheme({
+  const getColorTheme = (darkMode = prefersDarkMode) => (
+    {
+      default: {
+        sideDrawer: darkMode ? '#121212' : '#333333',
+        sidebarItemHover: darkMode ? '#232323' : '#2a2a2a',
+        noteList: darkMode ? '#2a2a2a' : 'rgb(245, 245, 245)',
+        noteListActive: darkMode ? '#333333' : '#fff',
+        content: darkMode ? '#333333' : '#fff',
+        noteDate: darkMode ? '#555555' : '#aaaaaa',
+        noteTitle: darkMode ? '#d8d8d8' : '#333333',
+        noteTypeButton: darkMode ? '#d8d8d8' : '#333333',
+        about: darkMode ? '#2a2a2a' : '#ffffff',
+        hr: darkMode ? '#404040' : '#d8d8d8',
+        MuiCheckColor: '#35e714',
+      },
+      beiges: {
+        sideDrawer: darkMode ? '#322b27' : '#3f332b',
+        sidebarItemHover: '#56504c',
+        noteList: darkMode ? '#57544e' : '#f8efd2',
+        noteListActive: darkMode ? '#6d6b65' : '#fff9e2',
+        content: darkMode ? '#6d6b65' : '#fff9e2',
+        noteDate: darkMode ? '#98948d' : '#aaaaaa',
+        noteTitle: darkMode ? '#f8efd2' : '#333333',
+        noteTypeButton: darkMode ? '#f8efd2' : '#333333',
+        about: darkMode ? '#57544e' : '#fff9e2',
+        hr: darkMode ? '#6D6B65' : '#d8d8d8',
+        MuiCheckColor: '#35e714',
+      },
+      mintGreen: {
+        sideDrawer: darkMode ? '#1f3134' : '#3a605d',
+        sidebarItemHover: '#000000',
+        noteList: darkMode ? '#364e4c' : '#bccecb',
+        noteListActive: darkMode ? '#5b6b6a' : '#eae9e5',
+        content: darkMode ? '#5b6b6a' : '#eae9e5',
+        noteDate: darkMode ? '#889794' : '#969696',
+        noteTitle: darkMode ? '#bccecb' : '#000000',
+        noteTypeButton: darkMode ? '#bccecb' : '#000000',
+        about: darkMode ? '#364e4c' : '#eae9e5',
+        hr: darkMode ? '#1f3134' : '#aaaaaa',
+        MuiCheckColor: '#21cdc0',
+      },
+      coffee: {
+        sideDrawer: darkMode ? '#1b1b1b' : '#333333',
+        sidebarItemHover: '#84614d',
+        noteList: darkMode ? '#333333' : '#f4f4f4',
+        noteListActive: darkMode ? '#494949' : '#ffffff',
+        content: darkMode ? '#494949' : '#ffffff',
+        noteDate: '#969696',
+        noteTitle: darkMode ? '#b58a75' : '#8e6c53',
+        noteTypeButton: darkMode ? '#b58a75' : '#8e6c53',
+        about: darkMode ? '#333333' : '#ffffff',
+        hr: darkMode ? '#494949' : '#aaaaaa',
+        MuiCheckColor: '#cb561c',
+      },
+    }
+  );
+
+  const getEditorColor = () => (
+    {
+      default: {
+        textColor: prefersDarkMode ? '#f0f0f0' : '#333333',
+      },
+      beiges: {
+        textColor: prefersDarkMode ? '#fff9e2' : '#333333',
+      },
+      mintGreen: {
+        textColor: prefersDarkMode ? '#eae9e5' : '#404040',
+      },
+      coffee: {
+        textColor: prefersDarkMode ? '#f4f4f4' : '#8e6c53',
+      },
+    }
+  );
+
+  React.useEffect(() => {
+    const editorColor = getEditorColor();
+    overwriteEditorConfig(editorColor[color], 'editor-color');
+  }, [prefersDarkMode, color]);
+
+  const theme = React.useMemo(() => {
+    const colorTheme = getColorTheme();
+    const wizColor = Object.assign(colorTheme.default, colorTheme[color]);
+    //
+    return createMuiTheme({
       unstable_strictMode: true,
       palette: {
         type: prefersDarkMode ? 'dark' : 'light',
@@ -43,6 +127,30 @@ export default function ThemeSwitcher(props) {
             },
             '& .MuiTouchRipple-child': {
               borderRadius: '4px',
+            },
+          },
+        },
+        MuiSwitch: {
+          colorSecondary: {
+            '&$checked': {
+              color: wizColor.MuiCheckColor,
+            },
+            '&$checked + $track': {
+              backgroundColor: wizColor.MuiCheckColor,
+              opacity: 0.2,
+            },
+          },
+        },
+        MuiCheckbox: {
+          root: {
+            padding: 4,
+          },
+          colorSecondary: {
+            '&:hover': {
+              backgroundColor: `${wizColor.MuiCheckColor}10`,
+            },
+            '&$checked': {
+              color: wizColor.MuiCheckColor,
             },
           },
         },
@@ -70,18 +178,6 @@ export default function ThemeSwitcher(props) {
             '&:hover': {
               backgroundColor: prefersDarkMode ? 'rgba(255, 255, 255, .04)' : 'rgba(0, 0, 0, .04)',
             },
-            // '&:hover': {
-            //   backgroundColor: '#006eff',
-            //   color: '#ffffff',
-            // },
-            // '&$selected': {
-            //   backgroundColor: '#006eff',
-            //   color: '#ffffff',
-            //   '&:hover': {
-            //     backgroundColor: '#006eff',
-            //     color: '#ffffff',
-            //   },
-            // },
           },
         },
         MuiTypography: {
@@ -91,16 +187,16 @@ export default function ThemeSwitcher(props) {
         },
       },
       custom: {
+        getColorTheme,
         background: {
-          noteList: prefersDarkMode ? '#2a2a2a' : 'rgb(245, 245, 245)',
-          about: prefersDarkMode ? '#2a2a2a' : '#ffffff',
-          noteListActive: prefersDarkMode ? '#333333' : '#fff',
-          content: prefersDarkMode ? '#333333' : '#fff',
+          noteList: wizColor.noteList,
+          about: wizColor.about,
+          noteListActive: wizColor.noteListActive,
+          content: wizColor.content,
           contentGreen: 'rgb(237, 249, 240)',
           contentYellow: 'rgb(255, 248, 222)',
-          sideDrawer: prefersDarkMode ? '#121212' : '#333333',
-          sidebarSelected: prefersDarkMode ? '#232323' : 'rgba(255,255,255,0.08)',
-          sidebarItemHover: prefersDarkMode ? '#232323' : '#2a2a2a',
+          sideDrawer: wizColor.sideDrawer,
+          sidebarItemHover: wizColor.sidebarItemHover,
           dialogButtonBlack: prefersDarkMode ? '#f0f0f0' : '#333333',
           dialogButtonBlackHover: prefersDarkMode ? '#ffffff' : '#121212',
           login: prefersDarkMode ? '#101115' : '#fafafa',
@@ -113,15 +209,13 @@ export default function ThemeSwitcher(props) {
           textHighlight: '#e82100',
           drawerText: prefersDarkMode ? '#d8d8d8' : '#ffffff',
           drawerTitle: '#aaa',
-          noteTitle: prefersDarkMode ? '#d8d8d8' : '#333333',
-          noteDate: prefersDarkMode ? '#555555' : '#aaaaaa',
+          noteTitle: wizColor.noteTitle,
+          noteDate: wizColor.noteDate,
           noteAbstract: prefersDarkMode ? '#d8d8d8' : '#333333',
-          noteTypeButton: prefersDarkMode ? '#d8d8d8' : '#333333',
+          noteTypeButton: wizColor.noteTypeButton,
           matchedText: '#aaaaaa',
           activeStarIcon: '#FDDD10',
-          defaultStarIcon: prefersDarkMode ? '#d8d8d8' : '#333333',
-          sidebarIcon: prefersDarkMode ? '#d8d8d8' : '#333333',
-          hr: prefersDarkMode ? '#404040' : '#d8d8d8',
+          hr: wizColor.hr,
           contentToolIcon: '#aaaaaa',
           contentToolIconHover: prefersDarkMode ? '#ffffff' : '#333333',
           dialogButton: prefersDarkMode ? '#ffffff' : '#333333',
@@ -143,9 +237,8 @@ export default function ThemeSwitcher(props) {
           liteInputErrorBorder: '#e82100',
         },
       },
-    }),
-    [prefersDarkMode],
-  );
+    });
+  }, [prefersDarkMode, color]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -159,4 +252,9 @@ ThemeSwitcher.propTypes = {
     PropTypes.element,
     PropTypes.array,
   ]).isRequired,
+  color: PropTypes.string,
+};
+
+ThemeSwitcher.defaultProps = {
+  color: 'default',
 };

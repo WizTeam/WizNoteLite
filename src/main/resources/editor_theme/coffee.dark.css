@@ -1,0 +1,20 @@
+/* Common CSS use by both light and dark themes */
+#wiz-note-content-root {
+  min-height: 100%;
+  box-sizing: border-box;
+  background-color: #494949;
+  color: #f0f0f0;
+}
+
+#wiz-note-content-root div.editor-main {
+  --editor-bg-color: #494949;
+  --panel-background-color: transparent;
+  --text-font-color: #f4f4f4;
+  --blockquote-border-color: #555;
+  --blockquote-font-color: #969696;
+  --blockquote-background: none repeat scroll 0 0 rgba(51,51,51,.5);
+  /* live-editor */
+  --editor-checkbox-layer-bg-color: #333333;
+  --editor-border-color: #bfbfbf;
+  --editor-table-bg-color: #2a2a2a;
+}

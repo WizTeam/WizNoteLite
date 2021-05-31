@@ -38,6 +38,7 @@ function getMainMenuTemplate() {
       label: app.name,
       submenu: [
         toMenuItem('menuShowAbout'),
+        toMenuItem('setting', 'CmdOrCtrl+,'),
         { type: 'separator' },
         { role: 'services', label: i18next.t('services') },
         { type: 'separator' },
@@ -54,6 +55,10 @@ function getMainMenuTemplate() {
   template.push({
     label: i18next.t('fileMenu'),
     submenu: [
+      toMenuItem('newNote', 'CmdOrCtrl+n'),
+      toMenuItem('exportMd', 'CmdOrCtrl+Shift+M'),
+      toMenuItem('exportPdf', 'CmdOrCtrl+Shift+Alt+P'),
+      toMenuItem('importMd'),
       { role: 'close', label: i18next.t('close') },
     ],
   });
@@ -119,34 +124,32 @@ function getMainMenuTemplate() {
     ],
   });
   // help menu
-  if (isMac) {
-    template.push({
-      label: i18next.t('helpMenu'),
-      role: 'help',
-      submenu: [
-        {
-          label: i18next.t('learnMore'),
-          click: async () => {
-            await shell.openExternal('https://www.wiz.cn/wiznote-lite');
-          },
+  template.push({
+    label: i18next.t('helpMenu'),
+    role: 'help',
+    submenu: (isMac ? [] : [
+      toMenuItem('menuShowAbout'),
+    ]).concat([
+      {
+        label: i18next.t('feedback'),
+        click: async () => {
+          await shell.openExternal('https://support.qq.com/product/174045');
         },
-      ],
-    });
-  } else {
-    template.push({
-      label: i18next.t('helpMenu'),
-      role: 'help',
-      submenu: [
-        toMenuItem('menuShowAbout'),
-        {
-          label: i18next.t('learnMore'),
-          click: async () => {
-            await shell.openExternal('https://www.wiz.cn/wiznote-lite');
-          },
+      },
+      {
+        label: i18next.t('helpBook'),
+        click: async () => {
+          await shell.openExternal('https://url.wiz.cn/u/LiteManual');
         },
-      ],
-    });
-  }
+      },
+      {
+        label: i18next.t('learnMore'),
+        click: async () => {
+          await shell.openExternal('https://www.wiz.cn/wiznote-lite');
+        },
+      },
+    ]),
+  });
   return template;
 }
 

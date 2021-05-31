@@ -1,3 +1,45 @@
+export function overwriteEditorConfig(options, id = 'editor-overwrite') {
+  let style = document.querySelector(`#${id}`);
+  //
+  if (!style) {
+    style = document.createElement('style');
+    style.id = id;
+  }
+  let css = '';
+  //
+  Object.keys(options).forEach((item) => {
+    const val = options[item];
+    switch (item) {
+      case 'fontFamily':
+        css += `--text-font-family: '${val}';`;
+        break;
+      case 'fontSize':
+        css += `--text-font-size: ${val}px;`;
+        break;
+      case 'lineHeight':
+        {
+          const h = Math.floor(val * options.fontSize);
+          css += `--text-line-height: ${h}px;`;
+        }
+        break;
+      case 'paragraphHeight':
+        css += `--p-margin-bottom: ${val}px;`;
+        break;
+      case 'textColor':
+        css += `--text-font-color: ${val}`;
+        break;
+      case 'textWidth':
+        css += `--editor-container-padding: ${(100 - val) / 2}%`;
+        break;
+      default:
+        break;
+    }
+  });
+  //
+  style.innerHTML = `:root,div.editor-main { ${css} }`;
+  document.head.appendChild(style);
+}
+
 export function injectionCssFormId(id, css = '') {
   if (!id) return;
   //
@@ -37,4 +79,97 @@ export function getScrollbarWidthHorizontal() {
   return scrollbarWidth;
 }
 
-export default {};
+export function isMacSystem() {
+  return navigator.platform.toUpperCase().includes('MAC');
+}
+
+export function parseKey(key) {
+  let val;
+  switch (key) {
+    case '↑':
+      val = 'ArrowUp';
+      break;
+    case '↓':
+      val = 'ArrowDown';
+      break;
+    case '←':
+      val = 'ArrowLeft';
+      break;
+    case '→':
+      val = 'ArrowRight';
+      break;
+    default:
+      val = key;
+      break;
+  }
+  return val;
+}
+
+export function transformKey(key) {
+  switch (key) {
+    case 'å':
+      return 'a';
+    case 'µ':
+      return 'm';
+    case '–':
+      return '-';
+    case '∆':
+      return 'j';
+    case 'ç':
+      return 'c';
+    case 'ø':
+      return 'o';
+    case '¨':
+      return 'u';
+    case '≈':
+      return 'x';
+    case 'œ':
+      return 'q';
+    case 'dead':
+      return 'u';
+    case 'ß':
+      return 's';
+    case '÷':
+      return '/';
+    case '†':
+      return 't';
+    default:
+      return key;
+  }
+}
+
+
+export function isTouchCtrlKey(event) {
+  return isMacSystem() ? event.metaKey && !event.ctrlKey : !event.metaKey && event.ctrlKey;
+}
+
+export function matchHotKey(hotkey, event, separator = '-') {
+  const hotkeys = hotkey.split(separator);
+  const key = parseKey(hotkeys[hotkeys.length - 1]);
+  const hasCtrl = hotkeys.some(
+    (value) => value.toLocaleLowerCase().includes('ctrl') || value.toLocaleLowerCase().includes('cmd'),
+  );
+  const hasAlt = hotkeys.some((value) => value.toLocaleLowerCase() === 'alt' || value === '⌥');
+  const hasShift = hotkeys.some((value) => value.toLocaleLowerCase() === 'shift' || value === '⇧');
+
+  return (
+    key.toLocaleLowerCase() === transformKey(event.key.toLocaleLowerCase())
+    && ((hasCtrl && isTouchCtrlKey(event)) || (!hasCtrl && !isTouchCtrlKey(event)))
+    && ((hasAlt && event.altKey) || (!hasAlt && !event.altKey))
+    && ((hasShift && event.shiftKey) || (!hasShift && !event.shiftKey))
+  );
+}
+
+export const COMMAND_KEY = isMacSystem() ? '⌘' : 'Ctrl';
+
+
+export default {
+  overwriteEditorConfig,
+  injectionCssFormId,
+  getScrollbarWidthHorizontal,
+  isMacSystem,
+  parseKey,
+  transformKey,
+  isTouchCtrlKey,
+  COMMAND_KEY,
+};

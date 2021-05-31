@@ -32,8 +32,8 @@ function LiteText(props) {
 
   const {
     highlightText, children, className, inheritColor,
-    isDivContainer, title, style, fullWidth,
-    disableUserSelect, variant, inheritLineheight,
+    isDivContainer, fullWidth,
+    disableUserSelect, variant, inheritLineheight, ...other
   } = props;
 
   const headlineMapping = {
@@ -61,10 +61,10 @@ function LiteText(props) {
 
   return (
     <Typography
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      {...other}
       variant={variant}
       variantMapping={headlineMapping}
-      title={title}
-      style={style}
       dangerouslySetInnerHTML={innerHtml}
       className={classNames(classes.root,
         fullWidth && classes.fullWidth,

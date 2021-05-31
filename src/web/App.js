@@ -19,6 +19,8 @@ import AboutDialog from './dialogs/AboutDialog';
 import ThemeSwitcher from './components/ThemeSwitcher';
 import localeMessages from './locale';
 import { getLocale } from './utils/lang';
+import { matchHotKey } from './utils/utils';
+import { eventCenter, eventMap } from './utils/event';
 import onlineApi from './OnlineApi';
 import Icons from './config/icons';
 
@@ -45,7 +47,10 @@ const messages = Object.assign(localeMessages.en, localeMessages[locale]);
 class App extends React.Component {
   handler = {
     handleLoggedIn: (user) => {
-      this.setState({ currentUser: user });
+      this.setState({
+        currentUser: user,
+        color: window.wizApi.userManager.getUserSettingsSync('colorTheme', 'default'),
+      });
     },
     handleCreateAccount: () => {
       this.setState({ currentUser: null, mergeLocalAccount: true });
@@ -69,6 +74,30 @@ class App extends React.Component {
       }
       this.setState({ showAboutDialog: true });
     },
+    handleColorThemeChange: (color) => {
+      this.setState({
+        color,
+      });
+    },
+    handlerShortcut: (event) => {
+      if (matchHotKey('cmd+shift+F', event, '+')) {
+        eventCenter.dispatch(eventMap.SEARCH);
+      } else if (matchHotKey('cmd+alt+/', event, '+')) {
+        eventCenter.dispatch(eventMap.STAR_NOTE);
+      } else if (matchHotKey('cmd+alt+s', event, '+')) {
+        eventCenter.dispatch(eventMap.SYNC);
+      } else if (matchHotKey('cmd+alt+t', event, '+')) {
+        eventCenter.dispatch(eventMap.FOCUS_MODE);
+      } else if (matchHotKey('cmd+shift+j', event, '+')) {
+        eventCenter.dispatch(eventMap.TYPEWRITER_MODE);
+      } else if (matchHotKey('cmd+alt+c', event, '+')) {
+        eventCenter.dispatch(eventMap.WORDS_NUMBER);
+      } else if (matchHotKey('cmd+shift+o', event, '+')) {
+        eventCenter.dispatch(eventMap.OUTLINE);
+      } else if (matchHotKey('cmd+shift+w', event, '+')) {
+        eventCenter.dispatch(eventMap.WIKILINK);
+      }
+    },
   }
 
   constructor(props) {
@@ -78,6 +107,7 @@ class App extends React.Component {
       isAutoLogging: true,
       mergeLocalAccount: false,
       showAboutDialog: false,
+      color: 'default',
     };
     this.shouldAutoLogging = true;
     const params = queryString.parse(window.location.search);
@@ -96,10 +126,12 @@ class App extends React.Component {
           return;
         }
         //
-        await um.refreshUserInfo();
+        const _user = await um.refreshUserInfo();
         await um.syncKb(user.kbGuid, {
           noWait: true,
         });
+        // eslint-disable-next-line no-param-reassign
+        user.token = _user.token;
       } catch (err) {
         console.error(err);
       }
@@ -108,13 +140,14 @@ class App extends React.Component {
     if (this.shouldAutoLogging) {
       this.shouldAutoLogging = false;
       window.document.addEventListener('DOMContentLoaded', () => {
-        window.wizApi.userManager.localLogin().then((user) => {
+        window.wizApi.userManager.localLogin().then(async (user) => {
           if (user) {
-            syncData(user);
+            await syncData(user);
             this.setState({
               currentUser: user,
               isAutoLogging: false,
               mergeLocalAccount: !!user.isLocalUser,
+              color: window.wizApi.userManager.getUserSettingsSync('colorTheme', 'default'),
             });
           } else {
             this.setState({ isAutoLogging: false });
@@ -122,6 +155,8 @@ class App extends React.Component {
         });
       });
     }
+
+    window.addEventListener('keydown', this.handler.handlerShortcut);
   }
 
   componentWillUnmount() {
@@ -134,7 +169,7 @@ class App extends React.Component {
     const { classes } = this.props;
     const {
       currentUser, isAutoLogging, mergeLocalAccount,
-      showAboutDialog,
+      showAboutDialog, color,
     } = this.state;
     //
     const loggedIn = currentUser;
@@ -144,7 +179,7 @@ class App extends React.Component {
       window.document.body.className = window.document.body.className.replace('loading', '');
     }
     return (
-      <ThemeSwitcher>
+      <ThemeSwitcher color={color}>
         <IntlProvider
           locale={locale}
           messages={messages}
@@ -185,6 +220,7 @@ class App extends React.Component {
                       mergeLocalAccount={mergeLocalAccount}
                       onCreateAccount={this.handler.handleCreateAccount}
                       onInvalidPassword={this.handler.handleInvalidPassword}
+                      onColorThemeChange={this.handler.handleColorThemeChange}
                     />
                   )
               )}

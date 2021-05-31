@@ -2,17 +2,15 @@
 #wiz-note-content-root {
   min-height: 100%;
   box-sizing: border-box;
-  background-color: white;
+  background-color: #fff9e2;
   color: #333333;
 }
 
 #wiz-note-content-root div.editor-main {
-  --editor-bg-color: #ffffff;
+  --editor-bg-color: #fff9e2;
   --text-line-height: 28px;
   --text-font-size: 16px;
   --text-font-color: #333333;
-  --text-font-family: 'Open Sans', 'Noto Sans SC', Menlo, "Ubuntu Mono", Consolas, "Courier New", "Microsoft Yahei", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif;
-  --p-margin-bottom: 16px;
   --blockquote-background: inherit;
   --blockquote-border-color: #d8d8d8;
   --blockquote-font-color: #aaa;
@@ -20,7 +18,9 @@
   --ir-bracket-color: #448aff;
   --bold-font-family: 'Open Sans', 'Noto Sans SC', Menlo, "Ubuntu Mono", Consolas, "Courier New", "Microsoft Yahei", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif;
   /* live-editor */
+  --editor-tag-box-bg-color: #ccc;
   --editor-checkbox-layer-bg-color: #ffffff;
   --editor-border-color: #b9bfc8;
   --editor-table-bg-color: transparent;
 }
+

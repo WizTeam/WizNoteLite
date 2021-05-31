@@ -1,5 +1,5 @@
 import React, {
-  useRef, useState, useEffect,
+  useRef, useState, useEffect, useCallback,
 } from 'react';
 import PropTypes from 'prop-types';
 import IconButton from '@material-ui/core/IconButton';
@@ -7,6 +7,7 @@ import Menu from '@material-ui/core/Menu';
 import Switch from '@material-ui/core/Switch';
 import { makeStyles } from '@material-ui/core/styles';
 import Icons from '../config/icons';
+import { eventCenter, eventMap } from '../utils/event';
 
 const useStyles = makeStyles(({ spacing, palette }) => ({
   focusMenu: {
@@ -35,15 +36,6 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
     color: '#aaaaaa',
     backgroundColor: 'transparent',
   },
-  switchBase: {
-    '&.Mui-checked': {
-      color: '#35e714',
-      '& + .MuiSwitch-track': {
-        backgroundColor: '#35e714',
-        opacity: 0.2,
-      },
-    },
-  },
   menuPaper: {
     backgroundColor: palette.type === 'dark' ? '#555' : '#fff',
     borderRadius: '2px',
@@ -60,6 +52,23 @@ function FocusButton(props) {
   const [focusMode, setFocusMode] = useState(false);
   const [typewriterMode, setTypewriterMode] = useState(false);
 
+  const handleTypewriter = useCallback((isChecked = !typewriterMode) => {
+    setTypewriterMode(isChecked);
+    window.wizApi.userManager.setSettings('typewriterMode', isChecked);
+  }, [typewriterMode]);
+
+  const handleFocus = useCallback((isChecked = !focusMode) => {
+    const focusWithTypewriter = window.wizApi.userManager.getUserSettingsSync('focusWithTypewriter', false);
+    //
+    if (focusWithTypewriter && isChecked) {
+      handleTypewriter(isChecked);
+    }
+
+    setFocusMode(isChecked);
+    window.wizApi.userManager.setSettings('focusMode', isChecked);
+  }, [focusMode, handleTypewriter]);
+
+
   useEffect(() => {
     (async () => {
       setFocusMode(await window.wizApi.userManager.getSettings('focusMode', false));
@@ -67,15 +76,17 @@ function FocusButton(props) {
     })();
   }, []);
 
-  function handleFocus(event) {
-    setFocusMode(event.target.checked);
-    window.wizApi.userManager.setSettings('focusMode', event.target.checked);
-  }
-
-  function handleTypewriter(event) {
-    setTypewriterMode(event.target.checked);
-    window.wizApi.userManager.setSettings('typewriterMode', event.target.checked);
-  }
+  useEffect(() => {
+    eventCenter.on(eventMap.FOCUS_MODE, handleFocus);
+    eventCenter.on(eventMap.TYPEWRITER_MODE, handleTypewriter);
+    return () => {
+      eventCenter.off(eventMap.FOCUS_MODE, handleFocus);
+      eventCenter.off(eventMap.TYPEWRITER_MODE, handleTypewriter);
+    };
+  }, [
+    handleFocus,
+    handleTypewriter,
+  ]);
 
   return (
     <>
@@ -104,7 +115,7 @@ function FocusButton(props) {
                 switchBase: classes.switchBase,
               }}
               checked={focusMode}
-              onChange={handleFocus}
+              onChange={(e) => handleFocus(e.target.checked)}
             />
           </div>
           <div className={classes.menuLine}>
@@ -115,7 +126,7 @@ function FocusButton(props) {
                 switchBase: classes.switchBase,
               }}
               checked={typewriterMode}
-              onChange={handleTypewriter}
+              onChange={(e) => handleTypewriter(e.target.checked)}
             />
           </div>
         </div>
@@ -124,10 +135,6 @@ function FocusButton(props) {
   );
 }
 
-FocusButton.propTypes = {
-  className: PropTypes.string,
-  iconClassName: PropTypes.string,
-};
 
 FocusButton.defaultProps = {
   className: '',

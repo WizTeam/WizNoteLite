@@ -103,7 +103,7 @@ const CommonHeader = React.forwardRef((props, ref) => {
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  });
+  }, []);
 
   const handleDoubleClickHeader = () => {
     if (isFullScreen) {

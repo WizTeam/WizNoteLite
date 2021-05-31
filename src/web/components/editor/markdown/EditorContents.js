@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, {
+  useState, useEffect, useImperativeHandle,
+} from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { makeStyles } from '@material-ui/core/styles';
@@ -13,9 +15,10 @@ import Icons from '../../../config/icons';
 import TreeView from '../../TreeView';
 import { filterParentElement, hasClass } from '../libs/dom_utils';
 
-const useStyles = makeStyles(({ spacing, palette }) => ({
+const useStyles = makeStyles(({ spacing, palette, custom }) => ({
   editorContents: ({ contentsWidth }) => ({
-    backgroundColor: palette.type === 'dark' ? '#333' : '#fff',
+    // backgroundColor: palette.type === 'dark' ? '#333' : '#fff',
+    backgroundColor: custom.background.content,
     display: 'none',
     width: contentsWidth,
     boxSizing: 'border-box',
@@ -32,7 +35,7 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
     bottom: 0,
     right: 0,
     zIndex: 99,
-    backgroundColor: palette.type === 'dark' ? '#333333' : '#fafafa',
+    // backgroundColor: palette.type === 'dark' ? '#333333' : '#fafafa',
     boxShadow: '0px 1px 16px 0px rgba(0, 0, 0, 0.31)',
     opacity: 0.8,
     backdropFilter: 'blur(8px)',
@@ -160,6 +163,11 @@ function EditorContents(props) {
 
   const { onClose } = props;
 
+  // eslint-disable-next-line react/prop-types
+  useImperativeHandle(props.contentRef, () => ({
+    setTab,
+  }));
+
   useEffect(() => {
     function clickHandler(e) {
       if (
@@ -184,6 +192,7 @@ function EditorContents(props) {
   }, [props.onClose, props.open, isFixed, classes.editorContents, onClose]);
 
   const linkList = [...new Set(props.linkList)];
+
   return (
     <div className={classNames(classes.editorContents, {
       active: props.open,
@@ -346,4 +355,7 @@ EditorContents.defaultProps = {
   onLinkClick: null,
 };
 
-export default injectIntl(EditorContents);
+export default React.forwardRef((props, ref) => {
+  const Component = injectIntl(EditorContents);
+  return <Component {...props} contentRef={ref} />;
+});

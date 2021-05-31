@@ -47,6 +47,20 @@ async function handleApi(name, api) {
   });
 }
 
+handleApi('openImage', async (event, imagesList, index) => {
+  console.log('imagesList', imagesList);
+  if (process.platform === 'darwin' && (imagesList[index].startsWith('wiz://') || imagesList[index].startsWith('file://'))) {
+    let imageArr = [...imagesList];
+    for (let i = 0; i < index; i++) {
+      imageArr.push(imageArr.shift());
+    }
+    imageArr = imageArr.filter((item) => item.startsWith('wiz://') || item.startsWith('file://')).map((imgUrl) => imgUrl.replace(/^wiz:\/\//, `${paths.getUsersData()}/`).replace(/\s/g, '\\ '));
+    exec(`open ${imageArr.join(' ')}`);
+  } else {
+    shell.openPath(imagesList[index].replace(/^wiz:\/\//, `${paths.getUsersData()}/`).replace(/\s/g, '\\ '));
+  }
+});
+
 handleApi('getLink', async (event, ...args) => {
   const link = await sdk.getLink(...args);
   return link;
@@ -261,9 +275,10 @@ handleApi('captureScreen', async (event, userGuid, kbGuid, noteGuid, options = {
   });
 
   const theme = options.theme || 'lite';
+  const color = options.color || 'default';
   const padding = options.padding || 16;
 
-  window.loadURL(`${mainUrl}?kbGuid=${kbGuid}&noteGuid=${noteGuid}&padding=${padding}&theme=${theme}&hideThumb=1&showFooter=1`);
+  window.loadURL(`${mainUrl}?kbGuid=${kbGuid}&noteGuid=${noteGuid}&padding=${padding}&color=${color}&theme=${theme}&hideThumb=1&showFooter=1`);
   if (isDebug) window.webContents.toggleDevTools();
   //
   window.webContents.on('ipc-message', async (e, channel, ...args) => {
@@ -292,12 +307,12 @@ handleApi('captureScreen', async (event, userGuid, kbGuid, noteGuid, options = {
         if (pageCount > 1) {
           if (i === pageCount - 1) {
             const top = totalHeight - pageHeight;
-            await window.webContents.executeJavaScript(`document.getElementById('wiz-note-content-root').parentElement.scrollTop = ${top};`);
+            await window.webContents.executeJavaScript(`document.querySelector("div[id^='wiz-note-content-root']").parentElement.scrollTop = ${top};`);
           } else if (i > 0) {
-            await window.webContents.executeJavaScript(`document.getElementById('wiz-note-content-root').parentElement.scrollTop = ${i * pageHeight};`);
+            await window.webContents.executeJavaScript(`document.querySelector("div[id^='wiz-note-content-root']").parentElement.scrollTop = ${i * pageHeight};`);
           }
         }
-        const top = await window.webContents.executeJavaScript(`document.getElementById('wiz-note-content-root').parentElement.scrollTop;`);
+        const top = await window.webContents.executeJavaScript(`document.querySelector("div[id^='wiz-note-content-root']").parentElement.scrollTop;`);
         //
         await wait(300); // wait scrollbar
         try {
@@ -459,7 +474,7 @@ handleApi('printToPDF', async (event, userGuid, kbGuid, noteGuid, options = {}) 
     slashes: true,
   });
 
-  window.loadURL(`${mainUrl}?kbGuid=${kbGuid}&noteGuid=${noteGuid}&standardScrollBar=1&padding=32&theme=lite`);
+  window.loadURL(`${mainUrl}?kbGuid=${kbGuid}&noteGuid=${noteGuid}&standardScrollBar=1&padding=32&color=default&theme=lite`);
   if (isDebug) window.webContents.toggleDevTools();
   //
   window.webContents.on('ipc-message', async (e, channel) => {
@@ -553,9 +568,51 @@ handleApi('writeToMarkdown', async (event, userGuid, kbGuid, noteGuid) => {
   }
   //
   const data = await sdk.getNoteMarkdown(userGuid, kbGuid, noteGuid);
-  await fs.writeFile(filePath, data);
+  log.log('data', data);
+  const mdStr = data.replace(/(!\[.*?\\*\]\()(index_files\/.*?\\*?(\s=(\d+(?:\.\d+)?)x(\d+(?:\.\d+)?))?\))/g, (str, p1, p2) => `${p1 + targetDirname}/${p2}`);
+  await fs.writeFile(filePath, mdStr);
   //
   shell.showItemInFolder(filePath);
+});
+
+handleApi('uploadMarkdown', async (event) => {
+  const webContents = event.sender;
+  const browserWindow = BrowserWindow.fromWebContents(webContents);
+
+  const dialogResult = await dialog.showOpenDialog(browserWindow, {
+    properties: ['openFile', 'openDirectory', 'multiSelections'],
+    filters: [{
+      name: i18next.t('fileFilterMarkdown'),
+      extensions: [
+        'md',
+      ],
+    }],
+  });
+
+  const contents = [];
+
+  async function getMdPaths(files) {
+    for (let i = 0; i < files.length; i++) {
+      const stat = await fs.stat(files[i]);
+      if (stat.isFile() && files[i].endsWith('.md')) {
+        const content = await fs.readFile(files[i], 'utf8');
+        contents.push(content);
+      } else if (stat.isDirectory()) {
+        const arr = await fs.readdir(files[i]);
+        getMdPaths(arr);
+      }
+    }
+  }
+
+  if (!dialogResult.canceled) {
+    await getMdPaths(dialogResult.filePaths);
+  }
+  return contents;
+});
+
+handleApi('readToMarkdown', async (event, filePath) => {
+  const data = await fs.readFile(filePath, 'utf8');
+  return data;
 });
 
 handleApi('getThemeCssString', async (event, theme = '') => {
@@ -568,6 +625,17 @@ handleApi('getThemeCssString', async (event, theme = '') => {
     return css;
   }
   return '';
+});
+
+handleApi('getDefaultMarkdown', async (event) => {
+  let markdown = '';
+
+  const mdPath = path.join(__dirname, './resources/default_markdown.md');
+  //
+  if (fs.existsSync(mdPath)) {
+    markdown = await fs.readFile(mdPath, 'utf8');
+  }
+  return markdown;
 });
 
 handleApi('screenCaptureManual', async (event) => {
@@ -599,6 +667,35 @@ handleApi('getUserInfo', async (event, userGuid) => {
   return user;
 });
 
+handleApi('getUserInfoFromServer', async (event, ...args) => {
+  const user = await sdk.getUserInfoFromServer(...args);
+  return user;
+});
+
+handleApi('unbindSns', async (event, ...args) => {
+  const result = await sdk.unbindSns(...args);
+  return result;
+});
+
+handleApi('changeAccount', async (event, ...args) => {
+  const result = await sdk.unbindSns(...args);
+  return result;
+});
+
+handleApi('changeUserDisplayName', async (event, ...args) => {
+  const result = await sdk.changeUserDisplayName(...args);
+  return result;
+});
+
+handleApi('changeUserMobile', async (event, ...args) => {
+  const result = await sdk.changeUserMobile(...args);
+  return result;
+});
+
+handleApi('changeUserPassword', async (event, ...args) => {
+  const result = await sdk.changeUserPassword(...args);
+  return result;
+});
 
 handleApi('refreshUserInfo', async (event, userGuid) => {
   const user = await sdk.refreshUserInfo(userGuid);
@@ -609,7 +706,6 @@ handleApi('viewLogFile', async () => {
   const logPath = log.transports.file.file;
   shell.openPath(logPath);
 });
-
 
 module.exports = {
   unregisterWindow,

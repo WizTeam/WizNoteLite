@@ -52,5 +52,5 @@
   ],
   "eslint.options": {
     "configFile":".eslintrc.json"
-  },
+  }
 }

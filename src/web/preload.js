@@ -1,4 +1,6 @@
 const { remote, ipcRenderer, contextBridge } = require('electron');
+const EventEmitter = require('events');
+const { remote, ipcRenderer } = require('electron');
 const platform = require('platform');
 const path = require('path');
 const URL = require('url');
@@ -149,6 +151,9 @@ const windowManager = {
       y,
     });
   },
+  openImageViewer(imagesList, index) {
+    invokeApi('openImage', imagesList, index);
+  },
 };
 
 const userManager = {
@@ -158,6 +163,8 @@ const userManager = {
   _events: new EventEmitter(),
 
   getCurrentUser: () => userManager._user,
+  
+  getUserToken: () => userManager._user.token,
 
   getUserGuid: () => userManager._user.userGuid,
 
@@ -343,6 +350,11 @@ const userManager = {
     return result;
   },
 
+  uploadMarkdown: async () => {
+    const result = await invokeApi('uploadMarkdown');
+    return result;
+  },
+
   buildBindSnsUrl: (server, type, postMessage, origin, extraParams) => {
     const urlPath = '/as/thirdparty/go/auth';
     const query = {
@@ -353,11 +365,22 @@ const userManager = {
       origin,
       extra: encodeURIComponent(extraParams),
     };
-
-    const params = Object.keys(query).map((key) => `${key}=${query[key]}`).join('&');
-    const url = `${server}${urlPath}?${params}`;
-
     return url;
+  },
+
+  readToMarkdown: async (filePath) => {
+    const data = await invokeApi('readToMarkdown', filePath);
+    return data;
+  },
+
+  getThemeCssString: async (theme) => {
+    const result = await invokeApi('getThemeCssString', theme);
+    return result;
+  },
+
+  getDefaultMarkdown: async () => {
+    const result = await invokeApi('getDefaultMarkdown');
+    return result;
   },
 
   screenCaptureManual: async () => {
@@ -400,6 +423,47 @@ const userManager = {
     return result;
   },
 
+  unbindSns: async (st) => {
+    const result = await invokeApi('unbindSns', userManager.getUserGuid(), userManager.getUserToken(), {
+      st,
+    });
+    return result;
+  },
+
+  getUserInfoFromServer: async () => {
+    const result = await invokeApi('getUserInfoFromServer', userManager.getUserGuid(), userManager.getUserToken(), {
+      with_sns: true,
+    });
+    return result;
+  },
+
+  async changeAccount(password, userId, newUserId) {
+    const result = await invokeApi('changeAccount', userManager.getUserGuid(), userManager.getUserToken(), {
+      password,
+      userId,
+      newUserId,
+    });
+    return result;
+  },
+
+  updateUserDisplayName: async (displayName) => {
+    const result = await invokeApi('changeUserDisplayName', userManager.getUserGuid(), userManager.getUserToken(), displayName);
+    return result;
+  },
+
+  removeMobile: async () => {
+    const result = await invokeApi('changeUserMobile', userManager.getUserGuid(), userManager.getUserToken(), '');
+    return result;
+  },
+
+  changePassword: async (newPwd, oldPwd) => {
+    const result = await invokeApi('changeUserPassword', userManager.getUserGuid(), userManager.getUserToken(), {
+      newPwd,
+      oldPwd,
+    });
+    return result;
+  },
+
   sendMessage: async (name, ...args) => {
     ipcRenderer.send(name, userManager.getUserGuid(), ...args);
   },
@@ -419,6 +483,10 @@ ipcRenderer.on('syncFinish', (event, ...args) => {
 
 ipcRenderer.on('newNote', (event, ...args) => {
   userManager.emit('newNote', ...args);
+});
+
+ipcRenderer.on('showImage', (event, ...args) => {
+  userManager.emit('showImage', ...args);
 });
 
 ipcRenderer.on('modifyNote', (event, ...args) => {

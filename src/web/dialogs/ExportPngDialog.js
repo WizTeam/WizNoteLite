@@ -140,6 +140,7 @@ class ExportPngDialog extends React.Component {
       const {
         widthValue,
         previewTheme,
+        colorTheme,
       } = this.state;
       const width = widthValue;
       let padding = 16;
@@ -152,6 +153,7 @@ class ExportPngDialog extends React.Component {
       const options = {
         progressCallback: 'onCaptureScreenProgress',
         theme: previewTheme,
+        color: colorTheme,
         width,
         padding,
       };
@@ -177,10 +179,20 @@ class ExportPngDialog extends React.Component {
       loading: false,
       previewTheme: um.getUserSettingsSync('exportPngTheme2', props.theme.palette.type === 'dark' ? 'dark' : 'lite'),
       widthValue: um.getUserSettingsSync('exportPngWidth', MOBILE_WIDTH),
+      colorTheme: um.getUserSettingsSync('colorTheme', 'default'),
     };
   }
 
   componentDidMount() {
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.open && prevProps.open !== this.props.open) {
+      const colorTheme = window.wizApi.userManager.getUserSettingsSync('colorTheme', 'default');
+      this.setState({
+        colorTheme,
+      });
+    }
   }
 
   componentWillUnmount() {
@@ -190,7 +202,7 @@ class ExportPngDialog extends React.Component {
   render() {
     const {
       loading, widthValue,
-      previewTheme,
+      previewTheme, colorTheme,
     } = this.state;
     const {
       classes, open, onClose,
@@ -240,6 +252,7 @@ class ExportPngDialog extends React.Component {
               <NoteViewer
                 kbGuid={kbGuid}
                 noteGuid={noteGuid}
+                color={colorTheme}
                 darkMode={previewTheme === 'dark'}
                 params={{
                   padding: `${padding}`,
