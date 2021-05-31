@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import assert from 'assert';
 import debounce from 'lodash/debounce';
+import axios from 'axios';
 import { withStyles, withTheme } from '@material-ui/core/styles';
 import { injectIntl } from 'react-intl';
 import {
@@ -18,6 +19,31 @@ import './live-editor.scss';
 const {
   extractLinksFromMarkdown,
 } = require('wiznote-sdk-js-share').noteAnalysis;
+
+async function downloadImageToFile(src) {
+  try {
+    const res = await axios.get(src, {
+      responseType: 'blob',
+    });
+    //
+    const reader = new FileReader();
+    const promise = new Promise((resolve, reject) => {
+      //
+      reader.onload = resolve;
+      reader.onerror = reject;
+      //
+    });
+
+    reader.readAsArrayBuffer(res.data);
+    //
+    await promise;
+    //
+    const buffer = reader.result;
+    return buffer;
+  } catch (err) {
+    return null;
+  }
+}
 
 // const lang = getLocale().toLowerCase();
 
@@ -74,7 +100,7 @@ class MarkdownEditorComponent extends React.PureComponent {
       }
       return resourceName;
     },
-    handleBuildResourceUrlFromOtherServer: (editor, apiServer, resourceName, token) => {
+    handleCopyResourcesFromOtherServer: async (editor, apiServer, resourceNames) => {
       //
       const getNoteInfoFromApiServer = () => {
         //
@@ -89,16 +115,29 @@ class MarkdownEditorComponent extends React.PureComponent {
         //
         return [kbGuid, noteGuid];
       };
+      // from
+      const [fromKbGuid, fromNoteGuid] = getNoteInfoFromApiServer(apiServer);
       //
-      const [kbGuid, noteGuid] = getNoteInfoFromApiServer(apiServer);
-      console.log(kbGuid, noteGuid);
+      const userGuid = window.wizApi?.userManager.getUserGuid() || '';
+      const ret = {};
+
+      const promises = resourceNames.map(async (resName) => {
+        try {
+          const url = `wiz://${userGuid}/${fromKbGuid}/${fromNoteGuid}/${resName}`;
+          const file = await downloadImageToFile(url);
+          if (file) {
+            const newResourceName = await this.handler.handleUploadResource(editor, file);
+            ret[resName] = newResourceName;
+            return file;
+          }
+        } catch (err) {
+          console.error(err);
+        }
+        return null;
+      });
       //
-      // TODO: copy resource from kbGuid/noteGuid to current note
-      console.log(apiServer, resourceName, token);
-      //
-      // const userGuid = window.wizApi?.userManager?.userGuid || '';
-      // return `wiz://${userGuid}/${kbGuid}/${noteGuid}`;
-      // return this.handler.handleBuildResourceUrl()
+      await Promise.all(promises);
+      return ret;
     },
     handleTagsChanged: async (kbGuid) => {
       if (kbGuid !== this.props.kbGuid) {
@@ -374,7 +413,7 @@ class MarkdownEditorComponent extends React.PureComponent {
         onChange: this.handler.handleLiveEditorChange,
         onUploadResource: this.handler.handleUploadResource,
         onBuildResourceUrl: this.handler.handleBuildResourceUrl,
-        onBuildResourceUrlFromOtherServer: this.handler.handleBuildResourceUrlFromOtherServer,
+        onCopyResourcesFromOtherServer: this.handler.handleCopyResourcesFromOtherServer,
         onUpdateToc: this.handler.handleUpdateToc,
         onGetTagItems: this.handler.handleGetTagItems,
         onTagClicked: this.handler.handleTagClicked,
