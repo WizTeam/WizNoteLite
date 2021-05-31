@@ -118,7 +118,7 @@ class MarkdownEditorComponent extends React.PureComponent {
       // from
       const [fromKbGuid, fromNoteGuid] = getNoteInfoFromApiServer(apiServer);
       //
-      const userGuid = window.wizApi?.userManager.getUserGuid() || '';
+      const userGuid = window.wizApi?.userManager?.userGuid || '';
       const ret = {};
 
       const promises = resourceNames.map(async (resName) => {
