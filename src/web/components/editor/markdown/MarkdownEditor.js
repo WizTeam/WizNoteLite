@@ -274,7 +274,7 @@ class MarkdownEditorComponent extends React.PureComponent {
   get resourceUrl() {
     const { note } = this.state;
     const { kbGuid } = this.props;
-    const userGuid = window.wizApi?.userManager?.userGuid || '';
+    const userGuid = window.wizApi?.userManager?.getUserGuid() || '';
     if (!note || !kbGuid || !userGuid) {
       return '';
     }
