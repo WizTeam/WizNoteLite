@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import assert from 'assert';
 import debounce from 'lodash/debounce';
 import { withStyles, withTheme } from '@material-ui/core/styles';
 import { injectIntl } from 'react-intl';
@@ -74,7 +75,30 @@ class MarkdownEditorComponent extends React.PureComponent {
       return resourceName;
     },
     handleBuildResourceUrlFromOtherServer: (editor, apiServer, resourceName, token) => {
+      //
+      const getNoteInfoFromApiServer = () => {
+        //
+        const find = 'localhost/';
+        const index = apiServer.indexOf(find);
+        assert(index !== -1);
+        const last = apiServer.substr(index + find.length);
+        const parts = last.split('/');
+        assert(parts.length >= 2);
+        const kbGuid = parts[0];
+        const noteGuid = parts[1];
+        //
+        return [kbGuid, noteGuid];
+      };
+      //
+      const [kbGuid, noteGuid] = getNoteInfoFromApiServer(apiServer);
+      console.log(kbGuid, noteGuid);
+      //
+      // TODO: copy resource from kbGuid/noteGuid to current note
       console.log(apiServer, resourceName, token);
+      //
+      // const userGuid = window.wizApi?.userManager?.userGuid || '';
+      // return `wiz://${userGuid}/${kbGuid}/${noteGuid}`;
+      // return this.handler.handleBuildResourceUrl()
     },
     handleTagsChanged: async (kbGuid) => {
       if (kbGuid !== this.props.kbGuid) {
@@ -303,6 +327,9 @@ class MarkdownEditorComponent extends React.PureComponent {
       this.editor = null;
     }
     //
+    const { note, kbGuid } = this.props;
+    console.log('load note: ', note.guid);
+    //
     const currentUser = this.props.user;
     const user = {
       avatarUrl: 'avatarUrl',
@@ -310,10 +337,10 @@ class MarkdownEditorComponent extends React.PureComponent {
       displayName: currentUser.displayName,
     };
     const auth = {
-      appId: '',
+      appId: 'WizNoeLite',
       userId: '',
       permission: 'w',
-      docId: '',
+      docId: `${kbGuid}-${note.guid}`,
       token: '',
       displayName: user.displayName,
       avatarUrl: user.avatarUrl,
@@ -329,8 +356,9 @@ class MarkdownEditorComponent extends React.PureComponent {
     };
 
     const lang = langs[this.props.intl.local] || LANGS.EN_US;
-
+    //
     const options = {
+      serverUrl: `ws://localhost/${kbGuid}/${note.guid}`,
       lang,
       local: true,
       initLocalData,
