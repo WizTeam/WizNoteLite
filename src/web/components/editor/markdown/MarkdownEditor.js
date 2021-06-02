@@ -142,7 +142,7 @@ class MarkdownEditorComponent extends React.PureComponent {
         return ret;
       }
       //
-      const userGuid = window.wizApi?.userManager?.userGuid || '';
+      const userGuid = window.wizApi?.userManager?.getUserGuid() || '';
       const ret = {};
 
       const promises = resourceNames.map(async (resName) => {
