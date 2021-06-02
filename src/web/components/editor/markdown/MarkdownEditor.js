@@ -100,16 +100,17 @@ class MarkdownEditorComponent extends React.PureComponent {
       }
       return resourceName;
     },
-    handleCopyResourcesFromOtherServer: async (editor, apiServer, resourceNames) => {
+    handleCopyResourcesFromOtherServer: async (editor, apiServer, resourceNames, token) => {
       //
       const getNoteInfoFromApiServer = () => {
         //
-        const find = 'localhost/';
+        const find = 'localhost-lite/';
         const index = apiServer.indexOf(find);
-        assert(index !== -1);
+        if (index === -1) {
+          return [];
+        }
         const last = apiServer.substr(index + find.length);
         const parts = last.split('/');
-        assert(parts.length >= 2);
         const kbGuid = parts[0];
         const noteGuid = parts[1];
         //
@@ -117,6 +118,29 @@ class MarkdownEditorComponent extends React.PureComponent {
       };
       // from
       const [fromKbGuid, fromNoteGuid] = getNoteInfoFromApiServer(apiServer);
+      //
+      // 从其他编辑服务复制
+      if (!fromKbGuid || !fromNoteGuid) {
+        //
+        const ret = {};
+        const promises = resourceNames.map(async (resName) => {
+          try {
+            const url = resName.startsWith('http') ? resName : `${apiServer}/resources/${encodeURIComponent(resName)}?token=${token}`;
+            const file = await downloadImageToFile(url);
+            if (file) {
+              const newResourceName = await this.handler.handleUploadResource(editor, file);
+              ret[resName] = newResourceName;
+              return file;
+            }
+          } catch (err) {
+            console.error(err);
+          }
+          return null;
+        });
+        //
+        await Promise.all(promises);
+        return ret;
+      }
       //
       const userGuid = window.wizApi?.userManager?.userGuid || '';
       const ret = {};
@@ -398,7 +422,7 @@ class MarkdownEditorComponent extends React.PureComponent {
     const lang = langs[this.props.intl.local] || LANGS.EN_US;
     //
     const options = {
-      serverUrl: `ws://localhost/${kbGuid}/${note.guid}`,
+      serverUrl: `ws://localhost-lite/${kbGuid}/${note.guid}`,
       lang,
       local: true,
       initLocalData,
