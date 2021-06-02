@@ -117,7 +117,6 @@ class NoteListItem extends React.Component {
     },
   };
 
-
   renderItem() {
     const {
       classes,
@@ -245,6 +244,5 @@ NoteListItem.defaultProps = {
   dateType: 'modify',
   animation: '',
 };
-
 
 export default withTheme(withStyles(styles)(injectIntl(NoteListItem)));

@@ -204,6 +204,7 @@ class MarkdownEditorComponent extends React.PureComponent {
       if (typewriterMode) {
         editor.setTypewriterMode(typewriterMode);
       }
+      editor.focus();
     },
   }
 
