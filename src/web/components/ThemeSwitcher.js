@@ -215,6 +215,7 @@ export default function ThemeSwitcher(props) {
           noteTypeButton: wizColor.noteTypeButton,
           matchedText: '#aaaaaa',
           activeStarIcon: '#FDDD10',
+          defaultStarIcon: wizColor.noteTypeButton,
           hr: wizColor.hr,
           contentToolIcon: '#aaaaaa',
           contentToolIconHover: prefersDarkMode ? '#ffffff' : '#333333',
