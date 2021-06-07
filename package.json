@@ -44,7 +44,7 @@
   },
   "build": {
     "appId": "cn.wiz.note.lite",
-    "buildVersion": "61",
+    "buildVersion": "62",
     "asar": false,
     "extraMetadata": {
       "main": "src/start.js"
