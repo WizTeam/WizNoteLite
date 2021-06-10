@@ -154,7 +154,6 @@ class Main extends React.Component {
         this.getNoteLinks(currentNote?.title);
         this.getAllTitle();
       });
-
     },
     handleTagSelected: async (tag) => {
       this.setState({
@@ -449,7 +448,6 @@ class Main extends React.Component {
       titlesList,
     });
   }
-
 
   async getNoteLinks(title) {
     const res = await window.wizApi.userManager.getBackwardLinkedNotes(this.props.kbGuid, title);

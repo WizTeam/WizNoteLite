@@ -453,7 +453,7 @@ SideBar.propTypes = {
   intl: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
   selectedTag: PropTypes.object,
-  open: PropTypes.bool,
+  // open: PropTypes.bool,
   onClickLogin: PropTypes.func.isRequired,
   onUpgradeVip: PropTypes.func.isRequired,
   onClickSetting: PropTypes.func.isRequired,
@@ -461,7 +461,7 @@ SideBar.propTypes = {
 
 SideBar.defaultProps = {
   selectedTag: null,
-  open: false,
+  // open: false,
 };
 
 export default withStyles(styles)(injectIntl(SideBar));
