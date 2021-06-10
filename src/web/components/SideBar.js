@@ -233,9 +233,9 @@ class SideBar extends React.Component {
     window.wizApi.userManager.on('syncFinish', this.handler.handleSyncFinish);
   }
 
-  shouldComponentUpdate(nextProps) {
-    return nextProps.open || (this.props.open !== nextProps.open);
-  }
+  // shouldComponentUpdate(nextProps) {
+  //   return nextProps.open || (this.props.open !== nextProps.open);
+  // }
 
   componentWillUnmount() {
     window.wizApi.userManager.off('tagsChanged', this.handler.handleTagsChanged);
