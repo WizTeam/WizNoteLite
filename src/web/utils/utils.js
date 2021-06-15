@@ -11,22 +11,22 @@ export function overwriteEditorConfig(options, id = 'editor-overwrite') {
     const val = options[item];
     switch (item) {
       case 'fontFamily':
-        css += `--text-font-family: '${val}';`;
+        css += `--editor-font-family: '${val}';`;
         break;
       case 'fontSize':
-        css += `--text-font-size: ${val}px;`;
+        css += `--editor-font-size: ${val}px;`;
         break;
       case 'lineHeight':
         {
           const h = Math.floor(val * options.fontSize);
-          css += `--text-line-height: ${h}px;`;
+          css += `--editor-line-height: ${h}px; --editor-first-line-center-top: calc(0.5 * var(--editor-line-height) - 1px);`;
         }
         break;
       case 'paragraphHeight':
         css += `--p-margin-bottom: ${val}px;`;
         break;
       case 'textColor':
-        css += `--text-font-color: ${val}`;
+        css += `--editor-color: ${val}`;
         break;
       case 'textWidth':
         css += `--editor-container-padding: ${(100 - val) / 2}%`;
@@ -138,7 +138,6 @@ export function transformKey(key) {
   }
 }
 
-
 export function isTouchCtrlKey(event) {
   return isMacSystem() ? event.metaKey && !event.ctrlKey : !event.metaKey && event.ctrlKey;
 }
@@ -161,7 +160,6 @@ export function matchHotKey(hotkey, event, separator = '-') {
 }
 
 export const COMMAND_KEY = isMacSystem() ? '⌘' : 'Ctrl';
-
 
 export default {
   overwriteEditorConfig,
