@@ -1,7 +1,7 @@
 {
   "name": "wiznotelite",
   "description": "WizNote Lite - An instant rendering markdown note tool.",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "private": true,
   "homepage": ".",
   "productName": "WizNote Lite",
@@ -44,7 +44,7 @@
   },
   "build": {
     "appId": "cn.wiz.note.lite",
-    "buildVersion": "62",
+    "buildVersion": "66",
     "asar": false,
     "extraMetadata": {
       "main": "src/start.js"
