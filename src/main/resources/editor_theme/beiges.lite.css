@@ -22,5 +22,9 @@
   --editor-checkbox-layer-bg-color: #ffffff;
   --editor-border-color: #b9bfc8;
   --editor-table-bg-color: transparent;
+  --editor-color: #333333;
+  --editor-code-title-bg-color: rgb(220, 223, 227);
+  --editor-code-bg-color: #f0f2f4;
+  --editor-code-title-color: #121212;
 }
 
