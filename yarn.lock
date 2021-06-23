@@ -6319,6 +6319,11 @@ fast-safe-stringify@2.0.7, fast-safe-stringify@^2.0.7:
   resolved "https://registry.yarnpkg.com/fast-safe-stringify/-/fast-safe-stringify-2.0.7.tgz#124aa885899261f68aedb42a7c080de9da608743"
   integrity sha512-Utm6CdzT+6xsDk2m8S6uL8VHxNwI6Jub+e9NYTcAms28T84pTa25GJQV9j0CY0N1rM8hK4x6grpF2BQf+2qwVA==
 
+fast-xml-parser@^3.19.0:
+  version "3.19.0"
+  resolved "https://registry.yarnpkg.com/fast-xml-parser/-/fast-xml-parser-3.19.0.tgz#cb637ec3f3999f51406dd8ff0e6fc4d83e520d01"
+  integrity sha512-4pXwmBplsCPv8FOY1WRakF970TjNGnGnfbOnLqjlYvMiF1SR3yOHyxMR/YCXpPTOspNF5gwudqktIP4VsWkvBg==
+
 fastify-cookie@^5.1.0:
   version "5.3.1"
   resolved "https://registry.yarnpkg.com/fastify-cookie/-/fastify-cookie-5.3.1.tgz#97b17f3f297b06ffc8e27fe7a0398aefa9df74f0"
@@ -8218,6 +8223,13 @@ is-string@^1.0.5, is-string@^1.0.6:
   resolved "https://registry.yarnpkg.com/is-string/-/is-string-1.0.6.tgz#3fe5d5992fb0d93404f32584d4b0179a71b54a5f"
   integrity sha512-2gdzbKUuqtQ3lYNrUTQYoClPhm7oQu4UdpSZMp1/DGgkHBT8E2Z1l0yMdb6D4zNAxwDiMv8MdulKROJGNl0Q0w==
 
+is-svg@^4.3.1:
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/is-svg/-/is-svg-4.3.1.tgz#8c63ec8c67c8c7f0a8de0a71c8c7d58eccf4406b"
+  integrity sha512-h2CGs+yPUyvkgTJQS9cJzo9lYK06WgRiXUqBBHtglSzVKAuH4/oWsqk7LGfbSa1hGk9QcZ0SyQtVggvBA8LZXA==
+  dependencies:
+    fast-xml-parser "^3.19.0"
+
 is-symbol@^1.0.2, is-symbol@^1.0.3:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/is-symbol/-/is-symbol-1.0.4.tgz#a6dac93b635b063ca6872236de88910a57af139c"
@@ -9274,10 +9286,10 @@ lines-and-columns@^1.1.6:
   resolved "https://registry.yarnpkg.com/lines-and-columns/-/lines-and-columns-1.1.6.tgz#1c00c743b433cd0a4e80758f7b64a57440d9ff00"
   integrity sha1-HADHQ7QzzQpOgHWPe2SldEDZ/wA=
 
-live-editor@^0.0.276:
-  version "0.0.276"
-  resolved "https://registry.yarnpkg.com/live-editor/-/live-editor-0.0.276.tgz#d564bb27742bf66e2e20dab1906d1de2c1d262f0"
-  integrity sha512-TG/5NFZEZ11ge1gy2hClT75RD0qMoMf17EbEDm1kVHXDpUekP31+NgKJITnLigwELmdI6lbzlnPnv9s7ngFjPg==
+live-editor@^0.0.322:
+  version "0.0.322"
+  resolved "https://registry.yarnpkg.com/live-editor/-/live-editor-0.0.322.tgz#b7ac3d6b3e21f3324358dd5682f6e30f555f7139"
+  integrity sha512-dc6JLe+Syb+bFQ9IZ3LPE4jCCVxWXr3TjX0JJu5uwjfmATSd36rhZDMPT8vwTYuuECOoLLUJvpQYgezg9ZGExw==
   dependencies:
     "@lvgithub/ctrip-apollo-client" "^1.0.22"
     "@nestjs/common" "^7.6.3"
@@ -15243,10 +15255,10 @@ wiznote-sdk-js-share@^1.0.6:
     "@types/assert" "^1.5.4"
     assert "^2.0.0"
 
-wiznote-sdk-js@^1.2.30:
-  version "1.2.30"
-  resolved "https://registry.yarnpkg.com/wiznote-sdk-js/-/wiznote-sdk-js-1.2.30.tgz#4fd7ee7ecccef015a7a36afed96cb32a8cf7af35"
-  integrity sha512-3Bbk+gjGrs/QadijFeHAtgAhglLDH3KqeuY88RW+P1S+a8vqWFoUFAioRBLToOIl+f5XZdUX73dqCio/FLOqdQ==
+wiznote-sdk-js@^1.2.33:
+  version "1.2.33"
+  resolved "https://registry.yarnpkg.com/wiznote-sdk-js/-/wiznote-sdk-js-1.2.33.tgz#dce57d7207e7610d652bba488bcf3afd3aeed2bd"
+  integrity sha512-0qswzYlhDpAEQK9SKF5vXRJrgi91kQvYHYW5gHZIb8zXujlPLe1f0xDEnTZFn5+nNeu3nKnt16R7ARIxiH9WmA==
   dependencies:
     "@types/fs-extra" "^9.0.7"
     "@types/lodash" "^4.14.168"
@@ -15262,6 +15274,7 @@ wiznote-sdk-js@^1.2.30:
     events "^3.2.0"
     i18next "^19.6.3"
     image-type "^4.1.0"
+    is-svg "^4.3.1"
     lodash "^4.17.19"
     marked "^2.0.0"
     md5 "^2.3.0"
