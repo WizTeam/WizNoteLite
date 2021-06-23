@@ -15,6 +15,7 @@ import { filter } from 'fuzzaldrin';
 // import { getTagSpanFromRange } from '../libs/dom_utils';
 // import { getLocale } from '../../../utils/lang';
 import './live-editor.scss';
+import { setInsertMenuList } from './QuickInsert';
 
 const {
   extractLinksFromMarkdown,
@@ -264,7 +265,7 @@ class MarkdownEditorComponent extends React.PureComponent {
 
   componentDidUpdate(prevProps) {
     const { note: currentNote } = this.state;
-    const { note: propsNote } = this.props;
+    const { note: propsNote, intl } = this.props;
     if (propsNote?.guid !== currentNote?.guid) {
       // note changed
       this.saveAndLoadNote();
@@ -283,6 +284,37 @@ class MarkdownEditorComponent extends React.PureComponent {
         title: item,
       }));
     }
+    setInsertMenuList([{
+      data: null,
+      iconUrl: '',
+      id: 'link',
+      text: intl.formatMessage({ id: 'editorMenuLink' }),
+    },
+    {
+      id: 'checkBox',
+      data: null,
+      iconUrl: '',
+      text: intl.formatMessage({ id: 'editorMenuTodoList' }),
+    },
+    {
+      id: 'table',
+      data: null,
+      iconUrl: '',
+      text: intl.formatMessage({ id: 'editorMenuTable' }),
+    },
+    {
+      id: 'image',
+      data: null,
+      iconUrl: '',
+      text: intl.formatMessage({ id: 'editorMenuImage' }),
+    },
+    {
+      id: 'codeBlock',
+      data: null,
+      iconUrl: '',
+      text: intl.formatMessage({ id: 'editorMenuBlockCode' }),
+    },
+    ]);
   }
 
   componentWillUnmount() {

@@ -1,7 +1,7 @@
 {
   "name": "wiznotelite",
   "description": "WizNote Lite - An instant rendering markdown note tool.",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "private": true,
   "homepage": ".",
   "productName": "WizNote Lite",
@@ -44,7 +44,7 @@
   },
   "build": {
     "appId": "cn.wiz.note.lite",
-    "buildVersion": "62",
+    "buildVersion": "73",
     "asar": false,
     "extraMetadata": {
       "main": "src/start.js"
@@ -185,6 +185,7 @@
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.19.0",
+    "live-editor": "^0.0.322",
     "moment": "^2.26.0",
     "node-sass": "^4.14.1",
     "notistack": "^0.9.17",
@@ -200,8 +201,7 @@
     "react-scripts": "3.4.1",
     "react-style-proptype": "^3.2.2",
     "run-script-os": "^1.0.7",
-    "timer.js": "^1.0.4",
-    "live-editor": "^0.0.302"
+    "timer.js": "^1.0.4"
   },
   "__npminstall_done": false
 }

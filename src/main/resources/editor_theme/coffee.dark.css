@@ -17,4 +17,8 @@
   --editor-checkbox-layer-bg-color: #333333;
   --editor-border-color: #bfbfbf;
   --editor-table-bg-color: #2a2a2a;
+  --editor-color: #f0f0f0;
+  --editor-code-title-bg-color: #000000;
+  --editor-code-bg-color: rgb(39, 40, 34);
+  --editor-code-title-color: #ffffff;
 }
