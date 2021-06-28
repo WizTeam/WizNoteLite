@@ -211,11 +211,15 @@ class MarkdownEditorComponent extends React.PureComponent {
       const words = filter(wordList, keywords);
       return words.length ? words : [keywords];
     },
+    handleGetLinkItems: async (editor, keywords) => {
+      const words = filter(this.titlesList, keywords, { key: 'title' });
+      return words.length ? words.map((item) => item.title) : [keywords];
+    },
     handleOnNoteLinksContentChange: ({ content, render }) => {
       render(filter(this.titlesList, content, { key: 'title' }));
     },
-    handleClickLink: ({ href: title, event }) => {
-      this.props.onClickNoteLink(title, {
+    handleClickLink: (editor, name, event) => {
+      this.props.onClickNoteLink(name, {
         left: event.clientX,
         top: event.clientY + 20,
       });
@@ -267,6 +271,7 @@ class MarkdownEditorComponent extends React.PureComponent {
   componentDidUpdate(prevProps) {
     const { note: currentNote } = this.state;
     const { note: propsNote, intl } = this.props;
+    console.log('titlesList', this.props.titlesList);
     if (propsNote?.guid !== currentNote?.guid) {
       // note changed
       this.saveAndLoadNote();
@@ -475,6 +480,8 @@ class MarkdownEditorComponent extends React.PureComponent {
         onUpdateToc: this.handler.handleUpdateToc,
         onGetTagItems: this.handler.handleGetTagItems,
         onTagClicked: this.handler.handleTagClicked,
+        onGetWikiLinkItems: this.handler.handleGetLinkItems,
+        onWikiLinkClicked: this.handler.handleClickLink,
       },
     };
     const editor = await createEditorPromise(this.editorContainer.current, options, auth);
