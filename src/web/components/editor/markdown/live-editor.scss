@@ -103,3 +103,6 @@
   bottom: 0;
   left: 0;
 }
+.editor-main .editor-container.root-container {
+  max-width: var(--editor-container-width, 100%);
+}

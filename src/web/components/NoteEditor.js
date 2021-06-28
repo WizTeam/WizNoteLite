@@ -16,8 +16,8 @@ const styles = (/* theme */) => ({
     flexDirection: 'column',
     paddingTop: 8,
     paddingBottom: 16,
-    paddingRight: 'var(--editor-container-padding, 12px)',
-    paddingLeft: 'var(--editor-container-padding, 44px)',
+    // paddingRight: 'var(--editor-container-padding)',
+    // paddingLeft: 'var(--editor-container-padding)',
   },
   invisible: {
     display: 'none',

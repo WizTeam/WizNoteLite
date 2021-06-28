@@ -29,7 +29,7 @@ export function overwriteEditorConfig(options, id = 'editor-overwrite') {
         css += `--editor-color: ${val}`;
         break;
       case 'textWidth':
-        css += `--editor-container-padding: ${(100 - val) / 2}%`;
+        css += `--editor-container-width: ${val}%`;
         break;
       default:
         break;

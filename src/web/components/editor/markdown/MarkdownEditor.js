@@ -208,7 +208,8 @@ class MarkdownEditorComponent extends React.PureComponent {
     },
     handleGetTagItems: async (editor, keywords) => {
       const { wordList } = this.state;
-      return filter(wordList, keywords);
+      const words = filter(wordList, keywords);
+      return words.length ? words : [keywords];
     },
     handleOnNoteLinksContentChange: ({ content, render }) => {
       render(filter(this.titlesList, content, { key: 'title' }));
