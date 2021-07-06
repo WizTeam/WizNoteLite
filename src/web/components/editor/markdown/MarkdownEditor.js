@@ -16,6 +16,7 @@ import { filter } from 'fuzzaldrin';
 // import { getLocale } from '../../../utils/lang';
 import './live-editor.scss';
 import { setInsertMenuList } from './QuickInsert';
+import { matchHotKey } from '../../../utils/utils';
 
 const {
   extractLinksFromMarkdown,
@@ -236,6 +237,7 @@ class MarkdownEditorComponent extends React.PureComponent {
       }
       editor.focus();
     },
+    handleKeyDown: (editor, event) => matchHotKey('⌘-w', event),
   }
 
   constructor(props) {
@@ -482,6 +484,7 @@ class MarkdownEditorComponent extends React.PureComponent {
         onTagClicked: this.handler.handleTagClicked,
         onGetWikiLinkItems: this.handler.handleGetLinkItems,
         onWikiLinkClicked: this.handler.handleClickLink,
+        onKeyDown: this.handler.handleKeyDown,
       },
     };
     const editor = await createEditorPromise(this.editorContainer.current, options, auth);

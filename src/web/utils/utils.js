@@ -146,7 +146,7 @@ export function matchHotKey(hotkey, event, separator = '-') {
   const hotkeys = hotkey.split(separator);
   const key = parseKey(hotkeys[hotkeys.length - 1]);
   const hasCtrl = hotkeys.some(
-    (value) => value.toLocaleLowerCase().includes('ctrl') || value.toLocaleLowerCase().includes('cmd'),
+    (value) => value.toLocaleLowerCase().includes('ctrl') || value.toLocaleLowerCase().includes('cmd') || value.includes('⌘'),
   );
   const hasAlt = hotkeys.some((value) => value.toLocaleLowerCase() === 'alt' || value === '⌥');
   const hasShift = hotkeys.some((value) => value.toLocaleLowerCase() === 'shift' || value === '⇧');
