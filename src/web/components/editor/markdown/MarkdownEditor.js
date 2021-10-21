@@ -451,15 +451,18 @@ class MarkdownEditorComponent extends React.PureComponent {
     };
 
     const langs = {
-      'zh-CN': LANGS.ZH_CN,
-      'zh-SG': LANGS.ZH_CN,
-      'zh-HK': LANGS.ZH_TW,
-      'zh-TW': LANGS.ZH_TW,
-      'zh-MO': LANGS.ZH_TW,
-      en: LANGS.EN_US,
+      'zh-CN': 'zh-CN',
+      'zh-SG': 'zh-CN',
+      'zh-HK': 'zh-TW',
+      'zh-TW': 'zh-TW',
+      'zh-MO': 'zh-TW',
+
+      en: 'en-US',
     };
 
-    const lang = langs[this.props.intl.local] || LANGS.EN_US;
+    console.log('this.props.intl.local', this.props.intl.locale);
+
+    const lang = langs[this.props.intl.local] || 'en-US';
     //
     const options = {
       serverUrl: `ws://localhost-lite/${kbGuid}/${note.guid}`,
