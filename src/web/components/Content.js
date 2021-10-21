@@ -208,7 +208,7 @@ class Content extends React.Component {
       }
     },
     handleNoteLink: async (content, position) => {
-      const title = content.trim();
+      const title = content.name.trim();
       if (title) {
         const list = await window.wizApi.userManager.queryNotes(
           this.props.kbGuid,
