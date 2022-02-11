@@ -187,7 +187,7 @@
     "eslint-plugin-react": "^7.19.0",
     "live-editor": "^0.0.322",
     "moment": "^2.26.0",
-    "node-sass": "^4.14.1",
+    "node-sass": "^7.0.0",
     "notistack": "^0.9.17",
     "prop-types": "^15.7.2",
     "query-string": "^6.13.1",
