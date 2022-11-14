@@ -198,7 +198,7 @@
     "react-infinite-scroller": "^1.2.4",
     "react-intl": "5.7.1",
     "react-lifecycles-compat": "^3.0.4",
-    "react-scripts": "3.4.1",
+    "react-scripts": "5.0.1",
     "react-style-proptype": "^3.2.2",
     "run-script-os": "^1.0.7",
     "timer.js": "^1.0.4"
